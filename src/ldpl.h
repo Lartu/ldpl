@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "cpptrim.h"
+#include <stack>
 
 using namespace std;
 
@@ -14,6 +15,19 @@ struct compiler_state{
     //variables
     vector<pair<string, uint>> variables;
     //1 number, 2 text, 3 number vector, 4 text vector
+    vector<string> subprocedures;
+    void add_code(string code){
+        this->output_code.push_back(code);
+    }
+    string open_subprocedure = "";
+    int if_number = 0;
+    stack<int> if_stack;
+    int add_if(){
+        ++if_number;
+        if_stack.push(if_number);
+        if_stack.push(if_number);
+        return if_number;
+    }
 };
 
 void error(const string & msg);
@@ -27,3 +41,4 @@ bool is_num_var(string & token, compiler_state & state);
 bool is_txt_var(string & token, compiler_state & state);
 bool is_variable(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
+bool is_subprocedure(string & token, compiler_state & state);

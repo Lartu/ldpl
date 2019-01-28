@@ -4,11 +4,8 @@ DATA:
     miTexto IS TEXT
     miVariableV IS NUMBER VECTOR
     miTextoV IS TEXT VECTOR
-PROCEDURE: #Faa!
-DISPLAY "mi nombre es lartu" CRLF "Todo bien?" CRLF
-ACCEPT miVariable
-ACCEPT miTexto
-STORE "Hola" IN miTexto
-STORE miTexto IN miTexto
-STORE -5.123 IN miVariable
-STORE miVariable IN miVariable
+
+PROCEDURE:
+    IF 5 IS LESS THAN 5 THEN
+        DISPLAY "YAY!" CRLF
+    END IF

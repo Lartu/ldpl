@@ -47,6 +47,10 @@ void compile(vector<string> & lines)
         //TODO: pasar tokens que no sean strings a uppercase
         compile_line(tokens, line_num, state);
     }
+    for(string out : state.output_code){
+        cout << out << endl;
+    }
+    //TODO: si llega acá y hay ifs sin cerrar o procedures sin cerrar, te comés puteada
 }
 
 //Tokenizes a line
@@ -134,7 +138,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             state.variables.push_back(make_pair(tokens[0], 1));
         else
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
-        cout << "-> Declaración de variable NUMBER " << tokens[0] << endl; //TODO
+        //NVM
+        state.add_code("0");
+        state.add_code("TOAUX:" + tokens[0]);
         return;
     }
     if(line_like("$name IS TEXT", tokens, state))
@@ -145,7 +151,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             state.variables.push_back(make_pair(tokens[0], 2));
         else
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
-        cout << "-> Declaración de variable TEXT " << tokens[0] << endl; //TODO
+        //NVM
+        state.add_code("\"\"");
+        state.add_code("TOAUX:" + tokens[0]);
         return;
     }
     if(line_like("$name IS NUMBER VECTOR", tokens, state))
@@ -156,7 +164,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             state.variables.push_back(make_pair(tokens[0], 3));
         else
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
-        cout << "-> Declaración de variable NUMBER VECTOR " << tokens[0] << endl; //TODO
+        //TODO
         return;
     }
     if(line_like("$name IS TEXT VECTOR", tokens, state))
@@ -167,231 +175,358 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             state.variables.push_back(make_pair(tokens[0], 4));
         else
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
-        cout << "-> Declaración de variable TEXT VECTOR " << tokens[0] << endl; //TODO
+        //TODO
         return;
     }
     if(line_like("DISPLAY $display", tokens, state))
     {
         if(state.section_state != 2)
             error("DISPLAY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> DISPLAY" << endl; //TODO
+        //NVM
+        for(int i = 1; i < tokens.size(); ++i){
+            if(tokens[i] == "CRLF"){
+                state.add_code("\"\"");
+                state.add_code("PRINTLN");
+            }else if(is_variable(tokens[i], state)){
+                state.add_code("AUX:"+tokens[i]);
+                state.add_code("PRINT");
+            }
+            else{
+                state.add_code(tokens[i]);
+                state.add_code("PRINT");
+            }
+        }
         return;
     }
     if(line_like("ACCEPT $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ACCEPT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> ACCEPT number variable" << endl; //TODO
+        //NVM
+        state.add_code("INPUT");
+        state.add_code("TO-NUM");
+        state.add_code("TOAUX:"+tokens[1]);
         return;
     }
     if(line_like("ACCEPT $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ACCEPT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> ACCEPT string variable" << endl; //TODO
+        //NVM
+        state.add_code("INPUT");
+        state.add_code("TOAUX:"+tokens[1]);
         return;
     }
     if(line_like("STORE $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> STORE num var in num var" << endl; //TODO
+        //NVM
+        state.add_code("AUX:" + tokens[1]);
+        state.add_code("TOAUX:" + tokens[3]);
         return;
     }
     if(line_like("STORE $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> STORE num in num var" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("TOAUX:" + tokens[3]);
         return;
     }
     if(line_like("STORE $str-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> STORE txt var in txt var" << endl; //TODO
+        //NVM
+        state.add_code("AUX:" + tokens[1]);
+        state.add_code("TOAUX:" + tokens[3]);
         return;
     }
     if(line_like("STORE $string IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> STORE txt in txt var" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("TOAUX:" + tokens[3]);
         return;
     }
     if(line_like("ADD $number AND $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ADD statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> ADD" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code(tokens[3]);
+        state.add_code("+");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("ADD $number AND $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ADD statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> ADD" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("+");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("ADD $num-var AND $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ADD statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> ADD" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[3]);
+        state.add_code("+");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("ADD $num-var AND $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ADD statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> ADD" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("+");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $number FROM $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("SUBTRACT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> SUBTRACT" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("-");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $number FROM $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("SUBTRACT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> SUBTRACT" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("-");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $num-var FROM $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("SUBTRACT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> SUBTRACT" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("-");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $num-var FROM $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("SUBTRACT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> SUBTRACT" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("-");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("DIVIDE $number BY $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> DIVIDE" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("/");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("DIVIDE $number BY $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> DIVIDE" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("/");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("DIVIDE $num-var BY $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> DIVIDE" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("-");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("DIVIDE $num-var BY $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> DIVIDE" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("-");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MULTIPLY $number BY $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MULTIPLY" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("*");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MULTIPLY $number BY $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MULTIPLY" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("*");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MULTIPLY $num-var BY $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MULTIPLY" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("*");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MULTIPLY $num-var BY $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MULTIPLY" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("*");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MODULO $number BY $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MODULO" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("%");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MODULO $number BY $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MODULO" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code(tokens[1]);
+        state.add_code("%");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MODULO $num-var BY $number IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MODULO" << endl; //TODO
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("%");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("MODULO $num-var BY $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> MODULO" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("%");
+        state.add_code("TOAUX:" + tokens[5]);
         return;
     }
     if(line_like("ABS $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ABS statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> ABS" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("ABS");
+        state.add_code("TOAUX:"+tokens[1]);
         return;
     }
     if(line_like("JOIN $string AND $string IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code(tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $string AND $number IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code(tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $string AND $num-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $string AND $str-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     
@@ -399,28 +534,50 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code(tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $number AND $number IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code(tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $number AND $num-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $number AND $str-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     
@@ -428,28 +585,46 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $str-var AND $number IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $str-var AND $num-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $str-var AND $str-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     
@@ -457,35 +632,977 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code(tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $num-var AND $number IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code(tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $num-var AND $num-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     if(line_like("JOIN $num-var AND $str-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "-> JOIN" << endl; //TODO
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("TO-STR");
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("JOIN");
+        state.add_code("TOAUX:"+tokens[5]);
+        return;
+    }
+    if(line_like("GET CHARACTER AT $num-var FROM $str-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET CHARACTER statement outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("CHARAT");
+        state.add_code("TOAUX:"+tokens[7]);
+        return;
+    }
+    if(line_like("GET CHARACTER AT $number FROM $str-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET CHARACTER statement outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("CHARAT");
+        state.add_code("TOAUX:"+tokens[7]);
+        return;
+    }
+    if(line_like("GET CHARACTER AT $num-var FROM $string IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET CHARACTER statement outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code(tokens[5]);
+        state.add_code("CHARAT");
+        state.add_code("TOAUX:"+tokens[7]);
+        return;
+    }
+    if(line_like("GET CHARACTER AT $number FROM $string IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET CHARACTER statement outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code(tokens[5]);
+        state.add_code("CHARAT");
+        state.add_code("TOAUX:"+tokens[7]);
+        return;
+    }
+    if(line_like("SUB-PROCEDURE $name", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("SUB-PROCEDURE declaration outside PROCEDURE section on line " + to_string(line_num) + ".");
+        if(!is_subprocedure(tokens[1], state))
+            state.subprocedures.push_back(tokens[1]);
+        else
+            error("Duplicate declaration for subprocedure " + tokens[1] + " on line " + to_string(line_num) + ".");
+        if(state.open_subprocedure != "")
+            error("Subprocedure declaration inside subprocedure on line " + to_string(line_num) + ".");
+        else
+            state.open_subprocedure = tokens[1];
+        //NVM
+        state.add_code("JMP:"+tokens[1]+"_end");
+        state.add_code("@sub_"+tokens[1]);
+        return;
+    }
+    if(line_like("RETURN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("RETURN outside PROCEDURE section on line " + to_string(line_num) + ".");
+        if(state.open_subprocedure == "")
+            error("RETURN found outside subprocedure on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("JMP-IP-POP");
+        return;
+    }
+    if(line_like("END SUB-PROCEDURE", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("END SUB-PROCEDURE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        if(state.open_subprocedure == "")
+            error("END SUB-PROCEDURE found outside subprocedure on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("JMP-IP-POP");
+        state.add_code("@"+state.open_subprocedure+"_end");
+        //Cierro la subrutina
+        state.open_subprocedure = "";
+        return;
+    }
+    
+    if(line_like("IF $number IS EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $number IS EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("IF $number IS NOT EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $number IS NOT EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS NOT EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS NOT EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("IF $number IS GREATER THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $number IS GREATER THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS GREATER THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS GREATER THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("IF $number IS LESS THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $number IS LESS THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS LESS THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS LESS THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("IF $number IS GREATER THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $number IS GREATER THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS GREATER THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS GREATER THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("IF $number IS LESS THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $number IS LESS THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS LESS THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $num-var IS LESS THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("IF $string IS EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $string IS EQUAL TO $str-var THEN", tokens, state))
+    {
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $str-var IS EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $str-var IS EQUAL TO $str-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("IF $string IS NOT EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $string IS NOT EQUAL TO $str-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $str-var IS NOT EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    if(line_like("IF $str-var IS NOT EQUAL TO $str-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        int if_num = state.add_if();
+        state.add_code("@if" + to_string(if_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:else"+to_string(if_num));
+        return;
+    }
+    
+    if(line_like("ELSE", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        if(state.if_stack.size() == 0)
+            error("ELSE without IF on line " + to_string(line_num) + ".");
+        //NVM
+        int ifNum = state.if_stack.top();
+        state.if_stack.pop();
+        state.add_code("JMP:endif"+to_string(ifNum));
+        state.add_code("@else"+to_string(ifNum));
+        return;
+    }
+    if(line_like("END IF", tokens, state) || line_like("END-IF", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("END IF outside PROCEDURE section on line " + to_string(line_num) + ".");
+        if(state.if_stack.size() == 0)
+            error("END IF without IF on line " + to_string(line_num) + ".");
+        //NVM
+        int ifNum = state.if_stack.top();
+        state.if_stack.pop();
+        //Si no tenía ELSE
+        if(state.if_stack.size() > 0 && state.if_stack.top() == ifNum){
+            state.if_stack.pop();
+            state.add_code("@else"+to_string(ifNum));
+        }
+        state.add_code("@endif"+to_string(ifNum));
+        return;
+    }
+    
+    if(line_like("WHILE $number IS EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $number IS EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("WHILE $number IS NOT EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $number IS NOT EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS NOT EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS NOT EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("WHILE $number IS GREATER THAN $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $number IS GREATER THAN $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS GREATER THAN $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS GREATER THAN $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("WHILE $number IS LESS THAN $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $number IS LESS THAN $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS LESS THAN $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS LESS THAN $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("WHILE $number IS GREATER THAN OR EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $number IS GREATER THAN OR EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS GREATER THAN OR EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS GREATER THAN OR EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("WHILE $number IS LESS THAN OR EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $number IS LESS THAN OR EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS LESS THAN OR EQUAL TO $number DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $num-var IS LESS THAN OR EQUAL TO $num-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("WHILE $string IS EQUAL TO $string DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $string IS EQUAL TO $str-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $str-var IS EQUAL TO $string DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $str-var IS EQUAL TO $str-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("WHILE $string IS NOT EQUAL TO $string DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $string IS NOT EQUAL TO $str-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $str-var IS NOT EQUAL TO $string DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    if(line_like("WHILE $str-var IS NOT EQUAL TO $str-var DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; WHILE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("REPEAT", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPEAT outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; REPEAT" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("BREAK", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("BREAK outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; BREAK" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("CONTINUE", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CONTINUE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        cout << "; CONTINUE" << endl; //TODO
+        return;
+    }
+    
+    if(line_like("CALL SUB-PROCEDURE $subprocedure", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CALL SUB-PROCEDURE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("IP");
+        state.add_code("3");
+        state.add_code("+");
+        state.add_code("JMP:sub_"+tokens[2]);
+        return;
+    }
+    
+    if(line_like("EXECUTE $string", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("SYS-EXEC");
+        state.add_code("POP");
+        return;
+    }
+    if(line_like("EXECUTE $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("SYS-EXEC");
+        state.add_code("POP");
+        return;
+    }
+    if(line_like("EXECUTE $string AND STORE OUTPUT IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("SYS-EXEC-OUT");
+        state.add_code("TOAUX:"+tokens[6]);
+        return;
+    }
+    if(line_like("EXECUTE $str-var AND STORE OUTPUT IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("SYS-EXEC-OUT");
+        state.add_code("TOAUX:"+tokens[6]);
+        return;
+    }
+    if(line_like("EXECUTE $string AND STORE EXIT CODE IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code(tokens[1]);
+        state.add_code("SYS-EXEC");
+        state.add_code("TOAUX:"+tokens[7]);
+        return;
+    }
+    if(line_like("EXECUTE $str-var AND STORE EXIT CODE IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("SYS-EXEC");
+        state.add_code("TOAUX:"+tokens[7]);
+        return;
+    }
+    if(line_like("EXIT", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXIT outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("HALT");
+        return;
+    }
+    if(line_like("STORE LENGTH OF $str-var IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("LENGTH");
+        state.add_code("TOAUX:"+tokens[5]);
+        return;
+    }
+    if(line_like("STORE LENGTH OF $string IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code(tokens[3]);
+        state.add_code("LENGTH");
+        state.add_code("TOAUX:"+tokens[5]);
         return;
     }
     
     error("Malformed statement on line " + to_string(line_num) + ".");
 }
 
-// while | if | modulo | subroutine declaration | subroutine-call | get-char | sys-exec
+//Cambiar que accept tire error a que guarde en el tipo de la variable y aclara cómo convierte todo.
+//Agregar EXIT
+//Agregar STORE LENGTH OF 
 
 //Check if the tokens of a line passed are like the ones of a model line
 bool line_like(string model_line, vector<string> tokens, compiler_state & state)
@@ -529,6 +1646,10 @@ bool line_like(string model_line, vector<string> tokens, compiler_state & state)
                 && tokens[i] != "CRLF")
                     return false;
             }
+        }
+        else if(model_tokens[i] == "$subprocedure") //$subprocedure is a SUB-PROCEDURE (?
+        {
+            if(!is_subprocedure(tokens[i], state)) return false;
         }
         else if(model_tokens[i] != tokens[i]) return false;
     }
@@ -579,5 +1700,12 @@ bool variable_exists(string & token, compiler_state & state)
 {
     for(pair<string, uint> & var : state.variables)
         if(var.first == token) return true;
+    return false;
+}
+
+bool is_subprocedure(string & token, compiler_state & state)
+{
+    for(string & var : state.subprocedures)
+        if(var == token) return true;
     return false;
 }
