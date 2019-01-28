@@ -346,8 +346,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code(tokens[3]);
         state.add_code(tokens[1]);
+        state.add_code(tokens[3]);
         state.add_code("/");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -357,8 +357,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
         state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
         state.add_code("/");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -368,9 +368,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code(tokens[3]);
         state.add_code("AUX:"+tokens[1]);
-        state.add_code("-");
+        state.add_code(tokens[3]);
+        state.add_code("/");
         state.add_code("TOAUX:" + tokens[5]);
         return;
     }
@@ -379,9 +379,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
         state.add_code("AUX:"+tokens[1]);
-        state.add_code("-");
+        state.add_code("AUX:"+tokens[3]);
+        state.add_code("/");
         state.add_code("TOAUX:" + tokens[5]);
         return;
     }
@@ -390,8 +390,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code(tokens[3]);
         state.add_code(tokens[1]);
+        state.add_code(tokens[3]);
         state.add_code("*");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -401,8 +401,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
         state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
         state.add_code("*");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -412,8 +412,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code(tokens[3]);
         state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[3]);
         state.add_code("*");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -423,8 +423,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
         state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
         state.add_code("*");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -434,8 +434,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code(tokens[3]);
         state.add_code(tokens[1]);
+        state.add_code(tokens[3]);
         state.add_code("%");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -445,8 +445,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
         state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
         state.add_code("%");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -456,8 +456,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code(tokens[3]);
         state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[3]);
         state.add_code("%");
         state.add_code("TOAUX:" + tokens[5]);
         return;
@@ -467,8 +467,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
         state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[3]);
         state.add_code("%");
         state.add_code("TOAUX:" + tokens[5]);
         return;
