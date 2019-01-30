@@ -49,10 +49,8 @@ void compile(vector<string> & lines)
         //TODO: pasar tokens que no sean strings a uppercase
         compile_line(tokens, line_num, state);
     }
-    for(string out : state.output_code){
-        cout << out << endl;
-    }
     //TODO: si llega acá y hay ifs sin cerrar o procedures sin cerrar, te comés puteada
+    nvm(state.output_code);
 }
 
 //Tokenizes a line
@@ -185,7 +183,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DISPLAY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        for(int i = 1; i < tokens.size(); ++i){
+        for(uint i = 1; i < tokens.size(); ++i){
             if(tokens[i] == "CRLF"){
                 state.add_code("\"\"");
                 state.add_code("PRINTLN");

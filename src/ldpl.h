@@ -4,6 +4,7 @@
 #include <vector>
 #include "cpptrim.h"
 #include <stack>
+#include "nvm.h"
 
 using namespace std;
 

@@ -22,7 +22,7 @@ void trim(std::string & line){
     
     //Right trim
     int last = 0;
-    for(int i = line.size()-1; i >= 0; --i){
+    for(uint i = line.size()-1; i >= 0; --i){
         if (!std::isspace(line[i])){
             last = i+1;
             break;
