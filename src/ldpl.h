@@ -28,6 +28,14 @@ struct compiler_state{
         if_stack.push(if_number);
         return if_number;
     }
+    int while_number = 0;
+    stack<int> while_stack;
+    int add_while(){
+        ++while_number;
+        while_stack.push(while_number);
+        while_stack.push(while_number);
+        return while_number;
+    }
 };
 
 void error(const string & msg);

@@ -1,3 +1,8 @@
+//TODO: Implementar vectores
+//Cambiar que accept en el standard tire error a que guarde en el tipo de la variable y aclara cómo convierte todo.
+//Agregar EXIT
+//Agregar STORE LENGTH OF 
+
 #include "ldpl.h"
 
 int main(int argc, const char* argv[])
@@ -1240,32 +1245,60 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         return;
     }
     
-    if(line_like("WHILE $number IS EQUAL TO $number DO", tokens, state))
+        if(line_like("WHILE $number IS EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $number IS EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1273,28 +1306,52 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $number IS NOT EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS NOT EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS NOT EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1302,28 +1359,56 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $number IS GREATER THAN $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS GREATER THAN $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS GREATER THAN $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code(">");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1331,28 +1416,56 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $number IS LESS THAN $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS LESS THAN $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS LESS THAN $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("<");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1360,28 +1473,56 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $number IS GREATER THAN OR EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS GREATER THAN OR EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS GREATER THAN OR EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code(">=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1389,28 +1530,56 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $number IS LESS THAN OR EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS LESS THAN OR EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $num-var IS LESS THAN OR EQUAL TO $num-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[8]);
+        state.add_code("<=");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1418,28 +1587,54 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $string IS EQUAL TO $str-var DO", tokens, state))
     {
-        if(state.section_state != 2)
-            error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $str-var IS EQUAL TO $string DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $str-var IS EQUAL TO $str-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[5]);
+        state.add_code("==");
+        state.add_code("NOT");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1447,28 +1642,52 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $string IS NOT EQUAL TO $str-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code(tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $str-var IS NOT EQUAL TO $string DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code(tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     if(line_like("WHILE $str-var IS NOT EQUAL TO $str-var DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; WHILE" << endl; //TODO
+        //NVM
+        int while_num = state.add_while();
+        state.add_code("@while" + to_string(while_num));
+        state.add_code("AUX:"+tokens[1]);
+        state.add_code("AUX:"+tokens[6]);
+        state.add_code("==");
+        state.add_code("IF:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1476,7 +1695,13 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("REPEAT outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; REPEAT" << endl; //TODO
+        if(state.while_stack.size() == 0)
+            error("REPEAT without WHILE on line " + to_string(line_num) + ".");
+        //NVM
+        int while_num = state.while_stack.top();
+        state.while_stack.pop();
+        state.add_code("JMP:while"+to_string(while_num));
+        state.add_code("@exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1484,7 +1709,11 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("BREAK outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; BREAK" << endl; //TODO
+        if(state.while_stack.size() == 0)
+            error("BREAK without WHILE on line " + to_string(line_num) + ".");
+        //NVM
+        int while_num = state.while_stack.top();
+        state.add_code("JMP:exit_loop"+to_string(while_num));
         return;
     }
     
@@ -1492,7 +1721,11 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     {
         if(state.section_state != 2)
             error("CONTINUE outside PROCEDURE section on line " + to_string(line_num) + ".");
-        cout << "; CONTINUE" << endl; //TODO
+        if(state.while_stack.size() == 0)
+            error("CONTINUE without WHILE on line " + to_string(line_num) + ".");
+        //NVM
+        int while_num = state.while_stack.top();
+        state.add_code("JMP:while"+to_string(while_num));
         return;
     }
     
@@ -1599,10 +1832,6 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
     
     error("Malformed statement on line " + to_string(line_num) + ".");
 }
-
-//Cambiar que accept tire error a que guarde en el tipo de la variable y aclara cómo convierte todo.
-//Agregar EXIT
-//Agregar STORE LENGTH OF 
 
 //Check if the tokens of a line passed are like the ones of a model line
 bool line_like(string model_line, vector<string> tokens, compiler_state & state)

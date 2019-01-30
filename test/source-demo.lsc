@@ -5,16 +5,14 @@ DATA:
     
 PROCEDURE:
     SUB-PROCEDURE DISANCOUNT
-        IF I IS LESS THAN OR EQUAL TO N THEN
-            MODULO I BY 2 IN REST
-            IF REST IS EQUAL TO 0 THEN
-                DISPLAY I " ES PAR!" CRLF
-            END IF
-        ELSE
-            EXIT
-        END IF
-        ADD I AND 1 IN I
-        CALL SUB-PROCEDURE DISANCOUNT
+        WHILE I IS LESS THAN OR EQUAL TO N DO
+            IF I IS LESS THAN OR EQUAL TO N THEN
+                MODULO I BY 2 IN REST
+                IF REST IS EQUAL TO 0 THEN
+                    DISPLAY I " ES PAR!" CRLF
+                END IF
+            ADD I AND 1 IN I
+        REPEAT
     END SUB-PROCEDURE
 
     DISPLAY "VAMOS A HACER UN DISAN COUNT" CRLF "HASTA QUÉ NÚMERO? "
