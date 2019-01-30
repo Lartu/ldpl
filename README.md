@@ -15,3 +15,7 @@ LDPL is standarized [here](https://ldpl.lartu.net). That's both the language doc
 ## How to use this compiler
 
 First, `make ldpl` in the `src` folder. Then write some LDPL source code, say `source.lsc`. Then compile and run said source code using `ldpl source.lsc`. Done!
+
+## License
+
+LDPL is distributed under the GNU General Public License 3.0.
