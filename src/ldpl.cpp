@@ -6,6 +6,15 @@ int main(int argc, const char* argv[])
 {
     //Get command line arguments as string vector
     vector<string> args(argv + 1, argv + argc);
+    if(args.size() == 1 && args[0] == "-v"){
+        cout << "This is " << "\033[35;1mLDPL " << STANDARD << " version " << VERSION << "\033[0m" << endl << endl;
+        cout << "Copyright 2018-2019, Martín del Río" << endl << endl;
+        cout << "Standard and documentation can be found on \033[36;1mldpl.lartu.net\033[0m." << endl;
+        cout << "Source code can be found at \033[36;1mhttps://github.com/lartu/ldpl\033[0m." << endl << endl;
+        cout << "LDPL may be copied only under the terms of the GNU General Public License 3.0." << endl <<endl;
+        cout << "Compiled on " << COMPILEDATE << endl;
+        return 0;
+    }
     //Fail if file was not passed
     if(args.size() == 0) error("Filename expected.");
     //For each file

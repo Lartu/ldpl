@@ -10,7 +10,7 @@ all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 	
 ldpl.o: ldpl.cpp
-	$(CC) $(FLAGS) ldpl.cpp -fpermissive
+	$(CC) $(FLAGS) ldpl.cpp -fpermissive -DVERSION='"1.0.0"' -DCOMPILEDATE='"$(shell date)"' -DSTANDARD=19
 	
 clean:
 	rm -f $(OBJS) $(OUT)
