@@ -1,7 +1,4 @@
 //TODO: Implementar vectores
-//Cambiar que accept en el standard tire error a que guarde en el tipo de la variable y aclara cómo convierte todo.
-//Agregar EXIT
-//Agregar STORE LENGTH OF 
 
 #include "ldpl.h"
 
@@ -208,8 +205,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("ACCEPT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("INPUT");
-        state.add_code("TO-NUM");
+        state.add_code("INPUT-NUM");
         state.add_code("TOAUX:"+tokens[1]);
         return;
     }
