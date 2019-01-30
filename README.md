@@ -14,7 +14,7 @@ LDPL is standarized [here](https://ldpl.lartu.net). That's both the language doc
 
 ## How to use this compiler
 
-First, `make` LDPL in the `src` folder. Then write some LDPL source code, say `source.lsc`. Then compile and run said source code using `ldpl source.lsc`. Done!
+First, download the latest release. Then `make` LDPL in the `src` folder. Then write some LDPL source code, say `source.lsc`. Then compile and run said source code using `ldpl source.lsc`. Done!
 
 ## License
 
