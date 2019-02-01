@@ -1,14 +1,14 @@
-import "stdlib.lsc"
+import "stdlib.lsc"                                         # Include standard librery
 
 data:
-    i is number
+    i is number                                             # $i = 0;
     
 procedure:
-    store "hello world" in explode/string
+    store "hello world" in explode/string                   # $explode_string = explode(" ", "hello world);
     store " " in explode/separator
     call sub-procedure explode
     
-    while i is less than or equal to explode/length do
-        display explode/words:i crlf
-        add i and 1 in i
-    repeat
+    while i is less than or equal to explode/length do      # while ($i < count($explode_string)) {
+        display explode/words:i crlf                        #   echo $explode_string[$i] . "\n";
+        add i and 1 in i                                    #   ++$i;
+    repeat                                                  # }
