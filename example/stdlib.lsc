@@ -1,0 +1,30 @@
+data:
+    explode/words is text vector
+    explode/index is number
+    explode/string is text
+    explode/length is number
+    explode/stringlength is number
+    explode/current-token is text
+    explode/char is text
+    explode/separator is text
+    
+procedure:
+    sub-procedure explode
+        join explode/string and explode/separator in explode/string
+        store length of explode/string in explode/stringlength
+        store 0 in explode/index
+        store 0 in explode/length
+        store "" in explode/current-token
+        while explode/index is less than explode/stringlength do
+            get character at explode/index from explode/string in explode/char
+            if explode/char is equal to explode/separator then
+                store explode/current-token in explode/words:explode/length
+                add explode/length and 1 in explode/length
+                store "" in explode/current-token
+            else
+                join explode/current-token and explode/char in explode/current-token
+            end if
+            add explode/index and 1 in explode/index
+        repeat
+        subtract 1 from explode/length in explode/length
+    end sub-procedure

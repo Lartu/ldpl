@@ -40,10 +40,11 @@ struct compiler_state{
         while_stack.push(while_number);
         return while_number;
     }
+    stack<string> working_dir;
 };
 
 void error(const string & msg);
-void compile(vector<string> & lines);
+void compile(vector<string> & lines, compiler_state & state);
 void tokenize(string & line, uint line_num, vector<string> & tokens);
 void split_vector(string & line, queue<string> & tokens);
 void compile_line(vector<string> & tokens, uint line_num, compiler_state & state);
@@ -59,3 +60,4 @@ bool is_subprocedure(string & token, compiler_state & state);
 void get_var_value(compiler_state & state, string & variable);
 void set_var_value(compiler_state & state, string & variable);
 void capitalize_tokens(vector<string> & tokens);
+void load_and_compile(string & filename, compiler_state & state);

@@ -33,16 +33,31 @@ int main(int argc, const char* argv[])
     {
         //If it's an argument
         if(filename[0] == '-') continue;
-        //Load file
-        ifstream file(filename);
-        //Fail if the file couldn't be loaded
-        if(!file.is_open()) error("The file couldn't be opened.");
-        //Get file contents
-        vector<string> lines;
-        string line = "";
-        while(getline(file, line)) lines.push_back(line);
-        compile(lines);
+        compiler_state state; //Compiler state (holds variables, sections, functions, etc)
+//         string directory;
+//         const size_t last_slash_idx = filename.rfind('/');
+//         if (std::string::npos != last_slash_idx)
+//         {
+//             directory = filename.substr(0, last_slash_idx) + "/";
+//         }
+//         state.working_dir.push(directory);
+//         filename = filename.substr(last_slash_idx + 1, filename.size()-last_slash_idx-1);
+        load_and_compile(filename, state);
+        nvm(state.output_code);
     }
+}
+
+void load_and_compile(string & filename, compiler_state & state)
+{
+    //Load file
+    ifstream file(/*state.working_dir.top() +*/ filename);
+    //Fail if the file couldn't be loaded
+    if(!file.is_open()) error("The file '" + filename + "' couldn't be opened.");
+    //Get file contents
+    vector<string> lines;
+    string line = "";
+    while(getline(file, line)) lines.push_back(line);
+    compile(lines, state);
 }
 
 //Shows error message and exits
@@ -55,10 +70,8 @@ void error(const string & msg)
 }
 
 //Compilation process
-void compile(vector<string> & lines)
+void compile(vector<string> & lines, compiler_state & state)
 {
-    //Compiler state (holds variables, sections, functions, etc)
-    compiler_state state;
     //For each line in the source code
     for(uint line_num = 0; line_num < lines.size(); ++line_num)
     {
@@ -74,7 +87,6 @@ void compile(vector<string> & lines)
     }
     if(show_ir) for(string line : state.output_code) cout << line << endl;
     //TODO: si llega acá y hay ifs sin cerrar o procedures sin cerrar, te comés puteada
-    nvm(state.output_code);
 }
 
 //Tokenizes a line
@@ -152,6 +164,15 @@ void capitalize_tokens(vector<string> & tokens)
 void compile_line(vector<string> & tokens, uint line_num, compiler_state & state)
 {
     ++line_num;
+    if(line_like("IMPORT $string", tokens, state))
+    {
+        if(state.section_state != 0)
+            error("IMPORTs should be declared BEFORE any other section (line " + to_string(line_num) + ").");
+        string filename = tokens[1].substr(1, tokens[1].size()-2);
+        load_and_compile(filename, state);
+        state.section_state = 0;
+        return;
+    }
     if(line_like("DATA:", tokens, state))
     {
         if(state.section_state == 1)
