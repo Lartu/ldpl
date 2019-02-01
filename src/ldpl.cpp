@@ -67,6 +67,7 @@ void compile(vector<string> & lines)
         //Split line in various tokens
         vector<string> tokens;
         tokenize(line, line_num, tokens);
+        capitalize_tokens(tokens);
         if(tokens.size() == 0) continue;
         //TODO: pasar tokens que no sean strings a uppercase
         compile_line(tokens, line_num, state);
@@ -130,6 +131,20 @@ void tokenize(string & line, uint line_num, vector<string> & tokens)
             if(current_token.size() > 0)
                     tokens.push_back(current_token);
         }
+    }
+}
+
+//Tokens to upper case
+void capitalize_tokens(vector<string> & tokens)
+{
+    for(string & token : tokens)
+    {
+            if(!is_number(token) && !is_string(token))
+            {
+                for(char & l : token){
+                    l = toupper(l);
+                }
+            }
     }
 }
 

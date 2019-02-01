@@ -2,10 +2,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "cpptrim.h"
 #include <stack>
-#include "nvm.h"
 #include <queue>
+#include <locale>
+#include "nvm.h"
+#include "cpptrim.h"
 
 using namespace std;
 
@@ -57,3 +58,4 @@ bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
 void get_var_value(compiler_state & state, string & variable);
 void set_var_value(compiler_state & state, string & variable);
+void capitalize_tokens(vector<string> & tokens);
