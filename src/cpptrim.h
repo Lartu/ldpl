@@ -13,7 +13,7 @@ void trim(std::string & line){
     
     //Left trim
     int first = 0;
-    for(int i = 0; i < line.size(); ++i){
+    for(unsigned int i = 0; i < line.size(); ++i){
         if (!std::isspace(line[i])){
             first = i;
             break;
@@ -22,9 +22,15 @@ void trim(std::string & line){
     
     //Right trim
     int last = 0;
-    for(uint i = line.size()-1; i >= 0; --i){
+    for(unsigned int i = line.size()-1; i >= 0; --i){
         if (!std::isspace(line[i])){
             last = i+1;
+            break;
+        }
+        //--i will break with unsigned int when reaching 0, so we check
+        //if i == 0 and, if it is and it's not a space, we break
+        if(i == 0){
+            last = 0;
             break;
         }
     }

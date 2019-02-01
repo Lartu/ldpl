@@ -487,10 +487,12 @@ void execute(vector<string> & lines)
             string aux_name = token.substr(4);
             //Not optimal
             if(aux_map.count(aux_name) == 0){
-                cerr << "\033[1;31mError: Undeclared auxiliar: \033[1;37m";
-                cerr << aux_name;
-                cerr << "\033[0m" << endl;
-                exit(1);
+//                 cerr << "\033[1;31mError: Undeclared auxiliar: \033[1;37m";
+//                 cerr << aux_name;
+//                 cerr << "\033[0m" << endl;
+//                 exit(1);
+                alfanum c(0);
+                vm_stack.push(c);
             }else{
                 vm_stack.push(aux_map.at(aux_name));
             }
@@ -707,10 +709,8 @@ void execute(vector<string> & lines)
             vm_stack.pop();
             //Not optimal
             if(aux_map.count(aux_name) == 0){
-                cerr << "\033[1;31mError: Undeclared auxiliar: \033[1;37m";
-                cerr << aux_name;
-                cerr << "\033[0m" << endl;
-                exit(1);
+                alfanum c(0);
+                vm_stack.push(c);
             }else{
                 vm_stack.push(aux_map.at(aux_name));
             }

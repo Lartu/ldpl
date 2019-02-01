@@ -2,6 +2,9 @@
 
 #include "ldpl.h"
 
+//Show internal representation
+bool show_ir = false;
+
 int main(int argc, const char* argv[])
 {
     //Get command line arguments as string vector
@@ -15,11 +18,21 @@ int main(int argc, const char* argv[])
         cout << "Compiled on " << COMPILEDATE << endl;
         return 0;
     }
+    //Check arguments
+    if(args.size() > 1){
+        for(string arg : args){
+            if(arg == "-r"){
+                show_ir = true;
+            }
+        }
+    }
     //Fail if file was not passed
     if(args.size() == 0) error("Filename expected.");
     //For each file
     for(string & filename : args)
     {
+        //If it's an argument
+        if(filename[0] == '-') continue;
         //Load file
         ifstream file(filename);
         //Fail if the file couldn't be loaded
@@ -58,6 +71,7 @@ void compile(vector<string> & lines)
         //TODO: pasar tokens que no sean strings a uppercase
         compile_line(tokens, line_num, state);
     }
+    if(show_ir) for(string line : state.output_code) cout << line << endl;
     //TODO: si llega acá y hay ifs sin cerrar o procedures sin cerrar, te comés puteada
     nvm(state.output_code);
 }
@@ -149,7 +163,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
         //NVM
         state.add_code("0");
-        state.add_code("TOAUX:" + tokens[0]);
+        set_var_value(state, tokens[0]);
         return;
     }
     if(line_like("$name IS TEXT", tokens, state))
@@ -162,29 +176,29 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
         //NVM
         state.add_code("\"\"");
-        state.add_code("TOAUX:" + tokens[0]);
+        set_var_value(state, tokens[0]);
         return;
     }
     if(line_like("$name IS NUMBER VECTOR", tokens, state))
     {
         if(state.section_state != 1)
             error("Variable declaration outside DATA section on line " + to_string(line_num) + ".");
-        if(!variable_exists(tokens[0], state))
+        if(!variable_exists(tokens[0], state)){
             state.variables.push_back(make_pair(tokens[0], 3));
+        }
         else
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
-        //TODO
         return;
     }
     if(line_like("$name IS TEXT VECTOR", tokens, state))
     {
         if(state.section_state != 1)
             error("Variable declaration outside DATA section on line " + to_string(line_num) + ".");
-        if(!variable_exists(tokens[0], state))
+        if(!variable_exists(tokens[0], state)){
             state.variables.push_back(make_pair(tokens[0], 4));
+        }
         else
             error("Duplicate declaration for variable " + tokens[0] + " on line " + to_string(line_num) + ".");
-        //TODO
         return;
     }
     if(line_like("DISPLAY $display", tokens, state))
@@ -197,7 +211,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
                 state.add_code("\"\"");
                 state.add_code("PRINTLN");
             }else if(is_variable(tokens[i], state)){
-                state.add_code("AUX:"+tokens[i]);
+                get_var_value(state, tokens[i]);
                 state.add_code("PRINT");
             }
             else{
@@ -231,7 +245,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code("AUX:" + tokens[1]);
-        state.add_code("TOAUX:" + tokens[3]);
+        set_var_value(state, tokens[3]);
         return;
     }
     if(line_like("STORE $number IN $num-var", tokens, state))
@@ -240,7 +254,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("TOAUX:" + tokens[3]);
+        set_var_value(state, tokens[3]);
         return;
     }
     if(line_like("STORE $str-var IN $str-var", tokens, state))
@@ -249,7 +263,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code("AUX:" + tokens[1]);
-        state.add_code("TOAUX:" + tokens[3]);
+        set_var_value(state, tokens[3]);
         return;
     }
     if(line_like("STORE $string IN $str-var", tokens, state))
@@ -258,7 +272,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("STORE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("TOAUX:" + tokens[3]);
+        set_var_value(state, tokens[3]);
         return;
     }
     if(line_like("ADD $number AND $number IN $num-var", tokens, state))
@@ -269,7 +283,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         state.add_code(tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("+");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("ADD $number AND $num-var IN $num-var", tokens, state))
@@ -278,9 +292,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("ADD statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("+");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("ADD $num-var AND $number IN $num-var", tokens, state))
@@ -288,10 +302,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("ADD statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("+");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("ADD $num-var AND $num-var IN $num-var", tokens, state))
@@ -299,10 +313,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("ADD statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[3]);
         state.add_code("+");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $number FROM $number IN $num-var", tokens, state))
@@ -313,7 +327,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         state.add_code(tokens[3]);
         state.add_code(tokens[1]);
         state.add_code("-");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $number FROM $num-var IN $num-var", tokens, state))
@@ -321,10 +335,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("SUBTRACT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code(tokens[1]);
         state.add_code("-");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $num-var FROM $number IN $num-var", tokens, state))
@@ -333,9 +347,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("SUBTRACT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[3]);
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("-");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("SUBTRACT $num-var FROM $num-var IN $num-var", tokens, state))
@@ -343,10 +357,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("SUBTRACT statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[3]);
+        get_var_value(state, tokens[1]);
         state.add_code("-");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("DIVIDE $number BY $number IN $num-var", tokens, state))
@@ -357,7 +371,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         state.add_code(tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("/");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("DIVIDE $number BY $num-var IN $num-var", tokens, state))
@@ -366,9 +380,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("/");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("DIVIDE $num-var BY $number IN $num-var", tokens, state))
@@ -376,10 +390,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("/");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("DIVIDE $num-var BY $num-var IN $num-var", tokens, state))
@@ -387,10 +401,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[3]);
         state.add_code("/");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("MULTIPLY $number BY $number IN $num-var", tokens, state))
@@ -401,7 +415,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         state.add_code(tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("*");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]); 
         return;
     }
     if(line_like("MULTIPLY $number BY $num-var IN $num-var", tokens, state))
@@ -410,9 +424,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("*");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("MULTIPLY $num-var BY $number IN $num-var", tokens, state))
@@ -420,10 +434,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("*");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("MULTIPLY $num-var BY $num-var IN $num-var", tokens, state))
@@ -431,10 +445,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[3]);
         state.add_code("*");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("MODULO $number BY $number IN $num-var", tokens, state))
@@ -445,7 +459,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         state.add_code(tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("%");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("MODULO $number BY $num-var IN $num-var", tokens, state))
@@ -454,9 +468,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("%");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("MODULO $num-var BY $number IN $num-var", tokens, state))
@@ -464,10 +478,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("%");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("MODULO $num-var BY $num-var IN $num-var", tokens, state))
@@ -475,10 +489,10 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[3]);
         state.add_code("%");
-        state.add_code("TOAUX:" + tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("ABS $num-var", tokens, state))
@@ -486,7 +500,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("ABS statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("ABS");
         state.add_code("TOAUX:"+tokens[1]);
         return;
@@ -520,7 +534,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
@@ -532,7 +546,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
         return;
@@ -570,7 +584,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         state.add_code(tokens[1]);
         state.add_code("TO-STR");
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
@@ -583,7 +597,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         state.add_code(tokens[1]);
         state.add_code("TO-STR");
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
         return;
@@ -594,7 +608,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
@@ -605,7 +619,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
@@ -617,8 +631,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
@@ -629,8 +643,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[3]);
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
         return;
@@ -641,7 +655,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("TO-STR");
         state.add_code(tokens[3]);
         state.add_code("JOIN");
@@ -653,7 +667,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("TO-STR");
         state.add_code(tokens[3]);
         state.add_code("TO-STR");
@@ -666,9 +680,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("TO-STR");
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
@@ -679,9 +693,9 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("TO-STR");
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("JOIN");
         state.add_code("TOAUX:"+tokens[5]);
         return;
@@ -691,8 +705,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("GET CHARACTER statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[3]);
+        get_var_value(state, tokens[5]);
         state.add_code("CHARAT");
         state.add_code("TOAUX:"+tokens[7]);
         return;
@@ -703,7 +717,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
             error("GET CHARACTER statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
         state.add_code(tokens[3]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code("CHARAT");
         state.add_code("TOAUX:"+tokens[7]);
         return;
@@ -713,7 +727,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("GET CHARACTER statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code(tokens[5]);
         state.add_code("CHARAT");
         state.add_code("TOAUX:"+tokens[7]);
@@ -793,7 +807,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -806,7 +820,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
@@ -820,8 +834,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -849,7 +863,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:else"+to_string(if_num));
         return;
@@ -861,7 +875,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[6]);
         state.add_code("==");
         state.add_code("IF:else"+to_string(if_num));
@@ -874,8 +888,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:else"+to_string(if_num));
         return;
@@ -903,7 +917,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code(">");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -916,7 +930,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code(">");
         state.add_code("NOT");
@@ -930,8 +944,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code(">");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -960,7 +974,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code("<");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -973,7 +987,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code("<");
         state.add_code("NOT");
@@ -987,8 +1001,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code("<");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -1017,7 +1031,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[8]);
         state.add_code(">=");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -1030,7 +1044,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[8]);
         state.add_code(">=");
         state.add_code("NOT");
@@ -1044,8 +1058,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[8]);
         state.add_code(">=");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -1074,7 +1088,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[8]);
         state.add_code("<=");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -1087,7 +1101,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[8]);
         state.add_code("<=");
         state.add_code("NOT");
@@ -1101,8 +1115,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[8]);
         state.add_code("<=");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -1129,7 +1143,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -1142,7 +1156,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
@@ -1156,8 +1170,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:else"+to_string(if_num));
@@ -1185,7 +1199,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:else"+to_string(if_num));
         return;
@@ -1197,7 +1211,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[6]);
         state.add_code("==");
         state.add_code("IF:else"+to_string(if_num));
@@ -1210,8 +1224,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int if_num = state.add_if();
         state.add_code("@if" + to_string(if_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:else"+to_string(if_num));
         return;
@@ -1270,7 +1284,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1283,7 +1297,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
@@ -1297,8 +1311,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1326,7 +1340,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:exit_loop"+to_string(while_num));
         return;
@@ -1338,7 +1352,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[6]);
         state.add_code("==");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1351,8 +1365,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:exit_loop"+to_string(while_num));
         return;
@@ -1380,7 +1394,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code(">");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1393,7 +1407,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code(">");
         state.add_code("NOT");
@@ -1407,8 +1421,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code(">");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1437,7 +1451,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code("<");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1450,7 +1464,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code("<");
         state.add_code("NOT");
@@ -1464,8 +1478,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code("<");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1494,7 +1508,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[8]);
         state.add_code(">=");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1507,7 +1521,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[8]);
         state.add_code(">=");
         state.add_code("NOT");
@@ -1521,8 +1535,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[8]);
         state.add_code(">=");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1551,7 +1565,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[8]);
         state.add_code("<=");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1564,7 +1578,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[8]);
         state.add_code("<=");
         state.add_code("NOT");
@@ -1578,8 +1592,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[8]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[8]);
         state.add_code("<=");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1606,7 +1620,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1619,7 +1633,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
@@ -1633,8 +1647,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[5]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[5]);
         state.add_code("==");
         state.add_code("NOT");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1662,7 +1676,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
         state.add_code(tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:exit_loop"+to_string(while_num));
         return;
@@ -1674,7 +1688,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code(tokens[6]);
         state.add_code("==");
         state.add_code("IF:exit_loop"+to_string(while_num));
@@ -1687,8 +1701,8 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         //NVM
         int while_num = state.add_while();
         state.add_code("@while" + to_string(while_num));
-        state.add_code("AUX:"+tokens[1]);
-        state.add_code("AUX:"+tokens[6]);
+        get_var_value(state, tokens[1]);
+        get_var_value(state, tokens[6]);
         state.add_code("==");
         state.add_code("IF:exit_loop"+to_string(while_num));
         return;
@@ -1759,7 +1773,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("SYS-EXEC");
         state.add_code("POP");
         return;
@@ -1779,7 +1793,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("SYS-EXEC-OUT");
         state.add_code("TOAUX:"+tokens[6]);
         return;
@@ -1799,7 +1813,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[1]);
+        get_var_value(state, tokens[1]);
         state.add_code("SYS-EXEC");
         state.add_code("TOAUX:"+tokens[7]);
         return;
@@ -1817,7 +1831,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("AUX:"+tokens[3]);
+        get_var_value(state, tokens[3]);
         state.add_code("LENGTH");
         state.add_code("TOAUX:"+tokens[5]);
         return;
@@ -1869,6 +1883,10 @@ bool line_like(string model_line, vector<string> tokens, compiler_state & state)
         {
             if(!is_number(tokens[i])) return false;
         }
+        else if(model_tokens[i] == "$natural") //$natural is an integer greater than 0
+        {
+            if(!is_natural(tokens[i])) return false;
+        }
         else if(model_tokens[i] == "$display") //multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF
         {
             for(; i < tokens.size(); ++i){
@@ -1899,29 +1917,136 @@ bool is_number(string number){
   return true;
 }
 
+bool is_natural(string number){
+    if(!is_number(number)) return false;
+    if(stod(number) <= 0) return false;
+    for(char l : number)
+        if(l == '.') return false;
+    return true;
+}
+
 bool is_string(string & token){
     return (token.size() >= 2 && token[0] == '"' && token[token.size()-1] == '"');
 }
 
-bool is_num_var(string & token, compiler_state & state)
+bool is_num_vector(string & token, compiler_state & state)
 {
     for(pair<string, uint> & var : state.variables)
-        if(var.first == token && var.second == 1) return true;
+        if(var.first == token && var.second == 3) return true;
     return false;
+}
+
+bool is_txt_vector(string & token, compiler_state & state)
+{
+    for(pair<string, uint> & var : state.variables)
+        if(var.first == token && var.second == 4) return true;
+    return false;
+}
+
+bool is_vector(string & token, compiler_state & state)
+{
+    return is_num_vector(token, state) || is_txt_vector(token, state);
+}
+
+bool is_vector_index(queue<string> & token, compiler_state & state)
+{
+    string current_token = token.front();
+    token.pop();
+    if(token.size() > 1){
+        if(!is_vector(current_token, state)) return false;
+        return is_vector_index(token, state);
+    }
+    else if(token.size() == 1){
+        if(!is_vector(current_token, state)) return false;
+        if(!is_num_var(token.front(), state) && !is_number(token.front()) && !is_string(token.front())) return false;
+        return true;
+    }
+    return false;
+}
+
+bool is_num_var(string & token, compiler_state & state)
+{
+    //Veo si var
+    for(pair<string, uint> & var : state.variables)
+        if(var.first == token && var.second == 1) return true;
+    //Veo si num_vector index
+    queue<string> vpart;
+    split_vector(token, vpart);
+    return is_num_vector(vpart.front(), state) && is_vector_index(vpart, state);
 }
 
 bool is_txt_var(string & token, compiler_state & state)
 {
     for(pair<string, uint> & var : state.variables)
         if(var.first == token && var.second == 2) return true;
-    return false;
+    //Veo si num_vector index
+    queue<string> vpart;
+    split_vector(token, vpart);
+    return is_txt_vector(vpart.front(), state) && is_vector_index(vpart, state);
 }
 
 bool is_variable(string & token, compiler_state & state)
 {
-    //TODO agregar que vector:1 también sea una variable
-    //(Debería estar en is_num_var e is_txt_var)
     return is_num_var(token, state) || is_txt_var(token, state);
+}
+
+void split_vector(string & line, queue<string> & tokens)
+{
+    bool in_string = false;
+    string current_token = "";
+    //For each letter in the line
+    for(uint i = 0; i < line.size(); ++i)
+    {
+        char letter = line[i];
+        if(letter == ':')
+        {
+            if(in_string) current_token += letter;
+            else
+            {
+                if(current_token.size() > 0)
+                    tokens.push(current_token);
+                current_token = "";
+            }
+        }
+        else if(letter == '"')
+        {
+            in_string = !in_string;
+            current_token += letter;
+        }
+        else if(letter == '\\')
+        {
+            if(i < line.size() - 1)
+            {
+                char next_letter = line[++i];
+                if(next_letter == '\\' || next_letter == '"') current_token += next_letter;
+                else error("unknown escape sequence on a VECTOR access.");
+            }
+            else error("\\ found alone on a VECTOR access.");
+        }
+        else if(letter == '#') //Comment character
+        {
+            if(in_string) current_token += letter;
+            else
+            {
+                if(current_token.size() > 0)
+                    tokens.push(current_token);
+                return;
+            }
+        }
+        else
+        {
+            current_token += letter;
+        }
+        if(i == line.size() - 1){
+            if(letter != ':')
+            {
+                if(in_string) error("Unterminated string on a VECTOR access.");
+                if(current_token.size() > 0)
+                        tokens.push(current_token);
+            }
+            else error("Incomplete VECTOR access found (can't end on ':'!).");
+        }
+    }
 }
 
 /*La diferencia entre is_variable y variable_exists es que is_variable
@@ -1941,3 +2066,73 @@ bool is_subprocedure(string & token, compiler_state & state)
         if(var == token) return true;
     return false;
 }
+
+void get_var_value(compiler_state & state, string & variable)
+{
+    queue<string> vpart;
+    split_vector(variable, vpart);
+    if(vpart.size() == 1){
+        state.add_code("AUX:"+variable);
+        return;
+    }
+    stack<string> token;
+    while(!vpart.empty())
+    {
+        token.push(vpart.front());
+        vpart.pop();
+    }
+    //Last element of vector access:
+    string t = token.top();
+    token.pop();
+    if(is_number(t) || is_string(t)) state.add_code(t);
+    else state.add_code("AUX:" + t);
+    
+    while(!token.empty())
+    {
+        t = token.top();
+        token.pop();
+        state.add_code("\"" + t + ":\"");
+        state.add_code("SWAP");
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        state.add_code("AUX-POP");
+    }
+}
+
+void set_var_value(compiler_state & state, string & variable)
+{
+    queue<string> vpart;
+    split_vector(variable, vpart);
+    if(vpart.size() == 1){
+        state.add_code("TOAUX:"+variable);
+        return;
+    }
+    stack<string> token;
+    while(!vpart.empty())
+    {
+        token.push(vpart.front());
+        vpart.pop();
+    }
+    //Last element of vector access:
+    string t = token.top();
+    token.pop();
+    if(is_number(t) || is_string(t)) state.add_code(t);
+    else state.add_code("AUX:" + t);
+    
+    while(!token.empty())
+    {
+        t = token.top();
+        token.pop();
+        state.add_code("\"" + t + ":\"");
+        state.add_code("SWAP");
+        state.add_code("TO-STR");
+        state.add_code("JOIN");
+        if(!token.empty())
+            state.add_code("AUX-POP");
+        else{
+            state.add_code("SWAP");
+            state.add_code("TOAUX-POP");
+        }
+    }
+}
+
