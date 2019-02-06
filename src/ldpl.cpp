@@ -1,4 +1,5 @@
-//TODO: Implementar vectores
+//TODO: No anda el while anidado (el return del while exterior vuelve al ùltimo while 
+interior). Probablemente los ifs anidados tampoco anden a raiz de esto.
 
 #include "ldpl.h"
 
@@ -1900,6 +1901,18 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         get_var_value(state, tokens[1]);
         state.add_code("FLOOR");
         state.add_code("TOAUX:"+tokens[1]);
+        return;
+    }
+    if(line_like("SHOW NVM STACK", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("SHOW NVM STACK statement outside PROCEDURE section on line " + 
+to_string(line_num) 
++ ".");
+        //NVM
+        state.add_code("DEBUG");
+        state.add_code("PRINT-STACK");
+        state.add_code("DEBUG");
         return;
     }
     
