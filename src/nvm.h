@@ -11,6 +11,7 @@
 #include <cmath>
 #include <map>
 #include <cstdlib>
+#include <random>
 #include "cpptrim.h"
 
 //Cosas del include de mega
@@ -595,6 +596,14 @@ void execute(vector<string> & lines)
             alfanum c(abs(a.num_value()));
             vm_stack.push(c);
         }
+        // - Round number -
+        else if(token == "FLOOR"){
+			check_stack_size(1);
+            alfanum a = vm_stack.top();
+            vm_stack.pop();
+            alfanum c(floor(a.num_value()));
+            vm_stack.push(c);
+        }
         // - Pop jump-
         else if(token == "JMP-POP"){
 			check_stack_size(1);
@@ -715,6 +724,13 @@ void execute(vector<string> & lines)
                 vm_stack.push(aux_map.at(aux_name));
             }
         }
+	//Random number
+	else if(token == "RANDOM"){
+		long double r = rand() * NVM_FLOAT_EPSILON;
+		r = r - (int) r;
+		alfanum c(r);
+		vm_stack.push(c);
+	}
         // - Error -
         else{
             cerr << "\033[1;31mError: Unexpected command: \033[1;37m";
@@ -726,6 +742,8 @@ void execute(vector<string> & lines)
 }
 
 void nvm (vector<string> & lines){
+    // - Seed RNG -
+    srand(time(NULL));
     // - Set cout precision -
     cout.precision(numeric_limits<long double>::digits10);
     // - Stilize obtained lines -

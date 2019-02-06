@@ -1882,6 +1882,26 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         state.add_code("TOAUX:"+tokens[5]);
         return;
     }
+    if(line_like("STORE RANDOM IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("RANDOM outside PROCEDURE section on line " + to_string(line_num) + ".");
+        //NVM
+        state.add_code("RANDOM");
+        state.add_code("TOAUX:"+tokens[3]);
+        return;
+    }
+    if(line_like("FLOOR $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("FLOOR statement outside PROCEDURE section on line " + to_string(line_num) 
++ ".");
+        //NVM
+        get_var_value(state, tokens[1]);
+        state.add_code("FLOOR");
+        state.add_code("TOAUX:"+tokens[1]);
+        return;
+    }
     
     error("Malformed statement on line " + to_string(line_num) + ".");
 }
