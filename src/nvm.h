@@ -227,6 +227,7 @@ void execute(vector<string> & lines)
         else if(token == "PRINT"){
             check_stack_size(1);
             vm_stack.top().print();
+            cout << flush;
             vm_stack.pop();
         }
         // - Print top of stack -
@@ -731,6 +732,10 @@ void execute(vector<string> & lines)
 		alfanum c(r);
 		vm_stack.push(c);
 	}
+        // - Discard top of stack -
+        else if(token == "BEEP"){
+          system("beep");
+        }
         // - Error -
         else{
             cerr << "\033[1;31mError: Unexpected command: \033[1;37m";

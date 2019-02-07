@@ -1903,16 +1903,12 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         state.add_code("TOAUX:"+tokens[1]);
         return;
     }
-    if(line_like("SHOW NVM STACK", tokens, state))
+    if(line_like("BEEP", tokens, state))
     {
         if(state.section_state != 2)
-            error("SHOW NVM STACK statement outside PROCEDURE section on line " + 
-to_string(line_num) 
-+ ".");
+            error("BEEP statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        state.add_code("DEBUG");
-        state.add_code("PRINT-STACK");
-        state.add_code("DEBUG");
+        state.add_code("BEEP");
         return;
     }
     
