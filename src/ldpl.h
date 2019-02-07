@@ -37,7 +37,6 @@ struct compiler_state{
     int add_while(){
         ++while_number;
         while_stack.push(while_number);
-        while_stack.push(while_number);
         return while_number;
     }
     stack<string> working_dir;

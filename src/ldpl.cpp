@@ -1,5 +1,5 @@
 //TODO: No anda el while anidado (el return del while exterior vuelve al ùltimo while 
-interior). Probablemente los ifs anidados tampoco anden a raiz de esto.
+//interior). Probablemente los ifs anidados tampoco anden a raiz de esto.
 
 #include "ldpl.h"
 
