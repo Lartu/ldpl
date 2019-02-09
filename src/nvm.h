@@ -15,10 +15,10 @@
 #include "cpptrim.h"
 
 //Cosas del include de mega
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
-#include <string.h>
+#include <string.h>*/
 
 //Para exec incluyo esto también
 #include <cstdio>
@@ -33,7 +33,7 @@ using namespace std;
 
 bool debug = false;
 
-map<string, void*> libraries;
+//map<string, void*> libraries;
 
 class alfanum{
 private:
@@ -665,7 +665,7 @@ void execute(vector<string> & lines)
             unsigned long int tag_line = vm_stack.top().num_value();
             i = tag_line - 1;
         }
-        // - Load Lib - //TODO revisar esto porque lo hice a ciegas
+        /*// - Load Lib - //TODO revisar esto porque lo hice a ciegas
         else if(token == "LOADLIB"){
 			check_stack_size(1);
 			string libname = vm_stack.top().txt_value();
@@ -697,7 +697,7 @@ void execute(vector<string> & lines)
 			if(!lib_fun)
 				panic(dlerror());
 			lib_fun();
-		}
+		}*/
 		// - Store Auxiliar Value POP -
         else if(token == "TOAUX-POP"){
             check_stack_size(2);

@@ -17,7 +17,7 @@ jamón-receta is number
 pepino-receta is number
 precios-ingredientes is number vector
 cantidades-ingredientes is number vector
-error is text             # Mensaje de error
+error is text    # Mensaje de error
 precio-sánguche is number
 chances-ubicacion is number vector
 hora is number
@@ -33,13 +33,13 @@ display "**********************" crlf crlf
 # Pido nombre del jugador
 store 0 in n-temp
 while n-temp is equal to 0 do
-  display "¿Cuál es tu nombre?: "
-  accept player-name
-  store length of player-name in n-temp
-  if n-temp is greater than 0 then
-    break
-  end if
-  display "¡Ey! ¡Ingresa tu nombre!" crlf crlf
+    display "¿Cuál es tu nombre?: "
+    accept player-name
+    store length of player-name in n-temp
+    if n-temp is greater than 0 then
+        break
+    end if
+    display "¡Ey! ¡Ingresa tu nombre!" crlf crlf
 repeat
 
 # Le doy la introducción
@@ -61,9 +61,9 @@ store 2 in precio-sánguche
 
 #Sub que muestra los ingredientes del jugador
 SUB-PROCEDURE ingredientes
-  display "Stock de ingredientes:" crlf
-  display "| Panes: " pan " · Jamón: " jamón crlf 
-  display "| Queso: " queso " · Pepino: " pepino crlf crlf
+    display "Stock de ingredientes:" crlf
+    display "| Panes: " pan " · Jamón: " jamón crlf 
+    display "| Queso: " queso " · Pepino: " pepino crlf crlf
 END SUB-PROCEDURE
 
 # Sub que muestra un error en pantalla
@@ -182,7 +182,7 @@ while 1 is equal to 1 do
           subtract precios-ingredientes:comando from dinero in dinero
           # Guardo en comando el ingrediente a comprar (0 pan, 1 queso, 2 jamón, 3 pepino)
           # Guardo en n-temp el subíndice de la cantidad a comprar
-	  subtract 1 from comando in n-temp
+      subtract 1 from comando in n-temp
           modulo n-temp by 3 in n-temp
           divide comando by 3 in comando
           floor comando

@@ -74,7 +74,7 @@ void error(const string & msg)
 void compile(vector<string> & lines, compiler_state & state)
 {
     //For each line in the source code
-    for(uint line_num = 0; line_num < lines.size(); ++line_num)
+    for(unsigned int line_num = 0; line_num < lines.size(); ++line_num)
     {
         string & line = lines[line_num];
         trim(line);
@@ -91,12 +91,12 @@ void compile(vector<string> & lines, compiler_state & state)
 }
 
 //Tokenizes a line
-void tokenize(string & line, uint line_num, vector<string> & tokens)
+void tokenize(string & line, unsigned int line_num, vector<string> & tokens)
 {
     bool in_string = false;
     string current_token = "";
     //For each letter in the line
-    for(uint i = 0; i < line.size(); ++i)
+    for(unsigned int i = 0; i < line.size(); ++i)
     {
         char letter = line[i];
         if(letter == ' ')
@@ -162,7 +162,7 @@ void capitalize_tokens(vector<string> & tokens)
 }
 
 //Compiles line per line
-void compile_line(vector<string> & tokens, uint line_num, compiler_state & state)
+void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state)
 {
     ++line_num;
     if(line_like("IMPORT $string", tokens, state))
@@ -243,7 +243,7 @@ void compile_line(vector<string> & tokens, uint line_num, compiler_state & state
         if(state.section_state != 2)
             error("DISPLAY statement outside PROCEDURE section on line " + to_string(line_num) + ".");
         //NVM
-        for(uint i = 1; i < tokens.size(); ++i){
+        for(unsigned int i = 1; i < tokens.size(); ++i){
             if(tokens[i] == "CRLF"){
                 state.add_code("\"\"");
                 state.add_code("PRINTLN");
@@ -1923,7 +1923,7 @@ bool line_like(string model_line, vector<string> tokens, compiler_state & state)
     tokenize(model_line, 0, model_tokens);
     //Check that tokens match between line and model line
     if(tokens.size() < model_tokens.size()) return false;
-    uint i = 0;
+    unsigned int i = 0;
     for(; i < model_tokens.size(); ++i)
     {
         if(model_tokens[i] == "$name") //$name is any word that is not a string or a number
@@ -1996,14 +1996,14 @@ bool is_string(string & token){
 
 bool is_num_vector(string & token, compiler_state & state)
 {
-    for(pair<string, uint> & var : state.variables)
+    for(pair<string, unsigned int> & var : state.variables)
         if(var.first == token && var.second == 3) return true;
     return false;
 }
 
 bool is_txt_vector(string & token, compiler_state & state)
 {
-    for(pair<string, uint> & var : state.variables)
+    for(pair<string, unsigned int> & var : state.variables)
         if(var.first == token && var.second == 4) return true;
     return false;
 }
@@ -2032,7 +2032,7 @@ bool is_vector_index(queue<string> & token, compiler_state & state)
 bool is_num_var(string & token, compiler_state & state)
 {
     //Veo si var
-    for(pair<string, uint> & var : state.variables)
+    for(pair<string, unsigned int> & var : state.variables)
         if(var.first == token && var.second == 1) return true;
     //Veo si num_vector index
     queue<string> vpart;
@@ -2042,7 +2042,7 @@ bool is_num_var(string & token, compiler_state & state)
 
 bool is_txt_var(string & token, compiler_state & state)
 {
-    for(pair<string, uint> & var : state.variables)
+    for(pair<string, unsigned int> & var : state.variables)
         if(var.first == token && var.second == 2) return true;
     //Veo si num_vector index
     queue<string> vpart;
@@ -2060,7 +2060,7 @@ void split_vector(string & line, queue<string> & tokens)
     bool in_string = false;
     string current_token = "";
     //For each letter in the line
-    for(uint i = 0; i < line.size(); ++i)
+    for(unsigned int i = 0; i < line.size(); ++i)
     {
         char letter = line[i];
         if(letter == ':')
@@ -2120,7 +2120,7 @@ void split_vector(string & line, queue<string> & tokens)
  un subíndice de vector no sería una variable.*/
 bool variable_exists(string & token, compiler_state & state)
 {
-    for(pair<string, uint> & var : state.variables)
+    for(pair<string, unsigned int> & var : state.variables)
         if(var.first == token) return true;
     return false;
 }

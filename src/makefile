@@ -4,7 +4,7 @@ HEADER = ldpl.h nvm.h cpptrim.h
 OUT = ldpl
 CC = g++
 FLAGS = -g -c -Wall
-LFLAGS = -ldl
+LFLAGS =
 
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
