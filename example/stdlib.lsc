@@ -13,15 +13,22 @@ data:
 	sqrt/radicand is number
 	sqrt/result is number
 	sqrt/aux is number
-	sqrt/i is number
+	sqrt/last-value is number
+
+	# Substring sub-procedure
+	substr/string is text
+	substr/start is number
+	substr/length is number
+	substr/aux is text
+	substr/char is text
+	substr/stringlength is number
 
 procedure:
-
 	# Explode Subprocedure
 	# Splits a text into a text vector by a certain delimiter
 	# Input parameters:
-	# - explode/string: the string to explode
-	# - explode/separator: the character used to separate the string
+	# - explode/string: the string to explode (destroyed)
+	# - explode/separator: the character used to separate the string (preserved)
 	# Output parameters:
 	# - explode/words: vector of splitted words
 	# - explode/length: length of explode/words
@@ -48,19 +55,59 @@ procedure:
 	# Square Root
 	# Calculates the square root of a radicand using the babylonian method
 	# Input parameter:
-	# - sqrt/radicand: the number to be square-rooted
+	# - sqrt/radicand: the number to be square-rooted (preserved)
 	# Output parameter:
 	# - sqrt/result: the square root of the given number
 	sub-procedure square-root
 		if sqrt/radicand is equal to 0 then
+			store 0 in sqrt/result
 			return
 		end if
+		store 0 in sqrt/last-value
 		store 1 in sqrt/result
-		store 0 in sqrt/i
-		while sqrt/i is less than 10 do
-			add 1 and sqrt/i in sqrt/i
+		while 1 is equal to 1 do
 			divide sqrt/radicand by sqrt/result in sqrt/aux
 			add sqrt/aux and sqrt/result in sqrt/result
 			divide sqrt/result by 2 in sqrt/result
+			if sqrt/result is not equal to sqrt/last-value then
+				store sqrt/result in sqrt/last-value
+			else
+				break
+			end if
+		repeat
+	end sub-procedure
+
+	# Substring
+	# Returns a substring of length substr/length from the substr/start-th character
+	# of substr/string
+	# Input:
+	# - substr/string (destroyed)
+	# - substr/start (destroyed)
+	# - substr/length
+	# Return:
+	# - subtr/string
+	sub-procedure substring
+		# If the requested substring length is 0
+		if substr/length is equal to 0 then
+			store "" in substr/string
+			return
+		end if
+		# If start is less than 0
+		if substr/start is less than 0 then
+			store 0 in substr/start
+		end if
+		# Get length of string
+		store length of substr/string in substr/stringlength
+		# Iterate creating new strin
+		store substr/string in substr/aux
+		store "" in substr/string
+		while substr/length is greater than 0 do
+			if substr/start is equal to substr/stringlength then
+				return
+			end if
+			get character at substr/start from substr/aux in substr/char
+			join substr/string and substr/char in substr/string
+			add substr/start and 1 in substr/start
+			subtract 1 from substr/length in substr/length
 		repeat
 	end sub-procedure

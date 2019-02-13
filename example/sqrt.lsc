@@ -1,0 +1,30 @@
+procedure:
+	store 654654654321 in sqrt/radicand
+	call sub-procedure square-root
+	display "√" sqrt/radicand " = " sqrt/result crlf
+
+	store 2 in sqrt/radicand
+	call sub-procedure square-root
+	display "√" sqrt/radicand " = " sqrt/result crlf
+
+	store 1987651321684321.2168432 in sqrt/radicand
+	call sub-procedure square-root
+	display "√" sqrt/radicand " = " sqrt/result crlf
+	
+	store 0 in sqrt/radicand
+	call sub-procedure square-root
+	display "√" sqrt/radicand " = " sqrt/result crlf
+
+	store 0.123 in sqrt/radicand
+	call sub-procedure square-root
+	display "√" sqrt/radicand " = " sqrt/result crlf
+
+	store "0.123" in sqrt/radicand
+	call sub-procedure square-root
+	display "√" sqrt/radicand " = " sqrt/result crlf
+
+	store "Hello World!" in substr/string
+	store 1 in substr/start
+	store 4 in substr/length
+	call sub-procedure substring
+	display substr/string crlf

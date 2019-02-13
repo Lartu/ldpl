@@ -1,3 +1,6 @@
+//Cambiar END-IF por END IF en el estándar y agregar conversión de tipos y funciones nuevas.
+//Documentar stdlib
+
 #include "ldpl.h"
 
 //Show internal representation
