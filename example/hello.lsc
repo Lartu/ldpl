@@ -1,10 +1,2 @@
-DATA:
-  I IS NUMBER
-
-PROCEDURE:
-  STORE 0 IN I
-  WHILE I IS LESS THAN 10 DO
-    DISPLAY "HELLO WORLD!" CRLF
-    ADD 1 AND I IN I
-  REPEAT
-  EXIT 
+procedure:
+	display "Hello, 世界" crlf

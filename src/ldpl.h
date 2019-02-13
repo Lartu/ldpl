@@ -14,6 +14,7 @@ using namespace std;
 struct compiler_state{
     unsigned int section_state = 0; //0 no section, 1 data, 2 procedure
     unsigned int current_line = 0;
+	string current_file = "";
     //Code to output (normally ASM or NVM)
     vector<string> output_code;
     //variables
@@ -44,7 +45,7 @@ struct compiler_state{
 
 void error(const string & msg);
 void compile(vector<string> & lines, compiler_state & state);
-void tokenize(string & line, unsigned int line_num, vector<string> & tokens);
+void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file);
 void split_vector(string & line, queue<string> & tokens);
 void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state);
 bool line_like(string model_line, vector<string> tokens, compiler_state & state); //Important to pass tokens by copy
@@ -60,3 +61,4 @@ void get_var_value(compiler_state & state, string & variable);
 void set_var_value(compiler_state & state, string & variable);
 void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);
+void replace_whitespace(string & code);
