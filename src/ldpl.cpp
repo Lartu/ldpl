@@ -267,7 +267,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
         state.add_code("INPUT-NUM");
-        state.add_code("TOAUX:"+tokens[1]);
+        set_var_value(state, tokens[1]);
         return;
     }
     if(line_like("ACCEPT $str-var", tokens, state))
@@ -276,7 +276,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
         state.add_code("INPUT");
-        state.add_code("TOAUX:"+tokens[1]);
+        set_var_value(state, tokens[1]);
         return;
     }
     if(line_like("STORE $num-var IN $num-var", tokens, state))
@@ -284,7 +284,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
-        state.add_code("AUX:" + tokens[1]);
+        get_var_value(state, tokens[1]);
         set_var_value(state, tokens[3]);
         return;
     }
@@ -302,7 +302,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
-        state.add_code("AUX:" + tokens[1]);
+        get_var_value(state, tokens[1]);
         set_var_value(state, tokens[3]);
         return;
     }
@@ -542,7 +542,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         get_var_value(state, tokens[1]);
         state.add_code("ABS");
-        state.add_code("TOAUX:"+tokens[1]);
+        set_var_value(state, tokens[1]);
         return;
     }
     if(line_like("JOIN $string AND $string IN $str-var", tokens, state))
@@ -553,7 +553,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $string AND $number IN $str-var", tokens, state))
@@ -565,7 +565,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $string AND $num-var IN $str-var", tokens, state))
@@ -577,7 +577,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $string AND $str-var IN $str-var", tokens, state))
@@ -588,7 +588,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[1]);
         get_var_value(state, tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     
@@ -601,7 +601,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("TO-STR");
         state.add_code(tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $number AND $number IN $str-var", tokens, state))
@@ -614,7 +614,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $number AND $num-var IN $str-var", tokens, state))
@@ -627,7 +627,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $number AND $str-var IN $str-var", tokens, state))
@@ -639,7 +639,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("TO-STR");
         get_var_value(state, tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     
@@ -651,7 +651,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[1]);
         state.add_code(tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $str-var AND $number IN $str-var", tokens, state))
@@ -663,7 +663,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $str-var AND $num-var IN $str-var", tokens, state))
@@ -675,7 +675,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $str-var AND $str-var IN $str-var", tokens, state))
@@ -686,7 +686,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[1]);
         get_var_value(state, tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     
@@ -699,7 +699,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("TO-STR");
         state.add_code(tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $num-var AND $number IN $str-var", tokens, state))
@@ -712,7 +712,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $num-var AND $num-var IN $str-var", tokens, state))
@@ -725,7 +725,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[3]);
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("JOIN $num-var AND $str-var IN $str-var", tokens, state))
@@ -737,7 +737,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("TO-STR");
         get_var_value(state, tokens[3]);
         state.add_code("JOIN");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("GET CHARACTER AT $num-var FROM $str-var IN $str-var", tokens, state))
@@ -748,7 +748,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[3]);
         get_var_value(state, tokens[5]);
         state.add_code("CHARAT");
-        state.add_code("TOAUX:"+tokens[7]);
+        set_var_value(state, tokens[7]);
         return;
     }
     if(line_like("GET CHARACTER AT $number FROM $str-var IN $str-var", tokens, state))
@@ -759,7 +759,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[3]);
         get_var_value(state, tokens[5]);
         state.add_code("CHARAT");
-        state.add_code("TOAUX:"+tokens[7]);
+        set_var_value(state, tokens[7]);
         return;
     }
     if(line_like("GET CHARACTER AT $num-var FROM $string IN $str-var", tokens, state))
@@ -770,7 +770,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         get_var_value(state, tokens[3]);
         state.add_code(tokens[5]);
         state.add_code("CHARAT");
-        state.add_code("TOAUX:"+tokens[7]);
+        set_var_value(state, tokens[7]);
         return;
     }
     if(line_like("GET CHARACTER AT $number FROM $string IN $str-var", tokens, state))
@@ -781,7 +781,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(tokens[3]);
         state.add_code(tokens[5]);
         state.add_code("CHARAT");
-        state.add_code("TOAUX:"+tokens[7]);
+        set_var_value(state, tokens[7]);
         return;
     }
     if(line_like("SUB-PROCEDURE $name", tokens, state))
@@ -1825,7 +1825,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         state.add_code(tokens[1]);
         state.add_code("SYS-EXEC-OUT");
-        state.add_code("TOAUX:"+tokens[6]);
+        set_var_value(state, tokens[6]);
         return;
     }
     if(line_like("EXECUTE $str-var AND STORE OUTPUT IN $str-var", tokens, state))
@@ -1835,7 +1835,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         get_var_value(state, tokens[1]);
         state.add_code("SYS-EXEC-OUT");
-        state.add_code("TOAUX:"+tokens[6]);
+        set_var_value(state, tokens[6]);
         return;
     }
     if(line_like("EXECUTE $string AND STORE EXIT CODE IN $num-var", tokens, state))
@@ -1845,7 +1845,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         state.add_code(tokens[1]);
         state.add_code("SYS-EXEC");
-        state.add_code("TOAUX:"+tokens[7]);
+        set_var_value(state, tokens[7]);
         return;
     }
     if(line_like("EXECUTE $str-var AND STORE EXIT CODE IN $num-var", tokens, state))
@@ -1855,7 +1855,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         get_var_value(state, tokens[1]);
         state.add_code("SYS-EXEC");
-        state.add_code("TOAUX:"+tokens[7]);
+        set_var_value(state, tokens[7]);
         return;
     }
     if(line_like("EXIT", tokens, state))
@@ -1873,7 +1873,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         get_var_value(state, tokens[3]);
         state.add_code("LENGTH");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
     if(line_like("STORE LENGTH OF $string IN $num-var", tokens, state))
@@ -1883,7 +1883,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         state.add_code(tokens[3]);
         state.add_code("LENGTH");
-        state.add_code("TOAUX:"+tokens[5]);
+        set_var_value(state, tokens[5]);
         return;
     }
 	//Desde acá faltan en el standard
@@ -1893,7 +1893,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("RANDOM outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
         state.add_code("RANDOM");
-        state.add_code("TOAUX:"+tokens[3]);
+        set_var_value(state, tokens[3]);
         return;
     }
     if(line_like("FLOOR $num-var", tokens, state))
@@ -1903,7 +1903,47 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //NVM
         get_var_value(state, tokens[1]);
         state.add_code("FLOOR");
-        state.add_code("TOAUX:"+tokens[1]);
+        set_var_value(state, tokens[1]);
+        return;
+    }
+	if(line_like("STORE $number IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        state.add_code(tokens[1]);
+		state.add_code("TO-STR");
+        set_var_value(state, tokens[3]);
+        return;
+    }
+	if(line_like("STORE $num-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        get_var_value(state, tokens[1]);
+		state.add_code("TO-STR");
+        set_var_value(state, tokens[3]);
+        return;
+    }
+	if(line_like("STORE $string IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        state.add_code(tokens[1]);
+		state.add_code("TO-NUM");
+        set_var_value(state, tokens[3]);
+        return;
+    }
+	if(line_like("STORE $str-var IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        get_var_value(state, tokens[1]);
+		state.add_code("TO-NUM");
+        set_var_value(state, tokens[3]);
         return;
     }
     
@@ -2159,12 +2199,13 @@ void get_var_value(compiler_state & state, string & variable)
     }
 }
 
+//Setea el valor de una variable o vector
 void set_var_value(compiler_state & state, string & variable)
 {
     queue<string> vpart;
     split_vector(variable, vpart);
     if(vpart.size() == 1){
-        state.add_code("TOAUX:"+variable);
+        state.add_code("TOAUX:" + variable);
         return;
     }
     stack<string> token;

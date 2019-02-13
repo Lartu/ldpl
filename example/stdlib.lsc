@@ -1,4 +1,5 @@
 data:
+	# Explode sub-procedure
     explode/words is text vector
     explode/index is number
     explode/string is text
@@ -8,7 +9,22 @@ data:
     explode/char is text
     explode/separator is text
     
+	# Square-root sub-procedure
+	sqrt/radicand is number
+	sqrt/result is number
+	sqrt/aux is number
+	sqrt/i is number
+
 procedure:
+
+	# Explode Subprocedure
+	# Splits a text into a text vector by a certain delimiter
+	# Input parameters:
+	# - explode/string: the string to explode
+	# - explode/separator: the character used to separate the string
+	# Output parameters:
+	# - explode/words: vector of splitted words
+	# - explode/length: length of explode/words
     sub-procedure explode
         join explode/string and explode/separator in explode/string
         store length of explode/string in explode/stringlength
@@ -28,3 +44,23 @@ procedure:
         repeat
         subtract 1 from explode/length in explode/length
     end sub-procedure
+
+	# Square Root
+	# Calculates the square root of a radicand using the babylonian method
+	# Input parameter:
+	# - sqrt/radicand: the number to be square-rooted
+	# Output parameter:
+	# - sqrt/result: the square root of the given number
+	sub-procedure square-root
+		if sqrt/radicand is equal to 0 then
+			return
+		end if
+		store 1 in sqrt/result
+		store 0 in sqrt/i
+		while sqrt/i is less than 10 do
+			add 1 and sqrt/i in sqrt/i
+			divide sqrt/radicand by sqrt/result in sqrt/aux
+			add sqrt/aux and sqrt/result in sqrt/result
+			divide sqrt/result by 2 in sqrt/result
+		repeat
+	end sub-procedure
