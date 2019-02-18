@@ -1949,6 +1949,27 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         set_var_value(state, tokens[3]);
         return;
     }
+
+    if(line_like("STORE CHARACTER $number IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        state.add_code(tokens[2]);
+        state.add_code("CHR");
+        set_var_value(state, tokens[4]);
+        return;
+    }
+    if(line_like("STORE CHARACTER $num-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        get_var_value(state, tokens[2]);
+        state.add_code("CHR");
+        set_var_value(state, tokens[4]);
+        return;
+    }
     
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }

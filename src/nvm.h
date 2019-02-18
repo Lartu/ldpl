@@ -732,6 +732,16 @@ void execute(vector<string> & lines)
 		alfanum c(r);
 		vm_stack.push(c);
 	}
+	//Number to character
+	else if(token == "CHR"){
+            check_stack_size(1);
+            alfanum a = vm_stack.top();
+            vm_stack.pop();
+	    char s[2];
+	    s[0] = (char)a.num_value();
+	    s[1] = '\0';
+            vm_stack.push(alfanum(string(&s[0])));
+	}
         // - Discard top of stack -
         else if(token == "BEEP"){
           system("beep");
