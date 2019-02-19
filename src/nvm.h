@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <stack>
 #include <climits>
@@ -525,6 +526,16 @@ void execute(vector<string> & lines)
             alfanum in(s);
             vm_stack.push(in);
         }
+        // - Read standard input -
+        else if(token == "INPUT-FULL"){
+		stringstream full;
+		string s;
+		while (getline(cin, s)) {
+    			full << s;
+		}
+            alfanum in(full.str());
+            vm_stack.push(in);
+        }
         // - Input number to stack -
         else if(token == "INPUT-NUM"){
             while(true){
@@ -741,6 +752,21 @@ void execute(vector<string> & lines)
 	    s[0] = (char)a.num_value();
 	    s[1] = '\0';
             vm_stack.push(alfanum(string(&s[0])));
+	}
+	//Character to number
+	else if(token == "ORD"){
+            check_stack_size(1);
+            alfanum a = vm_stack.top();
+            vm_stack.pop();
+            string chr = a.txt_value();
+            if (chr.size() != 1) {
+                cerr << "\033[1;31mError: ORD expects a string of length 1, got: \033[1;37m";
+                cerr << chr << endl;
+                cerr << "\033[0m" << endl;
+                exit(1);
+	    }
+	    int ord = chr[0];
+            vm_stack.push(ord);
 	}
         // - Discard top of stack -
         else if(token == "BEEP"){
