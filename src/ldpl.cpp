@@ -282,6 +282,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         set_var_value(state, tokens[1]);
         return;
     }
+    if(line_like("ACCEPT $str-var UNTIL EOF", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        state.add_code("INPUT-FULL");
+        set_var_value(state, tokens[1]);
+        return;
+    }
     if(line_like("STORE $num-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)

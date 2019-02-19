@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <stack>
 #include <climits>
@@ -523,6 +524,16 @@ void execute(vector<string> & lines)
 			string s = "";
 			getline(cin, s);
             alfanum in(s);
+            vm_stack.push(in);
+        }
+        // - Read standard input -
+        else if(token == "INPUT-FULL"){
+		stringstream full;
+		string s;
+		while (getline(cin, s)) {
+    			full << s;
+		}
+            alfanum in(full.str());
             vm_stack.push(in);
         }
         // - Input number to stack -
