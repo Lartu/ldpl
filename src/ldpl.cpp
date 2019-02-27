@@ -1,5 +1,6 @@
-//Cambiar END-IF por END IF en el estándar y agregar conversión de tipos y funciones nuevas.
+//TODO:
 //Documentar stdlib
+//Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
 
 #include "ldpl.h"
 

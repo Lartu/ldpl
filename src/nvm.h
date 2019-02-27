@@ -38,11 +38,11 @@ bool debug = false;
 
 class alfanum{
 private:
-    long double n_value = 0;
+    /*long*/ double n_value = 0;
     string t_value = "";
     bool p_is_number = true;
 public:
-    alfanum(long double num){
+    alfanum(/*long*/ double num){
         p_is_number = true;
         n_value = num;
     }
@@ -53,7 +53,7 @@ public:
     bool is_number(){
         return p_is_number;
     }
-    long double num_value(){
+    /*long*/ double num_value(){
         return n_value;
     }
     string txt_value(){
@@ -181,8 +181,8 @@ std::string exec(const char* cmd) {
 
 bool is_number (string number);
 
-long double get_number(string number){
-    long double num;
+/*long*/ double get_number(string number){
+    /*long*/ double num;
     try {
         num = stold(number);
     }
@@ -746,7 +746,7 @@ void execute(vector<string> & lines)
         }
 	//Random number
 	else if(token == "RANDOM"){
-		long double r = rand() * NVM_FLOAT_EPSILON;
+		/*long*/ double r = rand() * NVM_FLOAT_EPSILON;
 		r = r - (int) r;
 		alfanum c(r);
 		vm_stack.push(c);
@@ -794,7 +794,7 @@ void nvm (vector<string> & lines){
     // - Seed RNG -
     srand(time(NULL));
     // - Set cout precision -
-    cout.precision(numeric_limits<long double>::digits10);
+    cout.precision(numeric_limits</*long*/ double>::digits10);
     // - Stilize obtained lines -
     lines = stylize(lines);
     // - Execute lines -
