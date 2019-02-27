@@ -616,6 +616,14 @@ void execute(vector<string> & lines)
             alfanum c(floor(a.num_value()));
             vm_stack.push(c);
         }
+        // - Round number -
+        else if(token == "CEIL"){
+			check_stack_size(1);
+            alfanum a = vm_stack.top();
+            vm_stack.pop();
+            alfanum c(ceil(a.num_value()));
+            vm_stack.push(c);
+        }
         // - Pop jump-
         else if(token == "JMP-POP"){
 			check_stack_size(1);

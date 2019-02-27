@@ -1918,6 +1918,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         set_var_value(state, tokens[1]);
         return;
     }
+    if(line_like("CEIL $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CEIL statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //NVM
+        get_var_value(state, tokens[1]);
+        state.add_code("CEIL");
+        set_var_value(state, tokens[1]);
+        return;
+    }
 	if(line_like("STORE $number IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
