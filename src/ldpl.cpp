@@ -1,6 +1,8 @@
 //TODO:
 //Documentar stdlib
 //Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
+//Arreglar arrays
+//LDPL debería poder recibir valores por parámetro (un text vector argv)
 
 #include "ldpl.h"
 
@@ -20,19 +22,52 @@ int main(int argc, const char* argv[])
         cout << "Compiled on " << COMPILEDATE << endl;
         return 0;
     }
+    else if(args.size() == 1 && (args[0] == "-h" || args[0] == "--help")){
+        cout << "Usage: ldpl [options] file [arguments]" << endl;
+        cout << "Options:" << endl;
+        cout << "  -h --help                Display this information" << endl;
+        cout << "  -r                       Display internal representation of the program" << endl;
+        cout << "  -i=<file>                Include file in current compilation" << endl;
+        return 0;
+    }
+    
+    compiler_state state; //Compiler state (holds variables, sections, functions, etc)
+    state.variables.push_back(make_pair("ARGC", 1));
+    state.variables.push_back(make_pair("ARGV", 4));
+    bool arguments_are_arguments = false;
+    int argument_push_count = 0;
+    vector<string> files_to_compile;
+    
     //Check arguments
-    if(args.size() > 1){
-        for(string arg : args){
-            if(arg == "-r"){
-                show_ir = true;
+    if(args.size() >= 1){
+        for(string & arg : args){
+            if(!arguments_are_arguments){
+                if(arg.size() > 1 && arg[0] != '-'){
+                    files_to_compile.push_back(arg);
+                    arguments_are_arguments = true;
+                }
+                else if(arg == "-r"){
+                    show_ir = true;
+                }
+                else if(arg.substr(0, 3) == "-i="){
+                    files_to_compile.push_back(arg.substr(3));
+                }
+            }else{
+                state.add_code("\"" + arg + "\"");
+                state.add_code("TOAUX:ARGV:" + to_string(argument_push_count));
+                ++argument_push_count;
             }
         }
     }
+    
+    state.add_code(to_string(argument_push_count));
+    state.add_code("TOAUX:ARGC");
+    
     //Fail if file was not passed
     if(args.size() == 0) error("Filename expected.");
+    
     //For each file, compile each file into one big code
-	compiler_state state; //Compiler state (holds variables, sections, functions, etc)
-    for(string & filename : args)
+    for(string & filename : files_to_compile)
     {
         //If it's an argument
         if(filename[0] == '-') continue;

@@ -502,7 +502,6 @@ void execute(vector<string> & lines)
         }
         // - Print Stack for Debugging Purposes -
         else if(token == "PRINT-STACK"){
-			if(!debug) continue;
             stack <alfanum> a = vm_stack;
             cout << endl << "****** STACK ******" << endl;
             while (!a.empty()) {
@@ -528,11 +527,14 @@ void execute(vector<string> & lines)
         }
         // - Read standard input -
         else if(token == "INPUT-FULL"){
-		stringstream full;
-		string s;
-		while (getline(cin, s)) {
-    			full << s;
-		}
+            stringstream full;
+            string s;
+            bool firstLine = true;
+            while (getline(cin, s)) {
+                if(!firstLine) s = "\n" + s;
+                firstLine = false;
+                full << s;
+            }
             alfanum in(full.str());
             vm_stack.push(in);
         }
