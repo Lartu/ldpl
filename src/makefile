@@ -11,7 +11,7 @@ all: $(OBJS)
 	rm ldpl.o
 	
 ldpl.o: ldpl.cpp
-	$(CC) $(FLAGS) ldpl.cpp -fpermissive -DVERSION='"1.0.0"' -DCOMPILEDATE='"$(shell date)"' -DSTANDARD=19
+	$(CC) $(FLAGS) ldpl.cpp -fpermissive -DVERSION='"1.1.0"' -DCOMPILEDATE='"$(shell date)"' -DSTANDARD=19
 	
 clean:
 	rm -f $(OBJS) $(OUT)
