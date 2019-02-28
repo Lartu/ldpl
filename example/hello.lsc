@@ -1,2 +1,0 @@
-procedure:
-	display "Hello, 世界" crlf
