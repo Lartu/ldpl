@@ -1,0 +1,29 @@
+# Prints the sum of all the multiples of 3 or 5 below 1000 
+# by Martin del Rio
+# http://ldpl.lartu.net/
+
+data:
+    result is number
+    i is number
+    remainder3 is number
+    remainder5 is number
+    remainder is number
+    
+procedure:
+    sub-procedure is-multiple-of
+        modulo i by 3 in remainder3
+        modulo i by 5 in remainder5
+        multiply remainder3 by remainder5 in remainder
+        if remainder is equal to 0 then
+            add i and result in result
+        end if
+    end sub-procedure
+    
+    store 0 in i
+    store 0 in result
+    while i is less than 1000 do
+        call sub-procedure is-multiple-of
+        add 1 and i in i
+    repeat
+    
+    display result crlf

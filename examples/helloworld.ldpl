@@ -1,0 +1,6 @@
+# LDPL Hello World
+# by Martin del Rio
+# http://ldpl.lartu.net/
+
+PROCEDURE:
+display "Hello World!" crlf

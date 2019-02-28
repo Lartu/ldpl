@@ -1,0 +1,116 @@
+# Brainfuck Interpreter 
+# by Martin del Rio
+# http://ldpl.lartu.net/
+# This example can also be used to prove the Turing-Completeness of LDPL!
+# Usage: ldpl brainfuck.ldpl <brainfuck source filename>
+
+DATA:
+source-file is text             # Brainfuck source code
+source-length is number         # Length of Brainfuck Source File
+current-char is text            # Current character in source
+ip is number                    # Instruction Pointer
+tape is number vector           # Brainfuck Tape
+pointer is number               # Brainfuck Tape Pointer
+temp-text is text               # Auxiliar text variable
+i is number                     # Auxiliar iteration variable
+open-[]-found is number         # Number of open []s found
+
+PROCEDURE:
+# Check if we received a filename
+if argc is less than 1 then
+    display "No file to execute passed!" crlf "Usage: ldpl brainfuck.ldpl <filename>" crlf
+    exit
+end if
+
+# Load brainfuck source file
+join "cat " and argv:0 in argv:0
+execute argv:0 and store output in source-file
+store length of source-file in source-length
+display "Source loaded." crlf
+display "Source length: " source-length crlf
+
+# Execute
+while ip is less than source-length do
+    get character at ip from source-file in current-char
+    
+    if current-char is equal to "+" then
+        add 1 and tape:pointer in tape:pointer
+        add 1 and ip in ip
+        continue
+    end if
+    
+    if current-char is equal to "-" then
+        subtract 1 from tape:pointer in tape:pointer
+        add 1 and ip in ip
+        continue
+    end if
+    
+    if current-char is equal to ">" then
+        add 1 and pointer in pointer
+        add 1 and ip in ip
+        continue
+    end if
+    
+    if current-char is equal to "<" then
+        subtract 1 from pointer in pointer
+        add 1 and ip in ip
+        continue
+    end if
+    
+    if current-char is equal to "." then
+        store character tape:pointer in temp-text
+        display temp-text
+        add 1 and ip in ip
+        continue
+    end if
+    
+    if current-char is equal to "," then
+        accept tape:pointer
+        add 1 and ip in ip
+        continue
+    end if
+    
+    if current-char is equal to "[" then
+        if tape:pointer is equal to 0 then
+            while 1 is equal to 1 do
+                add 1 and ip in ip
+                get character at ip from source-file in temp-text
+                if temp-text is equal to "[" then
+                    add 1 and open-[]-found in open-[]-found
+                end if
+                if temp-text is equal to "]" then
+                    if open-[]-found is equal to 0 then
+                        break
+                    else
+                        subtract 1 from open-[]-found in open-[]-found
+                    end if
+                end if
+            repeat
+        end if
+        add 1 and ip in ip
+        continue
+    end if
+    
+    if current-char is equal to "]" then
+        if tape:pointer is not equal to 0 then
+            while 1 is equal to 1 do
+                subtract 1 from ip in ip
+                get character at ip from source-file in temp-text
+                if temp-text is equal to "]" then
+                    add 1 and open-[]-found in open-[]-found
+                end if
+                if temp-text is equal to "[" then
+                    if open-[]-found is equal to 0 then
+                        break
+                    else
+                        subtract 1 from open-[]-found in open-[]-found
+                    end if
+                end if
+            repeat
+        end if
+        add 1 and ip in ip
+        continue
+    end if
+    
+    add 1 and ip in ip
+repeat

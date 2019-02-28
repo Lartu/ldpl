@@ -1,0 +1,24 @@
+# Factorial Calculator
+# by Martin del Rio
+# http://ldpl.lartu.net/ 
+
+DATA:
+result is number
+n is number
+
+PROCEDURE:
+# Ask for a number
+display "Enter a number: "
+accept n
+
+# Default result
+store 1 in result
+
+# Calculate factorial
+while n is greater than 0 do
+    multiply n by result in result
+    subtract 1 from n in n
+repeat
+
+# Display result
+display "Factorial: " result crlf

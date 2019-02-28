@@ -1,0 +1,24 @@
+# Fibonacci Sequence
+# by Martin del Rio
+# http://ldpl.lartu.net/
+
+DATA:
+a is number
+b is number
+swap is number
+length is number
+
+PROCEDURE:
+store 1 in a
+store 1 in b
+display a crlf b crlf
+
+store 30 in length
+
+while length is greater than 0 do
+    store a in swap
+    add a and b in a
+    store a in b
+    display a crlf
+    subtract 1 from length in length
+repeat

@@ -1,0 +1,44 @@
+# Square Root Calculator
+# by Martin del Rio
+# http://ldpl.lartu.net/ 
+
+DATA:
+# Square-root sub-procedure
+sqrt/radicand is number
+sqrt/result is number
+sqrt/aux is number
+sqrt/last-value is number
+
+PROCEDURE:
+# Ask for a number
+display "Enter a number: "
+accept sqrt/radicand
+
+# Declare square root subprocedure
+# Calculates the square root of a radicand using the babylonian method
+# Input parameter:
+# - sqrt/radicand: the number to be square-rooted (preserved)
+# Output parameter:
+# - sqrt/result: the square root of the given number
+sub-procedure square-root
+    if sqrt/radicand is equal to 0 then
+        store 0 in sqrt/result
+        return
+    end if
+    store 0 in sqrt/last-value
+    store 1 in sqrt/result
+    while 1 is equal to 1 do
+        divide sqrt/radicand by sqrt/result in sqrt/aux
+        add sqrt/aux and sqrt/result in sqrt/result
+        divide sqrt/result by 2 in sqrt/result
+        if sqrt/result is not equal to sqrt/last-value then
+            store sqrt/result in sqrt/last-value
+        else
+            break
+        end if
+    repeat
+end sub-procedure
+
+# Calculate square root of the entered number
+call sub-procedure square-root
+display "sqrt(" sqrt/radicand ") = " sqrt/result crlf

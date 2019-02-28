@@ -1,0 +1,20 @@
+# Disan Count
+# by Martin del Rio
+# http://ldpl.lartu.net/ 
+
+DATA:
+    n is number                 # Number to count down from
+    mod is number               # Result of the modulo operations
+
+PROCEDURE:
+    # Get number to count down from
+    display "Enter a number: "
+    accept n
+    
+    while n is greater than or equal to 0 do
+        modulo n by 2 in mod
+        if mod is equal to 0 then
+            display n crlf
+        end if
+        subtract 1 from n in n
+    repeat
