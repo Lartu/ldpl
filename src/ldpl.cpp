@@ -3,6 +3,8 @@
 //Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
 //Arreglar arrays
 //LDPL debería poder recibir valores por parámetro (un text vector argv)
+//Agregar -v a las opciones
+//Hacer que si pongo --version no compile o haga lo mismo que -v, pero se queda sin hacer nada
 
 #include "ldpl.h"
 
