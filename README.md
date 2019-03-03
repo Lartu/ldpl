@@ -14,7 +14,7 @@ LDPL is standarized [here](http://ldpl.lartu.net/reference). That's both the lan
 
 ## How to use this compiler
 
-First, download the latest release. Then `make` LDPL in the `src` folder. Then write some LDPL source code, say `source.lsc`. Then compile and run said source code using `ldpl source.lsc`. Done! For more info on the interpreter run `ldpl -h`.
+First, download the latest release. Then `make` LDPL in the `src` folder. Then write some LDPL source code, say `source.lsc`. Then compile and run said source code using `ldpl source.lsc`. Done! For more info on the interpreter run `ldpl -h`. Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## License
 
