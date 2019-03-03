@@ -1,4 +1,4 @@
-# LDPL 🦕
+![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
 [LDPL](http://ldpl.lartu.net/) is a programming language designed to be very easy to read and understand. Also as a joke, as its syntax is based on that from COBOL.
 
