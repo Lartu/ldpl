@@ -1,8 +1,6 @@
 //TODO:
 //Documentar stdlib
 //Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
-//Arreglar arrays
-//LDPL debería poder recibir valores por parámetro (un text vector argv)
 //Agregar -v a las opciones
 //Hacer que si pongo --version no compile o haga lo mismo que -v, pero se queda sin hacer nada
 
@@ -15,7 +13,7 @@ int main(int argc, const char* argv[])
 {
     //Get command line arguments as string vector
     vector<string> args(argv + 1, argv + argc);
-    if(args.size() == 1 && args[0] == "-v"){
+    if(args.size() == 1 && (args[0] == "-v" || args[0] == "--version")){
         cout << "This is " << "\033[35;1mLDPL " << STANDARD << " version " << VERSION << "\033[0m" << endl << endl;
         cout << "Copyright 2018-2019, Martín del Río" << endl << endl;
         cout << "Standard and documentation can be found on \033[36;1mldpl.lartu.net\033[0m." << endl;
@@ -30,6 +28,7 @@ int main(int argc, const char* argv[])
         cout << "  -h --help                Display this information" << endl;
         cout << "  -r                       Display internal representation of the program" << endl;
         cout << "  -i=<file>                Include file in current compilation" << endl;
+	cout << "  -v --version             Display LDPL version information" << endl;
         return 0;
     }
     
@@ -66,7 +65,7 @@ int main(int argc, const char* argv[])
     state.add_code("TOAUX:ARGC");
     
     //Fail if file was not passed
-    if(args.size() == 0) error("Filename expected.");
+    if(files_to_compile.size() == 0) error("Filename expected.");
     
     //For each file, compile each file into one big code
     for(string & filename : files_to_compile)
