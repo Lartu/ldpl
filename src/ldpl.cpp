@@ -1,8 +1,9 @@
 //TODO:
 //Documentar stdlib
 //Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
-//Agregar -v a las opciones
-//Hacer que si pongo --version no compile o haga lo mismo que -v, pero se queda sin hacer nada
+//Hacer que \n ponga un salto de linea porque sino no hay forma de guardar un string con linebreaks
+//Ver si aclare como se inicializan por default las variables
+//Arreglar que los valores no inicializados de un vector de texto devuelven 0 en vez de "" (por nvm)
 
 #include "ldpl.h"
 
@@ -28,7 +29,7 @@ int main(int argc, const char* argv[])
         cout << "  -h --help                Display this information" << endl;
         cout << "  -r                       Display internal representation of the program" << endl;
         cout << "  -i=<file>                Include file in current compilation" << endl;
-	cout << "  -v --version             Display LDPL version information" << endl;
+		cout << "  -v --version             Display LDPL version information" << endl;
         return 0;
     }
     
