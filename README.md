@@ -14,7 +14,7 @@ That's both the language documentation and the compiler writting standard.
 ## How to use this interpreter
 
 First, download the latest release.
-Then `make` LDPL in the `src` folder.
+Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
 Then write some LDPL source code, say `source.lsc`.
 Then compile and run said source code using `ldpl source.lsc`.
 Done! For more info on the interpreter run `ldpl -h`.
