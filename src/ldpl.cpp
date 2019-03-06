@@ -3,7 +3,7 @@
 //Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
 //Hacer que \n ponga un salto de linea porque sino no hay forma de guardar un string con linebreaks
 //Ver si aclare como se inicializan por default las variables
-//Arreglar que los valores no inicializados de un vector de texto devuelven 0 en vez de "" (por nvm)
+//Documentar secuencias de escape
 
 #include "ldpl.h"
 
@@ -172,6 +172,15 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
             {
                 char next_letter = line[++i];
                 if(next_letter == '\\' || next_letter == '"') current_token += next_letter;
+                else if(next_letter == 'a') current_token += '\a';
+                else if(next_letter == 'b') current_token += '\b';
+                else if(next_letter == 't') current_token += '\t';
+                else if(next_letter == 'n') current_token += '\n';
+                else if(next_letter == 'v') current_token += '\v';
+                else if(next_letter == 'f') current_token += '\f';
+                else if(next_letter == 'r') current_token += '\r';
+                else if(next_letter == 'e') current_token += '\e';
+                else if(next_letter == '0') current_token += '\0';
                 else error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             }
             else error("\\ found alone (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -288,6 +297,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("DISPLAY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
         for(unsigned int i = 1; i < tokens.size(); ++i){
+			//TODO ADD COLORS HERE
             if(tokens[i] == "CRLF"){
                 state.add_code("\"\"");
                 state.add_code("PRINTLN");

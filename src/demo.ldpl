@@ -1,6 +1,0 @@
-data:
-mitexto is text
-
-procedure:
-store "hola mundo" in mitexto
-display mitexto crlf
