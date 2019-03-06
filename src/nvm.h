@@ -489,8 +489,8 @@ void execute(vector<string> & lines)
             }
         }
         // - Get Auxiliar Value defaulting to "" if the variable doesn't exist -
-        else if(token.size() > 4 && token.substr(0, 4) == "AUX-S:"){
-            string aux_name = token.substr(4);
+        else if(token.size() > 6 && token.substr(0, 6) == "AUX-S:"){
+            string aux_name = token.substr(6);
             //Not optimal
             if(aux_map.count(aux_name) == 0){
                 alfanum c("");
