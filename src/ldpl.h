@@ -18,7 +18,7 @@ struct compiler_state{
     //Code to output (normally ASM or NVM)
     vector<string> output_code;
     //variables
-    vector<pair<string, unsigned int>> variables;
+    map<string, unsigned int> variables;
     //1 number, 2 text, 3 number vector, 4 text vector
     vector<string> subprocedures;
     void add_code(string code){

@@ -15,12 +15,6 @@
 #include <random>
 #include "cpptrim.h"
 
-//Cosas del include de mega
-/*#include <stdio.h>
-#include <stdlib.h>
-#include <dlfcn.h>
-#include <string.h>*/
-
 //Para exec incluyo esto también
 #include <cstdio>
 #include <memory>
@@ -33,8 +27,6 @@
 using namespace std;
 
 bool debug = false;
-
-//map<string, void*> libraries;
 
 class alfanum{
 private:
@@ -485,16 +477,23 @@ void execute(vector<string> & lines)
                 aux_map.at(aux_name) = a;
             }
         }
-        // - Get Auxiliar Value -
+        // - Get Auxiliar Value defaulting to 0 if the variable doesn't exist -
         else if(token.size() > 4 && token.substr(0, 4) == "AUX:"){
             string aux_name = token.substr(4);
             //Not optimal
             if(aux_map.count(aux_name) == 0){
-//                 cerr << "\033[1;31mError: Undeclared auxiliar: \033[1;37m";
-//                 cerr << aux_name;
-//                 cerr << "\033[0m" << endl;
-//                 exit(1);
                 alfanum c(0);
+                vm_stack.push(c);
+            }else{
+                vm_stack.push(aux_map.at(aux_name));
+            }
+        }
+        // - Get Auxiliar Value defaulting to "" if the variable doesn't exist -
+        else if(token.size() > 4 && token.substr(0, 4) == "AUX-S:"){
+            string aux_name = token.substr(4);
+            //Not optimal
+            if(aux_map.count(aux_name) == 0){
+                alfanum c("");
                 vm_stack.push(c);
             }else{
                 vm_stack.push(aux_map.at(aux_name));
@@ -579,21 +578,25 @@ void execute(vector<string> & lines)
         else if(token == "TO-NUM"){
 			check_stack_size(1);
             alfanum a = vm_stack.top();
-            vm_stack.pop();
-            alfanum c(get_number(a.txt_value()));
-            vm_stack.push(c);
+            if(!a.is_number()){
+                vm_stack.pop();
+                alfanum c(get_number(a.txt_value()));
+                vm_stack.push(c);
+            }
         }
         // - Get string representation of number -
         else if(token == "TO-STR"){
 			check_stack_size(1);
             alfanum a = vm_stack.top();
-            vm_stack.pop();
-            string num = to_string(a.num_value());
-            num.erase (num.find_last_not_of('0') + 1, std::string::npos);
-            if(num[num.size() - 1] == '.')
-				num = num.substr(0, num.size()-1);
-            alfanum c(num);
-            vm_stack.push(c);
+            if(a.is_number()){
+                vm_stack.pop();
+                string num = to_string(a.num_value());
+                num.erase (num.find_last_not_of('0') + 1, std::string::npos);
+                if(num[num.size() - 1] == '.')
+                    num = num.substr(0, num.size()-1);
+                alfanum c(num);
+                vm_stack.push(c);
+            }
         }
         // - Check if top of stack is a number string WITHOUT popping it -
         else if(token == "IS-NUM"){
@@ -686,39 +689,6 @@ void execute(vector<string> & lines)
             unsigned long int tag_line = vm_stack.top().num_value();
             i = tag_line - 1;
         }
-        /*// - Load Lib - //TODO revisar esto porque lo hice a ciegas
-        else if(token == "LOADLIB"){
-			check_stack_size(1);
-			string libname = vm_stack.top().txt_value();
-			vm_stack.pop();
-			if(debug){
-				cout << "Loading library '" << libname << "'..." << endl;
-			}
-			//Load library
-			char* lib_name = libname.c_str();
-			void* lib_ptr = dlopen(lib_name, RTLD_LAZY);
-			if(!lib_ptr) panic(dlerror());
-			libraries.insert(make_pair(libname, lib_ptr));
-			//Free library
-			//free(lib_name); TODO fix
-			if(debug){
-				cout << "'" << libname << "' loaded." << endl;
-			}
-		}
-		// - Call lib function -
-		//TODO ver cómo pasar parámetros
-		else if(token == "LIBCALL"){
-			check_stack_size(2);
-			string fun_name = vm_stack.top().txt_value();
-			vm_stack.pop();
-			string libname = vm_stack.top().txt_value();
-			vm_stack.pop();
-			void* lib_ptr = libraries.at(libname);
-			void (*lib_fun)() = dlsym(lib_ptr, fun_name.c_str());
-			if(!lib_fun)
-				panic(dlerror());
-			lib_fun();
-		}*/
 		// - Store Auxiliar Value POP -
         else if(token == "TOAUX-POP"){
             check_stack_size(2);
@@ -733,7 +703,7 @@ void execute(vector<string> & lines)
                 aux_map.at(aux_name) = a;
             }
         }
-        // - Get Auxiliar Value POP -
+        // - Get Auxiliar Value POP defaulting to 0 if the variable doesn't exist -
         else if(token == "AUX-POP"){
 			check_stack_size(1);
             string aux_name = vm_stack.top().txt_value();
@@ -746,38 +716,51 @@ void execute(vector<string> & lines)
                 vm_stack.push(aux_map.at(aux_name));
             }
         }
-	//Random number
-	else if(token == "RANDOM"){
-		/*long*/ double r = rand() * NVM_FLOAT_EPSILON;
-		r = r - (int) r;
-		alfanum c(r);
-		vm_stack.push(c);
-	}
-	//Number to character
-	else if(token == "CHR"){
-            check_stack_size(1);
-            alfanum a = vm_stack.top();
+        // - Get Auxiliar Value POP defaulting to "" if the variable doesn't exist -
+        else if(token == "AUX-S-POP"){
+			check_stack_size(1);
+            string aux_name = vm_stack.top().txt_value();
             vm_stack.pop();
-	    char s[2];
-	    s[0] = (char)a.num_value();
-	    s[1] = '\0';
-            vm_stack.push(alfanum(string(&s[0])));
-	}
-	//Character to number
-	else if(token == "ORD"){
-            check_stack_size(1);
-            alfanum a = vm_stack.top();
-            vm_stack.pop();
-            string chr = a.txt_value();
-            if (chr.size() != 1) {
-                cerr << "\033[1;31mError: ORD expects a string of length 1, got: \033[1;37m";
-                cerr << chr << endl;
-                cerr << "\033[0m" << endl;
-                exit(1);
-	    }
-	    int ord = chr[0];
-            vm_stack.push(ord);
-	}
+            //Not optimal
+            if(aux_map.count(aux_name) == 0){
+                alfanum c("");
+                vm_stack.push(c);
+            }else{
+                vm_stack.push(aux_map.at(aux_name));
+            }
+        }
+        //Random number
+        else if(token == "RANDOM"){
+            /*long*/ double r = rand() * NVM_FLOAT_EPSILON;
+            r = r - (int) r;
+            alfanum c(r);
+            vm_stack.push(c);
+        }
+        //Number to character
+        else if(token == "CHR"){
+                check_stack_size(1);
+                alfanum a = vm_stack.top();
+                vm_stack.pop();
+            char s[2];
+            s[0] = (char)a.num_value();
+            s[1] = '\0';
+                vm_stack.push(alfanum(string(&s[0])));
+        }
+        //Character to number
+        else if(token == "ORD"){
+                check_stack_size(1);
+                alfanum a = vm_stack.top();
+                vm_stack.pop();
+                string chr = a.txt_value();
+                if (chr.size() != 1) {
+                    cerr << "\033[1;31mError: ORD expects a string of length 1, got: \033[1;37m";
+                    cerr << chr << endl;
+                    cerr << "\033[0m" << endl;
+                    exit(1);
+            }
+            int ord = chr[0];
+                vm_stack.push(ord);
+        }
         // - Discard top of stack -
         else if(token == "BEEP"){
           system("beep");

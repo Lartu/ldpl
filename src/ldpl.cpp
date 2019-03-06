@@ -34,8 +34,8 @@ int main(int argc, const char* argv[])
     }
     
     compiler_state state; //Compiler state (holds variables, sections, functions, etc)
-    state.variables.push_back(make_pair("ARGC", 1));
-    state.variables.push_back(make_pair("ARGV", 4));
+    state.variables["ARGC"] = 1;
+    state.variables["ARGV"] = 4;
     bool arguments_are_arguments = false;
     int argument_push_count = 0;
     vector<string> files_to_compile;
@@ -239,7 +239,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!variable_exists(tokens[0], state))
-            state.variables.push_back(make_pair(tokens[0], 1));
+            state.variables[tokens[0]] = 1;
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
@@ -252,7 +252,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!variable_exists(tokens[0], state))
-            state.variables.push_back(make_pair(tokens[0], 2));
+            state.variables[tokens[0]] = 2;
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //NVM
@@ -265,7 +265,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!variable_exists(tokens[0], state)){
-            state.variables.push_back(make_pair(tokens[0], 3));
+            state.variables[tokens[0]] = 3;
         }
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -276,7 +276,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!variable_exists(tokens[0], state)){
-            state.variables.push_back(make_pair(tokens[0], 4));
+            state.variables[tokens[0]] = 4;
         }
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -2134,15 +2134,13 @@ bool is_string(string & token){
 
 bool is_num_vector(string & token, compiler_state & state)
 {
-    for(pair<string, unsigned int> & var : state.variables)
-        if(var.first == token && var.second == 3) return true;
+    if(state.variables.count(token) > 0 && state.variables[token] == 3) return true;
     return false;
 }
 
 bool is_txt_vector(string & token, compiler_state & state)
 {
-    for(pair<string, unsigned int> & var : state.variables)
-        if(var.first == token && var.second == 4) return true;
+    if(state.variables.count(token) > 0 && state.variables[token] == 4) return true;
     return false;
 }
 
@@ -2170,8 +2168,7 @@ bool is_vector_index(queue<string> & token, compiler_state & state)
 bool is_num_var(string & token, compiler_state & state)
 {
     //Veo si var
-    for(pair<string, unsigned int> & var : state.variables)
-        if(var.first == token && var.second == 1) return true;
+    if(state.variables.count(token) > 0 && state.variables[token] == 1) return true;
     //Veo si num_vector index
     queue<string> vpart;
     split_vector(token, vpart);
@@ -2180,8 +2177,7 @@ bool is_num_var(string & token, compiler_state & state)
 
 bool is_txt_var(string & token, compiler_state & state)
 {
-    for(pair<string, unsigned int> & var : state.variables)
-        if(var.first == token && var.second == 2) return true;
+    if(state.variables.count(token) > 0 && state.variables[token] == 2) return true;
     //Veo si num_vector index
     queue<string> vpart;
     split_vector(token, vpart);
@@ -2258,9 +2254,7 @@ void split_vector(string & line, queue<string> & tokens)
  un subíndice de vector no sería una variable.*/
 bool variable_exists(string & token, compiler_state & state)
 {
-    for(pair<string, unsigned int> & var : state.variables)
-        if(var.first == token) return true;
-    return false;
+    return state.variables.count(token) > 0;
 }
 
 bool is_subprocedure(string & token, compiler_state & state)
@@ -2272,10 +2266,15 @@ bool is_subprocedure(string & token, compiler_state & state)
 
 void get_var_value(compiler_state & state, string & variable)
 {
+	int vartype;
     queue<string> vpart;
     split_vector(variable, vpart);
     if(vpart.size() == 1){
-        state.add_code("AUX:"+variable);
+		vartype = state.variables[variable];
+		if(vartype == 2 || vartype == 4)
+			state.add_code("AUX-S:"+variable);
+		else
+			state.add_code("AUX:"+variable);
         return;
     }
     stack<string> token;
@@ -2288,7 +2287,13 @@ void get_var_value(compiler_state & state, string & variable)
     string t = token.top();
     token.pop();
     if(is_number(t) || is_string(t)) state.add_code(t);
-    else state.add_code("AUX:" + t);
+    else{
+		vartype = state.variables[t];
+		if(vartype == 2 || vartype == 4)
+			state.add_code("AUX-S:"+t);
+		else
+			state.add_code("AUX:"+t);
+	}
     
     while(!token.empty())
     {
@@ -2298,7 +2303,11 @@ void get_var_value(compiler_state & state, string & variable)
         state.add_code("SWAP");
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        state.add_code("AUX-POP");
+        vartype = state.variables[t];
+		if(vartype == 2 || vartype == 4)
+			state.add_code("AUX-S-POP");
+		else
+			state.add_code("AUX-POP");
     }
 }
 
@@ -2321,7 +2330,13 @@ void set_var_value(compiler_state & state, string & variable)
     string t = token.top();
     token.pop();
     if(is_number(t) || is_string(t)) state.add_code(t);
-    else state.add_code("AUX:" + t);
+    else{
+		vartype = state.variables[t];
+		if(vartype == 2 || vartype == 4)
+			state.add_code("AUX-S:"+t);
+		else
+			state.add_code("AUX:"+t);
+	}
     
     while(!token.empty())
     {
@@ -2331,9 +2346,13 @@ void set_var_value(compiler_state & state, string & variable)
         state.add_code("SWAP");
         state.add_code("TO-STR");
         state.add_code("JOIN");
-        if(!token.empty())
-            state.add_code("AUX-POP");
-        else{
+        if(!token.empty()){
+            vartype = state.variables[t];
+			if(vartype == 2 || vartype == 4)
+				state.add_code("AUX-S-POP");
+			else
+				state.add_code("AUX-POP");
+        }else{
             state.add_code("SWAP");
             state.add_code("TOAUX-POP");
         }
