@@ -2314,6 +2314,7 @@ void get_var_value(compiler_state & state, string & variable)
 //Setea el valor de una variable o vector
 void set_var_value(compiler_state & state, string & variable)
 {
+	int vartype;
     queue<string> vpart;
     split_vector(variable, vpart);
     if(vpart.size() == 1){
