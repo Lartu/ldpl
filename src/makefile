@@ -1,7 +1,7 @@
 SOURCE = ldpl.cpp
 
 OUT=ldpl
-STANDARD="11"
+STANDARD="19"
 COMPILEDATE="$(shell date)"
 VERSION="1.1.2"
 
