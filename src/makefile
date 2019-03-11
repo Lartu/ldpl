@@ -1,5 +1,4 @@
 SOURCE = ldpl.cpp
-
 OUT=ldpl
 STANDARD="19"
 COMPILEDATE="$(shell date)"
@@ -10,7 +9,7 @@ CXXFLAGS += -Wall -DVERSION='$(VERSION)' -DCOMPILEDATE='$(COMPILEDATE)' \
 
 ifneq ($(STATIC), n)
 	LDFLAGS += -static
-	CXXFLAGS += -static-libgcc -static-libstdc++
+	CXXFLAGS += -static-libgcc -static-libstdc++ -std=c++11
 endif
 
 all: $(OUT)
