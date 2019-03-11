@@ -25,7 +25,7 @@ int main(int argc, const char* argv[])
         cout << "Usage: ldpl [options] file [arguments]" << endl;
         cout << "Options:" << endl;
         cout << "  -h --help                Display this information" << endl;
-        cout << "  -r                       Display internal representation of the program" << endl;
+        cout << "  -r                       Display generated C++ code" << endl;
         cout << "  -i=<file>                Include file in current compilation" << endl;
 		cout << "  -v --version             Display LDPL version information" << endl;
         return 0;
