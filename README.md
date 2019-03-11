@@ -1,10 +1,9 @@
 ![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
-[LDPL](http://ldpl.lartu.net/) is a programming language designed to be very easy to read and understand.
-Also as a joke, as its syntax is based on that from COBOL.
+[LDPL](http://ldpl.lartu.net/) LDPL is a very simple programming language designed from the ground up to be excessively expressive, readable and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of [the good parts of] older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux and PowerPC Mac OS X. It even supports UTF-8 out of the box.
 
-This repository contains the source for the LDPL interpreter.
-Check http://ldpl.lartu.net/ for more information on the language, tutorials and examples.
+This repository contains the source code and releases of the LDPL interpreter.
+Check http://ldpl.lartu.net/ for more information on the language, tutorials, examples and more!
 
 ## About the language
 
