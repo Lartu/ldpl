@@ -36,7 +36,7 @@ int main(int argc, const char* argv[])
     compiler_state state; //Compiler state (holds variables, sections, functions, etc)
     vector<string> files_to_compile;
     state.add_code("int main(int argc, char *argv[]){"); //TODO poner Argv y Argc
-    state.add_code("cout.precision(numeric_limits<double>::digits10);");
+    state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
     
     //Check arguments
     if(args.size() >= 1){
@@ -54,7 +54,7 @@ int main(int argc, const char* argv[])
     }
     
     state.variables["ARGC"] = 1;
-    state.add_var_code("double "+fix_identifier("ARGC", true)+";");
+    state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
     state.variables["ARGV"] = 4;
     state.add_var_code("ldpl_str_vector "+fix_identifier("ARGV", true)+";");
     state.add_code(fix_identifier("ARGC", true)+" = argc;");
@@ -254,7 +254,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_var_code("double " + fix_identifier(tokens[0], true) + " = 0;");
+        state.add_var_code("ldpl_number " + fix_identifier(tokens[0], true) + " = 0;");
         return;
     }
     if(line_like("$name IS TEXT", tokens, state))

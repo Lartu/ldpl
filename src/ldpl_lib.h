@@ -7,21 +7,22 @@
 #include <stdlib.h>
 
 #define NVM_FLOAT_EPSILON 0.00000001
+#define ldpl_number long double
 
 using namespace std;
 
 struct ldpl_num_vector{
-    map<string, double> inner_map;
-    double operator [] (string & i) const {
+    map<string, ldpl_number> inner_map;
+    ldpl_number operator [] (string & i) const {
         return inner_map.at(i);
     }
-    double& operator [] (string & i) {
+    ldpl_number& operator [] (string & i) {
         return inner_map[i];
     }
-    double operator [] (double i) const {
+    ldpl_number operator [] (ldpl_number i) const {
         return inner_map.at(to_string(i));
     }
-    double& operator [] (double i) {
+    ldpl_number& operator [] (ldpl_number i) {
         return inner_map[to_string(i)];
     }
 };
@@ -34,20 +35,20 @@ struct ldpl_str_vector{
     string& operator [] (string & i) {
         return inner_map[i];
     }
-    string operator [] (double i) const {
+    string operator [] (ldpl_number i) const {
         return inner_map.at(to_string(i));
     }
-    string& operator [] (double i) {
+    string& operator [] (ldpl_number i) {
         return inner_map[to_string(i)];
     }
 };
 
-double input_number(){
+ldpl_number input_number(){
     string s = "";
     while(true){
         getline(cin, s);
         try {
-            double num = stod(s);
+            ldpl_number num = stod(s);
             return num;
         }
         catch (const std::invalid_argument& ia) {
@@ -56,11 +57,11 @@ double input_number(){
     }
 }
 
-bool num_equal(double a, double b){
+bool num_equal(ldpl_number a, ldpl_number b){
     return fabs(a - b) < NVM_FLOAT_EPSILON;
 }
 
-double modulo(double a, double b){
+ldpl_number modulo(ldpl_number a, ldpl_number b){
     return (int) floor(a) % (int) floor(b);
 }
 
@@ -124,11 +125,11 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
     return str.substr(realstart,reallength);
 }
 
-double str_len(string & a){
+ldpl_number str_len(string & a){
     return utf8_strlen(a);
 }
 
-double get_char_num(string & chr){
+ldpl_number get_char_num(string & chr){
     if (chr.size() != 1) {
             cerr << "\033[1;31mError: GET CHAR AT expects a string of length 1, got: \033[1;37m";
             cerr << chr << endl;
@@ -139,7 +140,7 @@ double get_char_num(string & chr){
     return ord;
 }
 
-string charat(string & s, double & pos){
+string charat(string & s, ldpl_number & pos){
     unsigned int _pos = floor(pos);
     return utf8_substr(s, pos, 1);
 }
