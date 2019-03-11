@@ -57,6 +57,24 @@ ldpl_number input_number(){
     }
 }
 
+string input_string(){
+    string s = "";
+    getline(cin, s);
+    return s;
+}
+
+string input_until_eof(){
+    stringstream full;
+    string s;
+    bool firstLine = true;
+    while (getline(cin, s)) {
+        if(!firstLine) s = "\n" + s;
+        firstLine = false;
+        full << s;
+    }
+    return full.str();
+}
+
 bool num_equal(ldpl_number a, ldpl_number b){
     return fabs(a - b) < NVM_FLOAT_EPSILON;
 }

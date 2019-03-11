@@ -1,11 +1,9 @@
 //TODO:
 //Documentar stdlib
 //Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
-//Hacer que \n ponga un salto de linea porque sino no hay forma de guardar un string con linebreaks
-//Ver si aclare como se inicializan por default las variables
-//Documentar secuencias de escape
 
 #include "ldpl.h"
+#include "ldpl_included_lib.h"
 
 //Show internal representation
 bool show_ir = false;
@@ -35,6 +33,7 @@ int main(int argc, const char* argv[])
     
     compiler_state state; //Compiler state (holds variables, sections, functions, etc)
     vector<string> files_to_compile;
+    add_ldpllib(state);
     state.add_code("int main(int argc, char *argv[]){"); //TODO poner Argv y Argc
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
     
@@ -48,7 +47,7 @@ int main(int argc, const char* argv[])
                 show_ir = true;
             }
             else if(arg.substr(0, 3) == "-i="){
-                files_to_compile.push_back(arg.substr(3));
+                files_to_compile.insert(files_to_compile.begin(), arg.substr(3)); 
             }
         }
     }
@@ -78,7 +77,7 @@ int main(int argc, const char* argv[])
     
     //If only IR was required
     if(show_ir){
-		//cout << "\033[35;1mLDPL - Showing generated C code:\033[0m" << endl;
+		cout << "\033[35;1mLDPL - Showing generated C code:\033[0m" << endl;
         cout << "#include \"ldpl_lib.h\"" << endl;
         for(string line : state.variable_code) cout << line << endl;
 		for(string line : state.subroutine_code) cout << line << endl;
@@ -86,7 +85,19 @@ int main(int argc, const char* argv[])
 		exit(0);
 	}
 	//Run the compiled code
-	//TODO compilar acá acá el código CSS
+    ofstream myfile;
+    myfile.open ("ldpl-temp.cpp");
+    for(string line : state.variable_code) myfile << line << endl;
+    for(string line : state.subroutine_code) myfile << line << endl;
+    for(string line : state.output_code) myfile << line << endl;
+    myfile.close();
+	int compiled = system("c++ ldpl-temp.cpp -std=c++11 -o ldpl.out");
+    system("rm ldpl-temp.cpp");
+    if(compiled == 0){
+        cout << "\033[35;1mLDPL: file(s) compiled successfully.\033[0m" << endl;
+    }else{
+        error("compilation failed.");
+    }
 }
 
 void load_and_compile(string & filename, compiler_state & state)
@@ -140,7 +151,14 @@ void compile(vector<string> & lines, compiler_state & state)
         if(tokens.size() == 0) continue;
         compile_line(tokens, line_num, state);
     }
-    //TODO: si llega acá y hay ifs sin cerrar o procedures sin cerrar, te comés puteada
+    if(state.if_stack.size() > 0){
+        error("there may be open IF blocks in your code.");
+        exit(1);
+    }
+    if(state.while_stack.size() > 0){
+        error("there may be open WHILE blocks in your code.");
+        exit(1);
+    }
 }
 
 //Tokenizes a line
