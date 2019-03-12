@@ -30,39 +30,42 @@ int main(int argc, const char* argv[])
 		cout << "  -v --version             Display LDPL version information" << endl;
         return 0;
     }
-    
+
     compiler_state state; //Compiler state (holds variables, sections, functions, etc)
     vector<string> files_to_compile;
     add_ldpllib(state);
-    state.add_code("int main(int argc, char *argv[]){"); //TODO poner Argv y Argc
+    state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
-    
+
+	string output_filename = "";
+
     //Check arguments
     if(args.size() >= 1){
         for(string & arg : args){
             if(arg.size() > 1 && arg[0] != '-'){
+				if(output_filename == "") output_filename = arg;
                 files_to_compile.push_back(arg);
             }
             else if(arg == "-r"){
                 show_ir = true;
             }
             else if(arg.substr(0, 3) == "-i="){
-                files_to_compile.insert(files_to_compile.begin(), arg.substr(3)); 
+                files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
             }
         }
     }
-    
+
     state.variables["ARGC"] = 1;
     state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
     state.variables["ARGV"] = 4;
     state.add_var_code("ldpl_str_vector "+fix_identifier("ARGV", true)+";");
-    state.add_code(fix_identifier("ARGC", true)+" = argc;");
     state.add_code("for(int i = 1; i < argc; ++i)");
     state.add_code(fix_identifier("ARGV", true) + "[i-1] = argv[i];");
-    
+    state.add_code(fix_identifier("ARGC", true)+" = argc - 1;");
+
     //Fail if file was not passed
     if(files_to_compile.size() == 0) error("Filename expected.");
-    
+
     //For each file, compile each file into one big code
     for(string & filename : files_to_compile)
     {
@@ -74,7 +77,7 @@ int main(int argc, const char* argv[])
         load_and_compile(filename, state);
     }
     state.add_code("return 0; \n}");
-    
+
     //If only IR was required
     if(show_ir){
 		cout << "\033[35;1mLDPL - Showing generated C code:\033[0m" << endl;
@@ -91,7 +94,19 @@ int main(int argc, const char* argv[])
     for(string line : state.subroutine_code) myfile << line << endl;
     for(string line : state.output_code) myfile << line << endl;
     myfile.close();
-	int compiled = system("c++ ldpl-temp.cpp -std=c++11 -o ldpl.out");
+
+	//Generate output filename
+	string final_filename = "";
+	for(unsigned int i = 0; i < output_filename.size(); ++i){
+		if(output_filename[i] != '.')
+			final_filename += output_filename[i];
+		else
+			break;
+	}
+	if(final_filename.size() == 0) final_filename = "ldpl-output";
+	final_filename += "-bin";
+	string compile_line = "c++ ldpl-temp.cpp -std=c++11 -o " + final_filename;
+	int compiled = system(compile_line.c_str());
     system("rm ldpl-temp.cpp");
     if(compiled == 0){
         cout << "\033[35;1mLDPL: file(s) compiled successfully.\033[0m" << endl;
@@ -1516,7 +1531,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = to_string(" + tokens[3] +");");
+        state.add_code(get_c_variable(state, tokens[3]) + " = to_string(" + tokens[1] +");");
         return;
     }
 	if(line_like("STORE $num-var IN $str-var", tokens, state))
@@ -1524,7 +1539,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = to_string(" + get_c_variable(state, tokens[3]) +");");
+        state.add_code(get_c_variable(state, tokens[3]) + " = to_string(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
 	if(line_like("STORE $string IN $num-var", tokens, state))
@@ -1532,7 +1547,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = stod(" + tokens[3] +");");
+        state.add_code(get_c_variable(state, tokens[3]) + " = to_number(" + tokens[1] +");");
         return;
     }
 	if(line_like("STORE $str-var IN $num-var", tokens, state))
@@ -1540,7 +1555,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = stod(" + get_c_variable(state, tokens[3]) +");");
+        state.add_code(get_c_variable(state, tokens[3]) + " = to_number(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
 

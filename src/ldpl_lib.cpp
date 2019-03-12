@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #define NVM_FLOAT_EPSILON 0.00000001
-#define ldpl_number long double
+#define ldpl_number double
 
 using namespace std;
 
@@ -57,6 +57,17 @@ ldpl_number input_number(){
         }
     }
 }
+
+ldpl_number to_number(string & a){
+    try {
+        ldpl_number num = stod(a);
+        return num;
+    }
+    catch (const std::invalid_argument& ia) {
+		return 0;
+    }
+}
+
 
 string input_string(){
     string s = "";
@@ -180,4 +191,12 @@ string exec(const char* cmd) {
         result += buffer.data();
     }
     return result;
+}
+
+#include <random>
+
+ldpl_number get_random(){
+	ldpl_number r = rand() * NVM_FLOAT_EPSILON;
+    r = r - (int) r;
+	return r;
 }
