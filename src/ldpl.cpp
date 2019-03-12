@@ -309,9 +309,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         }
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        return;
         //C Code
         state.add_var_code("ldpl_str_vector " + fix_identifier(tokens[0], true) + ";");
+        return;
     }
     if(line_like("DISPLAY $display", tokens, state))
     {
@@ -352,7 +352,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("input_until_eof("+get_c_variable(state, tokens[1])+");");
+        state.add_code(get_c_variable(state, tokens[1])+" = input_until_eof();");
         return;
     }
     if(line_like("STORE $num-var IN $num-var", tokens, state))
