@@ -1,4 +1,5 @@
 void add_ldpllib(compiler_state & state){
+state.add_var_code("#include <sstream>");
 state.add_var_code("#include <math.h>");
 state.add_var_code("#include <iostream>");
 state.add_var_code("#include <string>");
@@ -69,7 +70,7 @@ state.add_var_code("stringstream full;");
 state.add_var_code("string s;");
 state.add_var_code("bool firstLine = true;");
 state.add_var_code("while (getline(cin, s)) {");
-state.add_var_code("if(!firstLine) s = \"\n\" + s;");
+state.add_var_code("if(!firstLine) s = \"\\n\" + s;");
 state.add_var_code("firstLine = false;");
 state.add_var_code("full << s;");
 state.add_var_code("}");

@@ -1,3 +1,4 @@
+#include <sstream>
 #include <math.h>
 #include <iostream>
 #include <string>
