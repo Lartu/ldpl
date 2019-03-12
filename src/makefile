@@ -8,12 +8,11 @@ LFLAGS = -static-libgcc -static-libstdc++
 
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
-	rm ldpl.o
 
 ldpl.o: ldpl.cpp
 	echo "If compilation fails under Windows, try removing the -std=c++11 flag."
 	php lib-to-string.php > ldpl_included_lib.h 
-	$(CC) $(FLAGS) ldpl.cpp -fpermissive -DVERSION='"1.1.2"' -DCOMPILEDATE='"$(shell date)"' -DSTANDARD=11
+	$(CC) $(FLAGS) ldpl.cpp -fpermissive -DVERSION='"2.0.1"' -DCOMPILEDATE='"$(shell date)"' -DSTANDARD=11
 
 
 clean:

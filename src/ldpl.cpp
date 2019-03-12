@@ -1709,7 +1709,7 @@ bool is_vector_index(queue<string> & token, compiler_state & state)
     }
     else if(token.size() == 1){
         if(!is_vector(current_token, state)) return false;
-        if(!is_num_var(token.front(), state) && !is_number(token.front()) && !is_string(token.front())) return false;
+        if(is_vector(token.front(), state)) return false;
         return true;
     }
     return false;
@@ -1837,7 +1837,8 @@ string get_c_variable(compiler_state & state, string & variable)
     
     for(unsigned int i = 1; i < token.size(); ++i){
         newvar += "[";
-        if(is_variable(token[i], state))
+        if(is_variable(token[i], state) || is_num_vector(token[i], state) || is_txt_vector(token[i], state))
+		//Pongo esto porque el is_variable requiere que tenga subindices y acá le paso solo el nombre del vector
             newvar += fix_identifier(token[i], true);
         else
             newvar += token[i];
