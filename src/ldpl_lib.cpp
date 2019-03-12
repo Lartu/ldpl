@@ -58,7 +58,7 @@ ldpl_number input_number(){
     }
 }
 
-ldpl_number to_number(string & a){
+ldpl_number to_number(const string & a){
     try {
         ldpl_number num = stod(a);
         return num;
@@ -155,11 +155,11 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
     return str.substr(realstart,reallength);
 }
 
-ldpl_number str_len(string & a){
+ldpl_number str_len(const string & a){
     return utf8_strlen(a);
 }
 
-ldpl_number get_char_num(string & chr){
+ldpl_number get_char_num(const string & chr){
     if (chr.size() != 1) {
             cerr << "Runtime Error: GET CHAR AT expects a string of length 1, got: ";
             cerr << chr << endl;
@@ -169,7 +169,7 @@ ldpl_number get_char_num(string & chr){
     return ord;
 }
 
-string charat(string & s, ldpl_number & pos){
+string charat(const string & s, ldpl_number pos){
     unsigned int _pos = floor(pos);
     return utf8_substr(s, pos, 1);
 }
