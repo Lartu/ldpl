@@ -1,7 +1,7 @@
 <?php
     //This file converts ldpl_lib.h to ldpl_included_lib.h
 
-    $lib = file_get_contents("ldpl_lib.h");
+    $lib = file_get_contents("ldpl_lib.cpp");
     $lib = str_replace('"', '\\"', $lib);
     $lib = str_replace("\\n", "\\\\n", $lib);
     $lines = explode("\n", $lib);
