@@ -3,7 +3,7 @@
 //Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
 
 #include "ldpl.h"
-#include "ldpl_included_lib.h"
+#include "ldpl_included_lib.cpp"
 
 //Show internal representation
 bool show_ir = false;
