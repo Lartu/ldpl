@@ -1583,7 +1583,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
 }
 
 string fix_identifier(string identifier, bool isVariable){
-    string new_id = isVariable ? "var_" : "subpr_";
+    string new_id = isVariable ? "VAR_" : "SUBPR_";
     for(unsigned int i = 0; i < identifier.size(); ++i){
 		bool isValidChar = false;
 		string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
