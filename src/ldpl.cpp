@@ -376,7 +376,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + tokens[1] + ";");
+        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
         return;
     }
     if(line_like("STORE $string IN $str-var", tokens, state))
@@ -1585,7 +1585,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
 string fix_identifier(string identifier, bool isVariable){
     string new_id = isVariable ? "var_" : "subpr_";
     for(unsigned int i = 0; i < identifier.size(); ++i){
-        if(!isalnum(identifier[i]) && identifier[i] != ':'){
+		bool isValidChar = false;
+		string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+		for(unsigned int j = 0; j < validChars.size(); ++j)
+			if(validChars[j] == identifier[i]){
+				isValidChar = true;
+				break;
+			}
+        if(!isValidChar && identifier[i] != ':'){
             char newchar = (((int) identifier[i]) % 25) + 65;
             new_id += "r_";
             new_id += newchar;
