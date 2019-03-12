@@ -80,8 +80,6 @@ int main(int argc, const char* argv[])
 
     //If only IR was required
     if(show_ir){
-		cout << "\033[35;1mLDPL - Showing generated C code:\033[0m" << endl;
-        cout << "#include \"ldpl_lib.h\"" << endl;
         for(string line : state.variable_code) cout << line << endl;
 		for(string line : state.subroutine_code) cout << line << endl;
         for(string line : state.output_code) cout << line << endl;
