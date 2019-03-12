@@ -105,11 +105,13 @@ int main(int argc, const char* argv[])
 	}
 	if(final_filename.size() == 0) final_filename = "ldpl-output";
 	final_filename += "-bin";
-	string compile_line = "c++ ldpl-temp.cpp -std=c++11 -o " + final_filename;
+	cout << "LDPL: Compiling..." << endl;
+	string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
 	int compiled = system(compile_line.c_str());
     system("rm ldpl-temp.cpp");
     if(compiled == 0){
-        cout << "\033[35;1mLDPL: file(s) compiled successfully.\033[0m" << endl;
+        cout << "*\033[32;1m File(s) compiled successfully.\033[0m" << endl;
+		cout << "* Saved as " << final_filename << endl;
     }else{
         error("compilation failed.");
     }

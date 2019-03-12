@@ -3,9 +3,9 @@ BEGIN{
 	print "void add_ldpllib(compiler_state & state){";
 }
 {
-	gsub("\"", "\\\"", $line);
-	gsub("\\n", "\\\\n", $line);
-	print "    state.add_var_code(\"" $line "\");";
+	gsub("\"", "\\\"", $0);
+	gsub(/\\n/, "\\\\n", $0);
+	print "    state.add_var_code(\"" $0 "\");";
 }
 END{
 	print "}";
