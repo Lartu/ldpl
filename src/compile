@@ -1,0 +1,4 @@
+echo "If compilation fails under Windows, try removing the -std=c++11 flag."
+php lib-to-string.php > ldpl_included_lib.h 
+make clean
+make

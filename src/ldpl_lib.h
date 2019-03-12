@@ -65,13 +65,13 @@ string input_string(){
 }
 
 string input_until_eof(){
-    stringstream full;
-    string s;
+	stringstream full;
+	string s = "";
     bool firstLine = true;
     while (getline(cin, s)) {
         if(!firstLine) s = "\n" + s;
         firstLine = false;
-        full << s;
+		full << s;
     }
     return full.str();
 }
@@ -150,9 +150,8 @@ ldpl_number str_len(string & a){
 
 ldpl_number get_char_num(string & chr){
     if (chr.size() != 1) {
-            cerr << "\033[1;31mError: GET CHAR AT expects a string of length 1, got: \033[1;37m";
+            cerr << "Runtime Error: GET CHAR AT expects a string of length 1, got: ";
             cerr << chr << endl;
-            cerr << "\033[0m" << endl;
             exit(1);
     }
     int ord = chr[0];
