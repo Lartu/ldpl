@@ -14,6 +14,9 @@ using namespace std;
 
 struct ldpl_num_vector{
     map<string, ldpl_number> inner_map;
+    ldpl_number& operator [] (const char* i) {
+        return inner_map[string(i)];
+    }
     ldpl_number operator [] (string & i) const {
         return inner_map.at(i);
     }
@@ -33,6 +36,9 @@ struct ldpl_num_vector{
 
 struct ldpl_str_vector{
     map<string, string> inner_map;
+    string& operator [] (const char* i) {
+        return inner_map[string(i)];
+    }
     string operator [] (string & i) const {
         return inner_map.at(i);
     }

@@ -15,6 +15,9 @@ void add_ldpllib(compiler_state & state){
     state.add_var_code("");
     state.add_var_code("struct ldpl_num_vector{");
     state.add_var_code("    map<string, ldpl_number> inner_map;");
+    state.add_var_code("    ldpl_number& operator [] (const char* i) {");
+    state.add_var_code("        return inner_map[string(i)];");
+    state.add_var_code("    }");
     state.add_var_code("    ldpl_number operator [] (string & i) const {");
     state.add_var_code("        return inner_map.at(i);");
     state.add_var_code("    }");
@@ -34,6 +37,9 @@ void add_ldpllib(compiler_state & state){
     state.add_var_code("");
     state.add_var_code("struct ldpl_str_vector{");
     state.add_var_code("    map<string, string> inner_map;");
+    state.add_var_code("    string& operator [] (const char* i) {");
+    state.add_var_code("        return inner_map[string(i)];");
+    state.add_var_code("    }");
     state.add_var_code("    string operator [] (string & i) const {");
     state.add_var_code("        return inner_map.at(i);");
     state.add_var_code("    }");
