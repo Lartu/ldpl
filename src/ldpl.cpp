@@ -1501,6 +1501,22 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = str_len(" + tokens[3] + ");");
         return;
     }
+    if(line_like("STORE LENGTH OF $str-vec IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".length();");
+        return;
+    }
+    if(line_like("STORE LENGTH OF $num-vec IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".length();");
+        return;
+    }
 	//Desde acá faltan en el standard
     if(line_like("STORE RANDOM IN $num-var", tokens, state))
     {
@@ -1650,6 +1666,14 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$number") //$number is a number (?
         {
             if(!is_number(tokens[i])) return false;
+        }
+        else if(model_tokens[i] == "$str-vec") //$str-vec is TEXT vector
+        {
+            if(!is_txt_vector(tokens[i], state)) return false;
+        }
+        else if(model_tokens[i] == "$num-vec") //$num-vec is NUMBER vector
+        {
+            if(!is_num_vector(tokens[i], state)) return false;
         }
         else if(model_tokens[i] == "$natural") //$natural is an integer greater than 0
         {
