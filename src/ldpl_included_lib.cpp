@@ -30,6 +30,9 @@ void add_ldpllib(compiler_state & state){
     state.add_var_code("    ldpl_number& operator [] (ldpl_number i) {");
     state.add_var_code("        return inner_map[to_string(i)];");
     state.add_var_code("    }");
+    state.add_var_code("    ldpl_number& operator [] (int i) {");
+    state.add_var_code("        return inner_map[to_string(i)];");
+    state.add_var_code("    }");
     state.add_var_code("    ldpl_number length() {");
     state.add_var_code("        return (int) inner_map.size();");
     state.add_var_code("    }");
@@ -50,6 +53,9 @@ void add_ldpllib(compiler_state & state){
     state.add_var_code("        return inner_map.at(to_string(i));");
     state.add_var_code("    }");
     state.add_var_code("    string& operator [] (ldpl_number i) {");
+    state.add_var_code("        return inner_map[to_string(i)];");
+    state.add_var_code("    }");
+    state.add_var_code("    string& operator [] (int i) {");
     state.add_var_code("        return inner_map[to_string(i)];");
     state.add_var_code("    }");
     state.add_var_code("    ldpl_number length() {");

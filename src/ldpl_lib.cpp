@@ -29,6 +29,9 @@ struct ldpl_num_vector{
     ldpl_number& operator [] (ldpl_number i) {
         return inner_map[to_string(i)];
     }
+    ldpl_number& operator [] (int i) {
+        return inner_map[to_string(i)];
+    }
     ldpl_number length() {
         return (int) inner_map.size();
     }
@@ -49,6 +52,9 @@ struct ldpl_str_vector{
         return inner_map.at(to_string(i));
     }
     string& operator [] (ldpl_number i) {
+        return inner_map[to_string(i)];
+    }
+    string& operator [] (int i) {
         return inner_map[to_string(i)];
     }
     ldpl_number length() {
