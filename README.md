@@ -21,6 +21,8 @@ Then compile ource code using `ldpl source.lsc`. The compiled, executable binary
 Done! For more info on the compiler run `ldpl -h`.
 Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
+**Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
+
 ## Compiler options
 
  * You can import files to your LDPL compilation by using the `-i` flag. For example, say you have a library `mylib.ldpl` and a source file `mysource.ldpl`, you can compile both and include the library by running `ldpl -i=mylibrary.ldpl mysource.ldpl`. Multiple `-i=` can be used to import multiple files.
