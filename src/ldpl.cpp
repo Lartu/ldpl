@@ -246,7 +246,14 @@ void capitalize_tokens(vector<string> & tokens)
 {
     for(string & token : tokens)
     {
-            if(!is_number(token) && !is_string(token))
+            if(is_vector_index(token))
+            {
+                for(char & l : token){
+                    if (l == ':') break;
+                    l = toupper(l);
+                }
+            }
+            else if(!is_number(token) && !is_string(token))
             {
                 for(char & l : token){
                     l = toupper(l);
@@ -1717,6 +1724,11 @@ bool is_natural(string number){
 
 bool is_string(string & token){
     return (token.size() >= 2 && token[0] == '"' && token[token.size()-1] == '"');
+}
+
+bool is_vector_index(string & token)
+{
+    return token.size() >= 2 && token[0] != '"' && token[token.size()-1] == '"';
 }
 
 bool is_num_vector(string & token, compiler_state & state)
