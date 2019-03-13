@@ -206,14 +206,14 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
             {
                 char next_letter = line[++i];
                 switch(next_letter) 
-		{
-			case '\\': case '"': case '0':
-			case 'a': case 'b': case 't': case 'n': 
-			case 'v': case 'f': case 'r': case 'e': 
-			    current_token += "\\" + string(1, next_letter);
-			    break;
-			default: 
-			    error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                {
+                    case '\\': case '"': case '0':
+                    case 'a': case 'b': case 't': case 'n': 
+                    case 'v': case 'f': case 'r': case 'e': 
+                        current_token += "\\" + string(1, next_letter);
+                    break;
+                    default: 
+                        error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
                 }
             }
             else error("\\ found alone (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1805,14 +1805,14 @@ void split_vector(string & line, queue<string> & tokens)
             {
                 char next_letter = line[++i];
                 switch(next_letter) 
-		{
-			case '\\': case '"': case '0':
-			case 'a': case 'b': case 't': case 'n': 
-			case 'v': case 'f': case 'r': case 'e': 
-			    current_token += "\\" + string(1, next_letter);
-			    break;
-			default: 
-			    error("unknown escape sequence on a VECTOR access `" + current_token + "` in: " + line);
+                {
+                    case '\\': case '"': case '0':
+                    case 'a': case 'b': case 't': case 'n': 
+                    case 'v': case 'f': case 'r': case 'e': 
+                        current_token += "\\" + string(1, next_letter);
+                    break;
+                    default: 
+                        error("unknown escape sequence on a VECTOR access `" + current_token + "` in: " + line);
                 }
             }
             else error("\\ found alone on a VECTOR access.");
