@@ -1504,7 +1504,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     if(line_like("STORE LENGTH OF $str-vec IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
-            error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("STORE LENGTH OF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".length();");
         return;
@@ -1512,7 +1512,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     if(line_like("STORE LENGTH OF $num-vec IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
-            error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("STORE LENGTH OF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".length();");
         return;
