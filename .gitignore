@@ -2,3 +2,4 @@
 ldpl
 ldpl.o
 ldpl.exe
+ldpl_included_lib.cpp
