@@ -30,7 +30,7 @@ struct ldpl_num_vector{
         return inner_map[to_string(i)];
     }
     ldpl_number& operator [] (int i) {
-        return inner_map[to_string(i)];
+        return inner_map[to_string(ldpl_number(i))];
     }
     ldpl_number length() {
         return (int) inner_map.size();
@@ -55,7 +55,7 @@ struct ldpl_str_vector{
         return inner_map[to_string(i)];
     }
     string& operator [] (int i) {
-        return inner_map[to_string(i)];
+        return inner_map[to_string(ldpl_number(i))];
     }
     ldpl_number length() {
         return (int) inner_map.size();
