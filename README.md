@@ -38,3 +38,8 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 ## License
 
 LDPL is distributed under the GNU General Public License 3.0. The LDPL Dinosaur logo is released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/Lartu/ldpl/badge.svg?style=beer-square)](https://beerpay.io/Lartu/ldpl)  [![Beerpay](https://beerpay.io/Lartu/ldpl/make-wish.svg?style=flat-square)](https://beerpay.io/Lartu/ldpl?focus=wish)
