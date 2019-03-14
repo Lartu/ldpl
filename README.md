@@ -1,5 +1,6 @@
 # The LDPL Programming Language
-![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-2.1.1-blue.svg) ![Liberapay receiving](https://img.shields.io/liberapay/receives/lartu.svg) ![Liberapay patrons](https://img.shields.io/liberapay/patrons/lartu.svg)
+![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-2.1.1-blue.svg)
+![Liberapay patrons](https://img.shields.io/liberapay/patrons/lartu.svg)
 
 ![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
