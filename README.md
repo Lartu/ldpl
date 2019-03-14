@@ -37,4 +37,4 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## License
 
-LDPL is distributed under the GNU General Public License 3.0.
+LDPL is distributed under the GNU General Public License 3.0. The LDPL Dinosaur logo is released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
