@@ -4,7 +4,7 @@
 #include <string>
 #include <limits>
 #include <limits.h>
-#include <map>
+#include <unordered_map>
 #include <stdlib.h>
 
 #define NVM_FLOAT_EPSILON 0.00000001
@@ -12,53 +12,20 @@
 
 using namespace std;
 
-struct ldpl_num_vector{
-    map<string, ldpl_number> inner_map;
-    ldpl_number& operator [] (const char* i) {
-        return inner_map[string(i)];
-    }
-    ldpl_number operator [] (string & i) const {
-        return inner_map.at(i);
-    }
-    ldpl_number& operator [] (string & i) {
-        return inner_map[i];
-    }
-    ldpl_number operator [] (ldpl_number i) const {
-        return inner_map.at(to_string(i));
-    }
-    ldpl_number& operator [] (ldpl_number i) {
-        return inner_map[to_string(i)];
-    }
-    ldpl_number& operator [] (int i) {
-        return inner_map[to_string(ldpl_number(i))];
-    }
-    ldpl_number length() {
-        return (int) inner_map.size();
-    }
-};
+template<typename T>
+struct ldpl_vector {
+    unordered_map<string, T> inner_map;
 
-struct ldpl_str_vector{
-    map<string, string> inner_map;
-    string& operator [] (const char* i) {
-        return inner_map[string(i)];
-    }
-    string operator [] (string & i) const {
-        return inner_map.at(i);
-    }
-    string& operator [] (string & i) {
+    T& operator [] (const string& i) {
         return inner_map[i];
     }
-    string operator [] (ldpl_number i) const {
-        return inner_map.at(to_string(i));
-    }
-    string& operator [] (ldpl_number i) {
+
+    T& operator [] (ldpl_number i) {
         return inner_map[to_string(i)];
     }
-    string& operator [] (int i) {
-        return inner_map[to_string(ldpl_number(i))];
-    }
+
     ldpl_number length() {
-        return (int) inner_map.size();
+        return inner_map.size();
     }
 };
 
