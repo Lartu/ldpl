@@ -1,5 +1,5 @@
 # The LDPL Programming Language
-![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-2.1.1-blue.svg) ![Beerpay](https://img.shields.io/beerpay/Lartu/ldpl.svg) [![Beerpay](https://beerpay.io/Lartu/ldpl/make-wish.svg?style=flat-square)](https://beerpay.io/Lartu/ldpl?focus=wish)
+![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-2.1.1-blue.svg) [![Beerpay](https://beerpay.io/Lartu/ldpl/badge.svg?style=flat)](https://beerpay.io/Lartu/ldpl) [![Beerpay](https://beerpay.io/Lartu/ldpl/make-wish.svg?style=flat)](https://beerpay.io/Lartu/ldpl)
 
 ![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
