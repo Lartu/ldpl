@@ -1,3 +1,6 @@
+# The LDPL Programming Language
+![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-2.1.1-blue.svg)
+
 ![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
 [LDPL](http://ldpl.lartu.net/) is a very simple programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux and PowerPC Mac OS X. It even supports UTF-8 out of the box.
