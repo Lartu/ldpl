@@ -58,7 +58,7 @@ int main(int argc, const char* argv[])
     state.variables["ARGC"] = 1;
     state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
     state.variables["ARGV"] = 4;
-    state.add_var_code("ldpl_str_vector "+fix_identifier("ARGV", true)+";");
+    state.add_var_code("ldpl_vector<string> "+fix_identifier("ARGV", true)+";");
     state.add_code("for(int i = 1; i < argc; ++i)");
     state.add_code(fix_identifier("ARGV", true) + "[i-1] = argv[i];");
     state.add_code(fix_identifier("ARGC", true)+" = argc - 1;");
@@ -317,7 +317,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_var_code("ldpl_num_vector " + fix_identifier(tokens[0], true) + ";");
+        state.add_var_code("ldpl_vector<ldpl_number> " + fix_identifier(tokens[0], true) + ";");
         return;
     }
     if(line_like("$name IS TEXT VECTOR", tokens, state))
@@ -330,7 +330,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_var_code("ldpl_str_vector " + fix_identifier(tokens[0], true) + ";");
+        state.add_var_code("ldpl_vector<string> " + fix_identifier(tokens[0], true) + ";");
         return;
     }
     if(line_like("DISPLAY $display", tokens, state))
