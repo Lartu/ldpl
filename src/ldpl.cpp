@@ -1360,7 +1360,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_while();
-        state.add_code("while (" + tokens[1] + " == " + tokens[6] + "){");
+        state.add_code("while (" + tokens[1] + " != " + tokens[6] + "){");
         return;
     }
     if(line_like("WHILE $string IS NOT EQUAL TO $str-var DO", tokens, state))
@@ -1369,7 +1369,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_while();
-        state.add_code("while (" + tokens[1] + " == " + get_c_variable(state, tokens[6]) + "){");
+        state.add_code("while (" + tokens[1] + " != " + get_c_variable(state, tokens[6]) + "){");
         return;
     }
     if(line_like("WHILE $str-var IS NOT EQUAL TO $string DO", tokens, state))
@@ -1378,7 +1378,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_while();
-        state.add_code("while (" + get_c_variable(state, tokens[1]) + " == " + tokens[6] + "){");
+        state.add_code("while (" + get_c_variable(state, tokens[1]) + " != " + tokens[6] + "){");
         return;
     }
     if(line_like("WHILE $str-var IS NOT EQUAL TO $str-var DO", tokens, state))
@@ -1387,7 +1387,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_while();
-        state.add_code("while (" + get_c_variable(state, tokens[1]) + " == " + get_c_variable(state, tokens[6]) + "){");
+        state.add_code("while (" + get_c_variable(state, tokens[1]) + " != " + get_c_variable(state, tokens[6]) + "){");
         return;
     }
     
