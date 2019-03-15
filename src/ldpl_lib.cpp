@@ -23,10 +23,6 @@ struct ldpl_vector {
     T& operator [] (ldpl_number i) {
         return inner_map[to_string(i)];
     }
-
-    ldpl_number length() {
-        return inner_map.size();
-    }
 };
 
 ldpl_number input_number(){
