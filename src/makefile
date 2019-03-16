@@ -16,7 +16,7 @@ SOURCE = ldpl.cpp
 OUT = ldpl
 FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DSTANDARD=$(LDPLSTD) -DCOMPILEDATE='"$(shell date)"'
 ifneq ($(shell uname -s),Darwin)
-	LFLAGS = -static-libgcc -static-libstdc++ 
+	LFLAGS = -static-libgcc -static-libstdc++
 endif
 
 all: $(OBJS)
