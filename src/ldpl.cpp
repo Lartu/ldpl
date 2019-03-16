@@ -27,7 +27,7 @@ int main(int argc, const char* argv[])
         cout << "  -h --help                Display this information" << endl;
         cout << "  -r                       Display generated C++ code" << endl;
         cout << "  -i=<file>                Include file in current compilation" << endl;
-		cout << "  -v --version             Display LDPL version information" << endl;
+        cout << "  -v --version             Display LDPL version information" << endl;
         return 0;
     }
 
@@ -37,13 +37,13 @@ int main(int argc, const char* argv[])
     state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
 
-	string output_filename = "";
+    string output_filename = "";
 
     //Check arguments
     if(args.size() >= 1){
         for(string & arg : args){
             if(arg.size() > 1 && arg[0] != '-'){
-				if(output_filename == "") output_filename = arg;
+                if(output_filename == "") output_filename = arg;
                 files_to_compile.push_back(arg);
             }
             else if(arg == "-r"){
@@ -71,9 +71,9 @@ int main(int argc, const char* argv[])
     {
         //If it's an argument
         if(filename[0] == '-') continue;
-		//Reset state section for this file
-		state.section_state = 0;
-		state.current_file = filename;
+        //Reset state section for this file
+        state.section_state = 0;
+        state.current_file = filename;
         load_and_compile(filename, state);
     }
     state.add_code("return 0; \n}");
@@ -81,11 +81,11 @@ int main(int argc, const char* argv[])
     //If only IR was required
     if(show_ir){
         for(string line : state.variable_code) cout << line << endl;
-		for(string line : state.subroutine_code) cout << line << endl;
+        for(string line : state.subroutine_code) cout << line << endl;
         for(string line : state.output_code) cout << line << endl;
-		exit(0);
-	}
-	//Run the compiled code
+        exit(0);
+    }
+    //Run the compiled code
     ofstream myfile;
     myfile.open ("ldpl-temp.cpp");
     for(string line : state.variable_code) myfile << line << endl;
@@ -93,23 +93,23 @@ int main(int argc, const char* argv[])
     for(string line : state.output_code) myfile << line << endl;
     myfile.close();
 
-	//Generate output filename
-	string final_filename = "";
-	for(unsigned int i = 0; i < output_filename.size(); ++i){
-		if(output_filename[i] != '.')
-			final_filename += output_filename[i];
-		else
-			break;
-	}
-	if(final_filename.size() == 0) final_filename = "ldpl-output";
-	final_filename += "-bin";
-	cout << "LDPL: Compiling..." << endl;
-	string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
-	int compiled = system(compile_line.c_str());
+    //Generate output filename
+    string final_filename = "";
+    for(unsigned int i = 0; i < output_filename.size(); ++i){
+        if(output_filename[i] != '.')
+            final_filename += output_filename[i];
+        else
+            break;
+    }
+    if(final_filename.size() == 0) final_filename = "ldpl-output";
+    final_filename += "-bin";
+    cout << "LDPL: Compiling..." << endl;
+    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
+    int compiled = system(compile_line.c_str());
     system("rm ldpl-temp.cpp");
     if(compiled == 0){
         cout << "*\033[32;1m File(s) compiled successfully.\033[0m" << endl;
-		cout << "* Saved as " << final_filename << endl;
+        cout << "* Saved as " << final_filename << endl;
     }else{
         error("compilation failed.");
     }
@@ -125,21 +125,21 @@ void load_and_compile(string & filename, compiler_state & state)
     vector<string> lines;
     string line = "";
     while(getline(file, line))
-	{
-		replace_whitespace(line);
-		lines.push_back(line);
-	}
+    {
+        replace_whitespace(line);
+        lines.push_back(line);
+    }
     compile(lines, state);
 }
 
 //Replace all whitespace within string
 void replace_whitespace(string & code)
 {
-	for(char & c : code){
-		if(isspace(c)){
-			c = ' ';
-		}
-	}
+    for(char & c : code){
+        if(isspace(c)){
+            c = ' ';
+        }
+    }
 }
 
 //Shows error message and exits
@@ -205,14 +205,14 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
             if(i < line.size() - 1)
             {
                 char next_letter = line[++i];
-                switch(next_letter) 
+                switch(next_letter)
                 {
                     case '\\': case '"': case '0':
-                    case 'a': case 'b': case 't': case 'n': 
-                    case 'v': case 'f': case 'r': case 'e': 
+                    case 'a': case 'b': case 't': case 'n':
+                    case 'v': case 'f': case 'r': case 'e':
                         current_token += "\\" + string(1, next_letter);
                     break;
-                    default: 
+                    default:
                         error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
                 }
             }
@@ -265,7 +265,7 @@ void capitalize_tokens(vector<string> & tokens)
 //Compiles line per line
 void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state)
 {
-	string & current_file = state.current_file;
+    string & current_file = state.current_file;
     ++line_num;
     if(line_like("DATA:", tokens, state))
     {
@@ -339,7 +339,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("DISPLAY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         for(unsigned int i = 1; i < tokens.size(); ++i){
-			//TODO ADD COLORS HERE
+            //TODO ADD COLORS HERE
             if(tokens[i] == "CRLF"){
                 state.add_code("cout << endl;");
             }else if(is_variable(tokens[i], state)){
@@ -607,7 +607,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("join(" + tokens[1] + ", " + get_c_variable(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
-    
+
     if(line_like("JOIN $number AND $string IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
@@ -640,7 +640,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("join(to_string(" + tokens[1] + "), " + get_c_variable(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
-    
+
     if(line_like("JOIN $str-var AND $string IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
@@ -673,7 +673,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("join(" +get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
-    
+
     if(line_like("JOIN $num-var AND $string IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
@@ -776,7 +776,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.open_subprocedure = "";
         return;
     }
-    
+
     if(line_like("IF $number IS EQUAL TO $number THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -813,7 +813,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[5]) + ")){");
         return;
     }
-    
+
     if(line_like("IF $number IS NOT EQUAL TO $number THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -850,7 +850,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (!num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[6]) + ")){");
         return;
     }
-    
+
     if(line_like("IF $number IS GREATER THAN $number THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -887,7 +887,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (" + get_c_variable(state, tokens[1]) + " > " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
-    
+
     if(line_like("IF $number IS LESS THAN $number THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -923,7 +923,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (" + get_c_variable(state, tokens[1]) + " < " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
-    
+
     if(line_like("IF $number IS GREATER THAN OR EQUAL TO $number THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -960,7 +960,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (" + get_c_variable(state, tokens[1]) + " > " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
-    
+
     if(line_like("IF $number IS LESS THAN OR EQUAL TO $number THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -997,7 +997,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (" + get_c_variable(state, tokens[1]) + " < " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
-    
+
     if(line_like("IF $string IS EQUAL TO $string THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -1032,7 +1032,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (" + get_c_variable(state, tokens[1]) + " == " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
-    
+
     if(line_like("IF $string IS NOT EQUAL TO $string THEN", tokens, state))
     {
         if(state.section_state != 2)
@@ -1069,7 +1069,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("if (" + get_c_variable(state, tokens[1]) + " != " + get_c_variable(state, tokens[6]) + "){");
         return;
     }
-    
+
     if(line_like("ELSE", tokens, state))
     {
         if(state.section_state != 2)
@@ -1096,8 +1096,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("}");
         return;
     }
-    
-        if(line_like("WHILE $number IS EQUAL TO $number DO", tokens, state))
+
+    if(line_like("WHILE $number IS EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1133,7 +1133,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[5]) + ")){");
         return;
     }
-    
+
     if(line_like("WHILE $number IS NOT EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
@@ -1170,7 +1170,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (!num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[6]) + ")){");
         return;
     }
-    
+
     if(line_like("WHILE $number IS GREATER THAN $number DO", tokens, state))
     {
         if(state.section_state != 2)
@@ -1207,7 +1207,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " > " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
-    
+
     if(line_like("WHILE $number IS LESS THAN $number DO", tokens, state))
     {
         if(state.section_state != 2)
@@ -1244,7 +1244,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " < " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
-    
+
     if(line_like("WHILE $number IS GREATER THAN OR EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
@@ -1281,7 +1281,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " > " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
-    
+
     if(line_like("WHILE $number IS LESS THAN OR EQUAL TO $number DO", tokens, state))
     {
         if(state.section_state != 2)
@@ -1318,7 +1318,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " < " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
-    
+
     if(line_like("WHILE $string IS EQUAL TO $string DO", tokens, state))
     {
         if(state.section_state != 2)
@@ -1353,7 +1353,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " == " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
-    
+
     if(line_like("WHILE $string IS NOT EQUAL TO $string DO", tokens, state))
     {
         if(state.section_state != 2)
@@ -1390,7 +1390,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " != " + get_c_variable(state, tokens[6]) + "){");
         return;
     }
-    
+
     if(line_like("REPEAT", tokens, state))
     {
         if(state.section_state != 2)
@@ -1402,7 +1402,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("}");
         return;
     }
-    
+
     if(line_like("BREAK", tokens, state))
     {
         if(state.section_state != 2)
@@ -1413,7 +1413,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("break;");
         return;
     }
-    
+
     if(line_like("CONTINUE", tokens, state))
     {
         if(state.section_state != 2)
@@ -1424,7 +1424,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("continue;");
         return;
     }
-    
+
     if(line_like("CALL SUB-PROCEDURE $subprocedure", tokens, state))
     {
         if(state.section_state != 2)
@@ -1433,7 +1433,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(fix_identifier(tokens[2], false) + "();");
         return;
     }
-    
+
     if(line_like("EXECUTE $string", tokens, state))
     {
         if(state.section_state != 2)
@@ -1506,7 +1506,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = str_len(" + tokens[3] + ");");
         return;
     }
-	//Desde acá faltan en el standard
+    //Desde acá faltan en el standard
     if(line_like("STORE RANDOM IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
@@ -1531,7 +1531,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1]) + " = ceil(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
-	if(line_like("STORE $number IN $str-var", tokens, state))
+    if(line_like("STORE $number IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1539,7 +1539,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = to_string(" + tokens[1] +");");
         return;
     }
-	if(line_like("STORE $num-var IN $str-var", tokens, state))
+    if(line_like("STORE $num-var IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1547,7 +1547,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = to_string(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
-	if(line_like("STORE $string IN $num-var", tokens, state))
+    if(line_like("STORE $string IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1555,7 +1555,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = to_number(" + tokens[1] +");");
         return;
     }
-	if(line_like("STORE $str-var IN $num-var", tokens, state))
+    if(line_like("STORE $str-var IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1597,21 +1597,20 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[6]) + " = get_char_num(" + get_c_variable(state, tokens[4]) + ");");
         return;
     }
-    
-    
+
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
 
 string fix_identifier(string identifier, bool isVariable){
     string new_id = isVariable ? "VAR_" : "SUBPR_";
     for(unsigned int i = 0; i < identifier.size(); ++i){
-		bool isValidChar = false;
-		string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-		for(unsigned int j = 0; j < validChars.size(); ++j)
-			if(validChars[j] == identifier[i]){
-				isValidChar = true;
-				break;
-			}
+        bool isValidChar = false;
+        string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        for(unsigned int j = 0; j < validChars.size(); ++j)
+            if(validChars[j] == identifier[i]){
+                isValidChar = true;
+                break;
+            }
         if(!isValidChar && identifier[i] != ':'){
             char newchar = (((int) identifier[i]) % 25) + 65;
             new_id += "r_";
@@ -1685,7 +1684,7 @@ bool is_number(string number){
     stod(number);
   }
   catch (const std::invalid_argument& ia) {
-	  return false;
+      return false;
   }
   return true;
 }
@@ -1792,14 +1791,14 @@ void split_vector(string & line, queue<string> & tokens)
             if(i < line.size() - 1)
             {
                 char next_letter = line[++i];
-                switch(next_letter) 
+                switch(next_letter)
                 {
                     case '\\': case '"': case '0':
-                    case 'a': case 'b': case 't': case 'n': 
-                    case 'v': case 'f': case 'r': case 'e': 
+                    case 'a': case 'b': case 't': case 'n':
+                    case 'v': case 'f': case 'r': case 'e':
                         current_token += "\\" + string(1, next_letter);
                     break;
-                    default: 
+                    default:
                         error("unknown escape sequence on a VECTOR access `" + current_token + "` in: " + line);
                 }
             }
@@ -1849,14 +1848,14 @@ bool is_subprocedure(string & token, compiler_state & state)
 
 string get_c_variable(compiler_state & state, string & variable)
 {
-    
+
     //Single variable
     queue<string> vpart;
     split_vector(variable, vpart);
     if(vpart.size() == 1){
         return fix_identifier(variable, true);
     }
-    
+
     //Vector variable
     vector<string> token;
     while(!vpart.empty())
@@ -1864,14 +1863,14 @@ string get_c_variable(compiler_state & state, string & variable)
         token.push_back(vpart.front());
         vpart.pop();
     }
-    
+
     //Last element of vector access:
     string newvar = fix_identifier(token[0], true);
-    
+
     for(unsigned int i = 1; i < token.size(); ++i){
         newvar += "[";
         if(is_variable(token[i], state) || is_num_vector(token[i], state) || is_txt_vector(token[i], state))
-		//Pongo esto porque el is_variable requiere que tenga subindices y acá le paso solo el nombre del vector
+        //Pongo esto porque el is_variable requiere que tenga subindices y acá le paso solo el nombre del vector
             newvar += fix_identifier(token[i], true);
         else
             newvar += token[i];
@@ -1879,6 +1878,6 @@ string get_c_variable(compiler_state & state, string & variable)
     for(unsigned int i = 1; i < token.size(); ++i){
         newvar += "]";
     }
-    
+
     return newvar;
 }

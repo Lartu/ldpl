@@ -45,7 +45,7 @@ ldpl_number to_number(const string & a){
         return num;
     }
     catch (const std::invalid_argument& ia) {
-		return 0;
+        return 0;
     }
 }
 
@@ -57,13 +57,13 @@ string input_string(){
 }
 
 string input_until_eof(){
-	stringstream full;
-	string s = "";
+    stringstream full;
+    string s = "";
     bool firstLine = true;
     while (getline(cin, s)) {
         if(!firstLine) s = "\n" + s;
         firstLine = false;
-		full << s;
+        full << s;
     }
     return full.str();
 }
@@ -115,9 +115,9 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
         }
         if (length !=INT_MAX && j+length-start<=0) return "";
         if (start  < 0 ) start+=j;
-        if (length < 0 ) length=j+length-start;       
+        if (length < 0 ) length=j+length-start;
     }
- 
+
     j=0,realstart=0,reallength=0;
     for(i=0,ix=str.length(); i<ix; i+=1, j++)
     {
@@ -132,7 +132,7 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
     }
     if (j==start) { realstart=i; }
     if (j>=start && (length==INT_MAX || j<=start+length)) { reallength=i-realstart; }
- 
+
     return str.substr(realstart,reallength);
 }
 
@@ -177,7 +177,7 @@ string exec(const char* cmd) {
 #include <random>
 
 ldpl_number get_random(){
-	ldpl_number r = rand() * NVM_FLOAT_EPSILON;
+    ldpl_number r = rand() * NVM_FLOAT_EPSILON;
     r = r - (int) r;
-	return r;
+    return r;
 }
