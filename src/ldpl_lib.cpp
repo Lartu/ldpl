@@ -1,6 +1,7 @@
 #include <sstream>
 #include <math.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <limits>
 #include <limits.h>
@@ -9,8 +10,14 @@
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
+#define CRLF "\n"
 
 using namespace std;
+
+//Global variables
+ifstream file_loading_stream;
+ofstream file_writing_stream;
+string file_loading_line;
 
 template<typename T>
 struct ldpl_vector {

@@ -1616,6 +1616,281 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+    //Undocumented
+    if(line_like("IN $str-var JOIN $display", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IN-JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(tokens.size() < 5)
+            error("IN-JOIN expects at least two values to join (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = \"\";");
+        for(unsigned int i = 3; i < tokens.size(); ++i){
+            if(is_num_var(tokens[i], state)){
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + get_c_variable(state, tokens[i]) + "), " + get_c_variable(state, tokens[1]) + ");");
+            }
+            else if(is_txt_var(tokens[i], state)){
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[i]) + ", " + get_c_variable(state, tokens[1]) + ");");
+            }
+            else if(is_number(tokens[i])){
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + tokens[i] + "), " + get_c_variable(state, tokens[1]) + ");");
+            }
+            else{
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + tokens[i] + ", " + get_c_variable(state, tokens[1]) + ");");
+            }
+        }
+        return;
+    }
+    //REPLACE x FROM y WITH z IN w
+    if(line_like("REPLACE $str-var FROM $str-var WITH $str-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("REPLACE $string FROM $str-var WITH $str-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("REPLACE $str-var FROM $string WITH $str-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("REPLACE $string FROM $string WITH $str-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("REPLACE $str-var FROM $str-var WITH $string IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("REPLACE $string FROM $str-var WITH $string IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("REPLACE $str-var FROM $string WITH $string IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("REPLACE $string FROM $string WITH $string IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    //GET INDEX OF x FROM y IN z
+    if(line_like("GET INDEX OF $str-var FROM $str-var IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("GET INDEX OF $string FROM $str-var IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("GET INDEX OF $str-var FROM $string IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("GET INDEX OF $string FROM $string IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    //COUNT x FROM y IN z
+    if(line_like("COUNT $str-var FROM $str-var IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("COUNT $string FROM $str-var IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("COUNT $str-var FROM $string IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    if(line_like("COUNT $string FROM $string IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
+    //CALL x
+    if(line_like("CALL $subprocedure", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CALL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(fix_identifier(tokens[1], false) + "();");
+        return;
+    }
+    //WRITE x TO FILE y
+    if(line_like("WRITE $literal TO FILE $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::out);");
+        state.add_code("file_writing_stream <<" + tokens[1] + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    if(line_like("WRITE $literal TO FILE $string", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::out);");
+        state.add_code("file_writing_stream <<" + tokens[1] + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    if(line_like("WRITE $var TO FILE $string", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::out);");
+        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    if(line_like("WRITE $var TO FILE $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::out);");
+        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    //APPEND x TO FILE y
+    if(line_like("APPEND $literal TO FILE $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::app);");
+        state.add_code("file_writing_stream <<" + tokens[1] + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    if(line_like("APPEND $literal TO FILE $string", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::app);");
+        state.add_code("file_writing_stream <<" + tokens[1] + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    if(line_like("APPEND $var TO FILE $string", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::app);");
+        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    if(line_like("APPEND $var TO FILE $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::app);");
+        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
+        state.add_code("file_writing_stream.close();");
+        return;
+    }
+    //LOAD FILE x IN y
+    if(line_like("LOAD FILE $string IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_loading_stream.open(" + tokens[2] + ");");
+        state.add_code("while(file_loading_stream){");
+        state.add_code("getline(file_loading_stream, file_loading_line);");
+        state.add_code(get_c_variable(state, tokens[4]) + " += file_loading_line + \"\\n\";");
+        state.add_code("}");
+        state.add_code("file_loading_stream.close();");
+        return;
+    }
+    if(line_like("LOAD FILE $str-var IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("file_loading_stream.open(" + get_c_variable(state, tokens[2]) + ");");
+        state.add_code("while(file_loading_stream){");
+        state.add_code("getline(file_loading_stream, file_loading_line);");
+        state.add_code(get_c_variable(state, tokens[4]) + " += file_loading_line + \"\\n\";");
+        state.add_code("}");
+        state.add_code("file_loading_stream.close();");
+        return;
+    }
+
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
 
@@ -1666,6 +1941,14 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_txt_var(tokens[i], state)) return false;
         }
+        else if(model_tokens[i] == "$var") //$var is either a NUMBER variable or a TEXT variable
+        {
+            if(!is_num_var(tokens[i], state) && !is_txt_var(tokens[i], state)) return false;
+        }
+        else if(model_tokens[i] == "$literal") //$literal is either a NUMBER or a TEXT
+        {
+            if(!is_string(tokens[i]) && !is_number(tokens[i])) return false;
+        }
         else if(model_tokens[i] == "$string") //$string is a string (?
         {
             if(!is_string(tokens[i])) return false;
@@ -1683,8 +1966,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             for(; i < tokens.size(); ++i){
                 if(!is_string(tokens[i])
                 && !is_number(tokens[i])
-                && !is_variable(tokens[i], state)
-                && tokens[i] != "CRLF")
+                && !is_variable(tokens[i], state))
                     return false;
             }
         }
@@ -1717,6 +1999,7 @@ bool is_natural(string number){
 }
 
 bool is_string(string & token){
+    if(token == "CRLF") return true;
     return (token.size() >= 2 && token[0] == '"' && token[token.size()-1] == '"');
 }
 
