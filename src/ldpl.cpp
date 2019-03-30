@@ -1465,7 +1465,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("system(" + get_c_variable(state, tokens[1]) + ");");
+        state.add_code("system(" + get_c_variable(state, tokens[1]) + ".c_str());");
         return;
     }
     if(line_like("EXECUTE $string AND STORE OUTPUT IN $str-var", tokens, state))
@@ -1473,7 +1473,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = exec(" + tokens[1] + ".c_str());");
+        state.add_code(get_c_variable(state, tokens[6]) + " = exec(" + tokens[1] + ");");
         return;
     }
     if(line_like("EXECUTE $str-var AND STORE OUTPUT IN $str-var", tokens, state))
@@ -1497,7 +1497,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[7]) + " = system(" + get_c_variable(state, tokens[1]) + ");");
+        state.add_code(get_c_variable(state, tokens[7]) + " = system(" + get_c_variable(state, tokens[1]) + ".c_str());");
         return;
     }
     if(line_like("EXIT", tokens, state))
@@ -1624,13 +1624,14 @@ string fix_identifier(string identifier, bool isVariable){
     for(unsigned int i = 0; i < identifier.size(); ++i){
         bool isValidChar = false;
         string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        for(unsigned int j = 0; j < validChars.size(); ++j)
+        for(unsigned int j = 0; j < validChars.size(); ++j){
             if(validChars[j] == identifier[i]){
                 isValidChar = true;
                 break;
             }
+        }
         if(!isValidChar && identifier[i] != ':'){
-            char newchar = (((int) identifier[i]) % 25) + 65;
+            char newchar = (((unsigned int) identifier[i]) % 25) + 65;
             new_id += "r_";
             new_id += newchar;
         }else{
