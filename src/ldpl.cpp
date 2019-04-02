@@ -44,6 +44,7 @@ int main(int argc, const char* argv[])
         cout << "Options:" << endl;
         cout << "  -h --help                Display this information" << endl;
         cout << "  -r                       Display generated C++ code" << endl;
+        cout << "  -o=<name>                Set output file for compiled binary" << endl;
         cout << "  -i=<file>                Include file in current compilation" << endl;
         cout << "  -v --version             Display LDPL version information" << endl;
         return 0;
@@ -56,6 +57,7 @@ int main(int argc, const char* argv[])
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
 
     string output_filename = "";
+    string final_filename = "";
 
     //Check arguments
     if(args.size() >= 1){
@@ -66,6 +68,9 @@ int main(int argc, const char* argv[])
             }
             else if(arg == "-r"){
                 show_ir = true;
+            }
+            else if(arg.substr(0, 3) == "-o="){
+                final_filename = arg.substr(3);
             }
             else if(arg.substr(0, 3) == "-i="){
                 files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
@@ -111,16 +116,17 @@ int main(int argc, const char* argv[])
     for(string line : state.output_code) myfile << line << endl;
     myfile.close();
 
-    //Generate output filename
-    string final_filename = "";
-    for(unsigned int i = 0; i < output_filename.size(); ++i){
-        if(output_filename[i] != '.')
-            final_filename += output_filename[i];
-        else
-            break;
+    //Generate output filename if not set by -o=
+    if(final_filename.empty()) {
+        for(unsigned int i = 0; i < output_filename.size(); ++i){
+            if(output_filename[i] != '.')
+                final_filename += output_filename[i];
+            else
+                break;
+        }
+        if(final_filename.size() == 0) final_filename = "ldpl-output";
+        final_filename += "-bin";
     }
-    if(final_filename.size() == 0) final_filename = "ldpl-output";
-    final_filename += "-bin";
     cout << "LDPL: Compiling..." << endl;
     string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
     int compiled = system(compile_line.c_str());
