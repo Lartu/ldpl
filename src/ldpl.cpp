@@ -276,6 +276,7 @@ void capitalize_tokens(vector<string> & tokens)
                 for(char & l : token){
                     l = toupper(l);
                 }
+                if (token == "CRLF") token = "\"\\n\"";
             }
     }
 }
@@ -358,9 +359,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //C Code
         for(unsigned int i = 1; i < tokens.size(); ++i){
             //TODO ADD COLORS HERE
-            if(tokens[i] == "CRLF"){
-                state.add_code("cout << endl;");
-            }else if(is_variable(tokens[i], state)){
+            if(is_variable(tokens[i], state)){
                 state.add_code("cout << " + get_c_variable(state, tokens[i]) + " << flush;");
             }
             else{
@@ -1978,7 +1977,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_natural(tokens[i])) return false;
         }
-        else if(model_tokens[i] == "$display") //multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF
+        else if(model_tokens[i] == "$display") //multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR
         {
             for(; i < tokens.size(); ++i){
                 if(!is_string(tokens[i])
@@ -2016,7 +2015,6 @@ bool is_natural(string number){
 }
 
 bool is_string(string & token){
-    if(token == "CRLF") return true;
     return (token.size() >= 2 && token[0] == '"' && token[token.size()-1] == '"');
 }
 
