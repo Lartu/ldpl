@@ -20,6 +20,7 @@ using namespace std;
 ifstream file_loading_stream;
 ofstream file_writing_stream;
 string file_loading_line;
+string joinvar;
 
 template<typename T>
 struct ldpl_vector {

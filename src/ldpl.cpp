@@ -1629,21 +1629,22 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(tokens.size() < 5)
             error("IN-JOIN expects at least two values to join (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = \"\";");
+        state.add_code("joinvar = \"\";");
         for(unsigned int i = 3; i < tokens.size(); ++i){
             if(is_num_var(tokens[i], state)){
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + get_c_variable(state, tokens[i]) + "), " + get_c_variable(state, tokens[1]) + ");");
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + get_c_variable(state, tokens[i]) + "), joinvar);");
             }
             else if(is_txt_var(tokens[i], state)){
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[i]) + ", " + get_c_variable(state, tokens[1]) + ");");
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[i]) + ", joinvar);");
             }
             else if(is_number(tokens[i])){
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + tokens[i] + "), " + get_c_variable(state, tokens[1]) + ");");
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + tokens[i] + "), joinvar);");
             }
             else{
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + tokens[i] + ", " + get_c_variable(state, tokens[1]) + ");");
+                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + tokens[i] + ", joinvar);");
             }
         }
+        state.add_code(get_c_variable(state, tokens[1]) + " = joinvar;");
         return;
     }
     //REPLACE x FROM y WITH z IN w
