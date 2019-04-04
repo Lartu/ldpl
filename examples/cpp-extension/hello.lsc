@@ -1,0 +1,6 @@
+PROCEDURE:
+
+CALL HELLO
+DISPLAY "What's your name, friend? "
+ACCEPT MYNAME
+CALL GREET

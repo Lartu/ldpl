@@ -52,10 +52,8 @@ int main(int argc, const char* argv[])
 
     compiler_state state; //Compiler state (holds variables, sections, functions, etc)
     vector<string> files_to_compile;
+    vector<string> extensions;
     add_ldpllib(state);
-    state.add_code("int main(int argc, char *argv[]){");
-    state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
-    state.add_code("srand (time(NULL));");
 
     string output_filename = "";
     string final_filename = "";
@@ -74,10 +72,19 @@ int main(int argc, const char* argv[])
                 final_filename = arg.substr(3);
             }
             else if(arg.substr(0, 3) == "-i="){
-                files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
+                if(0 == arg.compare(arg.length()-2, 2, ".h")){
+                    arg = arg.substr(3); // kill -i= prefix
+                    load_extension(extensions, arg, state);
+                }else{
+                    files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
+                }
             }
         }
     }
+
+    state.add_code("int main(int argc, char *argv[]){");
+    state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
+    state.add_code("srand (time(NULL));");    
 
     state.variables["ARGC"] = 1;
     state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
@@ -130,6 +137,9 @@ int main(int argc, const char* argv[])
     }
     cout << "LDPL: Compiling..." << endl;
     string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
+    if(!extensions.empty()){
+        for(string & extension : extensions) compile_line += " "+extension;
+    }
     int compiled = system(compile_line.c_str());
     system("rm ldpl-temp.cpp");
     if(compiled == 0){
@@ -137,6 +147,71 @@ int main(int argc, const char* argv[])
         cout << "* Saved as " << final_filename << endl;
     }else{
         error("compilation failed.");
+    }
+}
+
+void load_extension(vector<string> & extensions, string & filename, compiler_state & state)
+{
+    string hfile = filename;
+    string ext = hfile;
+    replace_string(ext, ".h", ".a");
+    extensions.push_back(ext);
+
+    ifstream file(hfile);
+    if(!file.is_open()) error("extension header file "+hfile+" can't be opened");
+
+    string line = "";
+    string name = "";
+    size_t pos;
+    int type = 0; // ldpl variable type
+
+    while(getline(file, line))
+    {
+        name = "";
+        replace_whitespace(line);
+
+        // check for VAR_ or SUBPR_ declaration 
+        pos = line.find(" VAR_");
+        if(pos==string::npos){ 
+            pos = line.find(" SUBPR_");
+            if(pos==string::npos) continue;
+        }
+
+        pos++; // jump to VAR_ or SUBPR_ and read name
+        while(pos<line.length() && line[pos] != ';'){
+            name+=line[pos];
+            pos++;
+        }
+
+        if(line.find("string VAR_")!=string::npos){
+            state.add_var_code("string "+name+";");
+            type = 2;
+        }else if(line.find("ldpl_number VAR_")!=string::npos){
+            state.add_var_code("ldpl_number "+name+";");
+            type = 1;
+        }else if(line.find("ldpl_vector<ldpl_number> VAR_")!=string::npos){
+            state.add_var_code("ldpl_vector<ldpl_number> "+name+";");
+            type = 3;
+        }else if(line.find("ldpl_vector<string> VAR_")!=string::npos){
+            state.add_var_code("ldpl_vector<string> "+name+";");
+            type = 4;                
+        }else if(line.find("void SUBPR_")!=string::npos){
+            replace_string(name, "(void)", "()");
+            state.add_var_code("void "+name+";");
+            name.erase(0, 6); // remove SUBPR_ 
+            replace_string(name, "()", "");   // kill trailing ()
+            demangle_variable_name(name);
+            state.subprocedures.push_back(name);
+            type = 0;
+        }else{
+            continue; // false positive
+        }
+
+        if (type>0){
+            name.erase(0, 4); // remove VAR_
+            demangle_variable_name(name);
+            state.variables[name] = type; 
+        }
     }
 }
 
@@ -155,6 +230,24 @@ void load_and_compile(string & filename, compiler_state & state)
         lines.push_back(line);
     }
     compile(lines, state);
+}
+
+//Basic demangling of C++ var name to LDPL variable name. Incomplete.
+void demangle_variable_name(string & s)
+{
+    replace_string(s, "r_U", "-"); 
+    replace_string(s, "r_V", "."); 
+    replace_string(s, "r_W", "/"); 
+}
+
+// Replaces `search` in `subject` with `replace`.
+void replace_string(string & subject, const string & search, const string & replace) 
+{
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != string::npos) {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
 }
 
 //Replace all whitespace within string

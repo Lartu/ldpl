@@ -31,11 +31,18 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## Compiler options
 
- * You can import files to your LDPL compilation by using the `-i` flag. For example, say you have a library `mylib.ldpl` and a source file `mysource.ldpl`, you can compile both and include the library by running `ldpl -i=mylibrary.ldpl mysource.ldpl`. Multiple `-i=` can be used to import multiple files.
+ * You can import files to your LDPL compilation by using the `-i` flag. For example, say you have a library `mylib.ldpl` and a source file `mysource.ldpl`, you can compile both and include the library by running `ldpl -i=mylibrary.ldpl mysource.ldpl`. Multiple `-i=` can be used to import multiple files. Extensions can be imported by specifying their `.h` file; see the Extensions section below.
  * By using `-r` you can just compile the project and print the C++ representation for that code.
  * You can set the output file for the compiled binary with the `-o` flag. For example, if you want to name your program "dog", you could compile it with `ldpl -o=dog main.ldpl`.
  * `-v` and `--version` print out version info and release details.
  * `-h` and `--help` print this list of options.
+
+## Extensions
+
+This branch contains experimental support for extensions to LDPL written in the C++ programming language. Only Mac & Linux are supported at this time. 
+
+For a working example and documentation, see the 
+[examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## License
 
