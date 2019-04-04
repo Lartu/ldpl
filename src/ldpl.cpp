@@ -1633,16 +1633,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("joinvar = \"\";");
         for(unsigned int i = 3; i < tokens.size(); ++i){
             if(is_num_var(tokens[i], state)){
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + get_c_variable(state, tokens[i]) + "), joinvar);");
+                state.add_code("join(joinvar, to_string(" + get_c_variable(state, tokens[i]) + "), joinvar);");
             }
             else if(is_txt_var(tokens[i], state)){
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[i]) + ", joinvar);");
+                state.add_code("join(joinvar, " + get_c_variable(state, tokens[i]) + ", joinvar);");
             }
             else if(is_number(tokens[i])){
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", to_string(" + tokens[i] + "), joinvar);");
+                state.add_code("join(joinvar, to_string(" + tokens[i] + "), joinvar);");
             }
             else{
-                state.add_code("join(" + get_c_variable(state, tokens[1]) + ", " + tokens[i] + ", joinvar);");
+                state.add_code("join(joinvar, " + tokens[i] + ", joinvar);");
             }
         }
         state.add_code(get_c_variable(state, tokens[1]) + " = joinvar;");
