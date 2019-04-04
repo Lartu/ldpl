@@ -190,3 +190,26 @@ ldpl_number get_random(){
     r = r - (int) r;
     return r;
 }
+
+void load_file(string filename, string & destination)
+{
+    //Load file
+    ifstream file(filename);
+    //Fail if the file couldn't be loaded
+    if(!file.is_open()){
+        cerr << ("Error: The file '" + filename + "' couldn't be opened.") << endl;
+        exit(1);
+    }
+    //TODO: Turn this into a control variable that can be checked from LDPL.
+    //Get file contents
+    string text = "";
+    string line = "";
+    while(getline(file, line))
+    {
+        cout << "Cargando: " << line << endl;
+        text += line + "\n";
+        cout << text << endl;
+    }
+    destination = text;
+    file.close();
+}

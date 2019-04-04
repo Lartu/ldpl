@@ -1874,12 +1874,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("file_loading_stream.open(" + tokens[2] + ");");
-        state.add_code("while(file_loading_stream){");
-        state.add_code("getline(file_loading_stream, file_loading_line);");
-        state.add_code(get_c_variable(state, tokens[4]) + " += file_loading_line + \"\\n\";");
-        state.add_code("}");
-        state.add_code("file_loading_stream.close();");
+        state.add_code("load_file(" + tokens[2] + ", " + get_c_variable(state, tokens[4]) +");");
         return;
     }
     if(line_like("LOAD FILE $str-var IN $str-var", tokens, state))
@@ -1887,12 +1882,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("file_loading_stream.open(" + get_c_variable(state, tokens[2]) + ");");
-        state.add_code("while(file_loading_stream){");
-        state.add_code("getline(file_loading_stream, file_loading_line);");
-        state.add_code(get_c_variable(state, tokens[4]) + " += file_loading_line + \"\\n\";");
-        state.add_code("}");
-        state.add_code("file_loading_stream.close();");
+        state.add_code("load_file(" + get_c_variable(state, tokens[2]) + ", " + get_c_variable(state, tokens[4]) +");");
         return;
     }
     //WAIT x MILLISECONDS
