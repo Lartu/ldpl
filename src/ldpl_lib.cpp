@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <thread>
+#include <time.h>
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
@@ -187,7 +188,7 @@ string exec(const char* cmd) {
 #include <random>
 
 ldpl_number get_random(){
-    ldpl_number r = rand() * NVM_FLOAT_EPSILON;
+    ldpl_number r = ((ldpl_number) rand() / (RAND_MAX)) + 1;
     r = r - (int) r;
     return r;
 }
