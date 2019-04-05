@@ -612,7 +612,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(" + tokens[1] + ", to_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(" + tokens[1] + ", to_ldpl_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $string AND $num-var IN $str-var", tokens, state))
@@ -620,7 +620,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(" + tokens[1] + ", to_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(" + tokens[1] + ", to_ldpl_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $string AND $str-var IN $str-var", tokens, state))
@@ -637,7 +637,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" + tokens[1] + "), " + tokens[3] + ", " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" + tokens[1] + "), " + tokens[3] + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $number AND $number IN $str-var", tokens, state))
@@ -645,7 +645,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" + tokens[1] + "), to_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" + tokens[1] + "), to_ldpl_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $number AND $num-var IN $str-var", tokens, state))
@@ -653,7 +653,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" + tokens[1] + "), to_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" + tokens[1] + "), to_ldpl_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $number AND $str-var IN $str-var", tokens, state))
@@ -661,7 +661,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" + tokens[1] + "), " + get_c_variable(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" + tokens[1] + "), " + get_c_variable(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
 
@@ -678,7 +678,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(" +get_c_variable(state, tokens[1]) + ", to_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(" +get_c_variable(state, tokens[1]) + ", to_ldpl_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $str-var AND $num-var IN $str-var", tokens, state))
@@ -686,7 +686,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(" +get_c_variable(state, tokens[1]) + ", to_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(" +get_c_variable(state, tokens[1]) + ", to_ldpl_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $str-var AND $str-var IN $str-var", tokens, state))
@@ -703,7 +703,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" +get_c_variable(state, tokens[1]) + "), " + tokens[3] + ", " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" +get_c_variable(state, tokens[1]) + "), " + tokens[3] + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $num-var AND $number IN $str-var", tokens, state))
@@ -711,7 +711,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" +get_c_variable(state, tokens[1]) + "), to_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" +get_c_variable(state, tokens[1]) + "), to_ldpl_string(" + tokens[3] + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $num-var AND $num-var IN $str-var", tokens, state))
@@ -719,7 +719,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" +get_c_variable(state, tokens[1]) + "), to_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" +get_c_variable(state, tokens[1]) + "), to_ldpl_string(" + get_c_variable(state, tokens[3]) + "), " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("JOIN $num-var AND $str-var IN $str-var", tokens, state))
@@ -727,7 +727,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(to_string(" +get_c_variable(state, tokens[1]) + "), " + get_c_variable(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
+        state.add_code("join(to_ldpl_string(" +get_c_variable(state, tokens[1]) + "), " + get_c_variable(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
     if(line_like("GET CHARACTER AT $num-var FROM $str-var IN $str-var", tokens, state))
@@ -1560,7 +1560,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = to_string(" + tokens[1] +");");
+        state.add_code(get_c_variable(state, tokens[3]) + " = to_ldpl_string(" + tokens[1] +");");
         return;
     }
     if(line_like("STORE $num-var IN $str-var", tokens, state))
@@ -1568,7 +1568,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = to_string(" + get_c_variable(state, tokens[1]) +");");
+        state.add_code(get_c_variable(state, tokens[3]) + " = to_ldpl_string(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
     if(line_like("STORE $string IN $num-var", tokens, state))
@@ -1633,13 +1633,13 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("joinvar = \"\";");
         for(unsigned int i = 3; i < tokens.size(); ++i){
             if(is_num_var(tokens[i], state)){
-                state.add_code("join(joinvar, to_string(" + get_c_variable(state, tokens[i]) + "), joinvar);");
+                state.add_code("join(joinvar, to_ldpl_string(" + get_c_variable(state, tokens[i]) + "), joinvar);");
             }
             else if(is_txt_var(tokens[i], state)){
                 state.add_code("join(joinvar, " + get_c_variable(state, tokens[i]) + ", joinvar);");
             }
             else if(is_number(tokens[i])){
-                state.add_code("join(joinvar, to_string(" + tokens[i] + "), joinvar);");
+                state.add_code("join(joinvar, to_ldpl_string(" + tokens[i] + "), joinvar);");
             }
             else{
                 state.add_code("join(joinvar, " + tokens[i] + ", joinvar);");
