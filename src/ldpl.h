@@ -71,7 +71,7 @@ bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
 string get_c_variable(compiler_state & state, string & variable);
 void capitalize_tokens(vector<string> & tokens);
-void load_extension(vector<string> & extensions, string & filename, compiler_state & state);
+void load_extension(string & filename, compiler_state & state);
 void load_and_compile(string & filename, compiler_state & state);
 void demangle_variable_name(string & s);
 void replace_string(string & subject, const string & search, const string & replace);

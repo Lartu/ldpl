@@ -74,7 +74,10 @@ int main(int argc, const char* argv[])
             else if(arg.substr(0, 3) == "-i="){
                 if(0 == arg.compare(arg.length()-2, 2, ".h")){
                     arg = arg.substr(3); // kill -i= prefix
-                    load_extension(extensions, arg, state);
+                    load_extension(arg, state);
+                    string ext = arg;
+                    replace_string(ext, ".h", ".a");
+                    extensions.push_back(ext);
                 }else{
                     files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
                 }
@@ -150,12 +153,10 @@ int main(int argc, const char* argv[])
     }
 }
 
-void load_extension(vector<string> & extensions, string & filename, compiler_state & state)
+// filename should be the header file, ex: "regex.h" 
+void load_extension(string & filename, compiler_state & state)
 {
     string hfile = filename;
-    string ext = hfile;
-    replace_string(ext, ".h", ".a");
-    extensions.push_back(ext);
 
     ifstream file(hfile);
     if(!file.is_open()) error("extension header file "+hfile+" can't be opened");
