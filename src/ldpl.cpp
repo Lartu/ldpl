@@ -75,9 +75,8 @@ int main(int argc, const char* argv[])
                 if(0 == arg.compare(arg.length()-2, 2, ".h")){
                     arg = arg.substr(3); // kill -i= prefix
                     load_extension(arg, state);
-                    string ext = arg;
-                    replace_string(ext, ".h", ".a");
-                    extensions.push_back(ext);
+                    replace_string(arg, ".h", ".a");
+                    extensions.push_back(arg);
                 }else{
                     files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
                 }
