@@ -199,6 +199,7 @@ void load_extension(string & filename, compiler_state & state)
             state.add_var_code("ldpl_vector<string> "+name+";");
             type = 4;                
         }else if(line.find("void SUBPR_")!=string::npos){
+            if(line.find("extern void SUBPR_")!=string::npos) continue; // ignore externs
             replace_string(name, "(void)", "()");
             state.add_var_code("void "+name+";");
             name.erase(0, 6); // remove SUBPR_ 
