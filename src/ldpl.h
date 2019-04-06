@@ -8,7 +8,7 @@
 #include <queue>
 #include <locale>
 #include "cpptrim.h"
-#include <fstream>
+#include <sstream>
 
 using namespace std;
 
