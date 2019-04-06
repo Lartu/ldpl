@@ -130,6 +130,9 @@ int main(int argc, const char* argv[])
     }
     cout << "LDPL: Compiling..." << endl;
     string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
+#ifdef  __linux__
+    compile_line+=" -static-libgcc -static-libstdc++ ";
+#endif
     int compiled = system(compile_line.c_str());
     system("rm ldpl-temp.cpp");
     if(compiled == 0){
