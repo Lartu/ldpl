@@ -166,6 +166,18 @@ string charat(const string & s, ldpl_number pos){
     return utf8_substr(s, pos, 1);
 }
 
+//Convert ldpl_number to LDPL string, killing trailing 0's
+//https://stackoverflow.com/questions/16605967/ & https://stackoverflow.com/questions/13686482/
+string to_ldpl_string(double x){
+    ostringstream out;
+    out.precision(10);
+    out << fixed << x;
+    string str = out.str();
+    str.erase(str.find_last_not_of('0') + 1, string::npos);
+    str.erase(str.find_last_not_of('.') + 1, string::npos);
+    return str;
+}
+
 #include <cstdio>
 #include <memory>
 #include <stdexcept>
