@@ -61,7 +61,7 @@ You can add statements to the language (that's in fact really easy!), fix bugs, 
 
 ![Contributing Dragon](https://ldpl.lartu.net/tutorial-ldpl.png)
 
-Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT).
+Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md).
 
 If you want to talk to the rest of us, you can find the LDPL community at r/LDPL and via IRC on irc.freenode.net, channel #ldpl. Also on Telegram at https://t.me/ldpllang. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
