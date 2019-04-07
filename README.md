@@ -57,11 +57,11 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## How can I contribute to LDPL?
 
-You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check CONTRIBUTING.md (*to be linked in a minute, please wait!*) for more information. Anything is welcome, very, very welcome!
+You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check [CONTRIBUTING.md](/CONTRIBUTING.md) for more information. Anything is welcome, very, very welcome!
 
 ![Contributing Dragon](https://ldpl.lartu.net/tutorial-ldpl.png)
 
-Contributors are expected to behave by the **Dragon Tamers Code** (*to be linked in a minute, please wait!*).
+Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT).
 
 If you want to talk to the rest of us, you can find the LDPL community at r/LDPL and via IRC on irc.freenode.net, channel #ldpl. Also on Telegram at https://t.me/ldpllang. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
