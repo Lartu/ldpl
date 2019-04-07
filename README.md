@@ -34,6 +34,8 @@ That's right. Say bye bye to cryptic glyphs. Say hello to **LDPL**.
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
 
+![Compiling Dragon](https://ldpl.lartu.net/reference/ldpl-reference.png)
+
 **If you want to download a compiled binary:** just go to the *Releases* part of this repository and download the newest one available.
 
 **If you want to build LDPL yourself:** First, download the latest release.
@@ -56,6 +58,8 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 ## How can I contribute to LDPL?
 
 You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check CONTRIBUTING.md (*to be linked in a minute, please wait!*) for more information. Anything is welcome, very, very welcome!
+
+![Contributing Dragon](https://ldpl.lartu.net/tutorial-ldpl.png)
 
 Contributors are required to behave by the **Dragon Tamers' Code of Conduct** (*to be linked in a minute, please wait!*).
 
