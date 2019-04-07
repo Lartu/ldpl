@@ -36,7 +36,7 @@ If you are submiting LDPL fanfiction, please ask yourself why am I doing this. T
 
 ### Links to external documentation, mailing lists, or a code of conduct.
 
-- Official LDPL Website: #ldpl at [http://ldpl.lartu.net/](http://ldpl.lartu.net/)
+- Official LDPL Website: [http://ldpl.lartu.net/](http://ldpl.lartu.net/)
 - LDPL Reference: [http://ldpl.lartu.net/reference](http://ldpl.lartu.net/reference)
 - LDPL Reddit Community: [http://reddit.com/r/ldpl](http://reddit.com/r/ldpl)
 - IRC Channel: #ldpl at [irc.freenode.net](http://irc.freenode.net)
