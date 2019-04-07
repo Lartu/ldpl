@@ -61,7 +61,7 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## How can I contribute to LDPL?
 
-You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check [CONTRIBUTING.md](/CONTRIBUTING.md) for more information. Anything is welcome, very, very welcome!
+You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is welcome, very, very welcome!
 
 ![Contributing Dragon](https://ldpl.lartu.net/tutorial-ldpl.png)
 
