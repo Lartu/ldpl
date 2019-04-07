@@ -4,7 +4,7 @@ Welcome to the LDPL contributors guide, thank you for being here! This guide wil
 
 ### Who can contribute to LDPL?
 
-Anyone can contribute to the LDPL project! As stated on the README.md file, we accept all kinds of contributions anyone can make. From adding statements to the language (that's in fact really easy!) to fixing bugs, adding issues, writing examples, documentation writing some software in LDPL, etc. Anything you consider will make the project grow and better, you are welcome to contribute it. Even a simple drawing!
+Anyone can contribute to the LDPL project! As stated on the README.md file, we accept all kinds of contributions anyone can make. From adding statements to the language (that's in fact really easy!) to fixing bugs, adding issues, writing examples, documentation writing some software in LDPL, etc. Anything you consider will make the project grow and better, you are welcome to contribute it. Even a simple drawing or telling your friends about LDPL!
 
 ### What do I need to know to contribute to LDPL?
 
