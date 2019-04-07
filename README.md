@@ -13,6 +13,23 @@ Check http://ldpl.lartu.net/ for more information on the language, tutorials, ex
 LDPL is standarized [here](http://ldpl.lartu.net/reference).
 That's both the language documentation and the compiler writting standard.
 
+## Why should I use LDPL?
+
+Because it looks nice, it's readable, it's fun, it's like a little toy to toy around with! Have you ever found a symbol within code that you didn't know what it did? Maybe an asterisk, a semicolon or even a pair of brackets? We have, too. The average programming language looks like this: 
+
+```
++[-[<<[+[--->]-[<<<]]]>>>-]>-.---.>..>.<<<<-.<+.>>>>>.>.<<.<-.
+```
+
+Can you read that? We can't either. That's because regular programming languages weren't designed with readability in mind. **LDPL was**. Compare the example above with this and tell us which one would you rather use: 
+
+```
+procedure:
+display "Hello World" crlf 
+```
+
+That's right. Say bye bye to cryptic glyphs. Say hello to **LDPL**. 
+
 ## How to use this compiler
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
@@ -35,6 +52,18 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
  * You can set the output file for the compiled binary with the `-o` flag. For example, if you want to name your program "dog", you could compile it with `ldpl -o=dog main.ldpl`.
  * `-v` and `--version` print out version info and release details.
  * `-h` and `--help` print this list of options.
+
+## How can I contribute to LDPL?
+
+You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check CONTRIBUTING.md (*to be linked in a minute, please wait!*) for more information. Anything is welcome, very, very welcome!
+
+Contributors are required to behave by the **Dragon Tamers' Code of Conduct** (*to be linked in a minute, please wait!*).
+
+If you want to talk to the rest of us, you can find the LDPL community at r/LDPL and via IRC on irc.freenode.net, channel #ldpl. Also on Telegram at https://t.me/ldpllang. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
+
+## Where can I get more help, if I need it?
+
+You are welcome to submit an issue to this repository, check the [LDPL website](http://ldpl.lartu.net) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
 
 ## License
 
