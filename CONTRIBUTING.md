@@ -20,6 +20,8 @@ We tend to accept most pull requests, unless they break the language in some way
 
 Please take a moment to understand the LDPL compiler source code if you are submiting a new feature to it. It's made of just three files: `ldpl.cpp` where the compiler is mostly written, `ldpl.h` with variable and function definitions (and an occasional struct) and `ldpl_lib.cpp` that is a library that is included in every binary compiled with the LDPL compiler, that includes definitions for many functions used within the language.
 
+LDPL is one big `if` statement, with one `if` for every statement of the language. Check the ones that are already written if you want to submit new statements, is really easy. **Test your new statements** before submiting them, please!
+
 If you are writing documentation, try to make it as clear as possible. It's nice when you don't know nothing about a certain technology and you find a tutorial that explains everything from the ground up in a way you can understand without reading pages and pages of man documentation and shady html files. You love the guy who wrote that tutorial. Be that guy.
 
 If you are writing LDPL examples, please comment them. Comment every line if you deem it necessary. But make them as clear as possible.
