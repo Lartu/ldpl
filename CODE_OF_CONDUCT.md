@@ -1,6 +1,6 @@
 # Dragon Tamers Code
 
-![Hello there!](https://ldpl.lartu.net/images/Visitor.png)
+Welcome, mighty one! You are about to learn the ways of the dragon tamers. Please take a moment to familiarize yourself with them before trying to tame any dragons yourself.
 
 ## Nomenclature
 
@@ -8,6 +8,8 @@ In this document we use the term **Dragon Tamer** to refer anyone who contribute
 to LDPL, including (but not limited to) contributors to the repository code,
 mantainers, bug reporters, people who code in LDPL, people who submit issues
 and anyone interested and/or involved with the language in any way.
+
+![Hello there!](https://ldpl.lartu.net/images/Visitor.png)
 
 ## Our Pledge
 
