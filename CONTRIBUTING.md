@@ -32,7 +32,7 @@ If you are submiting issues, PLEASE be as clear as possible. Tell us where the e
 
 If you are submiting a drawing, feel free to take any artistic license you like. "Look mom, I drew the LDPL dragon!".
 
-If you are submitin LDPL fanfiction, please ask yourself why am I doing this. Then kindly create a pull request.
+If you are submiting LDPL fanfiction, please ask yourself why am I doing this. Then kindly create a pull request.
 
 ### Links to external documentation, mailing lists, or a code of conduct.
 
