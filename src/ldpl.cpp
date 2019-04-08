@@ -1470,6 +1470,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+    if(line_like("CALL EXTERNAL $external", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CALL EXTERNAL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_code(fix_identifier(tokens[2], false) + "();");
+        //prototype of function defined in extension
+        state.add_var_code("void "+fix_identifier(tokens[2], false)+"();");
+        return;
+    }
+
     if(line_like("EXECUTE $string", tokens, state))
     {
         if(state.section_state != 2)
@@ -2355,6 +2365,11 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$subprocedure") //$subprocedure is a SUB-PROCEDURE (?
         {
             if(!is_subprocedure(tokens[i], state)) return false;
+        }
+        else if(model_tokens[i] == "$external") //$external is a C++ function defined elsewhere
+        {
+            return !is_subprocedure(tokens[i], state) && !is_variable(tokens[i], state) && 
+                   !is_string(tokens[i]) && !is_number(tokens[i]);
         }
         else if(model_tokens[i] != tokens[i]) return false;
     }
