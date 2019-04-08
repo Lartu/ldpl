@@ -10,7 +10,7 @@ lib: hello.cpp
 
 test: lib
 	cd ../../src && make 
-	../../src/ldpl -i=hello.h -o=hello hello.lsc
+	../../src/ldpl -i=hello.a -o=hello hello.lsc
 	./hello
 
 clean:
