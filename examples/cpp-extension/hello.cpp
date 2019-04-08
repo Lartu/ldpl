@@ -1,5 +1,7 @@
 #include <iostream>
-#include "hello.h"
+#include <string>
+
+extern std::string VAR_MYNAME;
 
 void SUBPR_HELLO()
 {
