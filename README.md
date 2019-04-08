@@ -1,22 +1,44 @@
 # The LDPL Programming Language
-![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)
-![Liberapay patrons](https://img.shields.io/liberapay/patrons/lartu.svg)
+![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-2.2.1-blue.svg)
 
 ![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
-[LDPL](http://ldpl.lartu.net/) is a very simple programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux and PowerPC Mac OS X. It even supports UTF-8 out of the box.
+[LDPL](http://ldpl.lartu.net/) is a very simple (but powerful) programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux and both Intel and PowerPC Mac OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
 This repository contains the source code and releases of the LDPL compiler.
 Check http://ldpl.lartu.net/ for more information on the language, tutorials, examples and more!
 
 ## About the language
 
-LDPL is standarized [here](http://ldpl.lartu.net/reference).
+LDPL is standarized [here](https://ldpl.gitbook.io).
 That's both the language documentation and the compiler writting standard.
+
+We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)) and [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)).
+
+Examples are available in the [Examples](/examples) subfolder.
+
+## Why should I use LDPL?
+
+Because it looks nice, it's readable, it's fun, it's like a little toy to toy around with! Have you ever found a symbol within code that you didn't know what it did? Maybe an asterisk, a semicolon or even a pair of brackets? We have, too. The average programming language looks like this:
+
+```
++[-[<<[+[--->]-[<<<]]]>>>-]>-.---.>..>.<<<<-.<+.>>>>>.>.<<.<-.
+```
+
+Can you read that? We can't either. That's because regular programming languages weren't designed with readability in mind. **LDPL was**. Compare the example above with this and tell us which one would you rather use:
+
+```
+procedure:
+display "Hello World" crlf
+```
+
+That's right. Say bye bye to cryptic glyphs. Say hello to **LDPL**.
 
 ## How to use this compiler
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
+
+![Compiling Dragon](https://ldpl.lartu.net/reference/ldpl-reference.png)
 
 **If you want to download a compiled binary:** just go to the *Releases* part of this repository and download the newest one available.
 
@@ -39,10 +61,24 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## Extensions
 
-This branch contains experimental support for extensions to LDPL written in the C++ programming language. Only Mac & Linux are supported at this time. 
+This branch contains experimental support for extensions to LDPL written in the C++ programming language. Only Mac & Linux are supported at this time.
 
-For a working example and documentation, see the 
+For a working example and documentation, see the
 [examples/cpp-extension](./examples/cpp-extension) directory.
+
+## How can I contribute to LDPL?
+
+You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
+
+![Contributing Dragon](https://ldpl.lartu.net/tutorial-ldpl.png)
+
+Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md).
+
+If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](http://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel #ldpl. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
+
+## Where can I get more help, if I need it?
+
+You are welcome to submit an issue to this repository, check the [LDPL website](http://ldpl.lartu.net) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
 
 ## License
 

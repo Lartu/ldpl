@@ -4,7 +4,7 @@
 # | LDPL Version Details |
 # +----------------------+
 
-VERSION = '"2.2.0"'  #LDPL Version
+VERSION = '"2.2.1"'  #LDPL Version
 LDPLSTD = 19		 #LDPL Standard
 
 # +-----------------+
