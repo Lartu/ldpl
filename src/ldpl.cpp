@@ -1908,6 +1908,362 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+        //ELSE IF
+    if(line_like("ELSE IF $number IS EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (num_equal(" + tokens[2] + ", " +  tokens[6] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $number IS EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (num_equal(" + tokens[2] + ", " + get_c_variable(state,  tokens[6]) + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (num_equal(" + get_c_variable(state, tokens[2]) + ", " +  tokens[6] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (num_equal(" + get_c_variable(state, tokens[2]) + ", " + get_c_variable(state,  tokens[6]) + ")){");
+        return;
+    }
+
+    if(line_like("ELSE IF $number IS NOT EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (!num_equal(" + tokens[2] + ", " + tokens[6] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $number IS NOT EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (!num_equal(" + tokens[2] + ", " + get_c_variable(state, tokens[6]) + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS NOT EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (!num_equal(" + get_c_variable(state, tokens[2]) + ", " + tokens[6] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS NOT EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (!num_equal(" + get_c_variable(state, tokens[2]) + ", " + get_c_variable(state, tokens[6]) + ")){");
+        return;
+    }
+
+    if(line_like("ELSE IF $number IS GREATER THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " > " +  tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $number IS GREATER THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " > " + get_c_variable(state,  tokens[6]) + "){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS GREATER THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " > " +  tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS GREATER THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " > " + get_c_variable(state,  tokens[6]) + "){");
+        return;
+    }
+
+    if(line_like("ELSE IF $number IS LESS THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " < " +  tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $number IS LESS THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " < " + get_c_variable(state,  tokens[6]) + "){");
+    }
+    if(line_like("ELSE IF $num-var IS LESS THAN $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " < " +  tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS LESS THAN $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " < " + get_c_variable(state,  tokens[6]) + "){");
+        return;
+    }
+
+    if(line_like("ELSE IF $number IS GREATER THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " > " + tokens[8] + " || num_equal(" + tokens[2] + ", " + tokens[8] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $number IS GREATER THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " > " + get_c_variable(state, tokens[8]) + " || num_equal(" + tokens[2] + ", " + get_c_variable(state, tokens[8]) + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS GREATER THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " > " + tokens[8] + " || num_equal(" + get_c_variable(state, tokens[2]) + ", " + tokens[8] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS GREATER THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " > " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[2]) + ", " + get_c_variable(state, tokens[8]) + ")){");
+        return;
+    }
+
+    if(line_like("ELSE IF $number IS LESS THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " < " + tokens[8] + " || num_equal(" + tokens[2] + ", " + tokens[8] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $number IS LESS THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " < " + get_c_variable(state, tokens[8]) + " || num_equal(" + tokens[2] + ", " + get_c_variable(state, tokens[8]) + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS LESS THAN OR EQUAL TO $number THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " < " + tokens[8] + " || num_equal(" + get_c_variable(state, tokens[2]) + ", " + tokens[8] + ")){");
+        return;
+    }
+    if(line_like("ELSE IF $num-var IS LESS THAN OR EQUAL TO $num-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " < " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[2]) + ", " + get_c_variable(state, tokens[8]) + ")){");
+        return;
+    }
+
+    if(line_like("ELSE IF $string IS EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " == " +  tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $string IS EQUAL TO $str-var THEN", tokens, state))
+    {
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " == " + get_c_variable(state,  tokens[6]) + "){");
+        return;
+    }
+    if(line_like("ELSE IF $str-var IS EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " == " +  tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $str-var IS EQUAL TO $str-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " == " + get_c_variable(state,  tokens[6]) + "){");
+        return;
+    }
+
+    if(line_like("ELSE IF $string IS NOT EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " != " + tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $string IS NOT EQUAL TO $str-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + tokens[2] + " != " + get_c_variable(state, tokens[6]) + "){");
+        return;
+    }
+    if(line_like("ELSE IF $str-var IS NOT EQUAL TO $string THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " != " + tokens[6] + "){");
+        return;
+    }
+    if(line_like("ELSE IF $str-var IS NOT EQUAL TO $str-var THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+		if(state.if_stack.size() == 0)             
+			error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        
+        state.add_code("}else if (" + get_c_variable(state, tokens[2]) + " != " + get_c_variable(state, tokens[6]) + "){");
+        return;
+    }
+
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
 

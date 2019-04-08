@@ -13,7 +13,7 @@
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
-#define CRLF "\n"
+#define CRLF \"\\n\"
 
 using namespace std;
 
@@ -37,7 +37,7 @@ struct ldpl_vector {
 };
 
 ldpl_number input_number(){
-    string s = "";
+    string s = \"\";
     while(true){
         getline(cin, s);
         try {
@@ -45,7 +45,7 @@ ldpl_number input_number(){
             return num;
         }
         catch (const std::invalid_argument& ia) {
-            cout << "Redo from start: " << flush;
+            cout << \"Redo from start: \" << flush;
         }
     }
 }
@@ -62,17 +62,17 @@ ldpl_number to_number(const string & a){
 
 
 string input_string(){
-    string s = "";
+    string s = \"\";
     getline(cin, s);
     return s;
 }
 
 string input_until_eof(){
     stringstream full;
-    string s = "";
+    string s = \"\";
     bool firstLine = true;
     while (getline(cin, s)) {
-        if(!firstLine) s = "\n" + s;
+        if(!firstLine) s = \"\\n\" + s;
         firstLine = false;
         full << s;
     }
@@ -111,7 +111,7 @@ int utf8_strlen(const string& str)
 string utf8_substr(const string &str,int start, int length=INT_MAX)
 {
     int i,ix,j,realstart,reallength;
-    if (length==0) return "";
+    if (length==0) return \"\";
     if (start<0 || length <0)
     {
         //find j=utf8_strlen(str);
@@ -122,9 +122,9 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
             else if (c>=192 && c<=223) i+=1;
             else if (c>=224 && c<=239) i+=2;
             else if (c>=240 && c<=247) i+=3;
-            else if (c>=248 && c<=255) return "";//invalid utf8
+            else if (c>=248 && c<=255) return \"\";//invalid utf8
         }
-        if (length !=INT_MAX && j+length-start<=0) return "";
+        if (length !=INT_MAX && j+length-start<=0) return \"\";
         if (start  < 0 ) start+=j;
         if (length < 0 ) length=j+length-start;
     }
@@ -139,7 +139,7 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
         else if (c>=192 && c<=223) i+=1;
         else if (c>=224 && c<=239) i+=2;
         else if (c>=240 && c<=247) i+=3;
-        else if (c>=248 && c<=255) return "";//invalid utf8
+        else if (c>=248 && c<=255) return \"\";//invalid utf8
     }
     if (j==start) { realstart=i; }
     if (j>=start && (length==INT_MAX || j<=start+length)) { reallength=i-realstart; }
@@ -153,7 +153,7 @@ ldpl_number str_len(const string & a){
 
 ldpl_number get_char_num(const string & chr){
     if (chr.size() != 1) {
-            cerr << "Runtime Error: GET CHAR AT expects a string of length 1, got: ";
+            cerr << \"Runtime Error: GET CHAR AT expects a string of length 1, got: \";
             cerr << chr << endl;
             exit(1);
     }
@@ -187,9 +187,9 @@ string to_ldpl_string(double x){
 string exec(const char* cmd) {
     array<char, 128> buffer;
     string result;
-    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, \"r\"), pclose);
     if (!pipe) {
-        throw runtime_error("popen() failed!");
+        throw runtime_error(\"popen() failed!\");
     }
     while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
         result += buffer.data();
@@ -211,17 +211,16 @@ void load_file(string filename, string & destination)
     ifstream file(filename);
     //Fail if the file couldn't be loaded
     if(!file.is_open()){
-        cerr << ("Error: The file '" + filename + "' couldn't be opened.") << endl;
+        cerr << (\"Error: The file '\" + filename + \"' couldn't be opened.\") << endl;
         exit(1);
     }
     //TODO: Turn this into a control variable that can be checked from LDPL.
     //Get file contents
-    string text = "";
-    string line = "";
+    string text = \"\";
+    string line = \"\";
     while(getline(file, line))
     {
-        cout << "Cargando: " << line << endl;
-        text += line + "\n";
+        text += line + \"\\n\";
         cout << text << endl;
     }
     destination = text;
