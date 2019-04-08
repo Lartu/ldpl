@@ -72,10 +72,11 @@ int main(int argc, const char* argv[])
                 final_filename = arg.substr(3);
             }
             else if(arg.substr(0, 3) == "-i="){
-                if(0 == arg.compare(arg.length()-2, 2, ".a")){
-                    extensions.push_back(arg.substr(3)); // kill -i= prefix
-                }else{
+                if(0 == arg.compare(arg.length()-2, 2, ".ldpl")||0 == arg.compare(arg.length()-2, 2, ".lsc")){
                     files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
+                }else{
+                    //pass everything but .ldpl and .lsc files to the c++ compiler
+                    extensions.push_back(arg.substr(3)); // kill -i= prefix
                 }
             }
         }
