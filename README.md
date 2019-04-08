@@ -10,7 +10,7 @@ Check http://ldpl.lartu.net/ for more information on the language, tutorials, ex
 
 ## About the language
 
-LDPL is standarized [here](http://ldpl.lartu.net/reference).
+LDPL is standarized [here](https://ldpl.gitbook.io).
 That's both the language documentation and the compiler writting standard. 
 
 We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)) and [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)).
