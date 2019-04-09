@@ -24,6 +24,7 @@ struct compiler_state{
     vector<string> subroutine_code; //code outside main()
     //variables
     map<string, unsigned int> variables;
+    map<string, bool> externals; //variables defined in c++ extensions
     //1 number, 2 text, 3 number vector, 4 text vector
     vector<string> subprocedures;
     string open_subprocedure = "";
@@ -67,10 +68,13 @@ bool is_vector_index(string & token);
 bool is_num_var(string & token, compiler_state & state);
 bool is_txt_var(string & token, compiler_state & state);
 bool is_variable(string & token, compiler_state & state);
+bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
 string get_c_variable(compiler_state & state, string & variable);
 void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);
 void replace_whitespace(string & code);
+string fix_external_identifier(string identifier, bool isVariable);
+string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
