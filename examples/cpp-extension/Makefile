@@ -10,8 +10,8 @@ lib: hello.cpp
 
 test: lib
 	cd ../../src && make 
-	../../src/ldpl -i=hello.a -o=hello hello.lsc
+	../../src/ldpl -i=hello.a -o=hello hello.ldpl
 	./hello
 
 clean:
-	rm -f hello.{o,a}
+	rm -f hello.{o,a} hello-bin hello

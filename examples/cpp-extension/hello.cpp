@@ -1,14 +1,14 @@
 #include <iostream>
 #include <string>
 
-extern std::string VAR_MYNAME;
+std::string MY_NAME;
 
-void SUBPR_HELLO()
+void HELLO()
 {
     std::cout << "Heyo, worldy!" << std::endl;
 }
 
-void SUBPR_GREET()
+void GREET()
 {
-    std::cout << "Salutations, " << VAR_MYNAME << "!" << std::endl;
+    std::cout << "Salutations, " << MY_NAME << "!" << std::endl;
 }
