@@ -2333,6 +2333,21 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+    if(line_like("LABEL $label", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("LABEL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_code(fix_identifier(tokens[1])+":");
+        return;
+    }
+    if(line_like("GOTO $label", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("GOTO outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_code("goto "+fix_identifier(tokens[1])+";");
+        return;
+    }
+
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
 
@@ -2369,7 +2384,11 @@ string fix_identifier(string ident, bool isVar, compiler_state & state){
 }
 
 string fix_identifier(string identifier, bool isVariable){
-    string new_id = isVariable ? "VAR_" : "SUBPR_";
+    return string(isVariable ? "VAR_" : "SUBPR_") + fix_identifier(identifier);
+}
+
+string fix_identifier(string identifier){
+    string new_id = "";
     for(unsigned int i = 0; i < identifier.size(); ++i){
         bool isValidChar = false;
         string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -2453,6 +2472,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             return !is_subprocedure(tokens[i], state) && !is_variable(tokens[i], state) && 
                    !is_string(tokens[i]) && !is_number(tokens[i]);
         }
+        else if(model_tokens[i] == "$label") //$label is a GOTO label
+        {
+            return is_label(tokens[i]);
+        }
         else if(model_tokens[i] != tokens[i]) return false;
     }
     if(i < tokens.size()) return false;
@@ -2475,6 +2498,10 @@ bool is_natural(string number){
     for(char l : number)
         if(l == '.') return false;
     return true;
+}
+
+bool is_label(string & token){
+    return !isdigit(token[0]) && token[0] != ':' && token[0] != '"';
 }
 
 bool is_string(string & token){

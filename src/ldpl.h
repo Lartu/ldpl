@@ -63,6 +63,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
 bool line_like(string model_line, vector<string> & tokens, compiler_state & state); //Important to pass tokens by copy
 bool is_number(string number);
 bool is_natural(string number);
+bool is_label(string & token);
 bool is_string(string & token);
 bool is_vector_index(string & token);
 bool is_num_var(string & token, compiler_state & state);
@@ -78,3 +79,4 @@ void replace_whitespace(string & code);
 string fix_external_identifier(string identifier, bool isVariable);
 string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
+string fix_identifier(string identifier);
