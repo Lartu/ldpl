@@ -1,7 +1,3 @@
-//TODO:
-//Documentar stdlib
-//Hacer que si recibe - por parémtro ejecute el código que recibe por stdin
-
 #include "ldpl.h"
 #include "ldpl_included_lib.cpp"
 
@@ -33,7 +29,7 @@ int main(int argc, const char* argv[])
     if(contains_any(args, {"-v", "--version"})){
         cout << "This is " << "\033[35;1mLDPL " << STANDARD << " version " << VERSION << "\033[0m" << endl << endl;
         cout << "Copyright 2018-2019, Martín del Río" << endl << endl;
-	cout << "Built with amazing contributions from ʇʞʌp and a bunch of other contributors" << endl;
+	cout << "Built with amazing contributions from ʇʞʌp and a bunch of other contributors." << endl;
         cout << "Website and documentation can be found on \033[36;1mldpl.lartu.net\033[0m." << endl;
         cout << "Source code can be found at \033[36;1mhttps://github.com/lartu/ldpl\033[0m." << endl << endl;
         cout << "LDPL may be copied only under the terms of the GNU General Public License 3.0." << endl <<endl;
