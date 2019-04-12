@@ -11,7 +11,7 @@ Check http://ldpl.lartu.net/ for more information on the language, tutorials, ex
 ## About the language
 
 LDPL is standarized [here](https://ldpl.gitbook.io).
-That's both the language documentation and the compiler writting standard. 
+That's both the language documentation and the compiler writting standard.
 
 We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)) and [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)).
 
@@ -19,20 +19,20 @@ Examples are available in the [Examples](/examples) subfolder.
 
 ## Why should I use LDPL?
 
-Because it looks nice, it's readable, it's fun, it's like a little toy to toy around with! Have you ever found a symbol within code that you didn't know what it did? Maybe an asterisk, a semicolon or even a pair of brackets? We have, too. The average programming language looks like this: 
+Because it looks nice, it's readable, it's fun, it's like a little toy to toy around with! Have you ever found a symbol within code that you didn't know what it did? Maybe an asterisk, a semicolon or even a pair of brackets? We have, too. The average programming language looks like this:
 
 ```
 +[-[<<[+[--->]-[<<<]]]>>>-]>-.---.>..>.<<<<-.<+.>>>>>.>.<<.<-.
 ```
 
-Can you read that? We can't either. That's because regular programming languages weren't designed with readability in mind. **LDPL was**. Compare the example above with this and tell us which one would you rather use: 
+Can you read that? We can't either. That's because regular programming languages weren't designed with readability in mind. **LDPL was**. Compare the example above with this and tell us which one would you rather use:
 
 ```
 procedure:
-display "Hello World" crlf 
+display "Hello World" crlf
 ```
 
-That's right. Say bye bye to cryptic glyphs. Say hello to **LDPL**. 
+That's right. Say bye bye to cryptic glyphs. Say hello to **LDPL**.
 
 ## How to use this compiler
 
@@ -53,11 +53,18 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## Compiler options
 
- * You can import files to your LDPL compilation by using the `-i` flag. For example, say you have a library `mylib.ldpl` and a source file `mysource.ldpl`, you can compile both and include the library by running `ldpl -i=mylibrary.ldpl mysource.ldpl`. Multiple `-i=` can be used to import multiple files.
+ * You can import files to your LDPL compilation by using the `-i` flag. For example, say you have a library `mylib.ldpl` and a source file `mysource.ldpl`, you can compile both and include the library by running `ldpl -i=mylibrary.ldpl mysource.ldpl`. Multiple `-i=` can be used to import multiple files. Extensions can be imported by specifying their `.h` file; see the Extensions section below.
  * By using `-r` you can just compile the project and print the C++ representation for that code.
  * You can set the output file for the compiled binary with the `-o` flag. For example, if you want to name your program "dog", you could compile it with `ldpl -o=dog main.ldpl`.
  * `-v` and `--version` print out version info and release details.
  * `-h` and `--help` print this list of options.
+
+## Extensions
+
+This branch contains experimental support for extensions to LDPL written in the C++ programming language. Only Mac & Linux are supported at this time.
+
+For a working example and documentation, see the
+[examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## How can I contribute to LDPL?
 

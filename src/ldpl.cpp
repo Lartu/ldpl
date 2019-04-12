@@ -52,10 +52,8 @@ int main(int argc, const char* argv[])
 
     compiler_state state; //Compiler state (holds variables, sections, functions, etc)
     vector<string> files_to_compile;
+    vector<string> extensions;
     add_ldpllib(state);
-    state.add_code("int main(int argc, char *argv[]){");
-    state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
-    state.add_code("srand (time(NULL));");
 
     string output_filename = "";
     string final_filename = "";
@@ -74,10 +72,19 @@ int main(int argc, const char* argv[])
                 final_filename = arg.substr(3);
             }
             else if(arg.substr(0, 3) == "-i="){
-                files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
+                if(0 == arg.compare(arg.length()-2, 2, ".ldpl")||0 == arg.compare(arg.length()-2, 2, ".lsc")){
+                    files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
+                }else{
+                    //pass everything but .ldpl and .lsc files to the c++ compiler
+                    extensions.push_back(arg.substr(3)); // kill -i= prefix
+                }
             }
         }
     }
+
+    state.add_code("int main(int argc, char *argv[]){");
+    state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
+    state.add_code("srand (time(NULL));");    
 
     state.variables["ARGC"] = 1;
     state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
@@ -133,6 +140,9 @@ int main(int argc, const char* argv[])
 #ifdef  __linux__
     compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
+    if(!extensions.empty()){
+        for(string & extension : extensions) compile_line += " "+extension;
+    }
     int compiled = system(compile_line.c_str());
     system("rm ldpl-temp.cpp");
     if(compiled == 0){
@@ -360,6 +370,55 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_var_code("ldpl_vector<string> " + fix_identifier(tokens[0], true) + ";");
+        return;
+    }if(line_like("$name IS EXTERNAL NUMBER", tokens, state))
+    {
+        if(state.section_state != 1)
+            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!variable_exists(tokens[0], state))
+            state.variables[tokens[0]] = 1;
+        else
+            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_var_code("extern ldpl_number " + fix_external_identifier(tokens[0], true) + ";");
+        state.externals[tokens[0]] = true;
+        return;
+    }
+    if(line_like("$name IS EXTERNAL TEXT", tokens, state))
+    {
+        if(state.section_state != 1)
+            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!variable_exists(tokens[0], state))
+            state.variables[tokens[0]] = 2;
+        else
+            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_var_code("extern string " + fix_external_identifier(tokens[0], true) + ";");
+        state.externals[tokens[0]] = true;
+        return;
+    }
+    if(line_like("$name IS EXTERNAL NUMBER VECTOR", tokens, state))
+    {
+        if(state.section_state != 1)
+            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!variable_exists(tokens[0], state)){
+            state.variables[tokens[0]] = 3;
+        }
+        else
+            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_var_code("extern ldpl_vector<ldpl_number> " + fix_external_identifier(tokens[0], true) + ";");
+        state.externals[tokens[0]] = true;
+        return;
+    }
+    if(line_like("$name IS EXTERNAL TEXT VECTOR", tokens, state))
+    {
+        if(state.section_state != 1)
+            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!variable_exists(tokens[0], state)){
+            state.variables[tokens[0]] = 4;
+        }
+        else
+            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_var_code("extern ldpl_vector<string> " + fix_external_identifier(tokens[0], true) + ";");
+        state.externals[tokens[0]] = true;
         return;
     }
     if(line_like("DISPLAY $display", tokens, state))
@@ -1461,6 +1520,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+    if(line_like("CALL EXTERNAL $external", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CALL EXTERNAL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_code(fix_external_identifier(tokens[2], false) + "();");
+        //prototype of function defined in extension
+        state.add_var_code("void "+fix_external_identifier(tokens[2], false)+"();");
+        return;
+    }
+
     if(line_like("EXECUTE $string", tokens, state))
     {
         if(state.section_state != 2)
@@ -2282,6 +2351,38 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
 
+//External identifiers are used by C++ extensions and thus have a simpler but
+//more restrictive name mangling algorithm: The only characters allowed are 
+//`A-Z`, `0-9`, and `_`. All other characters are converted to `_`. 
+string fix_external_identifier(string identifier, bool isVariable){
+    string new_id = "";
+    for(unsigned int i = 0; i < identifier.size(); ++i){
+        bool isValidChar = false;
+        string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
+        for(unsigned int j = 0; j < validChars.size(); ++j){
+            if(validChars[j] == identifier[i]){
+                isValidChar = true;
+                break;
+            }
+        }
+        if(!isValidChar && identifier[i] != ':'){
+            new_id += "_";
+        }else{
+            new_id += identifier[i];
+        }
+    }
+    return new_id;
+}
+
+//when state is provided to fix_identifier it can fix external variables too.
+string fix_identifier(string ident, bool isVar, compiler_state & state){
+    if(is_external(ident, state)){
+        return fix_external_identifier(ident, isVar);
+    }else{
+        return fix_identifier(ident, isVar);
+    }
+}
+
 string fix_identifier(string identifier, bool isVariable){
     return string(isVariable ? "VAR_" : "SUBPR_") + fix_identifier(identifier);
 }
@@ -2365,6 +2466,11 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$subprocedure") //$subprocedure is a SUB-PROCEDURE (?
         {
             if(!is_subprocedure(tokens[i], state)) return false;
+        }
+        else if(model_tokens[i] == "$external") //$external is a C++ function defined elsewhere
+        {
+            return !is_subprocedure(tokens[i], state) && !is_variable(tokens[i], state) && 
+                   !is_string(tokens[i]) && !is_number(tokens[i]);
         }
         else if(model_tokens[i] == "$label") //$label is a GOTO label
         {
@@ -2464,6 +2570,11 @@ bool is_variable(string & token, compiler_state & state)
     return is_num_var(token, state) || is_txt_var(token, state);
 }
 
+bool is_external(string & token, compiler_state & state)
+{
+    return state.externals[token];
+}
+
 void split_vector(string & line, queue<string> & tokens)
 {
     bool in_string = false;
@@ -2554,7 +2665,7 @@ string get_c_variable(compiler_state & state, string & variable)
     queue<string> vpart;
     split_vector(variable, vpart);
     if(vpart.size() == 1){
-        return fix_identifier(variable, true);
+        return fix_identifier(variable, true, state);
     }
 
     //Vector variable
@@ -2566,13 +2677,13 @@ string get_c_variable(compiler_state & state, string & variable)
     }
 
     //Last element of vector access:
-    string newvar = fix_identifier(token[0], true);
+    string newvar = fix_identifier(token[0], true, state);
 
     for(unsigned int i = 1; i < token.size(); ++i){
         newvar += "[";
         if(is_variable(token[i], state) || is_num_vector(token[i], state) || is_txt_vector(token[i], state))
         //Pongo esto porque el is_variable requiere que tenga subindices y acá le paso solo el nombre del vector
-            newvar += fix_identifier(token[i], true);
+            newvar += fix_identifier(token[i], true, state);
         else
             newvar += token[i];
     }
