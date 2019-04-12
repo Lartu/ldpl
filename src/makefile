@@ -5,7 +5,6 @@
 # +----------------------+
 
 VERSION = '"3.0.0"'  #LDPL Version
-LDPLSTD = 19		 #LDPL Standard
 
 # +-----------------+
 # | The other stuff |
@@ -14,7 +13,7 @@ LDPLSTD = 19		 #LDPL Standard
 OBJS = ldpl.o
 SOURCE = ldpl.cpp
 OUT = ldpl
-FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DSTANDARD=$(LDPLSTD) -DCOMPILEDATE='"$(shell date)"'
+FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DCOMPILEDATE='"$(shell date)"'
 ifneq ($(shell uname -s),Darwin)
 	LFLAGS = -static-libgcc -static-libstdc++
 endif

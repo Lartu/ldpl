@@ -27,9 +27,9 @@ int main(int argc, const char* argv[])
     vector<string> args(argv + 1, argv + argc);
 
     if(contains_any(args, {"-v", "--version"})){
-        cout << "This is " << "\033[35;1mLDPL " << STANDARD << " version " << VERSION << "\033[0m" << endl << endl;
-        cout << "Copyright 2018-2019, Martín del Río" << endl << endl;
-	cout << "Built with amazing contributions from ʇʞʌp and a bunch of other contributors." << endl;
+        cout << "This is the \033[32;1mLDPL version " << VERSION << "\033[0m." << endl << endl;
+        cout << "Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
+	cout << "Built with amazing contributions from \033[35;1mʇʞʌp\033[0m and a bunch of other contributors." << endl << endl;
         cout << "Website and documentation can be found on \033[36;1mldpl.lartu.net\033[0m." << endl;
         cout << "Source code can be found at \033[36;1mhttps://github.com/lartu/ldpl\033[0m." << endl << endl;
         cout << "LDPL may be copied only under the terms of the GNU General Public License 3.0." << endl <<endl;
@@ -75,6 +75,10 @@ int main(int argc, const char* argv[])
                     //pass everything but .ldpl and .lsc files to the c++ compiler
                     extensions.push_back(arg.substr(3)); // kill -i= prefix
                 }
+            }
+            else if(arg.substr(0, 3) == "-f="){
+                //pass flags to the c++ compiler (for example -f=-lSDL)
+                extensions.push_back(arg.substr(3));
             }
         }
     }
