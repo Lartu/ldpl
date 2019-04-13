@@ -2009,20 +2009,13 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
 //more restrictive name mangling algorithm: The only characters allowed are 
 //`A-Z`, `0-9`, and `_`. All other characters are converted to `_`. 
 string fix_external_identifier(string identifier, bool isVariable){
-    string new_id = "";
-    for(unsigned int i = 0; i < identifier.size(); ++i){
-        bool isValidChar = false;
-        string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
-        for(unsigned int j = 0; j < validChars.size(); ++j){
-            if(validChars[j] == identifier[i]){
-                isValidChar = true;
-                break;
-            }
-        }
-        if(!isValidChar && identifier[i] != ':'){
-            new_id += "_";
-        }else{
+    const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890:";
+    string new_id;
+    for(unsigned int i = 0; i < identifier.size(); ++i){ 
+        if(validChars.find(identifier[i]) != string::npos){
             new_id += identifier[i];
+        }else{
+            new_id += "_";
         }
     }
     return new_id;
@@ -2042,25 +2035,16 @@ string fix_identifier(string identifier, bool isVariable){
 }
 
 string fix_identifier(string identifier){
-    string new_id = "";
-    for(unsigned int i = 0; i < identifier.size(); ++i){
-        bool isValidChar = false;
-        string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        for(unsigned int j = 0; j < validChars.size(); ++j){
-            if(validChars[j] == identifier[i]){
-                isValidChar = true;
-                break;
-            }
-        }
-        if(!isValidChar && identifier[i] != ':'){
-            char newchar = (((unsigned int) identifier[i]) % 25) + 65;
-            new_id += "r_";
-            new_id += newchar;
+    const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890:";
+    ostringstream new_id;
+    for(unsigned int i = 0; i < identifier.size(); ++i){ 
+        if(validChars.find(identifier[i]) != string::npos){
+            new_id << identifier[i];
         }else{
-            new_id += identifier[i];
+            new_id << "c" << (unsigned int)identifier[i] << "_";
         }
     }
-    return new_id;
+    return new_id.str();
 }
 
 //Check if the tokens of a line passed are like the ones of a model line
