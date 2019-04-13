@@ -65,7 +65,7 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `-i=` compiler flag. 
 
-For a guide to writing and building extensions, see [LDPL's official documentation](https://ldpl.gitbook.io). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
+For a guide to writing and building extensions, see [LDPL's official documentation](https://ldpl.gitbook.io/reference/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## How can I contribute to LDPL?
 
