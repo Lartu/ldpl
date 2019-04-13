@@ -42,7 +42,7 @@ To use the compiler, you must have a C++ compiler already installed on your syst
 
 **If you want to download a compiled binary:** just go to the *Releases* part of this repository and download the newest one available.
 
-**If you want to build LDPL yourself:** First, download the latest release.
+**If you want to build LDPL yourself:** first, clone this repository.
 Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
 
 When you are done installing LDPL, go write some LDPL source code, say `source.lsc`.
