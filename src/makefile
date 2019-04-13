@@ -4,7 +4,7 @@
 # | LDPL Version Details |
 # +----------------------+
 
-VERSION = '"3.0.0"'  #LDPL Version
+VERSION = '"3.0.1"'  #LDPL Version
 
 # +-----------------+
 # | The other stuff |

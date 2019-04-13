@@ -221,7 +221,6 @@ void load_file(string filename, string & destination)
     while(getline(file, line))
     {
         text += line + \"\\n\";
-        cout << text << endl;
     }
     destination = text;
     file.close();
