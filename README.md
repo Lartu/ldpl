@@ -1,5 +1,5 @@
 # The LDPL Programming Language
-![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)
+![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-3.0.1-blue.svg)
 
 ![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
