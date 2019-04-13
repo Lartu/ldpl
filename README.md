@@ -44,8 +44,9 @@ To use the compiler, you must have a C++ compiler already installed on your syst
 
 **If you want to build LDPL yourself:** First, download the latest release.
 Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
-Then write some LDPL source code, say `source.lsc`.
-Then compile ource code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `ldpl.out`.
+
+When you are done installing LDPL, go write some LDPL source code, say `source.lsc`.
+Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `ldpl.out`.
 Done! For more info on the compiler run `ldpl -h`.
 Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
