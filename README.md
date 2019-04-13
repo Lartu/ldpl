@@ -54,7 +54,8 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## Compiler options
 
- * You can import files to your LDPL compilation by using the `-i` flag. For example, say you have a library `mylib.ldpl` and a source file `mysource.ldpl`, you can compile both and include the library by running `ldpl -i=mylibrary.ldpl mysource.ldpl`. Multiple `-i=` can be used to import multiple files. Extensions can be imported by specifying their `.h` file; see the Extensions section below.
+ * You can import files to your LDPL compilation by using the `-i` flag. For example, say you have a library `mylib.ldpl` and a source file `mysource.ldpl`, you can compile both and include the library by running `ldpl -i=mylibrary.ldpl mysource.ldpl`. Multiple `-i=` can be used to import multiple files. Extensions can be imported by passing `.o`, `.a`, or `.cpp` files to this flag; see the Extensions section below.
+ * The `-f` flag can be used to pass extra options to the compiler when building extensions. For example, `-f=-lSDL` could be used to link against SDL.
  * By using `-r` you can just compile the project and print the C++ representation for that code.
  * You can set the output file for the compiled binary with the `-o` flag. For example, if you want to name your program "dog", you could compile it with `ldpl -o=dog main.ldpl`.
  * `-v` and `--version` print out version info and release details.
@@ -62,10 +63,9 @@ Example code can be found on [the LDPL website](http://ldpl.lartu.net).
 
 ## Extensions
 
-This branch contains experimental support for extensions to LDPL written in the C++ programming language. Only Mac & Linux are supported at this time.
+LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `-i=` compiler flag. 
 
-For a working example and documentation, see the
-[examples/cpp-extension](./examples/cpp-extension) directory.
+For a guide to writing and building extensions, see [LDPL's official documentation](https://ldpl.gitbook.io). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## How can I contribute to LDPL?
 
