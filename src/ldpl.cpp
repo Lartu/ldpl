@@ -319,14 +319,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.open_ifs == 0)
             error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 
-        if(tokens[1] == "IF"){ // ELSE IF
-            state.add_code("}else ");
-            //remove the ELSE token so it becomes regular IF
-            //then continue processing of the line
-            tokens.erase(tokens.begin()+0);
-        }else{
+        if(tokens.size() == 1){ // ELSE
             state.add_code("}else{");
             return;
+        } else if(tokens[1] == "IF"){ // ELSE IF
+            state.add_code("}else ");
+            //remove the ELSE input token so it becomes a regular IF,
+            //then continue compiling this line.
+            tokens.erase(tokens.begin()+0);
         }
     }
     
