@@ -37,14 +37,7 @@ struct compiler_state{
         else
             this->subroutine_code.push_back(code);
     }
-    int if_number = 0;
-    stack<int> if_stack;
-    int add_if(){
-        ++if_number;
-        if_stack.push(if_number);
-        if_stack.push(if_number);
-        return if_number;
-    }
+    int open_ifs = 0;
     int while_number = 0;
     stack<int> while_stack;
     int add_while(){
