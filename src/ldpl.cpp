@@ -43,6 +43,7 @@ int main(int argc, const char* argv[])
         cout << "  -r                       Display generated C++ code" << endl;
         cout << "  -o=<name>                Set output file for compiled binary" << endl;
         cout << "  -i=<file>                Include file in current compilation" << endl;
+        cout << "  -f=<flag>                Pass a flag to the C++ compiler" << endl;
         cout << "  -v --version             Display LDPL version information" << endl;
         return 0;
     }
@@ -69,7 +70,7 @@ int main(int argc, const char* argv[])
                 final_filename = arg.substr(3);
             }
             else if(arg.substr(0, 3) == "-i="){
-                if(0 == arg.compare(arg.length()-2, 2, ".ldpl")||0 == arg.compare(arg.length()-2, 2, ".lsc")){
+                if(0 == arg.compare(arg.length()-5, 5, ".ldpl")||0 == arg.compare(arg.length()-4, 4, ".lsc")){
                     files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
                 }else{
                     //pass everything but .ldpl and .lsc files to the c++ compiler
