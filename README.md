@@ -3,7 +3,7 @@
 
 ![LDPL](http://ldpl.lartu.net/ldpl-logo-new.png)
 
-[LDPL](http://ldpl.lartu.net/) is a very simple (but powerful) programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux and both Intel and PowerPC Mac OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
+[LDPL](https://www.ldpl-lang.org/) is a very simple (but powerful) programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux and both Intel and PowerPC Mac OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
 This repository contains the source code and releases of the LDPL compiler.
 Check http://ldpl.lartu.net/ for more information on the language, tutorials, examples and more!
@@ -38,7 +38,7 @@ That's right. Say bye bye to cryptic glyphs. Say hello to **LDPL**.
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
 
-![Compiling Dragon](https://ldpl.lartu.net/reference/ldpl-reference.png)
+![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
 
 **If you want to download a compiled binary:** just go to the *Releases* part of this repository and download the newest one available.
 
@@ -48,7 +48,7 @@ Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
 When you are done installing LDPL, go write some LDPL source code, say `source.lsc`.
 Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `ldpl.out`.
 Done! For more info on the compiler run `ldpl -h`.
-Example code can be found on [the LDPL website](http://ldpl.lartu.net).
+Example code can be found on [the LDPL website](http://www.ldpl-lang.org).
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
 
@@ -71,7 +71,7 @@ For a guide to writing and building extensions, see [LDPL's official documentati
 
 You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
 
-![Contributing Dragon](https://ldpl.lartu.net/tutorial-ldpl.png)
+![Contributing Dragon](https://www.ldpl-lang.org/tutorial-ldpl.png)
 
 Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md).
 
@@ -79,7 +79,7 @@ If you want to talk to the rest of us, you can find the LDPL community at [r/LDP
 
 ## Where can I get more help, if I need it?
 
-You are welcome to submit an issue to this repository, check the [LDPL website](http://ldpl.lartu.net) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
+You are welcome to submit an issue to this repository, check the [LDPL website](http://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
 
 ## License
 
