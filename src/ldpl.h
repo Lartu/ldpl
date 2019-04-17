@@ -37,6 +37,7 @@ struct compiler_state{
         else
             this->subroutine_code.push_back(code);
     }
+    bool open_quote = false;
     int open_ifs = 0;
     int while_number = 0;
     stack<int> while_stack;
@@ -66,6 +67,7 @@ bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
 string get_c_variable(compiler_state & state, string & variable);
+string & escape_c_string(string & str);
 void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);
 void replace_whitespace(string & code);

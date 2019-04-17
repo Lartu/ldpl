@@ -198,6 +198,28 @@ void compile(vector<string> & lines, compiler_state & state)
     for(unsigned int line_num = 0; line_num < lines.size(); ++line_num)
     {
         string & line = lines[line_num];
+
+        if(state.open_quote){
+            //Check for END QUOTE first
+            if(line.size() >= 9){ 
+                string upper = "";
+                for(char c : line) upper += toupper(c);
+                trim(upper);
+                if(upper == "END QUOTE"){
+                    state.open_quote = false;
+                    //Kill final newline. Programs can add crlf if needed.
+                    string & prev = state.output_code.back();
+                    if(prev.rfind("\\n") != string::npos) prev.erase(prev.size()-4, 3);
+                    prev += ";"; 
+                    continue;
+                }
+            }
+
+            //No END QUOTE, emit the line as C++
+            state.add_code("\"" + escape_c_string(line) + "\\n\"");
+            continue;
+        }
+
         trim(line);
         //Split line in various tokens
         vector<string> tokens;
@@ -214,6 +236,7 @@ void compile(vector<string> & lines, compiler_state & state)
         error("there may be open WHILE blocks in your code.");
         exit(1);
     }
+    if(state.open_quote) error("your QUOTE block was not terminated.");
 }
 
 //Tokenizes a line
@@ -1672,6 +1695,19 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+    if(line_like("STORE QUOTE IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.open_quote = true;
+        //C code. More strings will get emitted 
+        state.add_code(get_c_variable(state, tokens[3]) + " = \"\"");
+        return;
+    }
+
+    if(line_like("END QUOTE", tokens, state))
+        error("END QUOTE statement without preceding STORE QUOTE statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+
     //Undocumented
     if(line_like("IN $str-var JOIN $display", tokens, state))
     {
@@ -2298,4 +2334,19 @@ string get_c_variable(compiler_state & state, string & variable)
     }
 
     return newvar;
+}
+
+//Escapes \ char in string so it can be emitted as c++
+string & escape_c_string(string & str)
+{
+    for(unsigned int i = 0; i < str.size(); ++i){
+        if(str[i] == '"'){
+            str.erase(i, 1);
+            str.insert(i, "\\\"");
+            ++i;
+        }else if(str[i] == '\\'){
+            str.insert(++i, "\\");
+        }   
+    }
+    return str;
 }
