@@ -209,7 +209,8 @@ void compile(vector<string> & lines, compiler_state & state)
                     state.open_quote = false;
                     //Kill final newline. Programs can add crlf if needed.
                     string & prev = state.output_code.back();
-                    if(prev.rfind("\\n") != string::npos) prev.erase(prev.size()-4, 3);
+                    size_t pos = prev.rfind("\\n");
+                    if(pos != string::npos) prev.erase(pos, 2);
                     prev += ";"; 
                     continue;
                 }
