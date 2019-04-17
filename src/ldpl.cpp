@@ -27,7 +27,7 @@ int main(int argc, const char* argv[])
     vector<string> args(argv + 1, argv + argc);
 
     if(contains_any(args, {"-v", "--version"})){
-        cout << "This is the \033[32;1mLDPL version " << VERSION << "\033[0m." << endl << endl;
+        cout << "This is \033[32;1mLDPL version " << VERSION << "\033[0m." << endl << endl;
         cout << "Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
 	cout << "Built with amazing contributions from \033[35;1mʇʞʌp\033[0m and a bunch of other contributors." << endl << endl;
         cout << "Website and documentation can be found on \033[36;1mldpl.lartu.net\033[0m." << endl;
