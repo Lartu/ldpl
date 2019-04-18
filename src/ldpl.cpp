@@ -217,7 +217,7 @@ void compile(vector<string> & lines, compiler_state & state)
             }
 
             //No END QUOTE, emit the line as C++
-            state.add_code("\"" + escape_c_string(line) + "\\n\"");
+            state.add_code("\"" + escape_c_quotes(line) + "\\n\"");
             continue;
         }
 
@@ -2337,17 +2337,15 @@ string get_c_variable(compiler_state & state, string & variable)
     return newvar;
 }
 
-//Escapes \ char in string so it can be emitted as c++
-string & escape_c_string(string & str)
+//Escapes " char in string so it can be emitted as c++
+string & escape_c_quotes(string & str)
 {
     for(unsigned int i = 0; i < str.size(); ++i){
         if(str[i] == '"'){
             str.erase(i, 1);
             str.insert(i, "\\\"");
             ++i;
-        }else if(str[i] == '\\'){
-            str.insert(++i, "\\");
-        }   
+        }
     }
     return str;
 }
