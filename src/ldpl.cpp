@@ -201,7 +201,7 @@ void compile(vector<string> & lines, compiler_state & state)
 
         if(state.open_quote){
             //Check for END QUOTE first
-            if(line.size() >= 9){ 
+            if(line.size() >= 9 && (line[0] == 'E' || line[0] == 'e')){
                 string upper = "";
                 for(char c : line) upper += toupper(c);
                 trim(upper);
