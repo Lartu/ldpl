@@ -13,7 +13,7 @@ Check http://www.ldpl-lang.org/ for more information on the language, tutorials,
 LDPL is standarized [here](https://ldpl.gitbook.io).
 That's both the language documentation and the compiler writting standard.
 
-We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)) and [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)).
+We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)) and [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)).
 
 Examples are available in the [Examples](/examples) subfolder.
 
