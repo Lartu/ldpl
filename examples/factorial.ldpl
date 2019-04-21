@@ -1,6 +1,6 @@
 # Factorial Calculator
 # by Martin del Rio
-# http://www.ldpl-lang.org/ 
+# https://www.ldpl-lang.org/ 
 
 DATA:
 result is number

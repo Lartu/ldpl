@@ -36,9 +36,9 @@ If you are submiting LDPL fanfiction, please ask yourself why am I doing this. T
 
 ### Links to external documentation, mailing lists, or a code of conduct.
 
-- Official LDPL Website: [http://www.ldpl-lang.org/](http://www.ldpl-lang.org/)
-- LDPL Reference: [http://www.ldpl-lang.org/reference](http://www.ldpl-lang.org/reference)
-- LDPL Reddit Community: [http://reddit.com/r/ldpl](http://reddit.com/r/ldpl)
+- Official LDPL Website: [https://www.ldpl-lang.org/](https://www.ldpl-lang.org/)
+- LDPL Reference: [https://www.ldpl-lang.org/reference](https://www.ldpl-lang.org/reference)
+- LDPL Reddit Community: [https://reddit.com/r/ldpl](https://reddit.com/r/ldpl)
 - IRC Channel: #ldpl at [irc.freenode.net](http://irc.freenode.net)
 - [Dragon Tamers Code](/CODE_OF_CONDUCT)
 - You can also send me an email at *mdelrio (at) dc.uba.ar*.
