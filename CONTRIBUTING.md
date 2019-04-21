@@ -8,7 +8,7 @@ Anyone can contribute to the LDPL project! As stated on the README.md file, we a
 
 ### What do I need to know to contribute to LDPL?
 
-Please take a moment to familiarize yourself with the [Dragon Tamers Code](/CODE_OF_CONDUCT) (LDPL's code of conduct, you are expected and required to behave by this code) and the [LDPL reference](https://www.ldpl-lang.org/reference/) (not really a *must* per se, but that's where all the language is documented).
+Please take a moment to familiarize yourself with the [Dragon Tamers Code](/CODE_OF_CONDUCT) (LDPL's code of conduct, you are expected and required to behave by this code) and the [LDPL reference](https://ldpl.gitbook.io/reference/) (not really a *must* per se, but that's where all the language is documented).
 
 C++ knowledge is a must if you want to contribute to the compiler code, and LDPL knowledge is a must if you want to write examples or LDPL software. Drawing is not really a must if you want to submit a drawing, but you may get better results if you know how to draw. We'll love your art anyway, though.
 
@@ -37,7 +37,7 @@ If you are submiting LDPL fanfiction, please ask yourself why am I doing this. T
 ### Links to external documentation, mailing lists, or a code of conduct.
 
 - Official LDPL Website: [https://www.ldpl-lang.org/](https://www.ldpl-lang.org/)
-- LDPL Reference: [https://www.ldpl-lang.org/reference](https://www.ldpl-lang.org/reference)
+- LDPL Reference: [https://ldpl.gitbook.io/reference/](https://ldpl.gitbook.io/reference/)
 - LDPL Reddit Community: [https://reddit.com/r/ldpl](https://reddit.com/r/ldpl)
 - IRC Channel: #ldpl at [irc.freenode.net](http://irc.freenode.net)
 - [Dragon Tamers Code](/CODE_OF_CONDUCT)
