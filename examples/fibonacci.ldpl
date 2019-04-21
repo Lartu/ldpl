@@ -1,6 +1,6 @@
 # Fibonacci Sequence
 # by Martin del Rio
-# http://ldpl.lartu.net/
+# http://www.ldpl-lang.org/
 
 DATA:
 a is number

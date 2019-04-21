@@ -1,6 +1,6 @@
 # Disan Count
 # by Martin del Rio
-# http://ldpl.lartu.net/ 
+# http://www.ldpl-lang.org/ 
 
 DATA:
     n is number                 # Number to count down from

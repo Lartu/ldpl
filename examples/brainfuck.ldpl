@@ -1,6 +1,6 @@
 # Brainfuck Interpreter 
 # by Martin del Rio
-# http://ldpl.lartu.net/
+# http://www.ldpl-lang.org/
 # This example can also be used to prove the Turing-Completeness of LDPL!
 # Usage: ldpl brainfuck.ldpl <brainfuck source filename>
 
