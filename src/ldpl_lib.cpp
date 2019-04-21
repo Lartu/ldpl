@@ -23,6 +23,9 @@ ofstream file_writing_stream;
 string file_loading_line;
 string joinvar;
 
+//Forward declarations
+string to_ldpl_string(double x);
+
 template<typename T>
 struct ldpl_vector {
     unordered_map<string, T> inner_map;
@@ -32,7 +35,7 @@ struct ldpl_vector {
     }
 
     T& operator [] (ldpl_number i) {
-        return inner_map[to_string(i)];
+        return inner_map[to_ldpl_string(i)];
     }
 };
 
