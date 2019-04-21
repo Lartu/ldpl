@@ -15,7 +15,9 @@ SOURCE = ldpl.cpp
 OUT = ldpl
 FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DCOMPILEDATE='"$(shell date)"'
 ifneq ($(shell uname -s),Darwin)
+ifneq ($(shell uname -o),Android)
 	LFLAGS = -static-libgcc -static-libstdc++
+endif
 endif
 
 all: $(OBJS)
