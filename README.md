@@ -1,12 +1,12 @@
 # The LDPL Programming Language
 ![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-3.0.2-blue.svg)
 
-![LDPL](http://www.ldpl-lang.org/ldpl-logo-new.png)
+![LDPL](https://www.ldpl-lang.org/ldpl-logo-new.png)
 
 [LDPL](https://www.ldpl-lang.org/) is a very simple (but powerful) programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux and both Intel and PowerPC Mac OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
 This repository contains the source code and releases of the LDPL compiler.
-Check http://www.ldpl-lang.org/ for more information on the language, tutorials, examples and more!
+Check https://www.ldpl-lang.org/ for more information on the language, tutorials, examples and more!
 
 ## About the language
 
@@ -48,7 +48,7 @@ Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
 When you are done installing LDPL, go write some LDPL source code, say `source.lsc`.
 Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `ldpl.out`.
 Done! For more info on the compiler run `ldpl -h`.
-Example code can be found on [the LDPL website](http://www.ldpl-lang.org).
+Example code can be found on [the LDPL website](https://www.ldpl-lang.org).
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
 
@@ -75,11 +75,11 @@ You can add statements to the language (that's in fact really easy!), fix bugs, 
 
 Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md).
 
-If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](http://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel #ldpl. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
+If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel #ldpl. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
 ## Where can I get more help, if I need it?
 
-You are welcome to submit an issue to this repository, check the [LDPL website](http://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
+You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
 
 ## License
 

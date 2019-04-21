@@ -1,6 +1,6 @@
 # Explode String Splitter
 # by Martin del Rio
-# http://ldpl.lartu.net/
+# https://www.ldpl-lang.org/
 
 DATA:
 explode/words is text vector

@@ -9,7 +9,7 @@ to LDPL, including (but not limited to) contributors to the repository code,
 mantainers, bug reporters, people who code in LDPL, people who submit issues
 and anyone interested and/or involved with the language in any way.
 
-![Hello there!](https://ldpl.lartu.net/images/Visitor.png)
+![Hello there!](https://www.ldpl-lang.org/images/Visitor.png)
 
 ## Our Pledge
 
