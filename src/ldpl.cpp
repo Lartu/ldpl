@@ -2093,7 +2093,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
     {
         if(model_tokens[i] == "$name") //$name is any word that is not a string or a number
         {
-            for(char letter : model_tokens[i]) if(letter == ':') return false;
+            for(char letter : tokens[i]) if(letter == ':') return false;
             if(is_string(tokens[i])) return false;
             if(is_number(tokens[i])) return false;
         }
