@@ -719,7 +719,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("ABS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("fabs("+get_c_variable(state, tokens[5])+");");
+        state.add_code(get_c_variable(state, tokens[1]) + " = fabs("+get_c_variable(state, tokens[1])+");");
         return;
     }
     if(line_like("JOIN $string AND $string IN $str-var", tokens, state))
