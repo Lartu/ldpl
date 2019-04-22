@@ -916,12 +916,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("INTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!is_subprocedure(tokens[2], state))
+            state.subprocedures.push_back(tokens[2]);
+        else
+            error("Duplicate declaration for subprocedure " + tokens[2] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.open_subprocedure != "")
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure = tokens[2];
         //C Code
-        state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){");
+        state.add_code("void "+fix_identifier(tokens[2], false)+"(){");
         state.open_internal = true;
         return;
     }
