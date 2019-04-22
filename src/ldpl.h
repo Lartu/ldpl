@@ -43,12 +43,18 @@ struct compiler_state{
     }
     bool open_quote = false;
     int open_ifs = 0;
-    int while_number = 0;
-    stack<int> while_stack;
-    int add_while(){
-        ++while_number;
-        while_stack.push(while_number);
-        return while_number;
+    int open_whiles = 0;
+    stack<int> block_stack; //0 sub-procedure, 1 if, 2 while
+    void open_while(){
+        ++open_whiles;
+        block_stack.push(2);
+    }
+    void close_while(){
+        --open_whiles;
+        block_stack.pop();
+    }
+    bool closing_while(){
+        return block_stack.top() == 2;
     }
     stack<string> working_dir;
 };

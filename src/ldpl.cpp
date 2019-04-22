@@ -1218,7 +1218,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (num_equal(" + tokens[1] + ", " + tokens[5] + ")){");
         return;
     }
@@ -1227,7 +1227,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (num_equal(" + tokens[1] + ", " + get_c_variable(state, tokens[5]) + ")){");
         return;
     }
@@ -1236,7 +1236,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (num_equal(" + get_c_variable(state, tokens[1]) + ", " + tokens[5] + ")){");
         return;
     }
@@ -1245,7 +1245,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[5]) + ")){");
         return;
     }
@@ -1255,7 +1255,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (!num_equal(" + tokens[1] + ", " + tokens[6] + ")){");
         return;
     }
@@ -1264,7 +1264,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (!num_equal(" + tokens[1] + ", " + get_c_variable(state, tokens[6]) + ")){");
         return;
     }
@@ -1273,7 +1273,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (!num_equal(" + get_c_variable(state, tokens[1]) + ", " + tokens[6] + ")){");
         return;
     }
@@ -1282,7 +1282,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (!num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[6]) + ")){");
         return;
     }
@@ -1292,7 +1292,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " > " + tokens[5] + "){");
         return;
     }
@@ -1301,7 +1301,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " > " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
@@ -1310,7 +1310,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " > " + tokens[5] + "){");
         return;
     }
@@ -1319,7 +1319,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " > " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
@@ -1329,7 +1329,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " < " + tokens[5] + "){");
         return;
     }
@@ -1338,7 +1338,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " < " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
@@ -1347,7 +1347,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " < " + tokens[5] + "){");
         return;
     }
@@ -1356,7 +1356,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " < " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
@@ -1366,7 +1366,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " > " + tokens[8] + " || num_equal(" + tokens[1] + ", " + tokens[8] + ")){");
         return;
     }
@@ -1375,7 +1375,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " > " + get_c_variable(state, tokens[8]) + " || num_equal(" + tokens[1] + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
@@ -1384,7 +1384,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " > " + tokens[8] + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + tokens[8] + ")){");
         return;
     }
@@ -1393,7 +1393,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " > " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
@@ -1403,7 +1403,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " < " + tokens[8] + " || num_equal(" + tokens[1] + ", " + tokens[8] + ")){");
         return;
     }
@@ -1412,7 +1412,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " < " + get_c_variable(state, tokens[8]) + " || num_equal(" + tokens[1] + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
@@ -1421,7 +1421,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " < " + tokens[8] + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + tokens[8] + ")){");
         return;
     }
@@ -1430,7 +1430,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " < " + get_c_variable(state, tokens[8]) + " || num_equal(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[8]) + ")){");
         return;
     }
@@ -1440,14 +1440,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " == " + tokens[5] + "){");
         return;
     }
     if(line_like("WHILE $string IS EQUAL TO $str-var DO", tokens, state))
     {
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " == " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
@@ -1456,7 +1456,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " == " + tokens[5] + "){");
         return;
     }
@@ -1465,7 +1465,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " == " + get_c_variable(state, tokens[5]) + "){");
         return;
     }
@@ -1475,7 +1475,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " != " + tokens[6] + "){");
         return;
     }
@@ -1484,7 +1484,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + tokens[1] + " != " + get_c_variable(state, tokens[6]) + "){");
         return;
     }
@@ -1493,7 +1493,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " != " + tokens[6] + "){");
         return;
     }
@@ -1502,7 +1502,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_while();
+        state.open_while();
         state.add_code("while (" + get_c_variable(state, tokens[1]) + " != " + get_c_variable(state, tokens[6]) + "){");
         return;
     }
@@ -1511,10 +1511,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("REPEAT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.while_stack.size() == 0)
+        if(!state.closing_while())
             error("REPEAT without WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.while_stack.pop();
+        state.close_while();
         state.add_code("}");
         return;
     }
@@ -1523,7 +1523,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("BREAK outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.while_stack.size() == 0)
+        if(state.open_whiles == 0)
             error("BREAK without WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("break;");
@@ -1534,7 +1534,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("CONTINUE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.while_stack.size() == 0)
+        if(state.open_whiles == 0)
             error("CONTINUE without WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("continue;");
