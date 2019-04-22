@@ -237,7 +237,7 @@ void compile(vector<string> & lines, compiler_state & state)
             if(state.open_quote)
                 state.add_code("\"" + escape_c_quotes(line) + "\\n\"");
             else if(state.open_internal)
-                state.add_code(line);
+                state.add_code(replace_internal_vars(line));
             continue;
         }
 
@@ -2393,6 +2393,25 @@ string & escape_c_quotes(string & str)
             str.erase(i, 1);
             str.insert(i, "\\\"");
             ++i;
+        }
+    }
+    return str;
+}
+
+//swaps {$name} with VAR_NAME in user-defined "internal" C++ code
+string & replace_internal_vars(string & str)
+{ 
+    string var = "";
+    for(unsigned int i = 0; i < str.size(); ++i){
+        if(str[i] == '{' && i < str.size() && str[i+1] == '$'){
+            var = "";
+            for(unsigned int j = i+2; j < str.size(); ++j){
+                if(str[j] == '}') break;
+                if(str[j] == ' ') continue;
+                var += str[j];
+            }
+            for(size_t z=0;z<var.size();++z) var[z] = toupper(var[z]);
+            str.replace(i, var.size()+3, fix_identifier(var, true));
         }
     }
     return str;
