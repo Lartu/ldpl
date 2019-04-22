@@ -41,6 +41,7 @@ struct compiler_state{
         else
             this->subroutine_code.push_back(code);
     }
+    bool open_internal = false;
     bool open_quote = false;
     int open_ifs = 0;
     int while_number = 0;

@@ -211,13 +211,13 @@ void compile(vector<string> & lines, compiler_state & state)
     {
         string & line = lines[line_num];
 
-        if(state.open_quote){
-            //Check for END QUOTE first
+        if(state.open_quote || state.open_internal){
+            //Check for END QUOTE/SUB-PROCEDURE first
             if(line.size() >= 9 && (line[0] == 'E' || line[0] == 'e')){
                 string upper = "";
                 for(char c : line) upper += toupper(c);
                 trim(upper);
-                if(upper == "END QUOTE"){
+                if(state.open_quote && upper == "END QUOTE"){
                     state.open_quote = false;
                     //Kill final newline. Programs can add crlf if needed.
                     string & prev = state.output_code.back();
@@ -225,11 +225,19 @@ void compile(vector<string> & lines, compiler_state & state)
                     if(pos != string::npos) prev.erase(pos, 2);
                     prev += ";"; 
                     continue;
+                }else if(state.open_internal && upper == "END SUB-PROCEDURE"){
+                    state.open_internal = false;
+                    state.add_code("}");
+                    state.open_subprocedure = "";
+                    continue;
                 }
             }
 
             //No END QUOTE, emit the line as C++
-            state.add_code("\"" + escape_c_quotes(line) + "\\n\"");
+            if(state.open_quote)
+                state.add_code("\"" + escape_c_quotes(line) + "\\n\"");
+            else if(state.open_internal)
+                state.add_code(line);
             continue;
         }
 
@@ -902,6 +910,19 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             state.open_subprocedure = tokens[1];
         //C Code
         state.add_code("void "+fix_identifier(tokens[1], false)+"(){");
+        return;
+    }
+    if(line_like("INTERNAL SUB-PROCEDURE $name", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("INTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.open_subprocedure != "")
+            error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else
+            state.open_subprocedure = tokens[2];
+        //C Code
+        state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){");
+        state.open_internal = true;
         return;
     }
     if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state))
