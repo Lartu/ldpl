@@ -12,6 +12,10 @@
 
 using namespace std;
 
+#if !defined(__APPLE__)
+#define STATIC_BUILDS 1
+#endif
+
 //TODO: Change vectors to maps
 struct compiler_state{
     unsigned int section_state = 0; //0 no section, 1 data, 2 procedure
