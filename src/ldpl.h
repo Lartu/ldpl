@@ -31,20 +31,31 @@ struct compiler_state{
     map<string, bool> externals; //variables defined in c++ extensions
     //1 number, 2 text, 3 number vector, 4 text vector
     vector<string> subprocedures;
-    string open_subprocedure = "";
     void add_var_code(string code){
         this->variable_code.push_back(code);
     }
     void add_code(string code){
-        if(open_subprocedure == "")
+        if(!open_subprocedures)
             this->output_code.push_back(code);
         else
             this->subroutine_code.push_back(code);
     }
     bool open_quote = false;
+    bool open_subprocedures;
     int open_ifs = 0;
     int open_whiles = 0;
     stack<int> block_stack; //0 sub-procedure, 1 if, 2 while
+    void open_subprocedure(){
+        open_subprocedures = true;
+        block_stack.push(0);
+    }
+    void close_subprocedure(){
+        open_subprocedures = false;
+        block_stack.pop();
+    }
+    bool closing_subprocedure(){
+        return block_stack.top() == 0;
+    }
     void open_if(){
         ++open_ifs;
         block_stack.push(1);
