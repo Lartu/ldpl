@@ -54,7 +54,7 @@ struct compiler_state{
         block_stack.pop();
     }
     bool closing_subprocedure(){
-        return block_stack.top() == 0;
+        return !block_stack.empty() && block_stack.top() == 0;
     }
     void open_if(){
         ++open_ifs;
@@ -65,7 +65,7 @@ struct compiler_state{
         block_stack.pop();
     }
     bool closing_if(){
-        return block_stack.top() == 1;
+        return !block_stack.empty() && block_stack.top() == 1;
     }
     void open_while(){
         ++open_whiles;
@@ -76,7 +76,7 @@ struct compiler_state{
         block_stack.pop();
     }
     bool closing_while(){
-        return block_stack.top() == 2;
+        return !block_stack.empty() && block_stack.top() == 2;
     }
     stack<string> working_dir;
 };
