@@ -245,7 +245,7 @@ void compile(vector<string> & lines, compiler_state & state)
         error("there may be open IF blocks in your code.");
         exit(1);
     }
-    if(state.while_stack.size() > 0){
+    if(state.open_whiles > 0){
         error("there may be open WHILE blocks in your code.");
         exit(1);
     }
