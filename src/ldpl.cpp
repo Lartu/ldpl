@@ -250,6 +250,7 @@ void compile(vector<string> & lines, compiler_state & state)
         exit(1);
     }
     if(state.open_quote) error("your QUOTE block was not terminated.");
+    if(state.open_subprocedure != "") error("your SUB-PROCEDURE was not terminated.");
 }
 
 //Tokenizes a line
