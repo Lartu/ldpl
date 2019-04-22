@@ -346,7 +346,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     ++line_num;
 
     //increment open IF count if this is an if statement
-    if(tokens[0] == "IF")
+    if(tokens[0] == "IF" && state.section_state == 2)
         ++state.open_ifs;
 
     //handle ELSE and ELSE IF 
