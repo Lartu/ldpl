@@ -45,6 +45,17 @@ struct compiler_state{
     int open_ifs = 0;
     int open_whiles = 0;
     stack<int> block_stack; //0 sub-procedure, 1 if, 2 while
+    void open_if(){
+        ++open_ifs;
+        block_stack.push(1);
+    }
+    void close_if(){
+        --open_ifs;
+        block_stack.pop();
+    }
+    bool closing_if(){
+        return block_stack.top() == 1;
+    }
     void open_while(){
         ++open_whiles;
         block_stack.push(2);

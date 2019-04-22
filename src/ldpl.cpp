@@ -466,13 +466,13 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     
     //increment open IF count if this is an if statement
     if(tokens[0] == "IF")
-        ++state.open_ifs;
+        state.open_if();
 
     //handle ELSE and ELSE IF 
     if(tokens[0] == "ELSE"){
         if(state.section_state != 2)
             error("ELSE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_ifs == 0)
+        if(!state.closing_if())
             error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 
         if(tokens.size() == 1){ // ELSE
@@ -1205,10 +1205,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("END IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_ifs == 0)
+        if(!state.closing_if())
             error("END IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        --state.open_ifs;
+        state.close_if();
         state.add_code("}");
         return;
     }
