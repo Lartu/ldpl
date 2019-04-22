@@ -898,6 +898,22 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("void "+fix_identifier(tokens[1], false)+"(){");
         return;
     }
+    if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("EXTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.open_subprocedure != "")
+            error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else
+            state.open_subprocedure = tokens[2];
+        //C Code
+        state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){");
+        return;
+        if(state.section_state != 2)
+            error("CALL EXTERNAL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){");
+        return;
+    }
     if(line_like("RETURN", tokens, state))
     {
         if(state.section_state != 2)
