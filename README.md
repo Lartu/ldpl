@@ -89,6 +89,10 @@ If you want to talk to the rest of us, you can find the LDPL community at [r/LDP
 
 You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
 
+## Is it a dinosaur or a dragon?
+
+Both I guess.
+
 ## License
 
 LDPL is distributed under the GNU General Public License 3.0. The LDPL Dragon logo is released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.

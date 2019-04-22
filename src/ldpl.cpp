@@ -45,7 +45,7 @@ int main(int argc, const char* argv[])
         cout << "  -i=<file>                Include file in current compilation" << endl;
         cout << "  -f=<flag>                Pass a flag to the C++ compiler" << endl;
         cout << "  -v --version             Display LDPL version information" << endl;
-		#ifdef  __linux__
+		#ifdef  STATIC_BUILDS
 		cout << "  -ns             			Disables static binary building" << endl;
 		#endif
         return 0;
@@ -55,7 +55,10 @@ int main(int argc, const char* argv[])
     vector<string> files_to_compile;
     vector<string> extensions;
     add_ldpllib(state);
+
+#ifdef STATIC_BUILDS
 	bool no_static = false;
+#endif
 
     string output_filename = "";
     string final_filename = "";
@@ -70,7 +73,7 @@ int main(int argc, const char* argv[])
             else if(arg == "-r"){
                 show_ir = true;
             }
-			#ifdef  __linux__
+			#ifdef STATIC_BUILDS
 			else if(arg == "-ns"){
                 no_static = true;
             }
@@ -148,7 +151,7 @@ int main(int argc, const char* argv[])
     }
     cout << "LDPL: Compiling..." << endl;
     string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
-#ifdef  __linux__
+#ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
     if(!extensions.empty()){
@@ -716,7 +719,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("ABS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("fabs("+get_c_variable(state, tokens[5])+");");
+        state.add_code(get_c_variable(state, tokens[1]) + " = fabs("+get_c_variable(state, tokens[1])+");");
         return;
     }
     if(line_like("JOIN $string AND $string IN $str-var", tokens, state))
