@@ -325,7 +325,7 @@ void capitalize_tokens(vector<string> & tokens)
             if(is_vector_index(token))
             {
                 for(char & l : token){
-                    if (l == ':') break;
+                    if (l == '"' && *(&l - 1) == ':') break;
                     l = toupper(l);
                 }
             }
