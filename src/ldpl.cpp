@@ -345,28 +345,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     string & current_file = state.current_file;
     ++line_num;
 
-    //increment open IF count if this is an if statement
-    if(tokens[0] == "IF" && state.section_state == 2)
-        ++state.open_ifs;
-
-    //handle ELSE and ELSE IF 
-    if(tokens[0] == "ELSE"){
-        if(state.section_state != 2)
-            error("ELSE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_ifs == 0)
-            error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-
-        if(tokens.size() == 1){ // ELSE
-            state.add_code("}else{");
-            return;
-        } else if(tokens[1] == "IF"){ // ELSE IF
-            state.add_code("}else ");
-            //remove the ELSE input token so it becomes a regular IF,
-            //then continue compiling this line.
-            tokens.erase(tokens.begin()+0);
-        }
-    }
-    
     if(line_like("DATA:", tokens, state))
     {
         if(state.section_state == 1)
@@ -482,6 +460,31 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.externals[tokens[0]] = true;
         return;
     }
+    
+    //We know at this point that the line is not a valid variable declaration
+    
+    //increment open IF count if this is an if statement
+    if(tokens[0] == "IF")
+        ++state.open_ifs;
+
+    //handle ELSE and ELSE IF 
+    if(tokens[0] == "ELSE"){
+        if(state.section_state != 2)
+            error("ELSE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.open_ifs == 0)
+            error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+
+        if(tokens.size() == 1){ // ELSE
+            state.add_code("}else{");
+            return;
+        } else if(tokens[1] == "IF"){ // ELSE IF
+            state.add_code("}else ");
+            //remove the ELSE input token so it becomes a regular IF,
+            //then continue compiling this line.
+            tokens.erase(tokens.begin()+0);
+        }
+    }
+
     if(line_like("DISPLAY $display", tokens, state))
     {
         if(state.section_state != 2)
