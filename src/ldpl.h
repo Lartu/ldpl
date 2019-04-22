@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) && !defined(__ANDROID__)
 #define STATIC_BUILDS 1
 #endif
 
