@@ -2402,20 +2402,27 @@ string & escape_c_quotes(string & str)
     return str;
 }
 
-//swaps {$name} with VAR_NAME in user-defined "internal" C++ code
+//Swaps {$name} with VAR_NAME and {$name}() with SUBPR_NAME() 
+//in user-defined "internal" C++ code.)
 string & replace_internal_vars(string & str)
 { 
     string var = "";
+    bool is_var = true;
     for(unsigned int i = 0; i < str.size(); ++i){
         if(str[i] == '{' && i < str.size() && str[i+1] == '$'){
+            is_var = true;
             var = "";
             for(unsigned int j = i+2; j < str.size(); ++j){
-                if(str[j] == '}') break;
+                if(str[j] == '}'){
+                    if(j+2 < str.size() && str[j+1] == '(' && str[j+2] == ')')
+                        is_var = false;
+                    break;
+                } 
                 if(str[j] == ' ') continue;
                 var += str[j];
             }
             for(size_t z=0;z<var.size();++z) var[z] = toupper(var[z]);
-            str.replace(i, var.size()+3, fix_identifier(var, true));
+            str.replace(i, var.size()+3, fix_identifier(var, is_var));
         }
     }
     return str;
