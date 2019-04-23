@@ -208,14 +208,18 @@ ldpl_number get_random(){
     return r;
 }
 
+ldpl_number fileOk = 0;
 void load_file(string filename, string & destination)
 {
     //Load file
     ifstream file(filename);
     //Fail if the file couldn't be loaded
     if(!file.is_open()){
-        cerr << (\"Error: The file '\" + filename + \"' couldn't be opened.\") << endl;
-        exit(1);
+        /*cerr << (\"Error: The file '\" + filename + \"' couldn't be opened.\") << endl;
+        exit(1);*/
+		destination = \"\";
+		fileOk = 0;
+		return;
     }
     //TODO: Turn this into a control variable that can be checked from LDPL.
     //Get file contents
@@ -225,6 +229,7 @@ void load_file(string filename, string & destination)
     {
         text += line + \"\\n\";
     }
+	fileOk = 1;
     destination = text;
     file.close();
 }
