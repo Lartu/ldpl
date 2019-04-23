@@ -893,8 +893,12 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             state.subprocedures.push_back(tokens[1]);
         else
             error("Duplicate declaration for subprocedure " + tokens[1] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.in_subprocedure)
+        if(state.closing_subprocedure())
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_if())
+            error("Subprocedure declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_while())
+            error("Subprocedure declaration inside WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure();
         //C Code
@@ -905,8 +909,12 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("EXTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.in_subprocedure)
+        if(state.closing_subprocedure())
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_if())
+            error("Subprocedure declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_while())
+            error("Subprocedure declaration inside WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure();
         //C Code
