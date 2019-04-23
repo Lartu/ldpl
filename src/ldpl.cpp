@@ -241,16 +241,10 @@ void compile(vector<string> & lines, compiler_state & state)
         if(tokens.size() == 0) continue;
         compile_line(tokens, line_num, state);
     }
-    if(state.open_ifs > 0){
-        error("there may be open IF blocks in your code.");
-        exit(1);
-    }
-    if(state.open_whiles > 0){
-        error("there may be open WHILE blocks in your code.");
-        exit(1);
-    }
     if(state.open_quote) error("your QUOTE block was not terminated.");
-    if(state.in_subprocedure) error("your SUB-PROCEDURE was not terminated.");
+    if(state.closing_subprocedure()) error("your SUB-PROCEDURE block was not terminated.");
+    if(state.closing_if()) error("your IF block was not terminated.");
+    if(state.closing_while()) error("your WHILE block was not terminated.");
 }
 
 //Tokenizes a line
