@@ -20,7 +20,6 @@ using namespace std;
 struct compiler_state{
     unsigned int section_state = 0; //0 no section, 1 data, 2 procedure
     unsigned int current_line = 0;
-    bool in_subroutine = false;
     string current_file = "";
     //Code to output (plain C code)
     vector<string> variable_code;
@@ -35,22 +34,22 @@ struct compiler_state{
         this->variable_code.push_back(code);
     }
     void add_code(string code){
-        if(!open_subprocedures)
+        if(!in_subprocedure)
             this->output_code.push_back(code);
         else
             this->subroutine_code.push_back(code);
     }
     bool open_quote = false;
-    bool open_subprocedures;
+    bool in_subprocedure = false;
     int open_ifs = 0;
     int open_whiles = 0;
     stack<int> block_stack; //0 sub-procedure, 1 if, 2 while
     void open_subprocedure(){
-        open_subprocedures = true;
+        in_subprocedure = true;
         block_stack.push(0);
     }
     void close_subprocedure(){
-        open_subprocedures = false;
+        in_subprocedure = false;
         block_stack.pop();
     }
     bool closing_subprocedure(){

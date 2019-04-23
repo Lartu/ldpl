@@ -250,7 +250,7 @@ void compile(vector<string> & lines, compiler_state & state)
         exit(1);
     }
     if(state.open_quote) error("your QUOTE block was not terminated.");
-    if(state.open_subprocedures) error("your SUB-PROCEDURE was not terminated.");
+    if(state.in_subprocedure) error("your SUB-PROCEDURE was not terminated.");
 }
 
 //Tokenizes a line
@@ -897,7 +897,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             state.subprocedures.push_back(tokens[1]);
         else
             error("Duplicate declaration for subprocedure " + tokens[1] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_subprocedures)
+        if(state.in_subprocedure)
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure();
@@ -909,7 +909,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("EXTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_subprocedures)
+        if(state.in_subprocedure)
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure();
@@ -921,7 +921,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("RETURN outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!state.open_subprocedures)
+        if(!state.in_subprocedure)
             error("RETURN found outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("return;");
