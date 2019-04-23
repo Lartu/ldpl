@@ -41,7 +41,6 @@ struct compiler_state{
     }
     bool open_quote = false;
     bool in_subprocedure = false;
-    int open_ifs = 0;
     int open_whiles = 0;
     stack<int> block_stack; //0 sub-procedure, 1 if, 2 while
     void open_subprocedure(){
@@ -56,11 +55,9 @@ struct compiler_state{
         return !block_stack.empty() && block_stack.top() == 0;
     }
     void open_if(){
-        ++open_ifs;
         block_stack.push(1);
     }
     void close_if(){
-        --open_ifs;
         block_stack.pop();
     }
     bool closing_if(){
