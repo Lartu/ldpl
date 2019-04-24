@@ -98,6 +98,7 @@ string get_c_variable(compiler_state & state, string & variable);
 string get_c_expression(compiler_state & state, string & expression);
 string get_c_char_array(compiler_state & state, string & text);
 string get_c_string(compiler_state & state, string & expression);
+string get_c_number(compiler_state & state, string & expression);
 string & escape_c_quotes(string & str);
 void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);

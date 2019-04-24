@@ -517,36 +517,17 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1])+" = input_until_eof();");
         return;
     }
-    if(line_like("STORE $num-var IN $num-var", tokens, state))
+    if(line_like("STORE $expression IN $var", tokens, state))
     {
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
-        return;
-    }
-    if(line_like("STORE $number IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + tokens[1] + ";");
-        return;
-    }
-    if(line_like("STORE $str-var IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
-        return;
-    }
-    if(line_like("STORE $string IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + tokens[1] + ";");
+        string rhand;
+        if (is_num_var(tokens[3], state))
+            rhand = get_c_number(state, tokens[1]);
+        else
+            rhand = get_c_string(state, tokens[1]);
+        state.add_code(get_c_variable(state, tokens[3]) + " = " + rhand + ";");
         return;
     }
     if(line_like("ADD $num-expr AND $num-expr IN $num-var", tokens, state))
@@ -1356,38 +1337,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1]) + " = ceil(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
-    if(line_like("STORE $number IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = to_ldpl_string(" + tokens[1] +");");
-        return;
-    }
-    if(line_like("STORE $num-var IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = to_ldpl_string(" + get_c_variable(state, tokens[1]) +");");
-        return;
-    }
-    if(line_like("STORE $string IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = to_number(" + tokens[1] +");");
-        return;
-    }
-    if(line_like("STORE $str-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = to_number(" + get_c_variable(state, tokens[1]) +");");
-        return;
-    }
 
     if(line_like("STORE CHARACTER $num-expr IN $str-var", tokens, state))
     {
@@ -1993,6 +1942,14 @@ string get_c_string(compiler_state & state, string & expression)
     string c_expression = get_c_expression(state, expression);
     if (is_number(expression) || is_num_var(expression, state))
         return "to_ldpl_string(" + c_expression + ")";
+    return c_expression;
+}
+
+string get_c_number(compiler_state & state, string & expression)
+{   
+    string c_expression = get_c_expression(state, expression);
+    if (is_string(expression) || is_txt_var(expression, state))
+        return "to_number(" + c_expression + ")";
     return c_expression;
 }
 
