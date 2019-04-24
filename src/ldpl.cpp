@@ -554,164 +554,44 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = " + tokens[1] + ";");
         return;
     }
-    if(line_like("ADD $number AND $number IN $num-var", tokens, state))
+    if(line_like("ADD $num-expr AND $num-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("ADD statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + tokens[1] + " + " + tokens[3] + ";");
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[1]) + " + " + get_c_expression(state, tokens[3]) + ";");
         return;
     }
-    if(line_like("ADD $number AND $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("ADD statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + tokens[1] + " + " + get_c_variable(state, tokens[3]) + ";");
-        return;
-    }
-    if(line_like("ADD $num-var AND $number IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("ADD statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[1]) + " + " + tokens[3] + ";");
-        return;
-    }
-    if(line_like("ADD $num-var AND $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("ADD statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[1]) + " + " + get_c_variable(state, tokens[3]) + ";");
-        return;
-    }
-    if(line_like("SUBTRACT $number FROM $number IN $num-var", tokens, state))
+    if(line_like("SUBTRACT $num-expr FROM $num-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("SUBTRACT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + tokens[3] + " - " + tokens[1] + ";");
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[3]) + " - " + get_c_expression(state, tokens[1]) + ";");
         return;
     }
-    if(line_like("SUBTRACT $number FROM $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("SUBTRACT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + " - " + tokens[1] + ";");
-        return;
-    }
-    if(line_like("SUBTRACT $num-var FROM $number IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("SUBTRACT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + tokens[3] + " - " + get_c_variable(state, tokens[1]) + ";");
-        return;
-    }
-    if(line_like("SUBTRACT $num-var FROM $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("SUBTRACT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + " - " + get_c_variable(state, tokens[1]) + ";");
-        return;
-    }
-    if(line_like("DIVIDE $number BY $number IN $num-var", tokens, state))
+    if(line_like("DIVIDE $num-expr BY $num-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("DIVIDE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + tokens[1] + " / " + tokens[3] + ";");
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[1]) + " / " + get_c_expression(state, tokens[3]) + ";");
         return;
     }
-    if(line_like("DIVIDE $number BY $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("DIVIDE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + tokens[1] + " / " + get_c_variable(state, tokens[3]) + ";");
-        return;
-    }
-    if(line_like("DIVIDE $num-var BY $number IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("DIVIDE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[1]) + " / " + tokens[3] + ";");
-        return;
-    }
-    if(line_like("DIVIDE $num-var BY $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("DIVIDE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[1]) + " / " + get_c_variable(state, tokens[3]) + ";");
-        return;
-    }
-    if(line_like("MULTIPLY $number BY $number IN $num-var", tokens, state))
+    if(line_like("MULTIPLY $num-expr BY $num-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MULTIPLY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + tokens[1] + " * " + tokens[3] + ";");
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[1]) + " * " + get_c_expression(state, tokens[3]) + ";");
         return;
     }
-    if(line_like("MULTIPLY $number BY $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("MULTIPLY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[1]) + " * " + tokens[3] + ";");
-        return;
-    }
-    if(line_like("MULTIPLY $num-var BY $number IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("MULTIPLY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[1]) + " * " + tokens[3] + ";");
-        return;
-    }
-    if(line_like("MULTIPLY $num-var BY $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("MULTIPLY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[1]) + " * " + get_c_variable(state, tokens[3]) + ";");
-        return;
-    }
-    if(line_like("MODULO $number BY $number IN $num-var", tokens, state))
+    if(line_like("MODULO $num-expr BY $num-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("MODULO statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + tokens[1] + ", " + tokens[3] + ");");
-        return;
-    }
-    if(line_like("MODULO $number BY $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("MODULO statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + tokens[1] + ", " + get_c_variable(state, tokens[3]) + ");");
-        return;
-    }
-    if(line_like("MODULO $num-var BY $number IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("MODULO statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + get_c_variable(state, tokens[1]) + ", " + tokens[3] + ");");
-        return;
-    }
-    if(line_like("MODULO $num-var BY $num-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("MODULO statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + get_c_variable(state, tokens[1]) + ", " + get_c_variable(state, tokens[3]) + ");");
+        state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
     if(line_like("ABS $num-var", tokens, state))
@@ -2127,6 +2007,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_number(tokens[i])) return false;
         }
+        else if(model_tokens[i] == "$str-expr") //$str-expr is a TEXT or a TEXT variable
+        {
+            if(!is_string(tokens[i]) && !is_txt_var(tokens[i], state)) return false;
+        }
         else if(model_tokens[i] == "$natural") //$natural is an integer greater than 0
         {
             if(!is_natural(tokens[i])) return false;
@@ -2369,6 +2253,13 @@ string get_c_variable(compiler_state & state, string & variable)
     }
 
     return newvar;
+}
+
+string get_c_expression(compiler_state & state, string & expression)
+{
+    if(is_variable(expression, state))
+        return get_c_variable(state, expression);
+    return expression;
 }
 
 //Escapes " char in string so it can be emitted as c++

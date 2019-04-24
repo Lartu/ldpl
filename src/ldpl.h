@@ -95,6 +95,7 @@ bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
 string get_c_variable(compiler_state & state, string & variable);
+string get_c_expression(compiler_state & state, string & expression);
 string & escape_c_quotes(string & str);
 void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);
