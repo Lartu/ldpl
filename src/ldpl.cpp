@@ -498,20 +498,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         }
         return;
     }
-    if(line_like("ACCEPT $num-var", tokens, state))
+    if(line_like("ACCEPT $var", tokens, state))
     {
         if(state.section_state != 2)
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = input_number();");
-        return;
-    }
-    if(line_like("ACCEPT $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = input_string();");
+        if(is_num_var(tokens[1], state))
+            state.add_code(get_c_variable(state, tokens[1]) + " = input_number();");
+        else
+            state.add_code(get_c_variable(state, tokens[1]) + " = input_string();");
         return;
     }
     if(line_like("ACCEPT $str-var UNTIL EOF", tokens, state))
@@ -1444,52 +1439,28 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
-    if(line_like("EXECUTE $string", tokens, state))
+    if(line_like("EXECUTE $str-expr", tokens, state))
     {
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("system(" + tokens[1] + ");");
+        state.add_code("system(" + get_c_char_array(state, tokens[1]) + ");");
         return;
     }
-    if(line_like("EXECUTE $str-var", tokens, state))
+    if(line_like("EXECUTE $str-expr AND STORE OUTPUT IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("system(" + get_c_variable(state, tokens[1]) + ".c_str());");
+        state.add_code(get_c_variable(state, tokens[6]) + " = exec(" + get_c_char_array(state, tokens[1]) + ");");
         return;
     }
-    if(line_like("EXECUTE $string AND STORE OUTPUT IN $str-var", tokens, state))
+    if(line_like("EXECUTE $str-expr AND STORE EXIT CODE IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = exec(" + tokens[1] + ");");
-        return;
-    }
-    if(line_like("EXECUTE $str-var AND STORE OUTPUT IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = exec(" + get_c_variable(state, tokens[1]) + ".c_str());");
-        return;
-    }
-    if(line_like("EXECUTE $string AND STORE EXIT CODE IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[7]) + " = system(" + tokens[1] + ");");
-        return;
-    }
-    if(line_like("EXECUTE $str-var AND STORE EXIT CODE IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[7]) + " = system(" + get_c_variable(state, tokens[1]) + ".c_str());");
+        state.add_code(get_c_variable(state, tokens[7]) + " = system(" + get_c_char_array(state, tokens[1]) + ");");
         return;
     }
     if(line_like("EXIT", tokens, state))
@@ -1788,104 +1759,35 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
     //WRITE x TO FILE y
-    if(line_like("WRITE $literal TO FILE $str-var", tokens, state))
+    if(line_like("WRITE $expression TO FILE $str-expr", tokens, state))
     {
         if(state.section_state != 2)
             error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::out);");
-        state.add_code("file_writing_stream <<" + tokens[1] + ";");
-        state.add_code("file_writing_stream.close();");
-        return;
-    }
-    if(line_like("WRITE $literal TO FILE $string", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::out);");
-        state.add_code("file_writing_stream <<" + tokens[1] + ";");
-        state.add_code("file_writing_stream.close();");
-        return;
-    }
-    if(line_like("WRITE $var TO FILE $string", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::out);");
-        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
-        state.add_code("file_writing_stream.close();");
-        return;
-    }
-    if(line_like("WRITE $var TO FILE $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::out);");
-        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
+        state.add_code("file_writing_stream.open(" + get_c_expression(state, tokens[4]) + ", ios_base::out);");
+        state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
         return;
     }
     //APPEND x TO FILE y
-    if(line_like("APPEND $literal TO FILE $str-var", tokens, state))
+    if(line_like("APPEND $expression TO FILE $str-expr", tokens, state))
     {
         if(state.section_state != 2)
             error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::app);");
-        state.add_code("file_writing_stream <<" + tokens[1] + ";");
-        state.add_code("file_writing_stream.close();");
-        return;
-    }
-    if(line_like("APPEND $literal TO FILE $string", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::app);");
-        state.add_code("file_writing_stream <<" + tokens[1] + ";");
-        state.add_code("file_writing_stream.close();");
-        return;
-    }
-    if(line_like("APPEND $var TO FILE $string", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("file_writing_stream.open(" + tokens[4] + ", ios_base::app);");
-        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
-        state.add_code("file_writing_stream.close();");
-        return;
-    }
-    if(line_like("APPEND $var TO FILE $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("file_writing_stream.open(" + get_c_variable(state, tokens[4]) + ", ios_base::app);");
-        state.add_code("file_writing_stream <<" + get_c_variable(state, tokens[1]) + ";");
+        state.add_code("file_writing_stream.open(" + get_c_expression(state, tokens[4]) + ", ios_base::app);");
+        state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
         return;
     }
     //LOAD FILE x IN y
-    if(line_like("LOAD FILE $string IN $str-var", tokens, state))
+    if(line_like("LOAD FILE $str-expr IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("load_file(" + tokens[2] + ", " + get_c_variable(state, tokens[4]) +");");
-		state.add_code(fix_identifier("FILE-LOADED", true) + " = fileOk;");
-        return;
-    }
-    if(line_like("LOAD FILE $str-var IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("load_file(" + get_c_variable(state, tokens[2]) + ", " + get_c_variable(state, tokens[4]) +");");
-		state.add_code(fix_identifier("FILE-LOADED", true) + " = fileOk;");
+        state.add_code("load_file(" + get_c_expression(state, tokens[2]) + ", " + get_c_variable(state, tokens[4]) +");");
+        state.add_code(fix_identifier("FILE-LOADED", true) + " = fileOk;");
         return;
     }
     //WAIT x MILLISECONDS
@@ -2007,11 +1909,15 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_number(tokens[i])) return false;
         }
-        else if(model_tokens[i] == "$str-expr") //$str-expr is a TEXT or a TEXT variable
+        else if(model_tokens[i] == "$expression") //$expression is NUMBER, TEXT, TEXT-VAR, NUMBER-VAR
+        {
+            if(!is_variable(tokens[i], state) && !is_string(tokens[i]) && !is_number(tokens[i])) return false;
+        }
+        else if(model_tokens[i] == "$str-expr") //$str-expr is either a TEXT or a TEXT variable
         {
             if(!is_string(tokens[i]) && !is_txt_var(tokens[i], state)) return false;
         }
-        else if(model_tokens[i] == "$num-expr") //$num-expr is a NUMBER or a NUMBER variable
+        else if(model_tokens[i] == "$num-expr") //$num-expr is either a NUMBER or a NUMBER variable
         {
             if(!is_number(tokens[i]) && !is_num_var(tokens[i], state)) return false;
         }
@@ -2264,6 +2170,14 @@ string get_c_expression(compiler_state & state, string & expression)
     if(is_variable(expression, state))
         return get_c_variable(state, expression);
     return expression;
+}
+
+// text must be a TEXT or a TEXT variable
+string get_c_char_array(compiler_state & state, string & text)
+{
+    if(is_txt_var(text, state))
+        return get_c_variable(state, text) + ".c_str()";
+    return text;
 }
 
 //Escapes " char in string so it can be emitted as c++
