@@ -99,6 +99,7 @@ string get_c_expression(compiler_state & state, string & expression);
 string get_c_char_array(compiler_state & state, string & text);
 string get_c_string(compiler_state & state, string & expression);
 string get_c_number(compiler_state & state, string & expression);
+string get_c_condition(compiler_state & state, vector<string> tokens);
 string & escape_c_quotes(string & str);
 void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);
