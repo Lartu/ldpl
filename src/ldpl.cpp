@@ -2011,6 +2011,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_string(tokens[i]) && !is_txt_var(tokens[i], state)) return false;
         }
+        else if(model_tokens[i] == "$num-expr") //$num-expr is a NUMBER or a NUMBER variable
+        {
+            if(!is_number(tokens[i]) && !is_num_var(tokens[i], state)) return false;
+        }
         else if(model_tokens[i] == "$natural") //$natural is an integer greater than 0
         {
             if(!is_natural(tokens[i])) return false;
