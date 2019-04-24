@@ -1607,20 +1607,12 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
     //WAIT x MILLISECONDS
-    if(line_like("WAIT $number MILLISECONDS", tokens, state))
+    if(line_like("WAIT $num-expr MILLISECONDS", tokens, state))
     {
         if(state.section_state != 2)
-            error("SLEEP statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("WAIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("std::this_thread::sleep_for(std::chrono::milliseconds(" + tokens[1] + "));");
-        return;
-    }
-    if(line_like("WAIT $num-var MILLISECONDS", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("SLEEP statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("std::this_thread::sleep_for(std::chrono::milliseconds((long int)" + get_c_variable(state, tokens[1]) + "));");
+        state.add_code("std::this_thread::sleep_for(std::chrono::milliseconds((long int)" + get_c_expression(state, tokens[1]) + "));");
         return;
     }
 
