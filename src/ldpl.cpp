@@ -848,63 +848,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
     //REPLACE x FROM y WITH z IN w
-    if(line_like("REPLACE $str-var FROM $str-var WITH $str-var IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("REPLACE $string FROM $str-var WITH $str-var IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("REPLACE $str-var FROM $string WITH $str-var IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("REPLACE $string FROM $string WITH $str-var IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("REPLACE $str-var FROM $str-var WITH $string IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("REPLACE $string FROM $str-var WITH $string IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("REPLACE $str-var FROM $string WITH $string IN $str-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("REPLACE $string FROM $string WITH $string IN $str-var", tokens, state))
+    if(line_like("REPLACE $str-var FROM $str-expr WITH $str-expr IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
             error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -913,31 +857,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
     //GET INDEX OF x FROM y IN z
-    if(line_like("GET INDEX OF $str-var FROM $str-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("GET INDEX OF $string FROM $str-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("GET INDEX OF $str-var FROM $string IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("GET INDEX OF $string FROM $string IN $num-var", tokens, state))
+    if(line_like("GET INDEX OF $str-expr FROM $str-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -946,31 +866,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
     //COUNT x FROM y IN z
-    if(line_like("COUNT $str-var FROM $str-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("COUNT $string FROM $str-var IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("COUNT $str-var FROM $string IN $num-var", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        //TODO
-        return;
-    }
-    if(line_like("COUNT $string FROM $string IN $num-var", tokens, state))
+    if(line_like("COUNT $str-expr FROM $str-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
