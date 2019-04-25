@@ -29,7 +29,7 @@ int main(int argc, const char* argv[])
     if(contains_any(args, {"-v", "--version"})){
         cout << "This is \033[32;1mLDPL version " << VERSION << "\033[0m." << endl << endl;
         cout << "Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
-	cout << "Built with amazing contributions from \033[35;1mʇʞʌp\033[0m and a bunch of other contributors." << endl << endl;
+	cout << "Built with amazing contributions from \033[35;1mʇʞʌp\033[0m, \033[35;1mDamián Garro\033[0m and a bunch of other contributors." << endl << endl;
         cout << "Website and documentation can be found on \033[36;1mwww.ldpl-lang.org\033[0m." << endl;
         cout << "Source code can be found at \033[36;1mhttps://github.com/lartu/ldpl\033[0m." << endl << endl;
         cout << "LDPL may be copied only under the terms of the GNU General Public License 3.0." << endl <<endl;
