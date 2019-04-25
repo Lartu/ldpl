@@ -280,21 +280,25 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
         }
         else if(letter == '\\')
         {
-            if(i < line.size() - 1)
-            {
-                char next_letter = line[++i];
-                switch(next_letter)
+            if(in_string){
+                if(i < line.size() - 1)
                 {
-                    case '\\': case '"': case '0':
-                    case 'a': case 'b': case 't': case 'n':
-                    case 'v': case 'f': case 'r': case 'e':
-                        current_token += "\\" + string(1, next_letter);
-                    break;
-                    default:
-                        error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                    char next_letter = line[++i];
+                    switch(next_letter)
+                    {
+                        case '\\': case '"': case '0':
+                        case 'a': case 'b': case 't': case 'n':
+                        case 'v': case 'f': case 'r': case 'e':
+                            current_token += "\\" + string(1, next_letter);
+                        break;
+                        default:
+                            error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                    }
                 }
+                else error("\\ found alone on a string (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            }else{
+                current_token += letter;
             }
-            else error("\\ found alone (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         }
         else if(letter == '#') //Comment character
         {
@@ -2274,21 +2278,25 @@ void split_vector(string & line, queue<string> & tokens)
         }
         else if(letter == '\\')
         {
-            if(i < line.size() - 1)
-            {
-                char next_letter = line[++i];
-                switch(next_letter)
+            if(in_string){
+                if(i < line.size() - 1)
                 {
-                    case '\\': case '"': case '0':
-                    case 'a': case 'b': case 't': case 'n':
-                    case 'v': case 'f': case 'r': case 'e':
-                        current_token += "\\" + string(1, next_letter);
-                    break;
-                    default:
-                        error("unknown escape sequence on a VECTOR access `" + current_token + "` in: " + line);
+                    char next_letter = line[++i];
+                    switch(next_letter)
+                    {
+                        case '\\': case '"': case '0':
+                        case 'a': case 'b': case 't': case 'n':
+                        case 'v': case 'f': case 'r': case 'e':
+                            current_token += "\\" + string(1, next_letter);
+                        break;
+                        default:
+                            error("unknown escape sequence on a VECTOR access `" + current_token + "` in: " + line);
+                    }
                 }
+                else error("\\ found alone on a VECTOR access.");
+            }else{
+                current_token += letter;
             }
-            else error("\\ found alone on a VECTOR access.");
         }
         else if(letter == '#') //Comment character
         {
