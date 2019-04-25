@@ -335,7 +335,7 @@ void capitalize_tokens(vector<string> & tokens)
                 for(char & l : token){
                     l = toupper(l);
                 }
-                if (token == "CRLF") token = "\"\\n\"";
+                if (token == "CRLF") token = "\"\\r\\n\"";
             }
     }
 }
@@ -1004,6 +1004,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         if(model_tokens[i] == "$name") //$name is any word that is not a string or a number
         {
             for(char letter : tokens[j]) if(letter == ':') return false;
+            for(char letter : tokens[j]) if(letter == '\"') return false;
             if(is_string(tokens[j])) return false;
             if(is_number(tokens[j])) return false;
         }
@@ -1125,6 +1126,7 @@ bool is_natural(string number){
 
 bool is_label(string & token){
     //return !isdigit(token[0]) && token[0] != ':' && token[0] != '"';
+    for(char letter : token) if(letter == '\"') return false;
     return true;
 }
 
