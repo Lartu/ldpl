@@ -94,7 +94,7 @@ You are welcome to submit an issue to this repository, check the [LDPL website](
 
 ## Is it a dinosaur or a dragon?
 
-Both I guess.
+We are not really sure. At the moment it is a dragonsaur.
 
 ## License
 
