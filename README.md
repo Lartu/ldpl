@@ -1,5 +1,8 @@
 # The LDPL Programming Language
-![Stage](https://img.shields.io/badge/build-passing-green.svg) ![Stage](https://img.shields.io/badge/tests-passing-green.svg) ![Version](https://img.shields.io/badge/version-3.0.4-blue.svg)
+![Stage](https://img.shields.io/badge/build-passing-green.svg)
+![Stage](https://img.shields.io/badge/tests-passing-green.svg)
+![Version](https://img.shields.io/badge/current_release-3.0.3_'Active_Argentinosaurus'-blue.svg)
+![Version](https://img.shields.io/badge/development_version-3.0.4-red.svg)
 
 ![LDPL](https://www.ldpl-lang.org/ldpl-logo-new.png)
 
@@ -91,7 +94,7 @@ You are welcome to submit an issue to this repository, check the [LDPL website](
 
 ## Is it a dinosaur or a dragon?
 
-Both I guess.
+We are not really sure. At the moment it is a dragonsaur.
 
 ## License
 
