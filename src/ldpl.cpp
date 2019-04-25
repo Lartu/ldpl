@@ -933,14 +933,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("LABEL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_code(fix_identifier(tokens[1])+":");
+        state.add_code("label_"+fix_identifier(tokens[1])+":");
         return;
     }
     if(line_like("GOTO $label", tokens, state))
     {
         if(state.section_state != 2)
             error("GOTO outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_code("goto "+fix_identifier(tokens[1])+";");
+        state.add_code("goto label_"+fix_identifier(tokens[1])+";");
         return;
     }
 
@@ -1124,7 +1124,8 @@ bool is_natural(string number){
 }
 
 bool is_label(string & token){
-    return !isdigit(token[0]) && token[0] != ':' && token[0] != '"';
+    //return !isdigit(token[0]) && token[0] != ':' && token[0] != '"';
+    return true;
 }
 
 bool is_string(string & token){
