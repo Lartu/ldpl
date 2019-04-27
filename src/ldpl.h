@@ -42,7 +42,7 @@ struct compiler_state{
     bool open_quote = false;
     bool in_subprocedure = false;
     int open_whiles = 0;
-    stack<int> block_stack; //0 sub-procedure, 1 if, 2 while
+    stack<int> block_stack; //0 sub-procedure, 1 if or else if, 2 while, 3 else
     void open_subprocedure(){
         in_subprocedure = true;
         block_stack.push(0);
@@ -62,6 +62,12 @@ struct compiler_state{
     }
     bool closing_if(){
         return !block_stack.empty() && block_stack.top() == 1;
+    }
+    void open_else(){
+        block_stack.top() = 3;
+    }
+    bool closing_else(){
+        return !block_stack.empty() && block_stack.top() == 3;
     }
     void open_while(){
         ++open_whiles;

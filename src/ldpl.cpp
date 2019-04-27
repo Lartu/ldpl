@@ -661,6 +661,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!state.closing_if())
             error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
+        state.open_else();
         state.add_code("}else{");
         return;
     }
@@ -669,7 +670,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("END IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!state.closing_if())
+        if(!state.closing_if() && !state.closing_else())
             error("END IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.close_if();
