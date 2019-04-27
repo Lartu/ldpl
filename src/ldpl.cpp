@@ -1107,13 +1107,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
 }
 
 bool is_number(string number){
-  try {
-    stod(number);
-  }
-  catch (const std::invalid_argument& ia) {
-      return false;
-  }
-  return true;
+    istringstream iss(number);
+    float f;
+    iss >> f;
+    return iss.eof() && !iss.fail(); 
 }
 
 bool is_natural(string number){
