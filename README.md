@@ -21,13 +21,13 @@ procedure:
   display "你好, " name "! Welcome to LDPL!" crlf
 ```
 
-This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the official website and the [Examples](/examples) subfolder for more examples.
+This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples.
 
 ## Getting started with LDPL
 
 You should first download or compile the LDPL compiler:
 
- - **If you want to download a compiled binary:** just go to the *Releases* part of this repository and download the newest one available.
+ - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases).
 
  - **If you want to build LDPL yourself:** first, clone this repository.
 Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
