@@ -23,7 +23,7 @@ procedure:
   display "你好, " name "! Welcome to LDPL!" crlf
 ```
 
-This greets the user, ask them for their name and then prints *你好, <name>!* followed by a line-break to them. Easy as pie. Check the official website for more examples.
+This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break to them. Easy as pie. Check the official website for more examples.
 
 ## Getting started with LDPL
 
