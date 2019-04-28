@@ -1,8 +1,6 @@
 # The LDPL Programming Language
 ![Version](https://img.shields.io/badge/current_release-3.0.3_'Active_Argentinosaurus'-blue.svg)
 ![Version](https://img.shields.io/badge/development_version-3.0.4-red.svg)
-![Stage](https://img.shields.io/badge/build-passing-green.svg)
-![Stage](https://img.shields.io/badge/tests-passing-green.svg)
 
 ![LDPL](https://www.ldpl-lang.org/logos/ldpl-logo.png)
 
