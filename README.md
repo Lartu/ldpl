@@ -38,7 +38,9 @@ Once you have LDPL installed, check the LDPL reference to learn how to use the l
 
 ## LDPL documentation & reference
 
-[The LDPL documentation is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)!
+![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
+
+[The **LDPL documentation** is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)! The documentation is also uploaded to the [ldpl-docs](https://github.com/lartu/ldpl-docs) GitHub repository and can be read and forked from there.
 
 ## LDPL compatible editors
 
@@ -51,8 +53,6 @@ You can use any other editor (without syntax highlighting) if you like. If know 
 ## How to use this compiler
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
-
-![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
 
 Once the compiler is set up, go write some LDPL source code, say `source.lsc`.
 Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `source-bin`.
