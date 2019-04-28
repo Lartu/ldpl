@@ -34,6 +34,10 @@ Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
 
+Once you have LDPL installed, check the LDPL reference to learn how to use the language.
+
+## LDPL documentation & reference
+
 [The LDPL documentation is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)!
 
 ## LDPL compatible editors
