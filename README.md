@@ -6,27 +6,24 @@
 
 ![LDPL](https://www.ldpl-lang.org/logos/ldpl-logo.png)
 
-[LDPL](https://www.ldpl-lang.org/) is a very simple (but powerful) programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux, Android and both Intel and PowerPC Mac OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
+[LDPL](https://www.ldpl-lang.org/) is a very simple (but powerful) programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of *the good parts of* older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux, Windows and macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
 This repository contains the source code and releases of the LDPL compiler.
 Check https://www.ldpl-lang.org/ for more information on the language, tutorials, examples and more!
 
-## Why should I use LDPL?
-
-Because it looks nice, it's readable, it's fun, it's like a little toy to toy around with! Have you ever found a symbol within code that you didn't know what it did? Maybe an asterisk, a semicolon or even a pair of brackets? We have, too. The average programming language looks like this:
+## Example LDPL code
 
 ```
-+[-[<<[+[--->]-[<<<]]]>>>-]>-.---.>..>.<<<<-.<+.>>>>>.>.<<.<-.
+data: 
+  name is text     # Your name goes here! 
+
+procedure: 
+  display "Hello World" crlf "What's your name? " 
+  accept name 
+  display "你好, " name "! Welcome to LDPL!" crlf
 ```
 
-Can you read that? We can't either. That's because regular programming languages weren't designed with readability in mind. **LDPL was**. Compare the example above with this and tell us which one would you rather use:
-
-```
-procedure:
-display "Hello World" crlf
-```
-
-That's right. Say bye bye to cryptic glyphs. Say hello to **LDPL**.
+This greets the user, ask them for their name and then prints *你好, <name>!* followed by a line-break to them. Easy as pie. Check the official website for more examples.
 
 ## Getting started with LDPL
 
