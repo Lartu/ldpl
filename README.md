@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/current_release-3.0.3_'Active_Argentinosaurus'-blue.svg)
 ![Version](https://img.shields.io/badge/development_version-3.0.4-red.svg)
 
-![LDPL](https://www.ldpl-lang.org/ldpl-logo-new.png)
+![LDPL](https://www.ldpl-lang.org/logos/ldpl-logo.png)
 
 [LDPL](https://www.ldpl-lang.org/) is a very simple (but powerful) programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. It is mostly written in a series of statements that mimics plain English, in the likeness of *[the good parts of]* older languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and Windows, ARMv8 Linux, Android and both Intel and PowerPC Mac OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
