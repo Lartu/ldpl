@@ -11,7 +11,7 @@ Check https://www.ldpl-lang.org/ for more information on the language, tutorials
 
 ## Example LDPL code
 
-```
+```coffeescript
 data: 
   name is text     # Your name goes here! 
 
