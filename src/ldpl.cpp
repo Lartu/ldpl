@@ -462,30 +462,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
     
-    //We know at this point that the line is not a valid variable declaration
-    
-    //increment open IF count if this is an if statement
-    if(tokens[0] == "IF")
-        state.open_if();
-
-    //handle ELSE and ELSE IF 
-    if(tokens[0] == "ELSE"){
-        if(state.section_state != 2)
-            error("ELSE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!state.closing_if())
-            error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-
-        if(tokens.size() == 1){ // ELSE
-            state.add_code("}else{");
-            return;
-        } else if(tokens[1] == "IF"){ // ELSE IF
-            state.add_code("}else ");
-            //remove the ELSE input token so it becomes a regular IF,
-            //then continue compiling this line.
-            tokens.erase(tokens.begin()+0);
-        }
-    }
-
     if(line_like("DISPLAY $display", tokens, state))
     {
         if(state.section_state != 2)
@@ -662,7 +638,31 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
+        state.open_if();
         state.add_code("if (" + get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1)) + "){");
+        return;
+    }
+
+    if(line_like("ELSE IF $condition THEN", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!state.closing_if())
+            error("ELSE IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("} else if (" + get_c_condition(state, vector<string>(tokens.begin()+2, tokens.end()-1)) + "){");
+        return;
+    }
+    
+    if(line_like("ELSE", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("ELSE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!state.closing_if())
+            error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.open_else();
+        state.add_code("}else{");
         return;
     }
 
@@ -670,7 +670,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("END IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!state.closing_if())
+        if(!state.closing_if() && !state.closing_else())
             error("END IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.close_if();
