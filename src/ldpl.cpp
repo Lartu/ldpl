@@ -46,8 +46,9 @@ int main(int argc, const char* argv[])
         cout << "  -f=<flag>                Pass a flag to the C++ compiler" << endl;
         cout << "  -v --version             Display LDPL version information" << endl;
 		#ifdef  STATIC_BUILDS
-		cout << "  -ns             			Disables static binary building" << endl;
+		cout << "  -ns                      Disables static binary building" << endl;
 		#endif
+        cout << "  -c                       Compile from standard input" << endl;
         return 0;
     }
 
@@ -93,6 +94,9 @@ int main(int argc, const char* argv[])
                 //pass flags to the c++ compiler (for example -f=-lSDL)
                 extensions.push_back(arg.substr(3));
             }
+            else if(arg == "-c"){
+                files_to_compile.push_back(arg);
+            }
         }
     }
 
@@ -116,12 +120,13 @@ int main(int argc, const char* argv[])
     //For each file, compile each file into one big code
     for(string & filename : files_to_compile)
     {
-        //If it's an argument
-        if(filename[0] == '-') continue;
         //Reset state section for this file
         state.section_state = 0;
         state.current_file = filename;
-        load_and_compile(filename, state);
+        if(filename != "-c")
+            load_and_compile(filename, state);
+        else
+            accept_and_compile(state);
     }
     state.add_code("return 0; \n}");
 
@@ -171,7 +176,7 @@ int main(int argc, const char* argv[])
 
 void load_and_compile(string & filename, compiler_state & state)
 {
-    //Load file
+    //Accept input from stdin
     ifstream file(filename);
     //Fail if the file couldn't be loaded
     if(!file.is_open()) error("The file '" + filename + "' couldn't be opened.");
@@ -179,6 +184,18 @@ void load_and_compile(string & filename, compiler_state & state)
     vector<string> lines;
     string line = "";
     while(getline(file, line))
+    {
+        replace_whitespace(line);
+        lines.push_back(line);
+    }
+    compile(lines, state);
+}
+
+void accept_and_compile(compiler_state & state){
+    //Get file contents
+    vector<string> lines;
+    string line = "";
+    while(getline(cin, line))
     {
         replace_whitespace(line);
         lines.push_back(line);

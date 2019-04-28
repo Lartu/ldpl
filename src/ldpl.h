@@ -110,6 +110,7 @@ string get_c_condition(compiler_state & state, vector<string> tokens);
 string & escape_c_quotes(string & str);
 void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);
+void accept_and_compile(compiler_state & state);
 void replace_whitespace(string & code);
 string fix_external_identifier(string identifier, bool isVariable);
 string fix_identifier(string id, bool isv, compiler_state & s);
