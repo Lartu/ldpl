@@ -1016,12 +1016,18 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
     unsigned int j = 0;
     for(; i < model_tokens.size(); ++i)
     {
-        if(model_tokens[i] == "$name") //$name is any word that is not a string or a number
+        if(model_tokens[i] == "$name") //$name is a valid identifier for a variable or a sub-procedure
         {
             for(char letter : tokens[j]) if(letter == ':') return false;
             for(char letter : tokens[j]) if(letter == '\"') return false;
             if(is_string(tokens[j])) return false;
             if(is_number(tokens[j])) return false;
+            if(tokens[j] == "+") return false;
+            if(tokens[j] == "-") return false;
+            if(tokens[j] == "*") return false;
+            if(tokens[j] == "/") return false;
+            if(tokens[j] == "(") return false;
+            if(tokens[j] == ")") return false;
         }
         else if(model_tokens[i] == "$num-var") //$num-var is NUMBER variable
         {
