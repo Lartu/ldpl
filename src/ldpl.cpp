@@ -1109,8 +1109,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
 
             //validate the new tokens
             for(unsigned int z = i; z < tokens.size(); ++z){
-                if(tokens[z] != "(" && tokens[z] != ")" && !is_number(tokens[z]) 
-                && !is_num_var(tokens[z], state) && !is_math_symbol(tokens[z])) 
+                if(!is_number(tokens[z]) && !is_num_var(tokens[z], state) && !is_math_symbol(tokens[z]))
                     return false;
             }
             return true;
@@ -1173,7 +1172,7 @@ bool is_label(string & token){
 }
 
 bool is_math_symbol(string & token){
-    string syms = "+-*/";
+    string syms = "+-*/()";
     return token.size() == 1 && syms.find(token[0]) != string::npos;
 }
 
