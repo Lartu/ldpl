@@ -851,6 +851,21 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1]) + " = joinvar;");
         return;
     }
+    if(line_like("IN $num-var SOLVE $math", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("IN-SOLVE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+
+        string code = "";
+        for(unsigned int i = 3; i < tokens.size(); ++i){
+            if(is_num_var(tokens[i], state))
+                code += " " + fix_identifier(tokens[i], true);
+            else
+                code += " " + tokens[i];
+        }
+        state.add_code(get_c_variable(state, tokens[1]) + " =" + code + ";");
+        return;
+    }
     //REPLACE x FROM y WITH z IN w
     if(line_like("REPLACE $str-var FROM $str-expr WITH $str-expr IN $str-var", tokens, state))
     {
@@ -1070,6 +1085,35 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             return is_label(tokens[j]);
         }
+        else if(model_tokens[i] == "$math") //$math is a math expression
+        {
+            vector<string> maths; //further tokenize math expressions
+            string math_token = "";
+            for(; j < tokens.size(); ++j){
+                for(unsigned int z = 0; z < tokens[j].size(); ++z){
+                    if(tokens[j][z] == '(' || tokens[j][z] == ')'){
+                        if(!math_token.empty()) maths.push_back(math_token);
+                        math_token = tokens[j][z];
+                        maths.push_back(math_token);
+                        math_token = "";
+                    }else{
+                        math_token += tokens[j][z];
+                    }
+                }
+                if(!math_token.empty()) maths.push_back(math_token);
+                math_token = "";
+            }
+            //replace LDPL line tokens with new math tokens
+            tokens.erase(tokens.begin()+i, tokens.end());
+            tokens.insert(tokens.end(), maths.begin(), maths.end());
+
+            //validate the new tokens
+            for(unsigned int z = i; z < tokens.size(); ++z){
+                if(!is_number(tokens[z]) && !is_num_var(tokens[z], state) && !is_math_symbol(tokens[z]))
+                    return false;
+            }
+            return true;
+        }
         else if(model_tokens[i] == "$condition") //$condition is a IF/WHILE condition
         {
             // Note: We assume that there is only one token after $condition,
@@ -1125,6 +1169,11 @@ bool is_label(string & token){
     //return !isdigit(token[0]) && token[0] != ':' && token[0] != '"';
     for(char letter : token) if(letter == '\"') return false;
     return true;
+}
+
+bool is_math_symbol(string & token){
+    string syms = "+-*/()";
+    return token.size() == 1 && syms.find(token[0]) != string::npos;
 }
 
 bool is_string(string & token){
