@@ -34,7 +34,7 @@ Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
 
-[The LDPL documentation is available here](https://ldpl.gitbook.io). Check that to learn yourself some LDPL (*for the greater good*)!
+[The LDPL documentation is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)!
 
 ## LDPL compatible editors
 
@@ -69,7 +69,7 @@ Example code can be found on [the LDPL website](https://www.ldpl-lang.org).
 
 LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `-i=` compiler flag. 
 
-For a guide to writing and building extensions, see [LDPL's official documentation](https://ldpl.gitbook.io/reference/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
+For a guide to writing and building extensions, see [LDPL's official documentation](https://docs.ldpl-lang.org/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## How can I contribute to LDPL?
 
