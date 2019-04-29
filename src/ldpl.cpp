@@ -1188,7 +1188,13 @@ bool is_math_symbol(string & token){
 }
 
 bool is_string(string & token){
-    return (token.size() >= 2 && token[0] == '"' && token[token.size()-1] == '"');
+    if(token.size() < 2 || token[0] != '"' || token[token.size()-1] != '"')
+        return false;
+    // Check for unescaped quotes
+    for(unsigned int i = 1; i < token.size() - 1; ++i) {
+        if (token[i] == '\"' && token[i-1] != '\\') return false;
+    }
+    return true;
 }
 
 bool is_vector_index(string & token)
