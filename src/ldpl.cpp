@@ -1185,39 +1185,24 @@ bool is_vector(string & token, compiler_state & state)
     return is_num_vector(token, state) || is_txt_vector(token, state);
 }
 
-bool is_vector_index(queue<string> & token, compiler_state & state)
-{
-    string current_token = token.front();
-    token.pop();
-    if(token.size() > 1){
-        if(!is_vector(current_token, state)) return false;
-        return is_vector_index(token, state);
-    }
-    else if(token.size() == 1){
-        if(!is_vector(current_token, state)) return false;
-        if(is_vector(token.front(), state)) return false;
-        return true;
-    }
-    return false;
-}
-
 bool is_num_var(string & token, compiler_state & state)
 {
-    //Veo si var
+    //Check if var
     if(state.variables.count(token) > 0 && state.variables[token] == 1) return true;
-    //Veo si num_vector index
-    queue<string> vpart;
-    split_vector(token, vpart);
-    return is_num_vector(vpart.front(), state) && is_vector_index(vpart, state);
+    //Check if num_vector:index
+    string vector, index;
+    split_vector(token, vector, index);
+    return is_num_vector(vector, state) && is_expression(index, state);
 }
 
 bool is_txt_var(string & token, compiler_state & state)
 {
+    //Check if var
     if(state.variables.count(token) > 0 && state.variables[token] == 2) return true;
-    //Veo si num_vector index
-    queue<string> vpart;
-    split_vector(token, vpart);
-    return is_txt_vector(vpart.front(), state) && is_vector_index(vpart, state);
+    //Check if txt_vector:index
+    string vector, index;
+    split_vector(token, vector, index);
+    return is_txt_vector(vector, state) && is_expression(index, state);
 }
 
 bool is_variable(string & token, compiler_state & state)
@@ -1245,53 +1230,17 @@ bool is_external(string & token, compiler_state & state)
     return state.externals[token];
 }
 
-void split_vector(string & line, queue<string> & tokens)
+void split_vector(string & token, string & vector, string & index)
 {
-    bool in_string = false;
-    string current_token = "";
-    //For each letter in the line
-    for(unsigned int i = 0; i < line.size(); ++i)
-    {
-        char letter = line[i];
-        if(letter == ':')
-        {
-            if(in_string) current_token += letter;
-            else
-            {
-                if(current_token.size() > 0)
-                    tokens.push(current_token);
-                current_token = "";
-            }
-        }
-        else if(letter == '"')
-        {
-            in_string = !in_string;
-            current_token += letter;
-        }
-        else if(letter == '#') //Comment character
-        {
-            if(in_string) current_token += letter;
-            else
-            {
-                if(current_token.size() > 0)
-                    tokens.push(current_token);
-                return;
-            }
-        }
-        else
-        {
-            current_token += letter;
-        }
-        if(i == line.size() - 1){
-            if(letter != ':')
-            {
-                if(in_string) error("Unterminated string on a VECTOR access.");
-                if(current_token.size() > 0)
-                        tokens.push(current_token);
-            }
-            else error("Incomplete VECTOR access found (can't end on ':'!).");
-        }
-    }
+    size_t pos = token.find(":");
+    if (pos == string::npos) {
+        vector = token;
+        index = "";
+        return;
+    } else if (pos == token.size() - 1)
+        error("Incomplete VECTOR access found (can't end on ':'!).");
+    vector = token.substr(0, pos);
+    index = token.substr(pos+1);
 }
 
 /*La diferencia entre is_variable y variable_exists es que is_variable
@@ -1312,38 +1261,14 @@ bool is_subprocedure(string & token, compiler_state & state)
 
 string get_c_variable(compiler_state & state, string & variable)
 {
-
+    string var_name, index;
+    split_vector(variable, var_name, index);
+    var_name = fix_identifier(var_name, true, state);
     //Single variable
-    queue<string> vpart;
-    split_vector(variable, vpart);
-    if(vpart.size() == 1){
-        return fix_identifier(variable, true, state);
-    }
-
+    if(index.empty())
+        return var_name;
     //Vector variable
-    vector<string> token;
-    while(!vpart.empty())
-    {
-        token.push_back(vpart.front());
-        vpart.pop();
-    }
-
-    //Last element of vector access:
-    string newvar = fix_identifier(token[0], true, state);
-
-    for(unsigned int i = 1; i < token.size(); ++i){
-        newvar += "[";
-        if(is_variable(token[i], state) || is_num_vector(token[i], state) || is_txt_vector(token[i], state))
-        //Pongo esto porque el is_variable requiere que tenga subindices y acá le paso solo el nombre del vector
-            newvar += fix_identifier(token[i], true, state);
-        else
-            newvar += token[i];
-    }
-    for(unsigned int i = 1; i < token.size(); ++i){
-        newvar += "]";
-    }
-
-    return newvar;
+    return var_name + '[' + get_c_expression(state, index) + "]";
 }
 
 string get_c_expression(compiler_state & state, string & expression)
