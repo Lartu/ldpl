@@ -217,9 +217,9 @@ void load_file(string filename, string & destination)
     if(!file.is_open()){
         /*cerr << (\"Error: The file '\" + filename + \"' couldn't be opened.\") << endl;
         exit(1);*/
-		destination = \"\";
-		fileOk = 0;
-		return;
+        destination = \"\";
+        fileOk = 0;
+        return;
     }
     //TODO: Turn this into a control variable that can be checked from LDPL.
     //Get file contents
@@ -229,7 +229,7 @@ void load_file(string filename, string & destination)
     {
         text += line + \"\\n\";
     }
-	fileOk = 1;
+    fileOk = 1;
     destination = text;
     file.close();
 }

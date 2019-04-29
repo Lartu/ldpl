@@ -29,7 +29,7 @@ int main(int argc, const char* argv[])
     if(contains_any(args, {"-v", "--version"})){
         cout << "This is \033[32;1mLDPL version " << VERSION << "\033[0m." << endl << endl;
         cout << "Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
-	cout << "Built with amazing contributions from \033[35;1mʇʞʌp\033[0m, \033[35;1mDamián Garro\033[0m and a bunch of other contributors." << endl << endl;
+        cout << "Built with amazing contributions from \033[35;1mʇʞʌp\033[0m, \033[35;1mDamián Garro\033[0m and a bunch of other contributors." << endl << endl;
         cout << "Website and documentation can be found on \033[36;1mwww.ldpl-lang.org\033[0m." << endl;
         cout << "Source code can be found at \033[36;1mhttps://github.com/lartu/ldpl\033[0m." << endl << endl;
         cout << "LDPL may be copied only under the terms of the GNU General Public License 3.0." << endl <<endl;
@@ -58,7 +58,7 @@ int main(int argc, const char* argv[])
     add_ldpllib(state);
 
 #ifdef STATIC_BUILDS
-	bool no_static = false;
+    bool no_static = false;
 #endif
 
     string output_filename = "";
@@ -74,11 +74,11 @@ int main(int argc, const char* argv[])
             else if(arg == "-r"){
                 show_ir = true;
             }
-			#ifdef STATIC_BUILDS
-			else if(arg == "-ns"){
+            #ifdef STATIC_BUILDS
+            else if(arg == "-ns"){
                 no_static = true;
             }
-			#endif
+            #endif
             else if(arg.substr(0, 3) == "-o="){
                 final_filename = arg.substr(3);
             }
@@ -102,12 +102,12 @@ int main(int argc, const char* argv[])
 
     state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
-    state.add_code("srand (time(NULL));");    
+    state.add_code("srand (time(NULL));");
 
     state.variables["ARGC"] = 1;
-	state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
-	state.variables["FILE-LOADED"] = 1;
-	state.add_var_code("ldpl_number "+fix_identifier("FILE-LOADED", true)+";");
+    state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
+    state.variables["FILE-LOADED"] = 1;
+    state.add_var_code("ldpl_number "+fix_identifier("FILE-LOADED", true)+";");
     state.variables["ARGV"] = 4;
     state.add_var_code("ldpl_vector<string> "+fix_identifier("ARGV", true)+";");
     state.add_code("for(int i = 1; i < argc; ++i)");
@@ -242,7 +242,7 @@ void compile(vector<string> & lines, compiler_state & state)
                     string & prev = state.output_code.back();
                     size_t pos = prev.rfind("\\n");
                     if(pos != string::npos) prev.erase(pos, 2);
-                    prev += ";"; 
+                    prev += ";";
                     continue;
                 }
             }
@@ -478,7 +478,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.externals[tokens[0]] = true;
         return;
     }
-    
+
     if(line_like("DISPLAY $display", tokens, state))
     {
         if(state.section_state != 2)
@@ -670,7 +670,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("} else if (" + get_c_condition(state, vector<string>(tokens.begin()+2, tokens.end()-1)) + "){");
         return;
     }
-    
+
     if(line_like("ELSE", tokens, state))
     {
         if(state.section_state != 2)
@@ -846,7 +846,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.open_quote = true;
-        //C code. More strings will get emitted 
+        //C code. More strings will get emitted
         state.add_code(get_c_variable(state, tokens[3]) + " = \"\"");
         return;
     }
@@ -980,12 +980,12 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
 }
 
 //External identifiers are used by C++ extensions and thus have a simpler but
-//more restrictive name mangling algorithm: The only characters allowed are 
-//`A-Z`, `0-9`, and `_`. All other characters are converted to `_`. 
+//more restrictive name mangling algorithm: The only characters allowed are
+//`A-Z`, `0-9`, and `_`. All other characters are converted to `_`.
 string fix_external_identifier(string identifier, bool isVariable){
     const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890:";
     string new_id;
-    for(unsigned int i = 0; i < identifier.size(); ++i){ 
+    for(unsigned int i = 0; i < identifier.size(); ++i){
         if(validChars.find(identifier[i]) != string::npos){
             new_id += identifier[i];
         }else{
@@ -1011,7 +1011,7 @@ string fix_identifier(string identifier, bool isVariable){
 string fix_identifier(string identifier){
     const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890:";
     ostringstream new_id;
-    for(unsigned int i = 0; i < identifier.size(); ++i){ 
+    for(unsigned int i = 0; i < identifier.size(); ++i){
         if(validChars.find(identifier[i]) != string::npos){
             new_id << identifier[i];
         }else{
@@ -1101,7 +1101,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$external") //$external is a C++ function defined elsewhere
         {
-            return !is_subprocedure(tokens[j], state) && !is_variable(tokens[j], state) && 
+            return !is_subprocedure(tokens[j], state) && !is_variable(tokens[j], state) &&
                    !is_string(tokens[j]) && !is_number(tokens[j]);
         }
         else if(model_tokens[i] == "$label") //$label is a GOTO label
@@ -1140,7 +1140,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$condition") //$condition is a IF/WHILE condition
         {
             // Note: We assume that there is only one token after $condition,
-            // which is always the case in IF and WHILE statements 
+            // which is always the case in IF and WHILE statements
             string first_value = tokens[j];
             string second_value = tokens.rbegin()[1];
             bool text_values;
@@ -1152,9 +1152,9 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
                 text_values = true;
             else
                 return false;
-                
+
             if(tokens[++j] != "IS") return false;
-                
+
             string rel_op;
             for(++j; j < tokens.size() - 2; ++j){
                 rel_op += tokens[j] + " ";
@@ -1177,7 +1177,7 @@ bool is_number(string number){
     istringstream iss(number);
     float f;
     iss >> f;
-    return iss.eof() && !iss.fail(); 
+    return iss.eof() && !iss.fail();
 }
 
 bool is_natural(string number){
@@ -1409,7 +1409,7 @@ string get_c_char_array(compiler_state & state, string & text)
 }
 
 string get_c_string(compiler_state & state, string & expression)
-{   
+{
     string c_expression = get_c_expression(state, expression);
     if (is_number(expression) || is_num_var(expression, state))
         return "to_ldpl_string(" + c_expression + ")";
@@ -1417,7 +1417,7 @@ string get_c_string(compiler_state & state, string & expression)
 }
 
 string get_c_number(compiler_state & state, string & expression)
-{   
+{
     string c_expression = get_c_expression(state, expression);
     if (is_string(expression) || is_txt_var(expression, state))
         return "to_number(" + c_expression + ")";

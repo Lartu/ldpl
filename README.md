@@ -11,7 +11,7 @@ Check https://www.ldpl-lang.org/ for more information on the language, tutorials
 
 ## Example LDPL code
 
-```
+```coffeescript
 data: 
   name is text     # Your name goes here! 
 
@@ -21,20 +21,26 @@ procedure:
   display "你好, " name "! Welcome to LDPL!" crlf
 ```
 
-This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the official website and the [Examples](/examples) subfolder for more examples.
+This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples.
 
 ## Getting started with LDPL
 
 You should first download or compile the LDPL compiler:
 
- - **If you want to download a compiled binary:** just go to the *Releases* part of this repository and download the newest one available.
+ - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases).
 
  - **If you want to build LDPL yourself:** first, clone this repository.
 Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
 
-[The LDPL documentation is available here](https://ldpl.gitbook.io). Check that to learn yourself some LDPL (*for the greater good*)!
+Once you have LDPL installed, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided below.
+
+## LDPL documentation & reference
+
+![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
+
+[The **LDPL documentation** is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)! The documentation is also uploaded to the [ldpl-docs](https://github.com/lartu/ldpl-docs) GitHub repository and can be read and forked from there.
 
 ## LDPL compatible editors
 
@@ -47,8 +53,6 @@ You can use any other editor (without syntax highlighting) if you like. If know 
 ## How to use this compiler
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
-
-![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
 
 Once the compiler is set up, go write some LDPL source code, say `source.lsc`.
 Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `source-bin`.
@@ -69,7 +73,7 @@ Example code can be found on [the LDPL website](https://www.ldpl-lang.org).
 
 LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `-i=` compiler flag. 
 
-For a guide to writing and building extensions, see [LDPL's official documentation](https://ldpl.gitbook.io/reference/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
+For a guide to writing and building extensions, see [LDPL's official documentation](https://docs.ldpl-lang.org/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## How can I contribute to LDPL?
 
