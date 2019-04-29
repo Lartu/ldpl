@@ -22,6 +22,8 @@ ifstream file_loading_stream;
 ofstream file_writing_stream;
 string file_loading_line;
 string joinvar;
+ldpl_number VAR_ERRORCODE = 0;
+string VAR_ERRORTEXT = \"\";
 
 //Forward declarations
 string to_ldpl_string(double x);
@@ -155,12 +157,13 @@ ldpl_number str_len(const string & a){
 }
 
 ldpl_number get_char_num(const string & chr){
-    if (chr.size() != 1) {
-            cerr << \"Runtime Error: GET CHAR AT expects a string of length 1, got: \";
-            cerr << chr << endl;
-            exit(1);
+    int length = chr.size();
+    if (length != 1) {
+        VAR_ERRORTEXT = \"Multibyte character received (probably UTF-8). Can't be parsed into a single number.\";
+        VAR_ERRORCODE = 1;
+        return 0;
     }
-    int ord = chr[0];
+    ldpl_number ord = (unsigned char) chr[0];
     return ord;
 }
 
@@ -188,6 +191,7 @@ string to_ldpl_string(double x){
 #include <array>
 
 string exec(const char* cmd) {
+    //TODO: Check if this works on windows
     array<char, 128> buffer;
     string result;
     unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, \"r\"), pclose);
@@ -208,17 +212,15 @@ ldpl_number get_random(){
     return r;
 }
 
-ldpl_number fileOk = 0;
 void load_file(string filename, string & destination)
 {
     //Load file
     ifstream file(filename);
     //Fail if the file couldn't be loaded
     if(!file.is_open()){
-        /*cerr << (\"Error: The file '\" + filename + \"' couldn't be opened.\") << endl;
-        exit(1);*/
         destination = \"\";
-        fileOk = 0;
+        VAR_ERRORTEXT = \"Error: The file '\" + filename + \"' couldn't be opened.\";
+        VAR_ERRORCODE = 1;
         return;
     }
     //TODO: Turn this into a control variable that can be checked from LDPL.
@@ -229,7 +231,8 @@ void load_file(string filename, string & destination)
     {
         text += line + \"\\n\";
     }
-    fileOk = 1;
+    VAR_ERRORTEXT = \"\";
+    VAR_ERRORCODE = 0;
     destination = text;
     file.close();
 }

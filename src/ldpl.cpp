@@ -106,10 +106,10 @@ int main(int argc, const char* argv[])
 
     state.variables["ARGC"] = 1;
     state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
-    state.variables["FILE-LOADED"] = 1;
-    state.add_var_code("ldpl_number "+fix_identifier("FILE-LOADED", true)+";");
     state.variables["ARGV"] = 4;
     state.add_var_code("ldpl_vector<string> "+fix_identifier("ARGV", true)+";");
+    state.variables["ERRORCODE"] = 1; //Declared in ldpl_lib.cpp
+    state.variables["ERRORTEXT"] = 2; //Declared in ldpl_lib.cpp
     state.add_code("for(int i = 1; i < argc; ++i)");
     state.add_code(fix_identifier("ARGV", true) + "[i-1] = argv[i];");
     state.add_code(fix_identifier("ARGC", true) + " = argc - 1;");
@@ -916,7 +916,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("load_file(" + get_c_expression(state, tokens[2]) + ", " + get_c_variable(state, tokens[4]) +");");
-        state.add_code(fix_identifier("FILE-LOADED", true) + " = fileOk;");
         return;
     }
     if(line_like("WRITE $expression TO FILE $str-expr", tokens, state))
