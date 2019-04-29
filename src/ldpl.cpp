@@ -1297,28 +1297,6 @@ void split_vector(string & line, queue<string> & tokens)
             in_string = !in_string;
             current_token += letter;
         }
-        else if(letter == '\\')
-        {
-            if(in_string){
-                if(i < line.size() - 1)
-                {
-                    char next_letter = line[++i];
-                    switch(next_letter)
-                    {
-                        case '\\': case '"': case '0':
-                        case 'a': case 'b': case 't': case 'n':
-                        case 'v': case 'f': case 'r': case 'e':
-                            current_token += "\\" + string(1, next_letter);
-                        break;
-                        default:
-                            error("unknown escape sequence on a VECTOR access `" + current_token + "` in: " + line);
-                    }
-                }
-                else error("\\ found alone on a VECTOR access.");
-            }else{
-                current_token += letter;
-            }
-        }
         else if(letter == '#') //Comment character
         {
             if(in_string) current_token += letter;
