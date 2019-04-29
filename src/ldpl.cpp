@@ -876,7 +876,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         string code = "";
         for(unsigned int i = 3; i < tokens.size(); ++i){
             if(is_num_var(tokens[i], state))
-                code += " " + fix_identifier(tokens[i], true);
+                code += " " + get_c_variable(state, tokens[i]);
             else
                 code += " " + tokens[i];
         }
