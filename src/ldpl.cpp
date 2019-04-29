@@ -255,8 +255,8 @@ void compile(vector<string> & lines, compiler_state & state)
         trim(line);
         //Split line in various tokens
         vector<string> tokens;
-        tokenize(line, line_num, tokens, state.current_file);
-        capitalize_tokens(tokens);
+        tokenize(line, line_num, tokens, state.current_file, true);
+        for(string & token : tokens) if(token == "CRLF") token = "\"\\r\\n\"";
         if(tokens.size() == 0) continue;
         compile_line(tokens, line_num, state);
     }
@@ -266,8 +266,8 @@ void compile(vector<string> & lines, compiler_state & state)
     if(state.closing_while()) error("your WHILE block was not terminated.");
 }
 
-//Tokenizes a line
-void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file)
+//Tokenizes a line with optional convertion of tokens to uppercase (except in string)
+void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase)
 {
     bool in_string = false;
     string current_token = "";
@@ -290,27 +290,23 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
             in_string = !in_string;
             current_token += letter;
         }
-        else if(letter == '\\')
+        else if(letter == '\\' && in_string)
         {
-            if(in_string){
-                if(i < line.size() - 1)
+            if(i < line.size() - 1)
+            {
+                char next_letter = line[++i];
+                switch(next_letter)
                 {
-                    char next_letter = line[++i];
-                    switch(next_letter)
-                    {
-                        case '\\': case '"': case '0':
-                        case 'a': case 'b': case 't': case 'n':
-                        case 'v': case 'f': case 'r': case 'e':
-                            current_token += "\\" + string(1, next_letter);
-                        break;
-                        default:
-                            error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-                    }
+                    case '\\': case '"': case '0':
+                    case 'a': case 'b': case 't': case 'n':
+                    case 'v': case 'f': case 'r': case 'e':
+                        current_token += "\\" + string(1, next_letter);
+                    break;
+                    default:
+                        error("unknown escape sequence (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
                 }
-                else error("\\ found alone on a string (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-            }else{
-                current_token += letter;
             }
+            else error("\\ found alone on a string (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         }
         else if(letter == '#') //Comment character
         {
@@ -324,7 +320,7 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
         }
         else
         {
-            current_token += letter;
+            current_token += (uppercase && !in_string)? toupper(letter) : letter;
         }
         if(i == line.size() - 1 && letter != ' ')
         {
@@ -332,28 +328,6 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
             if(current_token.size() > 0)
                     tokens.push_back(current_token);
         }
-    }
-}
-
-//Tokens to upper case
-void capitalize_tokens(vector<string> & tokens)
-{
-    for(string & token : tokens)
-    {
-            if(is_vector_index(token))
-            {
-                for(char & l : token){
-                    if (l == '"' && *(&l - 1) == ':') break;
-                    l = toupper(l);
-                }
-            }
-            else if(!is_number(token) && !is_string(token))
-            {
-                for(char & l : token){
-                    l = toupper(l);
-                }
-                if (token == "CRLF") token = "\"\\r\\n\"";
-            }
     }
 }
 
@@ -1017,7 +991,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
 {
     //Tokenize model line
     vector<string> model_tokens;
-    tokenize(model_line, 0, model_tokens, state.current_file);
+    tokenize(model_line, 0, model_tokens, state.current_file, false);
     //Check that tokens match between line and model line
     if(tokens.size() < model_tokens.size()) return false;
     unsigned int i = 0;
@@ -1195,11 +1169,6 @@ bool is_string(string & token){
         if (token[i] == '\"' && token[i-1] != '\\') return false;
     }
     return true;
-}
-
-bool is_vector_index(string & token)
-{
-    return token.size() >= 2 && token[0] != '"' && token[token.size()-1] == '"';
 }
 
 bool is_num_vector(string & token, compiler_state & state)
