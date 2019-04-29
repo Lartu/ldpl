@@ -98,6 +98,8 @@ bool is_vector_index(string & token);
 bool is_num_var(string & token, compiler_state & state);
 bool is_txt_var(string & token, compiler_state & state);
 bool is_variable(string & token, compiler_state & state);
+bool is_num_expr(string & token, compiler_state & state);
+bool is_txt_expr(string & token, compiler_state & state);
 bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);

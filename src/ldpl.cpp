@@ -1055,7 +1055,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$var") //$var is either a NUMBER variable or a TEXT variable
         {
-            if(!is_num_var(tokens[j], state) && !is_txt_var(tokens[j], state)) return false;
+            if(!is_variable(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$literal") //$literal is either a NUMBER or a TEXT
         {
@@ -1075,11 +1075,11 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$str-expr") //$str-expr is either a TEXT or a TEXT variable
         {
-            if(!is_string(tokens[j]) && !is_txt_var(tokens[j], state)) return false;
+            if(!is_txt_expr(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$num-expr") //$num-expr is either a NUMBER or a NUMBER variable
         {
-            if(!is_number(tokens[j]) && !is_num_var(tokens[j], state)) return false;
+            if(!is_num_expr(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$natural") //$natural is an integer greater than 0
         {
@@ -1131,7 +1131,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
 
             //validate the new tokens
             for(unsigned int z = i; z < tokens.size(); ++z){
-                if(!is_number(tokens[z]) && !is_num_var(tokens[z], state) && !is_math_symbol(tokens[z]))
+                if(!is_num_expr(tokens[z], state) && !is_math_symbol(tokens[z]))
                     return false;
             }
             return true;
@@ -1143,11 +1143,9 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             string first_value = tokens[j];
             string second_value = tokens.rbegin()[1];
             bool text_values;
-            if((is_number(first_value) || is_num_var(first_value, state))
-            && (is_number(second_value) || is_num_var(second_value, state)))
+            if(is_num_expr(first_value, state) && is_num_expr(second_value, state))
                 text_values = false;
-            else if((is_string(first_value) || is_txt_var(first_value, state))
-                 &&(is_string(second_value) || is_txt_var(second_value, state)))
+            else if(is_txt_expr(first_value, state) && is_txt_expr(second_value, state))
                 text_values = true;
             else
                 return false;
@@ -1262,6 +1260,16 @@ bool is_txt_var(string & token, compiler_state & state)
 bool is_variable(string & token, compiler_state & state)
 {
     return is_num_var(token, state) || is_txt_var(token, state);
+}
+
+bool is_num_expr(string & token, compiler_state & state)
+{
+    return is_num_var(token, state) || is_number(token);
+}
+
+bool is_txt_expr(string & token, compiler_state & state)
+{
+    return is_txt_var(token, state) || is_string(token);
 }
 
 bool is_external(string & token, compiler_state & state)
@@ -1410,7 +1418,7 @@ string get_c_char_array(compiler_state & state, string & text)
 string get_c_string(compiler_state & state, string & expression)
 {
     string c_expression = get_c_expression(state, expression);
-    if (is_number(expression) || is_num_var(expression, state))
+    if (is_num_expr(expression, state))
         return "to_ldpl_string(" + c_expression + ")";
     return c_expression;
 }
@@ -1418,7 +1426,7 @@ string get_c_string(compiler_state & state, string & expression)
 string get_c_number(compiler_state & state, string & expression)
 {
     string c_expression = get_c_expression(state, expression);
-    if (is_string(expression) || is_txt_var(expression, state))
+    if (is_txt_expr(expression, state))
         return "to_number(" + c_expression + ")";
     return c_expression;
 }
@@ -1431,7 +1439,7 @@ string get_c_condition(compiler_state & state, vector<string> tokens) {
     for(unsigned int i = 2; i < tokens.size() - 1; ++i){
         rel_op += tokens[i] + " ";
     }
-    if(is_string(tokens[0]) || is_txt_var(tokens[0], state)) {
+    if(is_txt_expr(tokens[0], state)) {
         if(rel_op == "EQUAL TO ")
             return first_value + " == " + second_value;
         else
