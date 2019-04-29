@@ -1036,7 +1036,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$expression") //$expression is NUMBER, TEXT, TEXT-VAR, NUMBER-VAR
         {
-            if(!is_variable(tokens[j], state) && !is_string(tokens[j]) && !is_number(tokens[j])) return false;
+            if(!is_expression(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$str-expr") //$str-expr is either a TEXT or a TEXT variable
         {
@@ -1053,9 +1053,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$display") //multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR
         {
             for(; j < tokens.size(); ++j){
-                if(!is_string(tokens[j])
-                && !is_number(tokens[j])
-                && !is_variable(tokens[j], state))
+                if(!is_expression(tokens[j], state))
                     return false;
             }
         }
@@ -1065,8 +1063,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$external") //$external is a C++ function defined elsewhere
         {
-            return !is_subprocedure(tokens[j], state) && !is_variable(tokens[j], state) &&
-                   !is_string(tokens[j]) && !is_number(tokens[j]);
+            return !is_subprocedure(tokens[j], state) && !is_expression(tokens[j], state);
         }
         else if(model_tokens[i] == "$label") //$label is a GOTO label
         {
@@ -1236,6 +1233,11 @@ bool is_num_expr(string & token, compiler_state & state)
 bool is_txt_expr(string & token, compiler_state & state)
 {
     return is_txt_var(token, state) || is_string(token);
+}
+
+bool is_expression(string & token, compiler_state & state)
+{
+    return is_num_expr(token, state) || is_txt_expr(token, state);
 }
 
 bool is_external(string & token, compiler_state & state)
