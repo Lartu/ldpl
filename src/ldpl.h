@@ -85,7 +85,7 @@ struct compiler_state{
 
 void error(const string & msg);
 void compile(vector<string> & lines, compiler_state & state);
-void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file);
+void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase);
 void split_vector(string & line, queue<string> & tokens);
 void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state);
 bool line_like(string model_line, vector<string> & tokens, compiler_state & state); //Important to pass tokens by copy
@@ -94,12 +94,12 @@ bool is_natural(string number);
 bool is_label(string & token);
 bool is_math_symbol(string & symbol);
 bool is_string(string & token);
-bool is_vector_index(string & token);
 bool is_num_var(string & token, compiler_state & state);
 bool is_txt_var(string & token, compiler_state & state);
 bool is_variable(string & token, compiler_state & state);
 bool is_num_expr(string & token, compiler_state & state);
 bool is_txt_expr(string & token, compiler_state & state);
+bool is_expression(string & token, compiler_state & state);
 bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
@@ -110,7 +110,6 @@ string get_c_string(compiler_state & state, string & expression);
 string get_c_number(compiler_state & state, string & expression);
 string get_c_condition(compiler_state & state, vector<string> tokens);
 string & escape_c_quotes(string & str);
-void capitalize_tokens(vector<string> & tokens);
 void load_and_compile(string & filename, compiler_state & state);
 void accept_and_compile(compiler_state & state);
 void replace_whitespace(string & code);
