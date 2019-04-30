@@ -750,6 +750,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         for(unsigned int i = 3; i < tokens.size(); ++i){
             if(is_num_var(tokens[i], state))
                 code += " " + get_c_variable(state, tokens[i]);
+            else if(is_txt_expr(tokens[i], state))
+                code += " " + get_c_number(state, tokens[i]) + "";
             else
                 code += " " + tokens[i];
         }
@@ -1092,7 +1094,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
 
             //validate the new tokens
             for(unsigned int z = i; z < tokens.size(); ++z){
-                if(!is_num_expr(tokens[z], state) && !is_math_symbol(tokens[z]))
+                if(!is_math_symbol(tokens[z]) && !is_expression(tokens[z], state))
                     return false;
             }
             return true;
