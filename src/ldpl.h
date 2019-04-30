@@ -86,7 +86,7 @@ struct compiler_state{
 void error(const string & msg);
 void compile(vector<string> & lines, compiler_state & state);
 void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase);
-void split_vector(string & token, string & vector, string & index);
+void split_vector(string & line, queue<string> & tokens);
 void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state);
 bool line_like(string model_line, vector<string> & tokens, compiler_state & state); //Important to pass tokens by copy
 bool is_number(string number);
