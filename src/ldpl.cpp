@@ -751,7 +751,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             if(is_num_var(tokens[i], state))
                 code += " " + get_c_variable(state, tokens[i]);
             else if(is_txt_expr(tokens[i], state))
-                code += " " + get_c_number(state, tokens[i]) + "";
+                code += " " + get_c_number(state, tokens[i]);
             else
                 code += " " + tokens[i];
         }
