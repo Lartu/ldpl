@@ -137,7 +137,7 @@ When you are done installing LDPL, go write some LDPL source code, say 'source.l
 
 
 
-.SH LDPL COMPILER OPTIONS
+.SH LDPL COMPILER SWITCHES
 
 You can import files to your LDPL compilation by using the '-i' flag. For example, say you have a library 'mylib.ldpl' and a source file 'mysource.ldpl', you can compile both and include the library by running 'ldpl -i=mylibrary.ldpl mysource.ldpl'. Multiple '-i=' can be used to import multiple files. Extensions can also be imported by using this flag; see the Extensions section.
 
@@ -145,7 +145,7 @@ By using '-r' you can just compile the project and print the C++ representation 
 
 You can set the output file for the compiled binary with the '-o' flag. For example, if you want to name your program "dog", you could compile it with 'ldpl -o=dog main.ldpl'.
 
-On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the '-n' flag.
+On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the '-n' flag (or the alternative '--non-static' flag).
 
 The '-c' flag tells LDPL to accept source code from the standard input.
 
@@ -257,6 +257,8 @@ LDPL natively supports the NUMBER and TEXT data types. It also supports VECTORS 
 The NUMBER data type, as its name suggests, depicts numeric values. It's recommended that it be represented internally as a binary64 double-precision floating-point format number as defined by the IEEE 754.
 
 Both variables and numeric constants can be members of the NUMBER type.
+
+Valid number literals must begin with a decimal value (for example '5' or '0.12', '.12' wouldn't be a valid NUMBER) and may be preceded by a minus sign for negative numbers ('-5', '-567.912'). Numbers may not be preceded by a plus sign ('+5' is not a valid number literal). The literal '-0' is implicitly transformed into '0'.
 
 The TEXT data type, as its name suggests, represents alphanumeric strings. In the interest of supporting as many locales as possible, LDPL should be utf-8 encoded to be compatible with Unicode. A TEXT maximum length is explicitly not defined and it should be limited only by the amount of available memory on the system. Strings in LDPL are enclosed between two '"'quotes'"' and can contain multiple escape sequences.
 
@@ -426,6 +428,26 @@ Naturally, if no arguments are passed to the program, the value of 'argc' will b
 
 
 
+.SH ERRORCODE AND ERRORTEXT
+
+Some LDPL operations may fail when executed. Maybe you tried LOADing a file that wasn't there or getting the ASCII value of a multi-byte emoji. These operations make use of the 'ERRORCODE' and 'ERRORTEXT' variables to tell you if they ran successfully or not.
+
+The 'ERRORCODE' and 'ERRORTEXT' variables come declared by default. Some statements may modify their values to express their results.
+
+The 'ERRORCODE' variable is a NUMBER variable. It will hold the value 0 if the statement ran successfully and any other number if it did not.
+
+The 'ERRORTEXT' variable is a TEXT variable that will be empty if the statement ran successfully. If it did not, it will store a human readable description of what went wrong.
+
+'ERRORCODE' and 'ERRORTEXT' can be read and written like any other LDPL variable.
+
+-- Warning:
+.br
+When handling ERROR checks, please bear in mind that the content of the 'ERRORTEXT' variable may change in future releases of LDPL. The value stored in 'ERRORCODE', however, will not change and so that's the value that should be used to check whether an operation ran successfully or not.
+.br
+--
+
+
+
 .SH ESCAPE SEQUENCES
 
 LDPL strings can contain multiple escape sequences / control characters in them. Each escape sequence counts as only one character. The available escape sequences are:
@@ -509,7 +531,7 @@ The 'STORE' statement assigns a value to a variable.
 
 Type Conversion Notes:
 
-If the value to be stored is NUMBER and it's to be stored in a TEXT variable, the value will be converted to text, so '15' will be turned into '"15"'. If the value to be stored is a TEXT value two things can happen. If it contains any non-numeric characters (for example letters, or more than one minus sign or more than one decimal point, for example "--1.2" or "15a") the conversion will fail and 0 will be stored in the NUMBER variable. If the TEXT contains a proper number, though, for example "-416.419" or "89" it will be converted to its number equivalent and stored in the variable.
+If the value to be stored is NUMBER and it's to be stored in a TEXT variable, the value will be converted to text, so '15' will be turned into '"15"'. If the value to be stored is a TEXT value two things can happen. If it contains any non-numeric characters (for example letters, or more than one minus sign or more than one decimal point, for example '"--1.2"' or '"15a"') the conversion will fail and 0 will be stored in the NUMBER variable. If the TEXT contains a proper number, though, for example '"-416.419"' or '"89"' it will be converted to its number equivalent and stored in the variable. If a string literal depicting a number is preceded by leading zeros, these will be trimmed (turning '0005' into '5', '-0002.3' into '-2.3' and '00.23' into '0.23').
 
 
 
@@ -1050,6 +1072,15 @@ The 'STORE CHARACTER CODE OF' statement stores the ASCII code of the character p
 1 | STORE CHARACTER CODE OF <TEXT or TEXT-VAR> IN <NUMBER-VAR>
 .br
 
+.B Error codes:
+
+Multi-byte characters (like emojis and non-ASCII characters) cannot be parsed by this statement. When trying to do so, the operation will fail and the following values will be returned into the 'ERRORCODE' and 'ERRORTEXT' variables:
+
+.br
+[*] 'ERRORCODE': 1
+.br
+[*] 'ERRORTEXT': "Multibyte character received (probably UTF-8). Can't be parsed into a single number."
+
 
 
 .SH STORE QUOTE - IN
@@ -1221,6 +1252,15 @@ The 'LOAD FILE' statement loads the contents of a file into a text variable.
 
 1 | LOAD FILE "myFolder/myTextFile.txt" IN myVariable
 .br
+
+.B Error codes:
+
+If the LOAD operation should fail, the following values will be returned into the 'ERRORCODE' and 'ERRORTEXT' variables:
+
+.br
+[*] 'ERRORCODE': 1
+.br
+[*] 'ERRORTEXT': "Error: The file '<filename>' couldn't be opened."
 
 
 
@@ -1586,6 +1626,41 @@ Example:
 .br
 
 
+
+
+
+.SH EXTERNAL SUB-PROCEDURES
+
+Sometimes when writting C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL SUB-PROCEDUREs and calling them from C++.
+
+These C++ calleable SUB-PROCEDUREs are called EXTERNAL SUB-PROCEDUREs, as they can be called from an EXTERNAL medium.
+
+In order to declare an EXTERNAL SUB-PROCEDURE you must first declare it in your C++ source code. Say, for example, that you want to declare a SUB-PROCEDURE called 'helloWorld'. In your C++ you should write the following line:
+
+1 | void HELLOWORLD();
+.br
+
+Note that EXTERNAL SUB-PROCEDUREs cannot receive any kind of parameters and must be declared as 'void'. You may then call the EXTERNAL SUB-PROCEDURE from C++ code like:
+
+1 | int myCPPFunction(){
+.br
+2 |   HELLOWORLD();
+.br
+3 |   return 1;
+.br
+4 | }
+.br
+
+Once that's taken care of, you can declare your EXTERNAL SUB-PROCEDURE as any other SUB-PROCEDURE in LDPL by preppending the identifier EXTERNAL to the SUB-PROCEDURE declaration:
+
+1 | EXTERNAL SUB-PROCEDURE helloWorld
+.br
+2 |   #Code here...
+.br
+3 | END SUB-PROCEDURE
+.br
+
+These SUB-PROCEDUREs can be called from LDPL as any other SUB-PROCEDURE, but their names must follow the External Identifier Naming Scheme as any other C++ interfacing component.
 
 
 
