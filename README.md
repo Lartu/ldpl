@@ -1,5 +1,5 @@
 # The LDPL Programming Language
-![Version](https://img.shields.io/badge/current_release-3.0.4_'Busy Brontosaurus'-blue.svg)
+![Version](https://img.shields.io/badge/current_release-3.0.4_'Busy_Brontosaurus'-blue.svg)
 ![Version](https://img.shields.io/badge/development_version-3.0.5-red.svg)
 
 ![LDPL](https://www.ldpl-lang.org/logos/ldpl-logo.png)
