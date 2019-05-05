@@ -57,6 +57,13 @@ ldpl_number input_number(){
 
 ldpl_number to_number(const string & a){
     try {
+        //This is used to disallow the use of hexadecimal and binary literals.
+        for(char i : a){
+            if(i != '0' && i != '1' && i != '2' &&
+               i != '3' && i != '4' && i != '5' &&
+               i != '6' && i != '7' && i != '8' &&
+               i != '9' && i != '-' && i != '.') return 0;
+        }
         ldpl_number num = stod(a);
         return num;
     }
@@ -174,7 +181,7 @@ string charat(const string & s, ldpl_number pos){
 
 //Convert ldpl_number to LDPL string, killing trailing 0's
 //https://stackoverflow.com/questions/16605967/ & https://stackoverflow.com/questions/13686482/
-string to_ldpl_string(double x){
+string to_ldpl_string(ldpl_number x){
     ostringstream out;
     out.precision(10);
     out << fixed << x;

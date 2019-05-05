@@ -89,7 +89,7 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
 void split_vector(string & token, string & vector, string & index);
 void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state);
 bool line_like(string model_line, vector<string> & tokens, compiler_state & state); //Important to pass tokens by copy
-bool is_number(string number);
+bool is_number(string & number);
 bool is_natural(string number);
 bool is_label(string & token);
 bool is_math_symbol(string & symbol);

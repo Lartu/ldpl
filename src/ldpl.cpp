@@ -122,11 +122,13 @@ int main(int argc, const char* argv[])
     {
         //Reset state section for this file
         state.section_state = 0;
-        state.current_file = filename;
-        if(filename != "-c")
+        if(filename != "-c"){
+            state.current_file = filename;
             load_and_compile(filename, state);
-        else
+        }else{
+            state.current_file = "standard input";
             accept_and_compile(state);
+        }
     }
     state.add_code("return 0; \n}");
 
@@ -1131,11 +1133,39 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
     return true;
 }
 
-bool is_number(string number){
+bool is_number(string & number){
+    unsigned int firstchar = 0;
+    if(number[0] == '-') firstchar = 1;
+    if(number[firstchar] == '.') return false; //.12 is not a valid decimal in LDPL, 0.12 is.
+    if(number[firstchar] == '+') return false; //+5 is not a valid decimal in LDPL, 5 is.
     istringstream iss(number);
-    float f;
+    double f;
     iss >> f;
-    return iss.eof() && !iss.fail();
+    bool isNumber = iss.eof() && !iss.fail();
+    //If it is a number, it might be an octal literal (e.g. 025, 067, 003 etc)
+    //so we proceed to fix the original number to make it decimal.
+    if(isNumber){
+        string f_number = "";
+        unsigned int i;
+        for(i = 1; i < number.length(); ++i){
+            //If prev char not 0
+            if(number[i - 1] != '0'){
+                //if prev char is -, continue check
+                if(number[i - 1] == '-') f_number += '-';
+                //if prev char is number, break
+                else break;
+            }
+            //If prev number is 0
+            else if(number[i] == '.') {
+                f_number += '0';
+            }
+        }
+        f_number += number.substr(i - 1);
+        number = f_number;
+        return true;
+    }else{
+        return false;
+    }
 }
 
 bool is_natural(string number){
@@ -1267,13 +1297,14 @@ string get_c_variable(compiler_state & state, string & variable)
     if(index.empty())
         return var_name;
     //Vector variable
-    return var_name + '[' + get_c_expression(state, index) + "]";
+    return var_name + '[' + get_c_expression(state, index) + ']';
 }
 
 string get_c_expression(compiler_state & state, string & expression)
 {
     if(is_variable(expression, state))
         return get_c_variable(state, expression);
+    is_number(expression); //We fix the expression should it be a number literal
     return expression;
 }
 
