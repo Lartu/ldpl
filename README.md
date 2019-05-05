@@ -30,7 +30,8 @@ You should first download or compile the LDPL compiler:
  - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases).
 
  - **If you want to build LDPL yourself:** first, clone this repository.
-Then `make` LDPL in the `src` folder. LDPL requires only C++11 to compile.
+Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system.
+LDPL requires only C++11 to compile.
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
 
@@ -41,6 +42,9 @@ Once you have LDPL installed, check the LDPL reference to learn how to use the l
 ![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
 
 [The **LDPL documentation** is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)! The documentation is also uploaded to the [ldpl-docs](https://github.com/lartu/ldpl-docs) GitHub repository and can be read and forked from there.
+
+The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install`. The man page is also
+available in the [man](/man) folder of this repository.
 
 ## LDPL compatible editors
 
