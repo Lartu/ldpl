@@ -1,0 +1,1612 @@
+.TH LDPL 1 "5 may 2019" "LDPL Man 1.0"
+
+.SH NAME
+ldpl - The LDPL programming language compiler
+
+.SH SYNOPSIS
+.PP
+ldpl [-i=<included file>]... <source file>|-c
+     [-o=<output name>|-r] [-f=<c++ flag>]... [-n]
+.br
+ldpl [-v|-h]
+
+For more information on these options you can run "ldpl -h".
+
+.SH DESCRIPTION
+.PP
+This program compiles LDPL source code into executable binaries.
+LDPL is a programming language designed from the ground up to be excessively expressive, fast, readable and easy to learn.
+In order to be able to properly compile LDPL executables you
+.I
+must
+have a valid C++ compiler on your $PATH linked to the name 'c++'.
+
+Documentation and reference for the LDPL Programming Language can be found in the sections below.
+
+.SH OPTIONS
+.PP
+-v, --version
+    Print out LDPL version info and release details.
+
+-h, --help
+    Print this list of options.
+
+-r
+    By using -r you can just compile the project and print the C++ representation for that code.
+
+-o=<name>
+    You can set the output file for the compiled binary with the -o flag. For example, if you want to name your program "dog", you could compile it with ldpl -o=dog main.ldpl.
+
+-i=<file>
+    You can import files to your LDPL compilation by using the -i flag. For example, say you have a library mylib.ldpl and a source file mysource.ldpl, you can compile both and include the library by running ldpl -i=mylibrary.ldpl mysource.ldpl. Multiple -i= can be used to import multiple files. Extensions can also be imported by using this flag; see the Extensions section.
+
+-f=<flag>
+    The -f flag can be used to add flags to the C++ compilation line. See the Building C++ Extensions section for more information.
+
+-n, --non-static
+    On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the -ns flag. To build on Android Termux you must use this flag.
+
+-c
+    The -c flag tells LDPL to accept source code from the standard input.
+
+.SH AUTHOR
+This document is based on the LDPL Reference, written by Martín del Río in collaboration with dvkt.
+
+.SH REPORTING BUGS
+Report any bugs to <https://github.com/lartu/ldpl>.
+
+.SH COPYRIGHT
+Copyright © 2018 - 2019, Martín del Río. LDPL may be copied only under the terms of the GNU General Public License 3.0, which may be found in the LDPL repository.
+.br
+This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.
+
+.ce 1
+.SH -=-=-=-=-=-=-=-=-=- DOCS: LDPL DOCUMENTATION -=-=-=-=-=-=-=-=-=-
+
+
+.SH INTRODUCTION
+
+The LDPL Community has compiled this document with the desire to teach and standardize the LDPL programming language.
+
+This document is definitive and backwards compatible, and any future revisions that build upon it will only add features to the language, not remove nor change any functionality and, as such, any code written for a previous LDPL specification should continue to run as it did with the specification it was written for.
+
+
+Feedback, corrections and suggestions are welcome, both on the main LDPL repository or by e-mail to mdelrio (at) dc.uba.ar. You can join the LDPL community at r/ldpl or via IRC on irc.freenode.net channel \#ldpl.
+
+This reference can be forked on GitHub.
+
+
+
+.SH ABOUT LDPL
+
+.B What is LDPL?
+
+LDPL (Lartu's Definitive Programming Language) is a programming language designed from the ground up to be excessively expressive, fast, readable and easy to learn. It mimics English in the likeness of \[the good parts of\] older languages like COBOL, with the desire that it can be understood by anybody. It's highly portable and runs on a plethora of different architectures and operating systems including AMD-64, ARMv8 and PowerPC Linux and Mac OS X. It also supports UTF-8 out of the box.
+
+1 | data:
+.br
+2 |   name is text     # Your name goes here!
+.br
+3 | 
+.br
+4 | procedure:
+.br
+5 |   display "Hello World" crlf "What's your name? "
+.br
+6 |   accept name
+.br
+7 |   display "你好, " name "! Welcome to LDPL!" crlf
+.br
+
+LDPL also aims to suppress unreadable code and redundancy by only having one way of doing everything. What a command does should never overlap with the purpose of another and, as such, every LDPL command does one and only one thing. Every line is a step further towards the completion of an algorithm, no more, no less.
+
+
+
+.SH FILE EXTENSIONS
+
+The preferred file extension for LDPL source files is '.ldpl'. The alternative '.lsc' (LDPL Source Code) should also be accepted if the later interfered with existing file extensions.
+
+-- Note:
+.br
+File extensions are important: they tell editors how to recognize your source code and the compiler how to treat your files.
+.br
+--
+
+
+
+.SH USING THE LDPL COMPILER
+
+To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to 'c++', found on your 'PATH'. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
+
+-- Note:
+.br
+Compilation under Windows has been tested with MinGW as installed on the linked guide. MinGW-w64 seems to have some problems compiling LDPL.
+
+Compilation under Linux and Mac OS X has been tested with the GNU C++ Compiler, G++.
+.br
+--
+
+In order to use the LDPL Compiler, you must first install it. There are two ways of doing this:
+
+.br
+[*] If you want to download a compiled binary: just go to the Releases part of the LDPL repository and download the newest one available.
+.br
+[*] If you want to build LDPL yourself: first, clone the LDPL repository. Then 'make' LDPL in the 'src' folder. LDPL requires only C++11 to compile.
+
+When you are done installing LDPL, go write some LDPL source code, say 'source.lsc'. Then compile the source code using 'ldpl source.lsc'. The compiled, executable binary file will be saved as 'ldpl.out'. Done! For more info on the compiler run 'ldpl -h'. Example code can be found on the LDPL website.
+
+
+
+.SH LDPL COMPILER OPTIONS
+
+You can import files to your LDPL compilation by using the '-i' flag. For example, say you have a library 'mylib.ldpl' and a source file 'mysource.ldpl', you can compile both and include the library by running 'ldpl -i=mylibrary.ldpl mysource.ldpl'. Multiple '-i=' can be used to import multiple files. Extensions can also be imported by using this flag; see the Extensions section.
+
+By using '-r' you can just compile the project and print the C++ representation for that code.
+
+You can set the output file for the compiled binary with the '-o' flag. For example, if you want to name your program "dog", you could compile it with 'ldpl -o=dog main.ldpl'.
+
+On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the '-ns' flag. To build on Android Termux you must use this flag.
+
+The '-c' flag tells LDPL to accept source code from the standard input.
+
+'-v' and '--version' print out version info and release details.
+
+'-h' and '--help' print this list of options.
+
+The '-f' flag can be used to add flags to the C++ compilation line. See the Building C++ Extensions section for more information.
+
+
+
+.SH STRUCTURE OF LDPL SOURCE CODE
+
+LDPL was designed to be a rigidly structured programming language and, as such, variable declarations and the rest of the code procedure are separated in two different, mutually exclusive sections within a source file. Variable declarations should be placed within the DATA section, while the rest of the code should be placed inside the PROCEDURE section. Further subprocedures should be placed also within the PROCEDURE section, inside their own SUB-PROCEDURE subsection.
+
+Bearing this in mind, the basic skeleton of a LDPL source code will look like this:
+
+1 | DATA:
+.br
+2 | 
+.br
+3 | PROCEDURE:
+.br
+4 | 
+.br
+
+Every statement in LDPL has to be on its own line. Thus, statements are separated by line breaks and it's not possible to have two statements on the same line.
+
+-- Note:
+.br
+The DATA section can be obviated if no variables are declared.
+.br
+--
+
+
+
+.SH COMMENTS IN LDPL
+
+Comments in LDPL are denoted with a hash symbol ('\#') and can be placed both on their own line or at the end of a line that already contains a statement. Everything after the hash is considered to be part of the comment and, therefore, not executed nor compiled.
+
+1 | DATA: #This is the DATA section
+.br
+2 | 
+.br
+3 | PROCEDURE:
+.br
+4 |   #This is a comment within the PROCEDURE section!
+.br
+
+
+
+
+
+.SH DATA SECTION
+
+As stated in Structure of LDPL Source Code, LDPL programs are divided in two sections, one of them being the DATA section. The DATA section is where variables are declared. In no other part of a LDPL source can variables be declared. If no variables are declared, the DATA section can be skipped altogether.
+
+All variables in LDPL are global (LDPL has no concept of scope) and have a defined data type.
+
+-- Note:
+.br
+Available data types are NUMBER, TEXT, NUMBER VECTOR and TEXT VECTOR.
+.br
+--
+
+The DATA section is defined and preceded by the 'DATA:' keyword. An empty data section looks like this:
+
+1 | DATA:
+.br
+2 | 
+.br
+
+On every line within the DATA section (that is, on every line after the 'DATA:' keyword and before the 'PROCEDURE:' keyword) one and only one variable can be declared.
+
+The syntax for declaring a variable in LDPL is:
+
+1 | variable name IS data type
+.br
+
+-- Note:
+.br
+Variable names should follow the rules stated here.
+.br
+--
+
+A DATA section cannot contain anything but variable declarations, comments and empty lines. En example DATA section may end up looking like this:
+
+1 | DATA: #This is the DATA section
+.br
+2 |   myNumber IS NUMBER
+.br
+3 |   #Next I'm going to declare a text vector
+.br
+4 |   niceTextVector IS TEXT VECTOR
+.br
+5 | 
+.br
+6 | PROCEDURE:
+.br
+7 |   #This is a comment within the PROCEDURE section!
+.br
+
+
+
+.SH DATA TYPES
+
+LDPL natively supports the NUMBER and TEXT data types. It also supports VECTORS of values of such types.
+
+The NUMBER data type, as its name suggests, depicts numeric values. It's recommended that it be represented internally as a binary64 double-precision floating-point format number as defined by the IEEE 754.
+
+Both variables and numeric constants can be members of the NUMBER type.
+
+The TEXT data type, as its name suggests, represents alphanumeric strings. In the interest of supporting as many locales as possible, LDPL should be utf-8 encoded to be compatible with Unicode. A TEXT maximum length is explicitly not defined and it should be limited only by the amount of available memory on the system. Strings in LDPL are enclosed between two '"'quotes'"' and can contain multiple escape sequences.
+
+Both variables and string constants can be members of the TEXT type.
+
+The VECTOR data type is not a type itself but a collection of NUMBER or TEXT variables. This implies that only variables can be members of the VECTOR type, as collections of constants (and thus, constant VECTORs) are not present in the language.
+
+VECTORs superficially resemble arrays in other programming languages but with fundamental differences. In LDPL, there's no need to specify the size of a VECTOR before you start to use it. Additionally, any number or string in LDPL may be used as an array index, not just consecutive integers.
+
+VECTORs, as collections of NUMBER or TEXT variables, can only have one defined type at any given time: TEXT or NUMBER. A single VECTOR is not capable of storing both numeric and alphanumeric values.
+
+
+
+.SH PROCEDURE SECTION
+
+As stated in Structure of LDPL Source Code, LDPL programs are divided in two sections, one of them being the DATA section, the other being the PROCEDURE section. The PROCEDURE section is where all the code of a LDPL program that is not a variable declaration is written. A LDPL program must contain a PROCEDURE section, even if it's empty. Compilation will fail otherwise.
+
+Within the PROCEDURE section, every line can contain either a comment, a statement, a statement and a comment or be empty. No two statements can be written on the same line.
+
+1 | PROCEDURE:
+.br
+2 |   #A comment
+.br
+3 |   STORE 5 IN myVariable
+.br
+4 |   STORE 6 IN myOtherVariable #A statement and a comment
+.br
+
+Available statements will be explained further in the following sections of this document.
+
+Code within the PROCEDURE section is executed from top to bottom, skipping SUB-PROCEDURE sections, unless explicitly called.
+
+
+
+.SH SUB-PROCEDURES
+
+A SUB-PROCEDURE is a piece of code that can be called and executed from other parts of the script. SUB-PROCEDURE subsections must be declared within the PROCEDURE section of the code using a 'SUB-PROCEDURE <name>' statement and end with an 'END SUB-PROCEDURE' statement. Bear in mind that you can't define a SUB-PROCEDURE within a SUB-PROCEDURE. Also bear in mind that a SUB-PROCEDURE has to be declared before it can be CALLed.
+
+The syntax for declaring sub-procedures is this one:
+
+1 | DATA:
+.br
+2 |   # ...
+.br
+3 | PROCEDURE:
+.br
+4 |   # ...
+.br
+5 |   SUB-PROCEDURE mySubprocedure
+.br
+6 |     # Sub procedure code
+.br
+7 |     # goes here.
+.br
+8 |   END SUB-PROCEDURE
+.br
+
+Of course, you cannot have two sub-procedures with the same name. Sub-procedure names follow the same naming guidelines variable names follow.
+
+
+
+.SH VARIABLES IN LDPL
+
+LDPL is not a case sensitive language. Variables called 'myVar' and 'MYVAR' are considered to be the same variable, the same with sub-procedure names and statements of any kind. Variable names must follow the rules stated here.
+
+.B Usage of Variables
+
+In the following sections you will see excerpts of code like this one:
+
+1 | STORE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+Notice the parts in between less-than and greater-than symbols ('<like this>'). Parts of procedures stylized like that mean that they should be replaced by whatever they say inside. In the example above, the first replaceable part can be substituted with the name of a variable of NUMBER type or by a NUMBER constant.
+
+Available replacement values are:
+
+.br
+[*] 'NUMBER': A constant of type NUMBER.
+.br
+[*] 'TEXT': A constant of type TEXT.
+.br
+[*] 'NUMBER-VAR': A variable of type NUMBER.
+.br
+[*] 'TEXT-VAR': A variable of type TEXT.
+.br
+[*] 'SUB-NAME': A name of a sub-procedure.
+
+
+
+.SH USAGE OF VECTORS
+
+Vectors in LDPL aren't more than a collection of variables. When you declare a vector, you declare a structure that lets you store something of its type on any sub-index of the variable. For example, say you declare the vector 'myVector':
+
+1 | DATA:
+.br
+2 |   myVector IS NUMBER VECTOR
+.br
+
+Then you can use 'myVector' as a multivariable with various indexes where you can store NUMBERs.
+
+1 | DATA:
+.br
+2 |   myVector IS NUMBER VECTOR
+.br
+3 | PROCEDURE:
+.br
+4 |   STORE 5 IN myVector:1 #Stores 5 in the subindex 1 of myVector
+.br
+5 |   STORE -10.2 IN myVector:5 #Stores -10.2 in the subindex 5 of myVector
+.br
+
+Vector sub-indexes can't just be constant NUMBERs, though. They can also be NUMBER variables, TEXT and TEXT variables, or even sub-indexes of other arrays. For example:
+
+1 | DATA:
+.br
+2 |   myVector IS NUMBER VECTOR
+.br
+3 |   myOtherVector IS NUMBER VECTOR
+.br
+4 |   myVar IS NUMBER
+.br
+5 | 
+.br
+6 | PROCEDURE:
+.br
+7 |   STORE 17 IN myVar
+.br
+8 |   STORE 1 IN myVector:"hello" #Stores 1 in the subindex "hello" of myVector
+.br
+9 |   STORE 7 IN myVector:myVar #Stores 7 in the position of index value of myVar
+.br
+10|   STORE 3 IN myVector:myOtherVector:4
+.br
+11|   #Stores 3 in the position of index value of myVar of myOtherVector
+.br
+
+Please note that as a VECTOR is a collection of variables, a single index of a VECTOR is a variable in itself. This means that a VECTOR with a sub-index can be used in any position where you could use a variable of the same type of the vector. So, if you have something like this:
+
+1 | STORE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+You could use a NUMBER VECTOR with a defined sub-index where it says NUMBER-VAR.
+
+
+
+.SH DEFAULT VARIABLE VALUES
+
+In LDPL each variable is initialized with a value by default. This means that when you declare a variable, it will, by default, hold this value until it's changed.
+
+NUMBER variables are initialized with the value '0'. Each position of a NUMBER VECTOR is a NUMBER variable, and thus also initialized to '0'.
+
+TEXT variables are initialized to the empty string '""'. Same goes to TEXT VECTORs, where each position is also initialized to '""'.
+
+
+
+.SH COMMAND LINE ARGUMENTS
+
+Every LDPL program comes with two variables declared by default: 'argc', of the NUMBER type, and 'argv', a TEXT VECTOR. If you pass command line arguments to your LDPL compiled program (running, for example, something like 'myBinary argument1 argument2)', the value stored in the variable 'argc' (_argument count_) will reflect the number of arguments passed to the script (in this case, two), while the 'argv' vector (_argument vector_) will store in its 0-based natural number positions (that is 0, 1, 2, 3, etc.) the values of each argument passed (in this case, '"argument1"' will be stored in 'argv:0' and '"argument2"' in 'argv:1').
+
+-- Note:
+.br
+Given that 'argv' is a TEXT VECTOR, the values passed as arguments are always stored as TEXT.
+.br
+--
+
+Naturally, if no arguments are passed to the program, the value of 'argc' will be zero and 'argv' will be empty.
+
+
+
+.SH ESCAPE SEQUENCES
+
+LDPL strings can contain multiple escape sequences / control characters in them. Each escape sequence counts as only one character. The available escape sequences are:
+
+.br
+[*] '\\a' = alert (bell)
+.br
+[*] '\\b' = backspace
+.br
+[*] '\\t' = horizontal tab
+.br
+[*] '\\n' = newline / line feed
+.br
+[*] '\\v' = vertical tab
+.br
+[*] '\\f' = form feed
+.br
+[*] '\\r' = carriage return
+.br
+[*] '\\e' = non-standard GCC escape
+.br
+[*] '\\0' = null byte
+.br
+[*] '\\\\' = \\ character
+.br
+[*] '\\"' = " character
+
+For example, the string '"hello,\\nworld"' will be displayed as
+
+1 | hello,
+.br
+2 | world
+.br
+
+when printed to the console.
+
+
+
+.SH IDENTIFIER NAMING SCHEMES
+
+.B Variable and SUB-PROCEDURE naming scheme
+
+Variables and SUB-PROCEDURE names follow the same naming rules. These names can't be empty and may consist of any character with few exceptions (listed below). Like statements, variable and SUB-PROCEDURE names in LDPL are not case sensitive.
+
+.br
+[*] Variable and SUB-PROCEDURE names cannot contain the character ':', it is used for vector accesses.
+.br
+[*] Variable and SUB-PROCEDURE names cannot contain the character '"', it is used to delimit strings.
+.br
+[*] Variable and SUB-PROCEDURE names cannot contain spaces.
+.br
+[*] Variable and SUB-PROCEDURE names cannot be valid numbers.
+.br
+[*] Variable and SUB-PROCEDURE names cannot contain the character '(' nor the character ')' as these characters are used in mathematical expressions.
+.br
+[*] Variables and SUB-PROCEDUREs cannot be called 'CRLF', as it is internally turned into '"\\r\\n"'.
+.br
+[*] Variables and SUB-PROCEDUREs cannot be called '+' nor '-' nor '*' nor '/' as these characters are used in mathematical expressions.
+
+.B LABEL naming scheme
+
+Labels in LDPL can't be empty and may contain any character except spaces and '"'. LABELs can't be named 'CRLF' for the same reasons explained in the section above.
+
+.B External Identifier Naming Scheme
+
+Please refer to this page.
+
+
+
+.ce 1
+.SH -=-=-=-=- DOCS: CONTROL FLOW STATEMENTS -=-=-=-=-
+
+.SH STORE - IN
+
+The 'STORE' statement assigns a value to a variable.
+
+.B Syntax:
+
+1 | STORE <NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <NUMBER-VAR or TEXT-VAR>
+.br
+
+Type Conversion Notes:
+
+If the value to be stored is NUMBER and it's to be stored in a TEXT variable, the value will be converted to text, so '15' will be turned into '"15"'. If the value to be stored is a TEXT value two things can happen. If it contains any non-numeric characters (for example letters, or more than one minus sign or more than one decimal point, for example "--1.2" or "15a") the conversion will fail and 0 will be stored in the NUMBER variable. If the TEXT contains a proper number, though, for example "-416.419" or "89" it will be converted to its number equivalent and stored in the variable.
+
+
+
+.SH IF - IS - THEN
+
+The 'IF' statement evaluates if the condition given by the relational operator between the first and second values is positive. If it is, the code in the positive branch is executed. If it is not, the code in the negative branch is executed (if available). Execution then continues normally.
+
+.B Syntax:
+
+1 | IF <NUMBER-VAR or NUMBER> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER> THEN
+.br
+2 |  #Code goes here (positive branch)
+.br
+3 | ELSE
+.br
+4 |  #Code goes here (negative branch)
+.br
+5 | END IF
+.br
+
+or
+
+1 | IF <TEXT-VAR or TEXT> IS <REL-OP-TEXT> <TEXT-VAR or TEXT> THEN
+.br
+2 |  #Code goes here (positive branch)
+.br
+3 | ELSE
+.br
+4 |  #Code goes here (negative branch)
+.br
+5 | END IF
+.br
+
+or
+
+1 | IF <NUMBER-VAR or NUMBER> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER> THEN
+.br
+2 |  #Code goes here (positive branch)
+.br
+3 | END IF
+.br
+
+or
+
+1 | IF <TEXT-VAR or TEXT> IS <REL-OP-TEXT> <TEXT-VAR or TEXT> THEN
+.br
+2 |  #Code goes here (positive branch)
+.br
+3 | END IF
+.br
+
+Possible values of 'REL-OP-NUM' (number relational operator):
+
+.br
+[*] 'EQUAL TO'
+.br
+[*] 'NOT EQUAL TO'
+.br
+[*] 'GREATER THAN'
+.br
+[*] 'LESS THAN'
+.br
+[*] 'GREATER THAN OR EQUAL TO'
+.br
+[*] 'LESS THAN OR EQUAL TO'
+
+Possible values of 'REL-OP-TEXT' (text relational operator):
+
+.br
+[*] 'EQUAL TO'
+.br
+[*] 'NOT EQUAL TO'
+
+
+
+.SH ELSE IF - IS - THEN
+
+The 'ELSE IF' statement is equivalent to writing an 'IF' statement inside the 'ELSE' statement of another 'IF' statement, but shorter. Must be used after an IF statement and before 'END IF' or 'ELSE'.
+
+.B Syntax:
+
+All the different 'IF' variants of the IF statement apply, just with 'ELSE' added before them.
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   name IS TEXT
+.br
+3 | PROCEDURE:
+.br
+4 |   STORE "Mike" IN name
+.br
+5 |   IF name IS equal to "John" THEN
+.br
+6 |     DISPLAY "Hello there, John!" CRLF
+.br
+7 |   ELSE IF name IS equal to "Mike" THEN
+.br
+8 |     DISPLAY "Hello there, Mike!" CRLF
+.br
+9 |   ELSE IF name IS equal to "Robert" THEN
+.br
+10|     DISPLAY "Hello there, Robert!" CRLF
+.br
+11|   ELSE
+.br
+12|     DISPLAY "I don't know you, " name CRLF
+.br
+13|   END IF
+.br
+
+
+
+.SH WHILE - IS - DO
+
+The 'WHILE' statement evaluates if the condition given by the relational operator between the first and second values is positive. While it is, the code between the 'WHILE' and 'REPEAT' statements is repeatedly ran.
+
+.B Syntax:
+
+1 | WHILE <NUMBER-VAR or NUMBER> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER> DO
+.br
+2 |  #Code goes here
+.br
+3 | REPEAT
+.br
+
+or
+
+1 | WHILE <TEXT-VAR or TEXT> IS <REL-OP-TEXT> <TEXT-VAR or TEXT> DO
+.br
+2 |  #Code goes here
+.br
+3 | REPEAT
+.br
+
+Possible values of 'REL-OP-NUM' (number relational operator):
+
+.br
+[*] 'EQUAL TO'
+.br
+[*] 'NOT EQUAL TO'
+.br
+[*] 'GREATER THAN'
+.br
+[*] 'LESS THAN'
+.br
+[*] 'GREATER THAN OR EQUAL TO'
+.br
+[*] 'LESS THAN OR EQUAL TO'
+
+Possible values of 'REL-OP-TEXT' (text relational operator):
+
+.br
+[*] 'EQUAL TO'
+.br
+[*] 'NOT EQUAL TO'
+
+
+
+
+
+.SH BREAK
+
+The 'BREAK' statement breaks the execution of a 'WHILE' loop. Will throw a compiler error if used outside one.
+
+.B Syntax:
+
+1 | BREAK
+.br
+
+
+
+.SH CONTINUE
+
+The 'CONTINUE' statement jumps to the next iteration of a 'WHILE' loop. Will throw a compiler error if used outside one.
+
+.B Syntax:
+
+1 | CONTINUE
+.br
+
+
+
+.SH CALL SUB-PROCEDURE
+
+The 'CALL SUB-PROCEDURE' statement executes a SUB-PROCEDURE. Once the SUB-PROCEDURE returns, the execution continues from the line following the 'CALL SUB-PROCEDURE'.
+
+.B Syntax:
+
+1 | CALL SUB-PROCEDURE <sub-procedure name>
+.br
+
+or just
+
+1 | CALL <sub-procedure name>
+.br
+
+Of course, a sub-procedure must be declared before calling it.
+
+
+
+.SH RETURN
+
+The 'RETURN' statement returns from a SUB-PROCEDURE. Will throw a compiler error if used outside one.
+
+.B Syntax:
+
+1 | RETURN
+.br
+
+
+
+.SH EXIT
+
+The 'EXIT' statement ends execution of the program.
+
+.B Syntax:
+
+1 | EXIT
+.br
+
+
+
+
+
+.SH WAIT - MILLISECONDS
+
+The 'WAIT' statement pauses the execution of a program for the given number of milliseconds.
+
+.B Syntax:
+
+1 | WAIT <NUMBER or NUMBER-VAR> MILLISECONDS
+.br
+
+
+
+
+
+.SH GOTO & LABEL
+
+> "If you want to go somewhere, goto is the best way to get there."
+> -- Ken Thompson
+
+The 'GOTO' statement performs a one-way transfer of control to a line of code marked by a 'LABEL' statement. In lame man terms, the execution jumps to the line where the wanted 'LABEL' is found and continues from there.
+
+While maligned by Edsger W. Dijkstra and his cohorts, 'GOTO' is very useful in many situations. Its reputation is undeserved and mostly perpetuated by people that don't understand the origins of the criticism or how the statement can be used.
+
+You also can't make a COBOL_esque language without 'GOTO', so (due to popular request) here we've added it to the language.
+
+.B Syntax:
+
+1 | LABEL <labelName>
+.br
+
+1 | GOTO <labelName>
+.br
+
+-- Note:
+.br
+Label names follow the naming rules stated here.
+.br
+--
+
+.B Example:
+
+1 | PROCEDURE:
+.br
+2 | GOTO start
+.br
+3 | 
+.br
+4 | LABEL start
+.br
+5 | display "> starting..." crlf
+.br
+6 | 
+.br
+7 | GOTO ending
+.br
+8 | 
+.br
+9 | LABEL middle
+.br
+10| display "> entering the middle section..." crlf
+.br
+11| 
+.br
+12| sub-procedure cool-code
+.br
+13|     GOTO cool
+.br
+14|     display "hmm... is this cool?" crlf
+.br
+15|     LABEL cool
+.br
+16|     display "wow, yeah! cool code!" crlf
+.br
+17| end sub-procedure
+.br
+18| 
+.br
+19| LABEL ending
+.br
+20| CALL cool-code
+.br
+21| display "> that's the end" crlf
+.br
+
+In the output of this program you can see the 'middle' LABEL and the start of the 'cool-code' SUB-PROCEDURE are skipped:
+
+1 | > starting...
+.br
+2 | wow, yeah! cool code!
+.br
+3 | > that's the end
+.br
+
+In order to keep 'GOTO' from turning your source into "_unmaintainable spaghetti code_", both your 'GOTO' statement and the 'LABEL' it jumps to have to be used together in the same sub-procedure or in the main code body of an LDPL program. So you can't 'goto' across sub-procedures or into them, or anything like that.
+
+
+
+.ce 1
+.SH -=-=-=-=- DOCS: ARITHMETIC STATEMENTS -=-=-=-=-
+
+.SH ADD - AND - IN
+
+The 'ADD' statement adds two NUMBER values and stores the result in a NUMBER variable.
+
+.B Syntax:
+
+1 | ADD <NUMBER-VAR or NUMBER> AND <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+
+
+.SH SUBTRACT - FROM - IN
+
+The 'SUBTRACT' statement subtracts two NUMBER values and stores the result in a NUMBER variable.
+
+.B Syntax:
+
+1 | SUBTRACT <NUMBER-VAR or NUMBER> FROM <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+
+
+.SH MULTIPLY - BY - IN
+
+The 'MULTIPLY' statement multiplies two NUMBER values and stores the result in a NUMBER variable.
+
+.B Syntax:
+
+1 | MULTIPLY <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+
+
+
+
+.SH DIVIDE - BY - IN
+
+The 'DIVIDE' statement divides two NUMBER values and stores the result in a NUMBER variable.
+
+.B Syntax:
+
+1 | DIVIDE <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+
+
+.SH MODULO - BY - IN
+
+The 'MODULO' statement calculates the remainder of the modulo operation between two NUMBER values and stores the result in a NUMBER variable.
+
+.B Syntax:
+
+1 |  MODULO <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+
+
+.SH ABS
+
+The 'ABS' statement calculates the absolute value of a NUMBER variable and stores it in that same variable.
+
+.B Syntax:
+
+1 | ABS <NUMBER-VAR>
+.br
+
+
+
+.SH STORE RANDOM IN
+
+The 'STORE RANDOM' statement stores a random value between 0 (inclusive) and 1 (noninclusive) in a NUMBER variable.
+
+.B Syntax:
+
+1 | STORE RANDOM IN <NUMBER-VAR>
+.br
+
+
+
+.SH FLOOR
+
+The 'FLOOR' statement rounds down the value of NUMBER-VAR to the nearest lower integer.
+
+.B Syntax:
+
+1 | FLOOR <NUMBER-VAR>
+.br
+
+
+
+.SH CEIL
+
+The 'CEIL' statement rounds up the value of NUMBER-VAR to the nearest greater integer.
+
+.B Syntax:
+
+1 | CEIL <NUMBER-VAR>
+.br
+
+
+
+.SH IN - SOLVE
+
+The 'IN - SOLVE' statement will solve a simple arithmetic expression and place the result in a NUMBER variable. Only '+', '-', '/', '*' operators, NUMBER values, and TEXT values can be used in a MATH-EXPRESSION. Other LDPL arithmetic functions, like CEIL and MODULO, are not supported by this statement and should be used as standalone statements. TEXT values will be implicitly converted to NUMBERs using the same algorithm as STORE - IN.
+
+Spaces must be used to separate numbers, variables and operators.
+
+As in actual arithmetic, '*' and '/' have higher precedence than '+' and '-' , while parens '()' can be used to group expressions.
+
+Syntax:
+
+1 | IN <NUMBER-VAR> SOLVE <MATH-EXPRESSION>
+.br
+
+Example:
+
+1 | IN myNumVariable SOLVE 1 + 1
+.br
+
+Will set the value of 'myNumVariable' to '2'.
+
+Area of Circle:
+
+1 | DATA:
+.br
+2 | Radius is NUMBER
+.br
+3 | Area is NUMBER
+.br
+4 | 
+.br
+5 | PROCEDURE:
+.br
+6 | DISPLAY "Enter Radius: "
+.br
+7 | ACCEPT Radius
+.br
+8 | 
+.br
+9 | IN Area SOLVE 3.14159 * (Radius * Radius)
+.br
+10| DISPLAY "Area is: " Area CRLF
+.br
+
+Outputs:
+
+1 | Enter Radius: .5
+.br
+2 | Area is: 0.7853975
+.br
+
+
+
+.ce 1
+.SH -=-=-=-=- DOCS: TEXT STATEMENTS -=-=-=-=-
+
+.SH JOIN - AND - IN
+
+The 'JOIN' statement concatenates two values and stores them in a TEXT variable. If any value is a number, it is converted to a string before concatenation.
+
+.B Syntax:
+
+1 | JOIN <NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> AND <NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <TEXT-VAR>
+.br
+
+Type Conversion Note:
+
+If any of the values to be joined is a NUMBER value, the value will be converted to text, so '15' will be turned into '"15"' and '-19.2' into '"-19.2"'.
+
+
+
+.SH GET CHARACTER AT - FROM - IN
+
+The 'GET CHARACTER AT' statement gets the character at the position indicated by the NUMBER value from the TEXT value and stores it in a TEXT variable.
+
+.B Syntax:
+
+1 | GET CHARACTER AT <NUMBER-VAR or NUMBER> FROM <TEXT-VAR or TEXT> IN <TEXT-VAR>
+.br
+
+
+
+.SH STORE LENGTH OF - IN
+
+The 'STORE LENGTH OF' statement counts the number of characters in the passed TEXT and stores that number in the NUMBER variable.
+
+.B Syntax:
+
+1 | STORE LENGTH OF <TEXT-VAR or TEXT> IN <NUMBER-VAR>
+.br
+
+
+
+
+
+.SH STORE CHARACTER - IN
+
+The 'STORE CHARACTER' statement stores the character with the ASCII code passed in NUMBER or NUMBER-VAR in TEXT-VAR.
+
+.B Syntax:
+
+1 | STORE CHARACTER <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
+.br
+
+
+
+.SH STORE CHARACTER CODE OF - IN
+
+The 'STORE CHARACTER CODE OF' statement stores the ASCII code of the character passed in TEXT or TEXT-VAR in NUMBER-VAR. Will fail if the length of the string passed in TEXT or TEXT-VAR is not 1.
+
+.B Syntax:
+
+1 | STORE CHARACTER CODE OF <TEXT or TEXT-VAR> IN <NUMBER-VAR>
+.br
+
+
+
+.SH STORE QUOTE - IN
+
+The 'STORE QUOTE IN' statement allows you to store multiple lines in a single TEXT variable. Between the 'STORE QUOTE IN' and 'END QUOTE' statements whitespace is preserved literally, escape codes like '\\t' and '\\e' work the same as they do in regular text variables (and can themselves be escaped using '\\\\'), and double quotes ('"') don't need to be escaped.
+
+Syntax:
+
+1 | STORE QUOTE IN <TEXT-VAR>
+.br
+2 |   #Text goes here
+.br
+3 | END QUOTE
+.br
+
+Example:
+
+1 | DATA:
+.br
+2 | template IS TEXT
+.br
+3 | 
+.br
+4 | PROCEDURE:
+.br
+5 | STORE QUOTE IN template
+.br
+6 | <html>
+.br
+7 |     <head><title>{{title}}</title></head>
+.br
+8 |     <body>{{body}}</body>
+.br
+9 | </html>
+.br
+10| END QUOTE
+.br
+11| 
+.br
+12| # ...code to use the template...
+.br
+
+
+
+.SH IN - JOIN
+
+The 'IN JOIN' statement concatenates two or more values and stores them in a TEXT variable. If any of those values is a number, it is converted to a string before concatenation.
+
+.B Syntax:
+
+1 | IN <TEXT-VAR> JOIN <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
+.br
+
+.B Example:
+
+1 | IN myTextVariable JOIN "Hello World!" " " "Welcome to LDPL!" crlf
+.br
+
+will store
+
+1 | "Hello World! Welcome to LDPL!\\n"
+.br
+
+in 'myTextVariable'.
+
+
+
+.ce 1
+.SH -=-=-=-=- DOCS: I/O STATEMENTS -=-=-=-=-
+
+.SH DISPLAY
+
+The 'DISPLAY' statement outputs the values passed to the output stream. 'CRLF' means line break and is a sugar syntax for the '"\\n"' escape sequence.
+
+.B Syntax:
+
+1 | DISPLAY <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
+.br
+
+.B Example:
+
+1 | DISPLAY "Hello World! " myVariable CRLF
+.br
+
+
+
+.SH ACCEPT
+
+The 'ACCEPT' command is used to gather input from the user. If a TEXT variable is specified, anything the user enters before pressing the 'return' key will be accepted. If a NUMBER variable is specified, the user must enter a number (if any non-numeric key is entered, the error message "Redo from start" will be output and the ACCEPT command rerun).
+
+.B Syntax:
+
+1 | ACCEPT <TEXT-VAR or NUMBER-VAR>
+.br
+
+
+
+
+
+.SH EXECUTE
+
+The 'EXECUTE' statement executes the specified system command.
+
+.B Syntax:
+
+1 | EXECUTE <TEXT or TEXT-VAR>
+.br
+
+.B Example:
+
+1 | # Prepare the command to execute
+.br
+2 | IN myTextVar JOIN "echo " myVariable " >> myFile"
+.br
+3 | # Execute it
+.br
+4 | EXECUTE myTextVar
+.br
+
+
+
+
+
+.SH EXECUTE - AND STORE OUTPUT IN
+
+The 'EXECUTE - AND STORE OUTPUT IN' executes the specified command and stores any resulting text in the passed variable.
+
+.B Syntax:
+
+1 | EXECUTE <TEXT or TEXT-VAR> AND STORE OUTPUT IN <TEXT-VAR>
+.br
+
+
+
+.SH EXECUTE - AND STORE EXIT CODE IN
+
+The 'EXECUTE - AND STORE EXIT CODE IN' executes the specified command and stores the exit code in the passed variable.
+
+.B Syntax:
+
+1 | EXECUTE <TEXT or TEXT-VAR> AND STORE EXIT CODE IN <NUM-VAR>
+.br
+
+
+
+.SH ACCEPT - UNTIL EOF
+
+The 'ACCEPT UNTIL EOF' statement accepts input from standard input until an EOF state is reached and stores all data gathered in TEXT-VAR.
+
+.B Syntax:
+
+1 | ACCEPT <TEXT-VAR> UNTIL EOF
+.br
+
+
+
+
+
+.SH LOAD FILE - IN
+
+The 'LOAD FILE' statement loads the contents of a file into a text variable.
+
+.B Syntax:
+
+1 | LOAD FILE <TEXT or TEXT-VAR> IN <TEXT-VAR>
+.br
+
+.B Example:
+
+1 | LOAD FILE "myFolder/myTextFile.txt" IN myVariable
+.br
+
+
+
+.SH WRITE - TO FILE
+
+The 'WRITE x TO FILE y' statement writes the value of 'x' to the file called 'y'. If the file already exists, everything in it will be overwritten by 'x'.
+
+.B Syntax:
+
+1 | WRITE <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
+.br
+
+.B Example:
+
+1 | WRITE "Hello there!" TO FILE "hello.txt"
+.br
+
+
+
+.SH APPEND - TO FILE
+
+The 'APPEND x TO FILE y' statement appends the value of 'x' to the file called 'y'. If the file already exists, 'x' will be added at the end of its contents.
+
+.B Syntax:
+
+1 | APPEND <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
+.br
+
+.B Example:
+
+1 | APPEND "\\nHow are you?" TO FILE "hello.txt"
+.br
+
+in this case, the file 'hello.txt', created here and modified as stated on that page, will contain the text
+
+1 | Hello there!
+.br
+2 | How are you?
+.br
+
+
+
+.ce 1
+.SH -=-=-=-=- DOCS: EXTENSIONS -=-=-=-=-
+
+.SH C++ EXTENSIONS
+
+Extensions contain SUBPROCEDUREs and VARIABLEs that are written in another language and usable in LDPL through the CALL EXTERNAL statement and EXTERNAL data type keyword. This allows programmers to extend LDPL with new features or to wrap 3rd party libraries and re-use their functionality.
+
+Starting with release 3.0.0, LDPL supports extensions written in C++. Because LDPL programs compile down to C++, there is no need for a translation layer or bridge: extensions can be included directly into LDPL programs and manipulate, share, and access subprocedures and variables natively. All that's needed is a few naming conventions on the C++ side and the use of the 'EXTERNAL' syntax for variables and subprocedures on the LDPL side.
+
+-- Note:
+.br
+Check out the "Hello World" for a quick example.
+.br
+--
+
+
+
+
+
+.SH WRITING C++ EXTENSIONS
+
+Extensions can create variables and functions that are accessible from LDPL through the CALL EXTERNAL statement and EXTERNAL data type keyword. Typically all you need is a single '.cpp' file that you give the 'ldpl' compiler when building your program, but you can also use '.o' files, '.a' files, or any combination of them all.
+
+Extensions interact with LDPL in two main way: defining functions and declaring variables.
+
+.B Functions
+
+To create a function in C++ that can be called from an LDPL program, you must follow two rules:
+
+1. The function's type must be 'void(void)', ex: 'void MY_FUNC();'
+2. The function's name must conform to LDPL's Extension Naming Convention.
+
+Because LDPL functions don't accept arguments or return values, to be callable from LDPL your C++ functions musn't either.
+
+And because LDPL doesn't "know" the names of your functions and instead allows the programmer to call them using the 'EXTERNAL' syntax, all C++ variable and subprocedure names must contain only 'A-Z', '0-9', and the '_' character. Everything else on the LDPL side will get converted to an underscore ('_') when referencing the C++ side.
+
+.B Example
+
+For example, this function:
+
+1 | void PROMPT_ADD()
+.br
+2 | {
+.br
+3 |   int a, b, sum;
+.br
+4 |   cout << "1st number: ";
+.br
+5 |   cin >> a;
+.br
+6 |   cout << "2nd number: ";
+.br
+7 |   cin >> b;
+.br
+8 |   cout << "sum: " << sum << end;
+.br
+9 | }
+.br
+
+Once defined and built into LDPL, can be called using:
+
+1 | CALL EXTERNAL prompt-add
+.br
+
+.B Variables
+
+To create or reference a variable in a C++ extension that is shared with an LDPL program, you must follow two rules:
+
+1. The variable's name must conform to LDPL's Extension Naming Convention.
+2. The C++ type of the variable must match LDPL's internal type usage.
+
+The first rule should be familiar from the functions section: all C++ variable and subprocedure names must contain only 'A-Z', '0-9', and the '_' character. Everything else on the LDPL side will get converted to an underscore ('_').
+
+For the second, here's the mapping between types:
+
+.br
+| LDPL Data Type | C++ Type |
+.br
+| :--- | :--- |
+.br
+| 'TEXT' | 'std::string' |
+.br
+| 'NUMBER' | 'double' |
+.br
+| 'TEXT VECTOR' | 'ldpl_vector<std::string>' |
+.br
+| 'NUMBER VECTOR' | 'ldpl_vector<double>' |
+
+.B Example
+
+Declaring 'TEXT'and 'NUMBER' variables is easy on the C++ side:
+
+1 | std::string NAME;
+.br
+2 | double AGE;
+.br
+3 | std::string STREET_ADDRESS;
+.br
+
+These will be available to an LDPL program to declare in its 'DATA:' section:
+
+1 | DATA:
+.br
+2 | name IS EXTERNAL TEXT
+.br
+3 | age IS EXTERNAL NUMBER
+.br
+4 | street-address IS EXTERNAL TEXT
+.br
+
+.B Accessing Variables in Functions
+
+Since LDPL and C++ are using the same variable when you use the 'EXTERNAL' keyword, any changes you make to the variable's content are shared. Just use them like you would use regular C++ variables.
+
+1 | double A, B, SUM;
+.br
+2 | void ADD()
+.br
+3 | {
+.br
+4 |     SUM = A + B;
+.br
+5 | }
+.br
+
+1 | DATA:
+.br
+2 | A IS EXTERNAL NUMBER
+.br
+3 | B IS EXTERNAL NUMBER
+.br
+4 | SUM IS EXTERNAL NUMBER
+.br
+5 | 
+.br
+6 | PROCEDURE:
+.br
+7 | STORE 100 IN A
+.br
+8 | STORE 250 IN B
+.br
+9 | CALL EXTERNAL add
+.br
+10| DISPLAY SUM CRLF
+.br
+
+Building and running this program will print '350'.
+
+.B LDPL Vectors
+
+The 'VECTOR' types are a bit trickier - they are defined as 'ldpl_vector<T>', so you'll want to declare this prototype in your '.cpp' or '.h' file to use it in your extension:
+
+1 | #ifndef ldpl_vector
+.br
+2 | template<typename T>
+.br
+3 | struct ldpl_vector {
+.br
+4 |     T& operator [] (const std::string& i);
+.br
+5 |     T& operator [] (double i);
+.br
+6 | };
+.br
+7 | #endif
+.br
+
+Now you can use vectors in LDPL:
+
+1 | DATA:
+.br
+2 | Names IS EXTERNAL TEXT VECTOR
+.br
+
+And in C++:
+
+1 | ldpl_vector<std::string> NAMES;
+.br
+2 | 
+.br
+3 | // later...
+.br
+4 | NAMES[0] = "Pauline"
+.br
+5 | NAMES[1] = "just Paul"
+.br
+
+
+
+.SH BUILDING C++ EXTENSIONS
+
+Extensions are easy to build: when compiling your LDPL program, use the '-i=' flag to pass in '.cpp' files, '.o' files, or '.a' files to the LDPL compiler. They'll get included in your program and be available using the 'EXTERNAL' statements.
+
+For example, if your LDPL source file is called 'mySource.ldpl' and you want to include 'otherFile.cpp' to your project, you just do
+
+1 | $ ldpl -i=otherFile.cpp mySource.ldpl
+.br
+
+If your C++ extension files require extra flags to be passed to the C++ compiler in order to compile (for example, '-lSDL' when working with SDL) you can use the '-f=' flag to pass those flags to it. Following the SDL example, you could do
+
+1 | $ ldpl -i=mySDLSource.cpp mySource.ldpl -f=-lSDL
+.br
+
+and the C++ compiler will be executed with the '-lSDL' flag.
+
+1 | $ ldpl -i=<extension file> code.ldpl
+.br
+
+
+
+
+
+.SH EXTERNAL IDENTIFIER NAMING SCHEME
+
+All C++ variable and functions accessible to LDPL programs must contain only 'A-Z', '0-9',  and the '_' character in their names. All other characters used on the LDPL side to reference the variable or function will get converted to an underscore ('_') or, if it's a letter, capitalized.
+
+LDPL => C++ Conversion Examples
+
+.br
+| LDPL Identifier | C++ Identifier |
+.br
+| :--- | :--- |
+.br
+| window.rows | WINDOW\\_ROWS |
+.br
+| HTTP/get | HTTP\\_GET |
+.br
+| SDL/Font.new | SDL\\_FONT\\_NEW |
+.br
+| sdl.font-new | SDL\\_FONT\\_NEW |
+.br
+| NAME | NAME |
+.br
+| version\\_number | VERSION\\_NUMBER |
+
+-- Warning:
+.br
+Note that this conversion scheme can cause collisions: all of these LDPL variables will convert to 'ONE_TWO:'
+
+.br
+[*] 'One-Two'
+.br
+[*] 'one.two'
+.br
+[*] 'one/two'
+.br
+[*] 'OnE-TWO'
+.br
+--
+
+
+
+.SH "HELLO WORLD" C++ EXAMPLE
+
+File: simple.cpp
+.br
+1 | #include <iostream>
+.br
+2 | void SIMPLE(){
+.br
+3 |         std::cout << "Very simple!" << std::endl;
+.br
+4 | }
+.br
+
+
+File: simple.ldpl
+.br
+1 | PROCEDURE:
+.br
+2 | CALL EXTERNAL simple
+.br
+3 | 
+.br
+
+
+1 | $ ldpl -i=simple.cpp simple.ldpl
+.br
+2 | LDPL: Compiling...
+.br
+3 | * File(s) compiled successfully.
+.br
+4 | * Saved as simple-bin
+.br
+5 | $ ./simple-bin
+.br
+6 | Very simple!
+.br
+
+
+
+
+
+.SH MORE EXAMPLES
+
+.br
+| Project | Description | Why an extension? |
+.br
+| :--- | :--- | :--- |
+.br
+| GILD | Gopher client in LDPL | Uses sockets to make TCP requests. |
+.br
+| LDPLNOISE | Linenoise (readline) for LDPL | Wraps linenoise C++ library. |
+
+
+
+
+
+.SH CALL EXTERNAL
+
+The 'CALL EXTERNAL' statement executes a SUB-PROCEDURE defined in an extension to LDPL, typically in C++. It otherwise operates the same as 'CALL SUB-PROCEDURE'.
+
+.B Syntax:
+
+1 | CALL EXTERNAL <external sub-procedure name>
+.br
+
+Example:
+
+1 | CALL EXTERNAL http-get
+.br
+
+
+
+
+
+.SH EXTERNAL VARIABLES
+
+Variables defined in extensions can be accessed by prefacing their data type declaration with the 'EXTERNAL' keyword. This must occur in the DATA section of an LDPL program. Once an external variable is declared, it can be used just like any other LDPL variable.
+
+.B Syntax:
+
+1 | <variable> IS EXTERNAL <data type>
+.br
+
+Example:
+
+1 | DATA:
+.br
+2 | RL-PROMPT IS EXTERNAL TEXT
+.br
+3 | WINDOW.SIZE IS EXTERNAL NUMBER
+.br
+
+
+
+

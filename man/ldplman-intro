@@ -12,6 +12,17 @@ ldpl [-v|-h]
 
 For more information on these options you can run "ldpl -h".
 
+.SH DESCRIPTION
+.PP
+This program compiles LDPL source code into executable binaries.
+LDPL is a programming language designed from the ground up to be excessively expressive, fast, readable and easy to learn.
+In order to be able to properly compile LDPL executables you
+.I
+must
+have a valid C++ compiler on your $PATH linked to the name 'c++'.
+
+Documentation and reference for the LDPL Programming Language can be found in the sections below.
+
 .SH OPTIONS
 .PP
 -v, --version
@@ -37,3 +48,14 @@ For more information on these options you can run "ldpl -h".
 
 -c
     The -c flag tells LDPL to accept source code from the standard input.
+
+.SH AUTHOR
+This document is based on the LDPL Reference, written by Martín del Río in collaboration with dvkt.
+
+.SH REPORTING BUGS
+Report any bugs to <https://github.com/lartu/ldpl>.
+
+.SH COPYRIGHT
+Copyright © 2018 - 2019, Martín del Río. LDPL may be copied only under the terms of the GNU General Public License 3.0, which may be found in the LDPL repository.
+.br
+This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.
