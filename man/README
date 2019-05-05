@@ -1,4 +1,4 @@
-To recompile a man page for LDPL, clone the ldpl documentation repository
+To recompile a man page for LDPL, clone the LDPL documentation repository
 (www.github.com/lartu/ldpl-docs) in this folder (so that every file
 in that repository is in this very folder) and then run:
 
@@ -8,3 +8,6 @@ A file called ldpl.man will be generated. You can add it to your
 man pages or just open it by running:
     
   $ man ./ldpl.1
+
+Please note that as man pages for LDPL are generated from the LDPL
+documentation, they SHOULD NEVER be edited by hand.
