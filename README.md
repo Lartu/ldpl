@@ -23,11 +23,11 @@ procedure:
 
 This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples.
 
-## Getting started with LDPL
+## Installing LDPL
 
 You should first download or compile the LDPL compiler:
 
- - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases).
+ - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH.
 
  - **If you want to build LDPL yourself:** first, clone this repository.
 Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system.
