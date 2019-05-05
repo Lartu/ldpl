@@ -964,6 +964,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //TODO
         return;
     }
+    if(line_like("SPLIT $str-expr BY $str-expr IN $str-vector", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("SPLIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        //TODO
+        return;
+    }
 */
 
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");

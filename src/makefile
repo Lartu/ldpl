@@ -45,3 +45,8 @@ install: ldpl ../man/ldpl.1
 	install -d $(DESTDIR)$(PREFIX)/share/man/man1/
 	install ../man/ldpl.1 $(DESTDIR)$(PREFIX)/share/man/man1/
 	mandb
+
+uninstall:
+	rm $(DESTDIR)$(PREFIX)/bin/ldpl
+	rm $(DESTDIR)$(PREFIX)/share/man/man1/ldpl.1 
+	mandb
