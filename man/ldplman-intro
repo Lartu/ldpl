@@ -1,0 +1,39 @@
+.TH LDPL 1 "5 may 2019" "LDPL Man 1.0"
+
+.SH NAME
+ldpl - The LDPL programming language compiler
+
+.SH SYNOPSIS
+.PP
+ldpl [-i=<included file>]... <source file>|-c
+     [-o=<output name>|-r] [-f=<c++ flag>]... [-n]
+.br
+ldpl [-v|-h]
+
+For more information on these options you can run "ldpl -h".
+
+.SH OPTIONS
+.PP
+-v, --version
+    Print out LDPL version info and release details.
+
+-h, --help
+    Print this list of options.
+
+-r
+    By using -r you can just compile the project and print the C++ representation for that code.
+
+-o=<name>
+    You can set the output file for the compiled binary with the -o flag. For example, if you want to name your program "dog", you could compile it with ldpl -o=dog main.ldpl.
+
+-i=<file>
+    You can import files to your LDPL compilation by using the -i flag. For example, say you have a library mylib.ldpl and a source file mysource.ldpl, you can compile both and include the library by running ldpl -i=mylibrary.ldpl mysource.ldpl. Multiple -i= can be used to import multiple files. Extensions can also be imported by using this flag; see the Extensions section.
+
+-f=<flag>
+    The -f flag can be used to add flags to the C++ compilation line. See the Building C++ Extensions section for more information.
+
+-n, --non-static
+    On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the -ns flag. To build on Android Termux you must use this flag.
+
+-c
+    The -c flag tells LDPL to accept source code from the standard input.

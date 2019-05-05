@@ -1,0 +1,10 @@
+To compile a man page for LDPL clone the ldpl documentation repository
+(www.github.com/lartu/ldpl-docs) in this folder (so that every file
+in that repository is in this very folder) and then run:
+
+  $ php compileman.php > ldpl.man
+
+A file called ldpl.man will be generated. You can add it to your
+man pages or just open it by running:
+    
+  $ man ./ldpl.man

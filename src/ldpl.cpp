@@ -27,28 +27,45 @@ int main(int argc, const char* argv[])
     vector<string> args(argv + 1, argv + argc);
 
     if(contains_any(args, {"-v", "--version"})){
-        cout << "This is \033[32;1mLDPL version " << VERSION << "\033[0m." << endl << endl;
-        cout << "Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
-        cout << "Built with amazing contributions from \033[35;1mʇʞʌp\033[0m, \033[35;1mDamián Garro\033[0m and a bunch of other contributors." << endl << endl;
-        cout << "Website and documentation can be found on \033[36;1mwww.ldpl-lang.org\033[0m." << endl;
-        cout << "Source code can be found at \033[36;1mhttps://github.com/lartu/ldpl\033[0m." << endl << endl;
-        cout << "LDPL may be copied only under the terms of the GNU General Public License 3.0." << endl <<endl;
-        cout << "Compiled on " << COMPILEDATE << endl;
+        cout << endl;
+        cout << " This is \033[32;1mLDPL version " << VERSION << "\033[0m '\033[32;1m" << VERSIONNAME << "\033[0m'." << endl << endl;
+        cout << " Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
+        cout << " Built with amazing contributions from \033[35;1mʇʞʌp\033[0m, \033[35;1mDamián Garro\033[0m and" << endl;
+        cout << " a bunch of other contributors." << endl << endl;
+        cout << " The LDPL Home Page can be found at \033[36;1mwww.ldpl-lang.org\033[0m." << endl;
+        cout << " The LDPL source code is available at \033[36;1mwww.github.com/lartu/ldpl\033[0m." << endl << endl;
+        cout << " Complete documentation for LDPL should be found on this system" << endl;
+        cout << " using '\033[33;1mman ldpl\033[0m'. If you have access to the internet, the"<< endl;
+        cout << " documentation can also be found online at \033[36;1mdocs.ldpl-lang.org\033[0m." << endl << endl;
+        cout << " LDPL may be copied only under the terms of the GNU General" << endl;
+        cout << " Public License 3.0, which may be found in the LDPL repository." << endl <<endl;
+        cout << " Compiled on \033[31;1m" << COMPILEDATE << "\033[0m at \033[31;1m" << COMPILEHOUR << "\033[0m." << endl;
+        cout << endl;
         return 0;
     }
     else if(contains_any(args, {"-h", "--help"})){
-        cout << "Usage: ldpl [options] file [arguments]" << endl;
-        cout << "Options:" << endl;
-        cout << "  -h --help                Display this information" << endl;
-        cout << "  -r                       Display generated C++ code" << endl;
-        cout << "  -o=<name>                Set output file for compiled binary" << endl;
-        cout << "  -i=<file>                Include file in current compilation" << endl;
-        cout << "  -f=<flag>                Pass a flag to the C++ compiler" << endl;
-        cout << "  -v --version             Display LDPL version information" << endl;
+        cout << endl;
+        cout << " \033[33;1mUsage:\033[0m" << endl;
+        cout << "    ldpl [-i='<included file>']... <source file>|-c" << endl;
+        cout << "         [-o='<output name>'|-r] [-f='<c++ flag>']... [-n]" << endl;
+        cout << "    ldpl [-v|-h]" << endl;
+        cout << endl;
+        cout << " \033[33;1mOptions:\033[0m" << endl;
+        cout << "   -v --version             Display LDPL version information" << endl;
+        cout << "   -h --help                Display this information" << endl;
+        cout << "   -r                       Display generated C++ code" << endl;
+        cout << "   -o=<name>                Set output file for compiled binary" << endl;
+        cout << "   -i=<file>                Include file in current compilation" << endl;
+        cout << "   -f=<flag>                Pass a flag to the C++ compiler" << endl;
 		#ifdef  STATIC_BUILDS
-		cout << "  -ns                      Disables static binary building" << endl;
+		cout << "   -n --non-static          Disables static binary building" << endl;
 		#endif
-        cout << "  -c                       Compile from standard input" << endl;
+        cout << "   -c                       Compile from standard input" << endl;
+        cout << endl;
+        cout << " Complete documentation for LDPL should be found on this system" << endl;
+        cout << " using '\033[33;1mman ldpl\033[0m'. If you have access to the internet, the"<< endl;
+        cout << " documentation can also be found online at \033[36;1mdocs.ldpl-lang.org\033[0m." << endl;
+        cout << endl;
         return 0;
     }
 
@@ -75,7 +92,7 @@ int main(int argc, const char* argv[])
                 show_ir = true;
             }
             #ifdef STATIC_BUILDS
-            else if(arg == "-ns"){
+            else if(arg == "-n" || arg == "--non-static"){
                 no_static = true;
             }
             #endif
