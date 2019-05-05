@@ -114,6 +114,11 @@ int main(int argc, const char* argv[])
             else if(arg == "-c"){
                 files_to_compile.push_back(arg);
             }
+            else{
+                cout << "Unknown option: " << arg << endl;
+                cout << "Try 'ldpl -h' for more information." << endl;
+                return 0;
+            }
         }
     }
 
