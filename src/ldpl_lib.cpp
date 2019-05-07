@@ -170,6 +170,8 @@ ldpl_number get_char_num(const string & chr){
         VAR_ERRORCODE = 1;
         return 0;
     }
+    VAR_ERRORTEXT = \"\";
+    VAR_ERRORCODE = 0;
     ldpl_number ord = (unsigned char) chr[0];
     return ord;
 }
