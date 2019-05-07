@@ -34,6 +34,7 @@ Then `make` and `make install` LDPL in the `src` folder. This will install LDPL 
 LDPL requires only C++11 to compile.
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
+Also, it is advised to configure git autoclrf to use Unix-style end-of-line: `git config core.autocrlf input`. LDPL relies on an AWK script which will not work properly with DOS-style newlines (CLRF).
 
 Once you have LDPL installed, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided below.
 
