@@ -101,7 +101,7 @@ int main(int argc, const char* argv[])
             }
             else if(arg.substr(0, 3) == "-i="){
                 if(0 == arg.compare(arg.length()-5, 5, ".ldpl")||0 == arg.compare(arg.length()-4, 4, ".lsc")){
-                    files_to_compile.insert(files_to_compile.begin(), arg.substr(3));
+                    files_to_compile.push_back(arg.substr(3));
                 }else{
                     //pass everything but .ldpl and .lsc files to the c++ compiler
                     extensions.push_back(arg.substr(3)); // kill -i= prefix
