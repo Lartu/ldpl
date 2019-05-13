@@ -980,16 +980,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //C Code
         //TODO
         return;
-    }
-    if(line_like("SPLIT $str-expr BY $str-expr IN $str-vector", tokens, state))
+    }*/
+    if(line_like("SPLIT $str-expr BY $str-expr IN $str-vec", tokens, state))
     {
         if(state.section_state != 2)
             error("SPLIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        //TODO
+        state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
-*/
 
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
@@ -1071,6 +1070,14 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$var") //$var is either a NUMBER variable or a TEXT variable
         {
             if(!is_variable(tokens[j], state)) return false;
+        }
+        else if(model_tokens[i] == "$num-vec") //$num-vec is NUMBER vector
+        {
+            if(!is_num_vector(tokens[j], state)) return false;
+        }
+        else if(model_tokens[i] == "$str-vec") //$str-vec is TEXT vector
+        {
+            if(!is_txt_vector(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$literal") //$literal is either a NUMBER or a TEXT
         {

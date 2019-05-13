@@ -100,6 +100,8 @@ bool is_variable(string & token, compiler_state & state);
 bool is_num_expr(string & token, compiler_state & state);
 bool is_txt_expr(string & token, compiler_state & state);
 bool is_expression(string & token, compiler_state & state);
+bool is_num_vector(string & token, compiler_state & state);
+bool is_txt_vector(string & token, compiler_state & state);
 bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
