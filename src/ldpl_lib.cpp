@@ -180,6 +180,7 @@ ldpl_number get_char_num(const string & chr){
 unordered_map<size_t, unordered_map<size_t, pair<int, int>>> utf8cache;
 string charat(const string& s, ldpl_number pos) {
     unsigned int ipos = floor(pos);
+    if(ipos>=s.size()) return \"\";
     size_t id = (size_t)&s << s.size();
     if(utf8cache.find(id)==utf8cache.end()){
         unordered_map<size_t, pair<int, int>> m;
