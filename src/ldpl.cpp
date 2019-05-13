@@ -806,7 +806,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("join(" + get_c_string(state, tokens[1]) + ", " + get_c_string(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
+        string arg_a = get_c_string(state, tokens[1]);
+        string arg_b = get_c_string(state, tokens[3]);
+        string arg_c = get_c_variable(state, tokens[5]);
+        if(arg_a == arg_c)
+            state.add_code(arg_a + " += " + arg_b + ";");
+        else if(arg_b == arg_c)
+            state.add_code(arg_b + " += " + arg_a + ";");
+        else
+            state.add_code("join(" + arg_a + ", " + arg_b + ", " + arg_c + ");");
         return;
     }
     if(line_like("GET CHARACTER AT $num-expr FROM $str-expr IN $str-var", tokens, state))
