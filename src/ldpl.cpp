@@ -811,8 +811,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         string arg_c = get_c_variable(state, tokens[5]);
         if(arg_a == arg_c)
             state.add_code(arg_a + " += " + arg_b + ";");
-        else if(arg_b == arg_c)
-            state.add_code(arg_b + " += " + arg_a + ";");
         else
             state.add_code("join(" + arg_a + ", " + arg_b + ", " + arg_c + ");");
         return;
