@@ -181,6 +181,25 @@ string charat(const string & s, ldpl_number pos){
     return utf8_substr(s, pos, 1);
 }
 
+ldpl_vector<string> utf8_split(const string & s, const string & sep){
+    ldpl_vector<string> v;
+    unsigned int z = 0;
+    for(unsigned int i = 0; i < s.length();){
+        int cplen = 1;
+        int c = s[i];
+        if      (c>=0 && c<=127)     cplen=1;
+        else if ((c & 0xE0) == 0xC0) cplen=2;
+        else if ((c & 0xF0) == 0xE0) cplen=3;
+        else if ((c & 0xF8) == 0xF0) cplen=4;
+        string cp = s.substr(i, cplen);
+        if(sep.empty()) v[z++] = cp;
+        else if(sep == cp) ++z;
+        else v[z] += cp;
+        i+=cplen;
+    }
+    return v;
+}
+
 //Convert ldpl_number to LDPL string, killing trailing 0's
 //https://stackoverflow.com/questions/16605967/ & https://stackoverflow.com/questions/13686482/
 string to_ldpl_string(ldpl_number x){
