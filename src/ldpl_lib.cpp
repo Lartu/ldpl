@@ -179,8 +179,8 @@ ldpl_number get_char_num(const string & chr){
 unordered_map<size_t, ldpl_vector<string>> char_cache;
 string charat(const string & s, ldpl_number pos) {
     unsigned int ipos = floor(pos);
-    size_t hash = std::hash<string>{}(s);
-    if(char_cache.find(hash)==char_cache.end()){
+    size_t id = (size_t)&s;
+    if(char_cache.find(id)==char_cache.end()){
         ldpl_vector<string> v;
         ldpl_number x = 0;
         for(size_t i = 0; i < s.length();){
@@ -192,9 +192,9 @@ string charat(const string & s, ldpl_number pos) {
             v[x++] = s.substr(i, cplen);
             i += cplen;
         }
-        char_cache[hash] = v;
+        char_cache[id] = v;
     }
-    return char_cache[hash][ipos];
+    return char_cache[id][ipos];
 }
 
 //Convert ldpl_number to LDPL string, killing trailing 0's
