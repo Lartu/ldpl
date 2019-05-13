@@ -176,25 +176,27 @@ ldpl_number get_char_num(const string & chr){
     return ord;
 }
 
-unordered_map<size_t, ldpl_vector<string>> char_cache;
-string charat(const string & s, ldpl_number pos) {
+//cache utf8 point locations in map for faster lookups
+unordered_map<size_t, unordered_map<size_t, pair<int, int>>> utf8cache;
+string charat(const string& s, ldpl_number pos) {
     unsigned int ipos = floor(pos);
     size_t id = (size_t)&s;
-    if(char_cache.find(id)==char_cache.end()){
-        ldpl_vector<string> v;
-        ldpl_number x = 0;
+    if(utf8cache.find(id)==utf8cache.end()){
+        unordered_map<size_t, pair<int, int>> m;
+        size_t z = 0;
         for(size_t i = 0; i < s.length();){
             int cplen = 1;
             if((s[i] & 0xf8) == 0xf0) cplen = 4;
             else if((s[i] & 0xf0) == 0xe0) cplen = 3;
             else if((s[i] & 0xe0) == 0xc0) cplen = 2;
             if((i + cplen) > s.length()) cplen = 1;
-            v[x++] = s.substr(i, cplen);
+            m[z++] = make_pair(i, cplen);
             i += cplen;
         }
-        char_cache[id] = v;
+        utf8cache[id] = m;
     }
-    return char_cache[id][ipos];
+    pair<int, int> p = utf8cache[id][ipos];
+    return s.substr(p.first, p.second);
 }
 
 //Convert ldpl_number to LDPL string, killing trailing 0's
