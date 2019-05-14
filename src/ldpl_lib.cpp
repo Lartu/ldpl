@@ -178,6 +178,20 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
     return str.substr(realstart,reallength);
 }
 
+//https://stackoverflow.com/a/27658515
+string str_replace(string const& s, string const& find, string const& replace){
+    string result;
+    size_t find_len = find.size();
+    size_t pos, from=0;
+    while (string::npos != (pos=s.find(find,from))){
+        result.append(s, from, pos-from);
+        result.append(replace);
+        from = pos + find_len;
+    }
+    result.append(s, from , string::npos);
+    return result;
+}
+
 ldpl_number str_len(const string & a){
     return utf8_strlen(a);
 }
