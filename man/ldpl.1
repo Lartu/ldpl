@@ -958,6 +958,54 @@ The 'CEIL' statement rounds up the value of NUMBER-VAR to the nearest greater in
 
 
 
+.SH INCR & DECR
+
+The 'INCR' and 'DECR'statements add or subtract from a NUMBER variable by one. The variable is updated with the new value in place.
+
+.B Syntax:
+
+1 | INCR <NUMBER-VAR>
+.br
+
+1 | DECR <NUMBER-VAR>
+.br
+
+Example:
+
+1 | DATA:
+.br
+2 | x is number
+.br
+3 | 
+.br
+4 | PROCEDURE:
+.br
+5 | STORE 0 IN x
+.br
+6 | WHILE x IS LESS THAN 5 DO
+.br
+7 |   DISPLAY "x: " x crlf
+.br
+8 |   INCR x
+.br
+9 | REPEAT
+.br
+
+Output:
+
+1 | x: 0
+.br
+2 | x: 1
+.br
+3 | x: 2
+.br
+4 | x: 3
+.br
+5 | x: 4
+.br
+
+
+
 .SH IN - SOLVE
 
 The 'IN - SOLVE' statement will solve a simple arithmetic expression and place the result in a NUMBER variable. Only '+', '-', '/', '*' operators, NUMBER values, and TEXT values can be used in a MATH-EXPRESSION. Other LDPL arithmetic functions, like CEIL and MODULO, are not supported by this statement and should be used as standalone statements. TEXT values will be implicitly converted to NUMBERs using the same algorithm as STORE - IN.
@@ -1025,6 +1073,45 @@ The 'JOIN' statement concatenates two values and stores them in a TEXT variable.
 Type Conversion Note:
 
 If any of the values to be joined is a NUMBER value, the value will be converted to text, so '15' will be turned into '"15"' and '-19.2' into '"-19.2"'.
+
+
+
+.SH SPLIT - BY - IN
+
+The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a TEXT vector, starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'.
+
+To break TEXT into individual characters, split by the empty string of '""'.
+
+.B Syntax:
+
+1 | SPLIT TEXT-VAR or TEXT> BY TEXT-VAR or TEXT> IN <TEXT-VECTOR>
+.br
+
+Example:
+
+1 | SPLIT "Hello there!" BY " " IN parts
+.br
+2 | display parts:0 crlf parts:1 crlf
+.br
+
+will output:
+
+1 | Hello
+.br
+2 | there!
+.br
+
+Example:
+
+1 | SPLIT "onomatopoeia" BY "" IN parts
+.br
+2 | DISPLAY parts:3 " is M " crlf
+.br
+
+will output:
+
+1 | m is M
+.br
 
 
 
