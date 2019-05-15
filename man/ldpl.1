@@ -991,7 +991,7 @@ Example:
 9 | REPEAT
 .br
 
-Output:
+Outputs:
 
 1 | x: 0
 .br
@@ -1076,15 +1076,38 @@ If any of the values to be joined is a NUMBER value, the value will be converted
 
 
 
+.SH REPLACE - FROM - WITH - IN
+
+The 'REPLACE' statement finds and replaces every occurrence of some TEXT in a TEXT variable or value some other TEXT.  The result is then stored in a TEXT variable.
+
+Syntax:
+
+1 | REPLACE <TEXT-VAR or TEXT> FROM <TEXT-VAR or TEXT> WITH <TEXT-VAR or TEXT> IN <TEXT-VAR>
+.br
+
+Example:
+
+1 | REPLACE "COBOL" FROM "COBOL is great!" WITH "LDPL" IN sentiment
+.br
+2 | DISPLAY sentiment crlf
+.br
+
+Outputs:
+
+1 | LDPL is great!
+.br
+
+
+
 .SH SPLIT - BY - IN
 
-The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a TEXT vector, starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'.
+The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a TEXT vector, starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'
 
 To break TEXT into individual characters, split by the empty string of '""'.
 
-.B Syntax:
+Syntax:
 
-1 | SPLIT TEXT-VAR or TEXT> BY TEXT-VAR or TEXT> IN <TEXT-VECTOR>
+1 | SPLIT <TEXT-VAR or TEXT> BY TEXT-VAR or TEXT> IN <TEXT-VECTOR>
 .br
 
 Example:
@@ -1101,7 +1124,7 @@ will output:
 2 | there!
 .br
 
-Example:
+Split into characters:
 
 1 | SPLIT "onomatopoeia" BY "" IN parts
 .br
