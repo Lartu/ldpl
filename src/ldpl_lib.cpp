@@ -103,6 +103,25 @@ void join(const string & a, const string & b, string & c){
     c = a + b;
 }
 
+ldpl_vector<string> utf8_split(const string & s, const string & sep){
+    ldpl_vector<string> v;
+    unsigned int z = 0;
+    for(unsigned int i = 0; i < s.length();){
+        int cplen = 1;
+        int c = s[i];
+        if      (c>=0 && c<=127)     cplen=1;
+        else if ((c & 0xE0) == 0xC0) cplen=2;
+        else if ((c & 0xF0) == 0xE0) cplen=3;
+        else if ((c & 0xF8) == 0xF0) cplen=4;
+        string cp = s.substr(i, cplen);
+        if(sep.empty()) v[z++] = cp;
+        else if(sep == cp) ++z;
+        else v[z] += cp;
+        i+=cplen;
+    }
+    return v;
+}
+
 //http://www.zedwood.com/article/cpp-utf8-strlen-function
 int utf8_strlen(const string& str)
 {
@@ -159,6 +178,20 @@ string utf8_substr(const string &str,int start, int length=INT_MAX)
     return str.substr(realstart,reallength);
 }
 
+//https://stackoverflow.com/a/27658515
+string str_replace(string const& s, string const& find, string const& replace){
+    string result;
+    size_t find_len = find.size();
+    size_t pos, from=0;
+    while (string::npos != (pos=s.find(find,from))){
+        result.append(s, from, pos-from);
+        result.append(replace);
+        from = pos + find_len;
+    }
+    result.append(s, from , string::npos);
+    return result;
+}
+
 ldpl_number str_len(const string & a){
     return utf8_strlen(a);
 }
@@ -179,25 +212,6 @@ ldpl_number get_char_num(const string & chr){
 string charat(const string & s, ldpl_number pos){
     unsigned int _pos = floor(pos);
     return utf8_substr(s, pos, 1);
-}
-
-ldpl_vector<string> utf8_split(const string & s, const string & sep){
-    ldpl_vector<string> v;
-    unsigned int z = 0;
-    for(unsigned int i = 0; i < s.length();){
-        int cplen = 1;
-        int c = s[i];
-        if      (c>=0 && c<=127)     cplen=1;
-        else if ((c & 0xE0) == 0xC0) cplen=2;
-        else if ((c & 0xF0) == 0xE0) cplen=3;
-        else if ((c & 0xF8) == 0xF0) cplen=4;
-        string cp = s.substr(i, cplen);
-        if(sep.empty()) v[z++] = cp;
-        else if(sep == cp) ++z;
-        else v[z] += cp;
-        i+=cplen;
-    }
-    return v;
 }
 
 //Convert ldpl_number to LDPL string, killing trailing 0's
