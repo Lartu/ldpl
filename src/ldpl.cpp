@@ -180,10 +180,6 @@ int main(int argc, const char* argv[])
         final_filename += "-bin";
     }
     cout << "LDPL: Compiling..." << endl;
-    //Check if C++ is installed
-    if(system("c++") != 0){
-        error("No C++ compiler has been found on this system.\nPlease install one and add the command 'c++' to your PATH.");
-    }
     //Compile the C++ code
     string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
 #ifdef STATIC_BUILDS
