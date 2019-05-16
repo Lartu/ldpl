@@ -9,6 +9,7 @@
 #include <locale>
 #include "cpptrim.h"
 #include <sstream>
+#include <sys/wait.h>
 
 using namespace std;
 
