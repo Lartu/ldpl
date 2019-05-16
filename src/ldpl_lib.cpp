@@ -235,8 +235,10 @@ string exec(const char* cmd) {
 #include <random>
 
 ldpl_number get_random(){
-    ldpl_number r = ((ldpl_number) rand() / (RAND_MAX)) + 1;
-    r = r - (int) r;
+    random_device rd;
+    mt19937 mt(rd());
+    uniform_real_distribution<double> dist(0.0, 1.0);
+    ldpl_number r = (ldpl_number) dist(mt);
     return r;
 }
 

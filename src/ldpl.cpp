@@ -124,7 +124,6 @@ int main(int argc, const char* argv[])
 
     state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
-    state.add_code("srand (time(NULL));");
 
     state.variables["ARGC"] = 1;
     state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");

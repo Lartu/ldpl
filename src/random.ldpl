@@ -1,0 +1,10 @@
+DATA:
+r is number
+i is number
+
+PROCEDURE:
+while i is less than 5 do
+  store random in r
+  display r crlf
+  incr i
+repeat
