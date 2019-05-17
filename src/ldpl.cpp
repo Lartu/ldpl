@@ -965,14 +965,20 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = str_replace(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
     }
-
-/*  TODO: Implement
+    if(line_like("SPLIT $str-expr BY $str-expr IN $str-vec", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("SPLIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
+        return;
+    }
     if(line_like("GET INDEX OF $str-expr FROM $str-expr IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
             error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        //TODO
+        state.add_code(get_c_variable(state, tokens[7]) + " = utf8GetIndexOf(" + get_c_expression(state, tokens[5]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
     if(line_like("COUNT $str-expr FROM $str-expr IN $num-var", tokens, state))
@@ -980,15 +986,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        //TODO
+        state.add_code(get_c_variable(state, tokens[5]) + " = utf8Count(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[1]) + ");");
         return;
-    }*/
-    if(line_like("SPLIT $str-expr BY $str-expr IN $str-vec", tokens, state))
+    }
+    if(line_like("SUBSTRING $str-expr FROM $num-expr LENGTH $num-expr IN $str-var", tokens, state))
     {
         if(state.section_state != 2)
-            error("SPLIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("SUBSTRING statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
+        state.add_code("joinvar = " + get_c_expression(state, tokens[1]) + ";");
+        state.add_code(get_c_variable(state, tokens[7]) + " = utf8_substr(joinvar, " + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
     }
 

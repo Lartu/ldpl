@@ -21,7 +21,7 @@ using namespace std;
 ifstream file_loading_stream;
 ofstream file_writing_stream;
 string file_loading_line;
-string joinvar;
+string joinvar; //Generic temporary use text variable (used by join but can be used by any other statement as well)
 ldpl_number VAR_ERRORCODE = 0;
 string VAR_ERRORTEXT = \"\";
 
@@ -279,4 +279,31 @@ void load_file(string filename, string & destination)
     VAR_ERRORCODE = 0;
     destination = text;
     file.close();
+}
+
+ldpl_number utf8GetIndexOf(string a, string needle){
+    string haystack = a;
+    int lenHaystack = utf8_strlen(haystack);
+    int lenNeedle = utf8_strlen(needle);
+    if(lenHaystack < lenNeedle) return -1;
+    int i = 0;
+    while(i + lenNeedle <= lenHaystack){
+        if(utf8_substr(haystack, i, lenNeedle) == needle) return i;
+        ++i;
+    }
+    return -1;
+}
+
+ldpl_number utf8Count(string a, string needle){
+    string haystack = a;
+    int lenHaystack = utf8_strlen(haystack);
+    int lenNeedle = utf8_strlen(needle);
+    if(lenHaystack < lenNeedle) return 0;
+    int i = 0;
+    int count = 0;
+    while(i + lenNeedle <= lenHaystack){
+        if(utf8_substr(haystack, i, lenNeedle) == needle) ++count;
+        ++i;
+    }
+    return count;
 }
