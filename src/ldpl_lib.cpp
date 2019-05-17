@@ -15,6 +15,10 @@
 #define ldpl_number double
 #define CRLF \"\\n\"
 
+//Fix WEXITSTATUS on BSD by ignoring wait() unions.
+#undef _W_INT
+#define _W_INT(x) ((int)x)
+
 using namespace std;
 
 //Global variables
