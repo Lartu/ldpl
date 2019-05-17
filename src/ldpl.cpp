@@ -998,6 +998,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = utf8_substr(joinvar, " + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
     }
+    if(line_like("TRIM $str-expr IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("TRIM statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = trimCopy(" + get_c_expression(state, tokens[1]) +  ");");
+        return;
+    }
 
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
