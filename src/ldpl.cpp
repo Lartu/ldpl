@@ -916,8 +916,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[7]) + " = system(" + get_c_char_array(state, tokens[1]) + ");");
-        state.add_code(get_c_variable(state, tokens[7]) + " = WEXITSTATUS((int)" + get_c_variable(state, tokens[7]) + ");");
+        state.add_code(get_c_variable(state, tokens[7]) + " = (system(" + get_c_char_array(state, tokens[1]) + ") >> 8) & 0xff;"); //shift wait() val and get lowest 2
         return;
     }
     if(line_like("ACCEPT $str-var UNTIL EOF", tokens, state))
