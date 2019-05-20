@@ -39,7 +39,25 @@ struct ldpl_vector {
     T& operator [] (ldpl_number i) {
         return inner_map[to_ldpl_string(i)];
     }
+
+    void clear(){
+        inner_map.clear();
+    }
+
+    ldpl_number count(){
+        return inner_map.size();
+    }
 };
+
+template<typename T>
+void get_indices(ldpl_vector<string> & dest, ldpl_vector<T> & source){
+    dest.clear();
+    int i = 0;
+    for (const auto &keyPair : source.inner_map) {
+        dest[i] = keyPair.first;
+        ++i;
+    }
+}
 
 ldpl_number input_number(){
     string s = \"\";

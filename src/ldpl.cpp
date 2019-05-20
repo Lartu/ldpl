@@ -1005,6 +1005,46 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = trimCopy(" + get_c_expression(state, tokens[1]) +  ");");
         return;
     }
+    if(line_like("CLEAR $vector", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CLEAR VECTOR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[1]) + ".clear();");
+        return;
+    }
+    if(line_like("COPY $str-vec TO $str-vec", tokens, state)) //TODO these COPY statements should be mixed into one that allow cross copying.
+    {
+        if(state.section_state != 2)
+            error("COPY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
+        return;
+    }
+    if(line_like("COPY $num-vec TO $num-vec", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("COPY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
+        return;
+    }
+    if(line_like("STORE INDEX COUNT OF $vector IN $num-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CLEAR VECTOR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".count();");
+        return;
+    }
+    if(line_like("STORE INDICES OF $vector IN $str-vec", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("STORE INDICES statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("get_indices(" + get_c_variable(state, tokens[5]) + ", " + get_c_variable(state, tokens[3]) + ");");
+        return;
+    }
 
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
@@ -1087,6 +1127,9 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_variable(tokens[j], state)) return false;
         }
+        else if(model_tokens[i] == "$vector"){ //$vector is TEXT VECTOR, NUMBER VECTOR
+            if(!is_num_vector(tokens[j], state) && !is_txt_vector(tokens[j], state)) return false;
+        }
         else if(model_tokens[i] == "$num-vec") //$num-vec is NUMBER vector
         {
             if(!is_num_vector(tokens[j], state)) return false;
@@ -1099,11 +1142,11 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_string(tokens[j]) && !is_number(tokens[j])) return false;
         }
-        else if(model_tokens[i] == "$string") //$string is a string (?
+        else if(model_tokens[i] == "$string") //$string is a TEXT literal
         {
             if(!is_string(tokens[j])) return false;
         }
-        else if(model_tokens[i] == "$number") //$number is a number (?
+        else if(model_tokens[i] == "$number") //$number is a NUMBER literal
         {
             if(!is_number(tokens[j])) return false;
         }
