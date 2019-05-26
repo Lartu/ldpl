@@ -9,7 +9,11 @@
 #include <locale>
 #include "cpptrim.h"
 #include <sstream>
+#if !defined(_WIN32)
 #include <sys/wait.h>
+#else
+#include <windows.h>
+#endif
 
 using namespace std;
 
