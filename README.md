@@ -1,5 +1,5 @@
 # The LDPL Programming Language
-![Version](https://img.shields.io/badge/current_release-3.0.5_'Creative Carnotaurus'-blue.svg)
+![Version](https://img.shields.io/badge/current_release-3.0.5_'Creative_Carnotaurus'-blue.svg)
 ![Version](https://img.shields.io/badge/development_version-3.0.6-red.svg)
 [![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
 
