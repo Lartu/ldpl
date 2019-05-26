@@ -1,6 +1,6 @@
 To recompile a man page for LDPL, clone the LDPL documentation repository
-(www.github.com/lartu/ldpl-docs) in this folder (so that every file
-in that repository is in this very folder) and then run:
+(git clone https://www.github.com/lartu/ldpl-docs) in this folder (so that
+every file in that repository is in this very folder) and then run:
 
   $ php compileman.php > ldpl.1
 

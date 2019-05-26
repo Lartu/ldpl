@@ -116,24 +116,22 @@ File extensions are important: they tell editors how to recognize your source co
 
 .SH USING THE LDPL COMPILER
 
+To use LDPL, you should first download or compile the LDPL compiler.
+
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to 'c++', found on your 'PATH'. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
 
--- Note:
 .br
-Compilation under Windows has been tested with MinGW as installed on the linked guide. MinGW-w64 seems to have some problems compiling LDPL.
+[*] If you want to download a compiled binary: download the latest stable release available. You should then move the binary to a folder on your PATH.
+.br
+[*] If you want to build LDPL yourself: first, clone this repository. Then 'make' and 'make install' LDPL in the 'src' folder. This will install LDPL and the LDPL documentation ('man ldpl') on your system. LDPL requires only C++11 to compile.
 
-Compilation under Linux and Mac OS X has been tested with the GNU C++ Compiler, G++.
+-- Warning:
+.br
+Note for Windows users: compilation under Windows has been tested with MinGW as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL. Also, it is advised to configure git 'autoclrf' to use Unix-style end-of-line: 'git config core.autocrlf input'. LDPL relies on an AWK script which will not work properly with DOS-style newlines (CLRF).
 .br
 --
 
-In order to use the LDPL Compiler, you must first install it. There are two ways of doing this:
-
-.br
-[*] If you want to download a compiled binary: just go to the Releases part of the LDPL repository and download the newest one available.
-.br
-[*] If you want to build LDPL yourself: first, clone the LDPL repository. Then 'make' LDPL in the 'src' folder. LDPL requires only C++11 to compile.
-
-When you are done installing LDPL, go write some LDPL source code, say 'source.lsc'. Then compile the source code using 'ldpl source.lsc'. The compiled, executable binary file will be saved as 'ldpl.out'. Done! For more info on the compiler run 'ldpl -h'. Example code can be found on the LDPL website.
+When you are done installing LDPL, write some LDPL source code, say 'source.ldpl'. Then compile the source code using 'ldpl source.ldpl'. The compiled, executable binary file will be saved as 'ldpl-bin'. Done! For more info on the compiler run 'ldpl -h'. Example code can be found on the LDPL website.
 
 
 
@@ -350,7 +348,7 @@ Available replacement values are:
 
 .SH USAGE OF VECTORS
 
-Vectors in LDPL aren't more than a collection of variables. When you declare a vector, you declare a structure that lets you store something of its type on any sub-index of the variable. For example, say you declare the vector 'myVector':
+A vector is a table of values, called elements. The elements of a vector are distinguished by their indices. Indices may be either NUMBER or TEXT literals. Vectors in LDPL are variables that hold a collection of values. When you declare a vector, you declare a structure that lets you store values of its type on any sub-index of the variable. For example, say you declare the vector 'myVector':
 
 1 | DATA:
 .br
@@ -358,6 +356,29 @@ Vectors in LDPL aren't more than a collection of variables. When you declare a v
 .br
 
 Then you can use 'myVector' as a multivariable with various indexes where you can store NUMBERs.
+
+LDPL provides one-dimensional vectors for storing groups of related strings or numbers.
+
+In most other languages, you have to declare an array (other languages' equivalents of LDPL vectors) and specify how many elements or components it contains. In such languages, the declaration causes a contiguous block of memory to be allocated for that many elements. An index in the array usually must be a positive integer; for example, the index zero specifies the first element in the array, which is actually stored at the beginning of the block of memory. Index one specifies the second element, which is stored in memory right after the first element, and so on. It is impossible to add more elements to the array, because it has room for only as many elements as you declared (some languages allow arbitrary starting and ending indices, e.g., '15 .. 27', but the size of the array is still fixed when the array is declared).
+
+LDPL vectors different: they are associative. This means that each vector is a collection of pairs: an index, and its corresponding vector element value:
+
+.br
+| Index | Value |
+.br
+| :---: | :---: |
+.br
+| 4 | 30 |
+.br
+| 2 | 10 |
+.br
+| "Hi there!" | -56.3 |
+.br
+| "99ldplrocks89" | 0 |
+
+We have shown the pairs in jumbled order because their order is irrelevant. One advantage of associative vectors is that new pairs can be added at any time. Vectors can be sparse: it can have missing indices (say for example you have indices 1 and 5, but don't have indices 2, 3 and 4). Another consequence of associative vectors is that the indices don't have to be positive integers. Any number, or even a string, can be an index.
+
+Values in vectors can be stored and accessed just like any other variable (see the STORE - IN statement for further details). Here we declare a NUMBER vector and store the values '5' and '-10.2' in the indices '1' and '5', respectively.
 
 1 | DATA:
 .br
@@ -370,7 +391,7 @@ Then you can use 'myVector' as a multivariable with various indexes where you ca
 5 |   STORE -10.2 IN myVector:5 #Stores -10.2 in the subindex 5 of myVector
 .br
 
-Vector sub-indexes can't just be constant NUMBERs, though. They can also be NUMBER variables, TEXT and TEXT variables, or even sub-indexes of other arrays. For example:
+As stated before, vector sub-indexes don't always have to be constant NUMBERs. They can also be NUMBER variables, TEXT and TEXT variables, or even sub-indexes of other arrays. For example:
 
 1 | DATA:
 .br
@@ -395,12 +416,33 @@ Vector sub-indexes can't just be constant NUMBERs, though. They can also be NUMB
 11|   #Stores 3 in the position of index value of myVar of myOtherVector
 .br
 
-Please note that as a VECTOR is a collection of variables, a single index of a VECTOR is a variable in itself. This means that a VECTOR with a sub-index can be used in any position where you could use a variable of the same type of the vector. So, if you have something like this:
+In fact, when you use a NUMBER value as a subindex for a VECTOR, it is silently casted into a TEXT value. For example, 'myVector:1' will be interpreted (an thus, the same) as 'myVector:"1"'.
+
+Please note that as a VECTOR is variable that's a collection of values, a single index of a VECTOR is a variable in itself. This means that any subindex of a VECTOR can be used in any position where you could use a variable of the same type of the vector. So, if you have something like this:
 
 1 | STORE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 .br
 
-You could use a NUMBER VECTOR with a defined sub-index where it says NUMBER-VAR.
+You could use a NUMBER VECTOR with a defined sub-index where it says NUMBER-VAR, just like in the 'STORE - IN' examples in the code extracts above.
+
+When LDPL creates an array for you, e.g., with the SPLIT built-in statement, that vector's indices are consecutive integers starting at zero ('0', '1', '2', etc.).
+
+As you'll see in the Default Variable Values section, you can access undeclared indices of a vector just like if they were declared. See the following example:
+
+1 | DATA:
+.br
+2 |   myVector IS NUMBER VECTOR
+.br
+3 | PROCEDURE:
+.br
+4 |   DISPLAY myVector:99
+.br
+
+In the example above, '0' will be printed and no errors displayed during compilation, even though the index '99' of 'myVector' hasn't been explicitly declared. This is because when you try to access an element that hasn't been declared yet, LDPL declares it for you and initializes it to its type default value.
+
+It's important to note that this very feature is a double-edged weapon. While you can use it to access uninitialized vector positions, you cannot check if a value exists in a vector without initializing it if it wasn't there before. Statements like STORE INDEX COUNT OF and STORE INDICES OF are provided as means to overcome this situation.
+
+(Also, as some parts of LDPL vectors work just like arrays do in awk, some parragraphs of this section are heavily based on the ones found on http://kirste.userpage.fu-berlin.de/chemnet/use/info/gawk/gawk\\_12.html).
 
 
 
@@ -1051,7 +1093,7 @@ Area of Circle:
 
 Outputs:
 
-1 | Enter Radius: .5
+1 | Enter Radius: 0.5
 .br
 2 | Area is: 0.7853975
 .br
@@ -1258,6 +1300,270 @@ in 'myTextVariable'.
 
 
 
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH GET INDEX OF - FROM - IN
+
+The 'GET INDEX OF - FROM - IN' statement stores in a NUMBER variable the position of the first occurrence of a specified value in a string or TEXT variable. The first position of a string (the first letter) is considered to be the position number '0'.
+
+.B Syntax:
+
+1 | GET INDEX OF <TEXT or TEXT-VAR> FROM <TEXT or TEXT-VAR> IN <NUMBER-VAR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   position IS NUMBER
+.br
+3 | PROCEDURE:
+.br
+4 |   GET INDEX OF "is" FROM "LDPL is nice!" IN position
+.br
+5 |   DISPLAY position CRLF
+.br
+6 |   # Will display 5.
+.br
+
+
+
+
+
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH COUNT - FROM - IN
+
+The 'COUNT - FROM - IN' statement counts all the appearances of a string in another string and stores that value in a NUMBER variable.
+
+.B Syntax:
+
+1 | COUNT <TEXT or TEXT-VAR> FROM <TEXT or TEXT-VAR> IN <NUMBER-VAR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   count IS NUMBER
+.br
+3 | PROCEDURE:
+.br
+4 |   COUNT "the" FROM "the cat is called theodore" IN count
+.br
+5 |   DISPLAY count CRLF
+.br
+6 |   # Will display 2, as the can be found two times in that sentence.
+.br
+
+
+
+
+
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH SUBSTRING - FROM - LENGTH - IN
+
+The 'SUBSTRING - FROM - LENGTH - IN' statement extracts parts of a string, beginning at the character at the specified position and storing in the destination TEXT variable the specified number of characters.
+
+.B Syntax:
+
+1 | SUBSTRING <TEXT or TEXT-VAR> FROM <NUMBER or NUMBER-VAR> LENGTH <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT
+.br
+3 | PROCEDURE:
+.br
+4 |   SUBSTRING "Hello there!" FROM 1 LENGTH 4 IN foo
+.br
+5 |   # This will extract 4 characters from position 1
+.br
+6 |   DISPLAY foo CRLF
+.br
+7 |   # Will display "ello"
+.br
+
+
+
+
+
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH TRIM - IN
+
+The 'TRIM - IN' statement removes whitespace from both sides of a string and stores the resulting string in a TEXT variable.
+
+.B Syntax:
+
+1 | TRIM <TEXT or TEXT-VAR> IN <TEXT-VAR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT
+.br
+3 | PROCEDURE:
+.br
+4 |   TRIM "        hello there!            " IN foo
+.br
+5 |   DISPLAY foo CRLF
+.br
+6 |   # Will display "hello there!"
+.br
+
+
+
+
+
+.ce 1
+.SH -=-=-=-=- DOCS: VECTOR STATEMENTS -=-=-=-=-
+
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH CLEAR
+
+The 'CLEAR' statement empties a vector, thus deleting all its contents. The vector itself is not deleted though, and can still be used and filled with new elements after a 'CLEAR' statement has been executed.
+
+.B Syntax:
+
+1 | CLEAR <VECTOR>
+.br
+
+
+
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH COPY - TO
+
+The 'COPY - TO' statement copies all the elements of a vector with their respective indices to another vector of the same type. The original vector is untouched, but the destination vector is completely overwritten by the contents of the copied vector and any elements that existed in it prior to the copy are deleted. In other words, the destination vector is CLEARED before the copy.
+
+.B Syntax:
+
+1 | COPY <TEXT-VECTOR> TO <TEXT-VECTOR>
+.br
+2 | COPY <NUMBER-VECTOR> TO <NUMBER-VECTOR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT VECTOR
+.br
+3 |   bar IS TEXT VECTOR
+.br
+4 | PROCEDURE:
+.br
+5 |   STORE "Hello there!" IN foo:0
+.br
+6 |   STORE "How are you?" IN foo:7
+.br
+7 |   COPY foo TO bar
+.br
+8 |   DISPLAY bar:0 " " bar:7 CRLF
+.br
+9 |   # Will display "Hello there! How are you?"
+.br
+
+
+
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH STORE INDEX COUNT OF - IN
+
+The 'STORE INDEX COUNT OF - IN' statement stores the amount of elements (or, analogously, indices) stored in a vector into a numeric variable.
+
+.B Syntax:
+
+1 | STORE INDEX COUNT OF <VECTOR> IN <NUMBER-VAR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT VECTOR
+.br
+3 |   count IS NUMBER
+.br
+4 | PROCEDURE:
+.br
+5 |   STORE "Hello there!" IN foo:0
+.br
+6 |   STORE "How are you?" IN foo:7
+.br
+7 |   STORE INDEX COUNT OF foo IN count
+.br
+8 |   DISPLAY count CRLF
+.br
+9 |   # Will display 2
+.br
+
+
+
+
+
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
+.SH STORE INDICES OF - IN
+
+The 'STORE INDICES OF - IN' statement stores all the indices of a vector into another vector. Say you have a vector with indices '0', '"cat"' and '"dog"'. The elements these indices point to are not important. Using the 'STORE INDICES OF' statement, you can copy the indices of this vector to another vector as elements. Thus, the resulting vector will (for example) have the value '0' at index 0, the value '"cat"' at index 1 and the value '"dog"' at index 2 (the order is not relevant and no ordering criteria is provided). This statement is thus used to find all the indices of a particular vector.
+
+.B Syntax:
+
+1 | STORE INDICES OF <VECTOR> IN <TEXT-VECTOR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT VECTOR
+.br
+3 |   bar IS TEXT VECTOR
+.br
+4 | PROCEDURE:
+.br
+5 |   STORE "Hello there!" IN foo:0
+.br
+6 |   STORE "How are you?" IN foo:7
+.br
+7 |   STORE "I like cats" IN foo:"cat"
+.br
+8 |   STORE "I love dogs" IN foo:"dog"
+.br
+9 |   STORE "LDPL is nice" IN foo:3
+.br
+10|   STORE INDICES OF foo IN bar
+.br
+
+At the end of the execution of the previous excerpt of code, the TEXT vector 'bar' will contain the values '"0"', '"7"', '"cat"', '"dog"' and '"3"' in indices that are consecutive integers starting at zero, but in no particular order (meaning that '"0"' may come before '"7"' or after it, no ordering criteria is provided by this standard).
+
+
+
 .ce 1
 .SH -=-=-=-=- DOCS: I/O STATEMENTS -=-=-=-=-
 
@@ -1299,7 +1605,7 @@ The 'EXECUTE' statement executes the specified system command.
 1 | EXECUTE <TEXT or TEXT-VAR>
 .br
 
-.B Example:
+.B Example 1:
 
 1 | # Prepare the command to execute
 .br
@@ -1310,7 +1616,12 @@ The 'EXECUTE' statement executes the specified system command.
 4 | EXECUTE myTextVar
 .br
 
+.B Example 2:
 
+1 | # Execute "dir" to list the files in the current directory under Windows
+.br
+2 | EXECUTE "dir"
+.br
 
 
 
