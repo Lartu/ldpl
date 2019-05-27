@@ -1,5 +1,5 @@
 # The LDPL Programming Language
-![Version](https://img.shields.io/badge/current_release-3.0.5_'Creative Carnotaurus'-blue.svg)
+![Version](https://img.shields.io/badge/current_release-3.0.5_'Creative_Carnotaurus'-blue.svg)
 ![Version](https://img.shields.io/badge/development_version-3.0.6-red.svg)
 [![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
 
@@ -26,7 +26,9 @@ This greets the user, ask them for their name and then prints *你好, &lt;name&
 
 ## Installing LDPL
 
-You should first download or compile the LDPL compiler:
+You should first download or compile the LDPL compiler. The current release is LDPL 3.0.5 **Creative Carnotaurus**.
+
+![Current Release Logo](https://camo.githubusercontent.com/2c18c279a920081dcbc27286d04936ad99573eac/68747470733a2f2f7777772e6c64706c2d6c616e672e6f72672f6c6f676f732f6c64706c2d722d332e302e352d666c61742e706e67)
 
  - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH.
 
