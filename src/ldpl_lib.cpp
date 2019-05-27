@@ -59,6 +59,11 @@ void get_indices(ldpl_vector<string> & dest, ldpl_vector<T> & source){
     }
 }
 
+template<typename T>
+bool operator == (const ldpl_vector<T> &v1, const ldpl_vector<T> &v2){
+    return (v1.inner_map == v2.inner_map);
+}
+
 ldpl_number input_number(){
     string s = \"\";
     while(true){

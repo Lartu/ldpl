@@ -1220,11 +1220,16 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             // which is always the case in IF and WHILE statements
             string first_value = tokens[j];
             string second_value = tokens.rbegin()[1];
-            bool text_values;
+            bool text_values = false;
+            bool vector_values = false;
             if(is_num_expr(first_value, state) && is_num_expr(second_value, state))
                 text_values = false;
             else if(is_txt_expr(first_value, state) && is_txt_expr(second_value, state))
                 text_values = true;
+            else if(is_num_vector(first_value, state) && is_num_vector(second_value, state))
+                vector_values = true;
+            else if(is_txt_vector(first_value, state) && is_txt_vector(second_value, state))
+                vector_values = true;
             else
                 return false;
 
@@ -1236,6 +1241,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             }
             if(rel_op != "EQUAL TO " && rel_op != "NOT EQUAL TO "){
                 if(text_values) return false;
+                if(vector_values) return false;
                 if(rel_op != "GREATER THAN " && rel_op != "GREATER THAN OR EQUAL TO "
                 && rel_op != "LESS THAN " && rel_op != "LESS THAN OR EQUAL TO ")
                     return false;
@@ -1346,7 +1352,7 @@ bool is_txt_var(string & token, compiler_state & state)
     //Check if txt_vector:index
     string vector, index;
     split_vector(token, vector, index);
-    return is_txt_vector(vector, state) && is_expression(index, state);
+    return is_txt_vector(vector, state) && index != "" && is_expression(index, state);
 }
 
 bool is_variable(string & token, compiler_state & state)
@@ -1380,11 +1386,14 @@ void split_vector(string & token, string & vector, string & index)
     if (pos == string::npos) {
         vector = token;
         index = "";
-        return;
+        //Bear in mind that if we are storing a value in vector:"",
+        //this means that index will contain "\"\"", and not "".
     } else if (pos == token.size() - 1)
         error("Incomplete VECTOR access found (can't end on ':'!).");
-    vector = token.substr(0, pos);
-    index = token.substr(pos+1);
+    else{
+        vector = token.substr(0, pos);
+        index = token.substr(pos+1);
+    }
 }
 
 /*La diferencia entre is_variable y variable_exists es que is_variable
@@ -1455,12 +1464,22 @@ string get_c_condition(compiler_state & state, vector<string> tokens) {
     for(unsigned int i = 2; i < tokens.size() - 1; ++i){
         rel_op += tokens[i] + " ";
     }
+    // Text expressions
     if(is_txt_expr(tokens[0], state)) {
         if(rel_op == "EQUAL TO ")
             return first_value + " == " + second_value;
         else
             return first_value + " != " + second_value;
-    } else {
+    }
+    // Vectors
+    else if(is_vector(tokens[0], state)){
+        if(rel_op == "EQUAL TO ")
+            return get_c_variable(state, first_value) + " == " + get_c_variable(state, second_value);
+        else
+            return "!(" + get_c_variable(state, first_value) + " == " + get_c_variable(state, second_value) + ")";
+    }
+    // Numeric expressions
+    else {
         if(rel_op == "EQUAL TO ")
             return "num_equal(" + first_value + ", " + second_value + ")";
         else if(rel_op == "NOT EQUAL TO ")
