@@ -4,8 +4,8 @@
 # | LDPL Version Details |
 # +----------------------+
 
-VERSION = '"3.0.5"'  #LDPL Version
-VERSIONNAME = '"Creative Carnotaurus"' #LDPL Version Name
+VERSION = '"3.0.6-dev"'  #LDPL Version
+VERSIONNAME = '"Diligent Dreadnoughtus"' #LDPL Version Name
 
 # +-----------------+
 # | The other stuff |
