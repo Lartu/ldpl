@@ -33,6 +33,8 @@ You should first download or compile the LDPL compiler. The current release is L
 
  - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH.
 
+![Current Development Version Logo](https://github.com/Lartu/ldpl/blob/master/images/release-logos/ldpl-r-3.0.6-dev.png)
+
  - **If you want to build LDPL yourself:** first, clone this repository.
 Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system.
 LDPL requires only C++11 to compile.
