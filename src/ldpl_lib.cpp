@@ -10,11 +10,13 @@
 #include <chrono>
 #include <thread>
 #include <time.h>
+#include <vector>
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
 #define CRLF \"\\n\"
 #define ldpl_vector ldpl_map 
+#define ldpl_list vector
 
 using namespace std;
 
@@ -143,6 +145,30 @@ ldpl_vector<string> utf8_split(const string & s, const string & sep){
         else v[z] += cp;
         i+=cplen;
     }
+    return v;
+}
+
+ldpl_list<string> utf8_split_list(const string & s, const string & sep){
+    ldpl_list<string> v;
+    unsigned int z = 0;
+    string current_token = \"\";
+    for(unsigned int i = 0; i < s.length();){
+        int cplen = 1;
+        int c = s[i];
+        if      (c>=0 && c<=127)     cplen=1;
+        else if ((c & 0xE0) == 0xC0) cplen=2;
+        else if ((c & 0xF0) == 0xE0) cplen=3;
+        else if ((c & 0xF8) == 0xF0) cplen=4;
+        string cp = s.substr(i, cplen); //Current char
+        if(sep == cp){
+            if(current_token.size() > 0) v.push_back(current_token);
+            current_token = \"\";
+        }else{
+            current_token += cp;
+        }
+        i+=cplen;
+    }
+    if(current_token.size() > 0) v.push_back(current_token);
     return v;
 }
 

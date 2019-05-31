@@ -33,7 +33,7 @@ struct compiler_state{
     //variables
     map<string, unsigned int> variables;
     map<string, bool> externals; //variables defined in c++ extensions
-    //1 number, 2 text, 3 number vector, 4 text vector
+    //1 number, 2 text, 3 number map/vector, 4 text map/vector, 5 number list, 6 text list
     vector<string> subprocedures;
     void add_var_code(string code){
         this->variable_code.push_back(code);
@@ -107,6 +107,8 @@ bool is_txt_expr(string & token, compiler_state & state);
 bool is_expression(string & token, compiler_state & state);
 bool is_num_vector(string & token, compiler_state & state);
 bool is_txt_vector(string & token, compiler_state & state);
+bool is_num_list(string & token, compiler_state & state);
+bool is_txt_list(string & token, compiler_state & state);
 bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
