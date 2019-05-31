@@ -1,6 +1,7 @@
 # The LDPL Programming Language
+
 ![Version](https://img.shields.io/badge/current_release-3.0.5_'Creative_Carnotaurus'-blue.svg)
-![Version](https://img.shields.io/badge/development_version-3.0.6-red.svg)
+![Version](https://img.shields.io/badge/development_version-3.0.6_'Diligent_Dreadnoughtus'-red.svg)
 [![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
 
 ![LDPL](https://www.ldpl-lang.org/logos/ldpl-logo.png)
@@ -15,14 +16,28 @@ Check https://www.ldpl-lang.org/ for more information on the language, tutorials
 ```coffeescript
 data: 
   name is text     # Your name goes here! 
+  age is number    # Your age goes here!
 
 procedure: 
+  # Simple Hello World
   display "Hello World" crlf "What's your name? " 
   accept name 
   display "你好, " name "! Welcome to LDPL!" crlf
+  if name is equal to "ldplsaur" then
+    display "Woah, great name!" crlf
+  end if
+  
+  # Ask for age
+  display "How old are you? "
+  accept age
+  if age is greater than or equal to 2 then
+    display "You are older than LDPL!" crlf
+  else
+    display "You are so young!" crlf
+  end if
 ```
 
-This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples.
+This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples (that may or may not be a little outdated and not take advantage of the latest functions of the language).
 
 ## Installing LDPL
 
@@ -31,6 +46,8 @@ You should first download or compile the LDPL compiler. The current release is L
 ![Current Release Logo](https://camo.githubusercontent.com/2c18c279a920081dcbc27286d04936ad99573eac/68747470733a2f2f7777772e6c64706c2d6c616e672e6f72672f6c6f676f732f6c64706c2d722d332e302e352d666c61742e706e67)
 
  - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH.
+
+![Current Development Version Logo](https://github.com/Lartu/ldpl/blob/master/images/release-logos/ldpl-r-3.0.6-dev.png)
 
  - **If you want to build LDPL yourself:** first, clone this repository.
 Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system.
