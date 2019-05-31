@@ -41,7 +41,7 @@ This greets the user, ask them for their name and then prints *你好, &lt;name&
 
 ## Installing LDPL
 
-You should first download or compile the LDPL compiler. The current release is LDPL 3.0.5 **Creative Carnotaurus**.
+You can get yourself a precompiled LDPL binary or compile LDPL from source. Check the following table if you are not sure of what to do.
 
 | **If you want to download a compiled binary** | **If you want to build LDPL yourself** |
 | ---                                           | --- |
