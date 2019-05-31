@@ -1501,7 +1501,7 @@ void split_vector(string & token, string & vector, string & index)
         //Bear in mind that if we are storing a value in vector:"",
         //this means that index will contain "\"\"", and not "".
     } else if (pos == token.size() - 1)
-        error("Incomplete MAP or ARRAY access found (can't end on ':'!).");
+        error("Incomplete MAP or LIST access found (can't end on ':'!).");
     else{
         vector = token.substr(0, pos);
         index = token.substr(pos+1);
