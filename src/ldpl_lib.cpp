@@ -14,6 +14,7 @@
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
 #define CRLF \"\\n\"
+#define ldpl_vector ldpl_map 
 
 using namespace std;
 
@@ -29,7 +30,7 @@ string VAR_ERRORTEXT = \"\";
 string to_ldpl_string(double x);
 
 template<typename T>
-struct ldpl_vector {
+struct ldpl_map {
     unordered_map<string, T> inner_map;
 
     T& operator [] (const string& i) {

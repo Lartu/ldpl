@@ -404,7 +404,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_var_code("string " + fix_identifier(tokens[0], true) + " = \"\";");
         return;
     }
-    if(line_like("$name IS NUMBER VECTOR", tokens, state))
+    if(line_like("$name IS NUMBER VECTOR", tokens, state) || line_like("$name IS NUMBER MAP", tokens, state))
     {
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -417,7 +417,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_var_code("ldpl_vector<ldpl_number> " + fix_identifier(tokens[0], true) + ";");
         return;
     }
-    if(line_like("$name IS TEXT VECTOR", tokens, state))
+    if(line_like("$name IS TEXT VECTOR", tokens, state) || line_like("$name IS TEXT MAP", tokens, state))
     {
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -454,7 +454,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.externals[tokens[0]] = true;
         return;
     }
-    if(line_like("$name IS EXTERNAL NUMBER VECTOR", tokens, state))
+    if(line_like("$name IS EXTERNAL NUMBER VECTOR", tokens, state) || line_like("$name IS EXTERNAL TEXT MAP", tokens, state))
     {
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -467,7 +467,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.externals[tokens[0]] = true;
         return;
     }
-    if(line_like("$name IS EXTERNAL TEXT VECTOR", tokens, state))
+    if(line_like("$name IS EXTERNAL TEXT VECTOR", tokens, state) || line_like("$name IS EXTERNAL TEXT MAP", tokens, state))
     {
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1008,7 +1008,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     if(line_like("CLEAR $vector", tokens, state))
     {
         if(state.section_state != 2)
-            error("CLEAR VECTOR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("CLEAR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code(get_c_variable(state, tokens[1]) + ".clear();");
         return;
@@ -1032,7 +1032,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     if(line_like("STORE INDEX COUNT OF $vector IN $num-var", tokens, state))
     {
         if(state.section_state != 2)
-            error("CLEAR VECTOR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("STORE INDEX COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".count();");
         return;
@@ -1127,7 +1127,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_variable(tokens[j], state)) return false;
         }
-        else if(model_tokens[i] == "$vector"){ //$vector is TEXT VECTOR, NUMBER VECTOR
+        else if(model_tokens[i] == "$vector"){ //$vector is TEXT MAP, NUMBER MAP
             if(!is_num_vector(tokens[j], state) && !is_txt_vector(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$num-vec") //$num-vec is NUMBER vector
@@ -1389,7 +1389,7 @@ void split_vector(string & token, string & vector, string & index)
         //Bear in mind that if we are storing a value in vector:"",
         //this means that index will contain "\"\"", and not "".
     } else if (pos == token.size() - 1)
-        error("Incomplete VECTOR access found (can't end on ':'!).");
+        error("Incomplete MAP or ARRAY access found (can't end on ':'!).");
     else{
         vector = token.substr(0, pos);
         index = token.substr(pos+1);
