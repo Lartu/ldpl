@@ -16,14 +16,28 @@ Check https://www.ldpl-lang.org/ for more information on the language, tutorials
 ```coffeescript
 data: 
   name is text     # Your name goes here! 
+  age is number    # Your age goes here!
 
 procedure: 
+  # Simple Hello World
   display "Hello World" crlf "What's your name? " 
   accept name 
   display "你好, " name "! Welcome to LDPL!" crlf
+  if name is equal to "ldplsaur" then
+    display "Woah, great name!" crlf
+  end if
+  
+  # Ask for age
+  display "How old are you? "
+  accept age
+  if age is greater than or equal to 2 then
+    display "You are older than LDPL!" crlf
+  else
+    display "You are so young!" crlf
+  end if
 ```
 
-This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples.
+This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples (that may or may not be a little outdated and not take advantage of the latest functions of the language).
 
 ## Installing LDPL
 
