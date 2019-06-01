@@ -150,6 +150,7 @@ int main(int argc, const char* argv[])
             state.current_file = "standard input";
             accept_and_compile(state);
         }
+        if(state.section_state < 2) error("PROCEDURE section not found" + (filename == "-c" ? "." : " in file '" + filename + "'."));
     }
     state.add_code("return 0; \n}");
 
@@ -503,6 +504,32 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.add_var_code("extern ldpl_vector<string> " + fix_external_identifier(tokens[0], true) + ";");
+        state.externals[tokens[0]] = true;
+        return;
+    }
+    if(line_like("$name IS EXTERNAL NUMBER LIST", tokens, state))
+    {
+        if(state.section_state != 1)
+            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!variable_exists(tokens[0], state)){
+            state.variables[tokens[0]] = 3;
+        }
+        else
+            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_var_code("extern ldpl_list<ldpl_number> " + fix_external_identifier(tokens[0], true) + ";");
+        state.externals[tokens[0]] = true;
+        return;
+    }
+    if(line_like("$name IS EXTERNAL TEXT LIST", tokens, state))
+    {
+        if(state.section_state != 1)
+            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!variable_exists(tokens[0], state)){
+            state.variables[tokens[0]] = 4;
+        }
+        else
+            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_var_code("extern ldpl_list<string> " + fix_external_identifier(tokens[0], true) + ";");
         state.externals[tokens[0]] = true;
         return;
     }
