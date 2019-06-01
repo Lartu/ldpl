@@ -78,7 +78,6 @@ To use the compiler, you must have a C++ compiler already installed on your syst
 Once the compiler is set up, go write some LDPL source code, say `source.lsc`.
 Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `source-bin`.
 Done! For more info on the compiler run `ldpl -h`.
-Example code can be found on [the LDPL website](https://www.ldpl-lang.org).
 
 ## Compiler options
 
@@ -103,7 +102,7 @@ You can add statements to the language (that's in fact really easy!), fix bugs, 
 
 ![Contributing Dragon](https://www.ldpl-lang.org/tutorial-ldpl.png)
 
-Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md).
+Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md). Tl;dr: be nice.
 
 If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel #ldpl. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
