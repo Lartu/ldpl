@@ -37,7 +37,7 @@ procedure:
   end if
 ```
 
-This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples (that may or may not be a little outdated and not take advantage of the latest functions of the language).
+This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
 
 ## Installing LDPL
 
