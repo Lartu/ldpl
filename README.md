@@ -113,4 +113,4 @@ You are welcome to submit an issue to this repository, check the [LDPL website](
 
 ## License
 
-LDPL is distributed under the GNU General Public License 3.0. All LDPL Dinosaur Logos are released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+LDPL is distributed under the GNU General Public License 3.0. All LDPL Dinosaur logos are released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
