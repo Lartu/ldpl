@@ -3,6 +3,12 @@
 # https://www.ldpl-lang.org/
 # This example can also be used to prove the Turing-Completeness of LDPL!
 # Usage: ldpl brainfuck.ldpl <brainfuck source filename>
+# Created for LDPL 1.0
+#
+# Important:
+# This example is outdated as it loads files without using the file statements
+# (load file, etc.). While it works, please check the ldpl documentation for
+# information on how to use these functions.
 
 DATA:
 source-file is text             # Brainfuck source code

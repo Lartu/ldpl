@@ -1,6 +1,7 @@
 # Square Root Calculator
 # by Martin del Rio
 # https://www.ldpl-lang.org/ 
+# Created for LDPL 1.0
 
 DATA:
 # Square-root sub-procedure

@@ -1,6 +1,7 @@
 # Prints the sum of all the multiples of 3 or 5 below 1000 
 # by Martin del Rio
 # https://www.ldpl-lang.org/
+# Created for LDPL 1.0
 
 data:
     result is number

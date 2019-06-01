@@ -1,0 +1,116 @@
+# +--------------------------+
+# | Bellman-Ford's Algorithm |
+# | written in LDPL          |
+# | by Martín del Río        |
+# +--------------------------+---+
+# | Complexity: O(edges * nodes) |
+# +------------------------------+------------------+
+# | https://www.ldpl-lang.org/                      |
+# | Created for LDPL 3.0.6 'Diligent Dreadnoughtus' |
+# +-------------------------------------------------+
+
+DATA:
+infinity is number          # Infinity value (not really infinity)
+nodeCount is number         # Number of nodes in the graph
+edgeCount is number         # Number of edges in the graph
+edgesStart is number list   # List of the starting nodes of each edge in the graph
+edgesEnd   is number list   # List of the destination nodes of each edge in the graph
+edgesWeight is number list  # List of the weight of each edge in the graph
+startingNode is number      # The starting node for our algorithm
+distances is number list    # List that holds the minimum distance from i to the starting node
+i is number                 # Iteration variable
+j is number                 # Iteration variable
+newDistance is number       # Math auxiliary variable
+
+PROCEDURE:
+# Set the value of "infinity" to something big
+store 99999 in infinity
+
+# Set number of nodes in graph
+store 6 in nodeCount
+
+# Initialize each index of the distances list to infinity
+store 0 in i
+while i is less than nodeCount do
+    push 99999 to distances
+    incr i
+repeat
+
+# Set distance from starting node to itself to 0
+store 0 in startingNode
+store 0 in distances:startingNode
+
+# Set graph edges
+push 0 to edgesStart    # l(0 -> 1) = 4
+push 1 to edgesEnd
+push 4 to edgesWeight
+
+push 0 to edgesStart    # l(0 -> 2) = 7
+push 2 to edgesEnd
+push 7 to edgesWeight
+
+push 0 to edgesStart    # l(0 -> 5) = 3
+push 5 to edgesEnd
+push 3 to edgesWeight
+
+push 1 to edgesStart    # l(1 -> 2) = 3
+push 2 to edgesEnd
+push 3 to edgesWeight
+
+push 1 to edgesStart    # l(1 -> 4) = 1
+push 4 to edgesEnd
+push 1 to edgesWeight
+
+push 1 to edgesStart    # l(1 -> 5) = -2
+push 5 to edgesEnd
+push -2 to edgesWeight
+
+push 2 to edgesStart    # l(2 -> 3) = 1
+push 3 to edgesEnd
+push 1 to edgesWeight
+
+push 2 to edgesStart    # l(2 -> 4) = 1
+push 4 to edgesEnd
+push 1 to edgesWeight
+
+push 4 to edgesStart    # l(4 -> 3) = 4
+push 3 to edgesEnd
+push 4 to edgesWeight
+
+push 5 to edgesStart    # l(5 -> 4) = 3
+push 4 to edgesEnd
+push 3 to edgesWeight
+
+# Store the number of edges in our graph
+store length of edgesWeight in edgeCount
+
+# Once per each node in the graph
+store 0 in i
+while i is less than nodeCount do
+    # For every edge in the graph
+    store 0 in j
+    while j is less than edgeCount do
+        # If the distance from the starting node to the starting node of
+        # this edge plus the weight of this edge...
+        in newDistance solve distances:edgesStart:j + edgesWeight:j
+        # ...is less that the distance of the ending node of this edge...
+        if newDistance is less than distances:edgesEnd:j then
+            #...then this path is shorter, so we'll take it.
+            store newDistance in distances:edgesEnd:j
+        end if
+        incr j
+    repeat
+    incr i
+repeat
+
+# Display list resulting distances
+display "["
+store 0 in i
+while i is less than nodeCount do
+    display distances:i
+    incr i
+    if i is less than nodeCount then
+        display ", "
+    end if
+repeat
+display "]" crlf

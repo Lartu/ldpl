@@ -1,6 +1,9 @@
 # LDPL Quine
 # by Ambulancja
 # https://github.com/ambulancja
+#
+# https://www.ldpl-lang.org/ 
+# Created for LDPL 1.0
 
 DATA:
   A IS NUMBER VECTOR

@@ -1,6 +1,7 @@
 # LDPL 99 Bottles of Beer
 # by Martin del Rio
 # https://www.ldpl-lang.org/
+# Created for LDPL 1.0
 
 DATA:
 bottles-in-the-wall is number
