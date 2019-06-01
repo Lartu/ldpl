@@ -41,17 +41,13 @@ This greets the user, ask them for their name and then prints *你好, &lt;name&
 
 ## Installing LDPL
 
-You should first download or compile the LDPL compiler. The current release is LDPL 3.0.5 **Creative Carnotaurus**.
+You can get yourself a precompiled LDPL binary or compile LDPL from source. Check the following table if you are not sure of what to do.
 
-![Current Release Logo](https://camo.githubusercontent.com/2c18c279a920081dcbc27286d04936ad99573eac/68747470733a2f2f7777772e6c64706c2d6c616e672e6f72672f6c6f676f732f6c64706c2d722d332e302e352d666c61742e706e67)
-
- - **If you want to download a compiled binary:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH.
-
-![Current Development Version Logo](https://github.com/Lartu/ldpl/blob/master/images/release-logos/ldpl-r-3.0.6-dev.png)
-
- - **If you want to build LDPL yourself:** first, clone this repository.
-Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system.
-LDPL requires only C++11 to compile.
+| **If you want to download a compiled binary** | **If you want to build LDPL yourself** |
+| ---                                           | --- |
+| Compiled binaries contain the latest stable release. Might not be up to date with the newest, bleeding edge features, but will work fine on most systems and are already compiled for you. | Building LDPL yourself gives you access to the latest features of the language. Development LDPL code tends to be stable, compile and work fine, but hidden bugs may still lurk in there! |
+| ![Current Release Logo](https://camo.githubusercontent.com/2c18c279a920081dcbc27286d04936ad99573eac/68747470733a2f2f7777772e6c64706c2d6c616e672e6f72672f6c6f676f732f6c64706c2d722d332e302e352d666c61742e706e67) | ![Current Development Version Logo](https://github.com/Lartu/ldpl/blob/master/images/release-logos/ldpl-r-3.0.6-dev.png) |
+| **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
 Also, it is advised to configure git autoclrf to use Unix-style end-of-line: `git config core.autocrlf input`. LDPL relies on an AWK script which will not work properly with DOS-style newlines (CLRF).
