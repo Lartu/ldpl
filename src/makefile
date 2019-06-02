@@ -44,9 +44,13 @@ install: ldpl ../man/ldpl.1
 	install -m 775 ldpl $(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/man/man1/
 	install ../man/ldpl.1 $(DESTDIR)$(PREFIX)/share/man/man1/
+ifneq ($(shell uname -s),Darwin)
 	mandb
+endif
 
 uninstall:
 	rm $(DESTDIR)$(PREFIX)/bin/ldpl
-	rm $(DESTDIR)$(PREFIX)/share/man/man1/ldpl.1 
+	rm $(DESTDIR)$(PREFIX)/share/man/man1/ldpl.1
+ifneq ($(shell uname -s),Darwin)
 	mandb
+endif
