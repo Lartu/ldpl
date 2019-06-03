@@ -12,10 +12,18 @@
 #include <time.h>
 #include <vector>
 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+
+#define TCP_ERROR(text, code, ret) { VAR_ERRORTEXT = text; VAR_ERRORCODE = code; return ret; }
+#define RECV_BUF_SIZE 1024
+
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
 #define CRLF \"\\n\"
-#define ldpl_vector ldpl_map 
+#define ldpl_vector ldpl_map
 #define ldpl_list vector
 
 using namespace std;
@@ -27,6 +35,10 @@ string file_loading_line;
 string joinvar; //Generic temporary use text variable (used by join but can be used by any other statement as well)
 ldpl_number VAR_ERRORCODE = 0;
 string VAR_ERRORTEXT = \"\";
+int server_fd, last_fd;
+char input_buffer[RECV_BUF_SIZE];
+fd_set masterfds, tempfds;
+uint16_t maxfd;
 
 //Forward declarations
 string to_ldpl_string(double x);
@@ -396,4 +408,137 @@ std::string trimCopy(std::string line){
     line = line.substr(first, last-first);
 
     return line;
+}
+
+struct sockaddr_in to_addr(string hostname, ldpl_number port)
+{
+    struct sockaddr_in addr;
+    bzero(&addr, sizeof(addr));
+    struct hostent *h = gethostbyname(hostname.c_str());
+    if(h == NULL){
+        TCP_ERROR(\"bad hostname: \" + hostname, 1, addr);
+    }else if(h->h_length <= 0){
+        TCP_ERROR(\"gethostbyname() failed\", 2, addr);
+    }
+    char *ip = inet_ntoa(*(struct in_addr*)(h->h_addr_list[0]));
+    addr.sin_family      = AF_INET;
+    addr.sin_addr.s_addr = inet_addr(ip);
+    addr.sin_port        = htons(port);
+    return addr;
+}
+
+//Opens tcp connection, sends body, reads responses, then closes connection.
+string tcp_send(string hostname, ldpl_number port, string body)
+{
+    int sock;
+    if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+        TCP_ERROR(\"socket() failed\", 3, \"\");
+
+    struct sockaddr_in addr = to_addr(hostname, port);
+
+    if(connect(sock,(struct sockaddr*)&addr,sizeof(addr)) < 0)
+        TCP_ERROR(\"connect() failed host:\"+hostname+\" port:\"+to_string(port), 4, \"\");
+
+    if(sock < 0) return \"\";
+
+    int sent = 0, total = 0;
+    while(total < body.size()){
+        if((sent = send(sock, body.c_str(), body.size(), MSG_DONTWAIT)) < 0)
+            TCP_ERROR(\"send() call failed\", 13, \"\");
+        total += sent;
+    }
+
+    int size = 1024, n = 0, bytes = 0;
+    char buf[size];
+    string str;
+    while((n = recv(sock, buf, size, 0)) > 0){
+        buf[n] = 0;
+        str += buf;
+        bytes += n;
+    }
+    close(sock);
+    return str;
+}
+
+//Starts TCP listening and returns server fd.
+int tcp_listen(string hostname, ldpl_number port)
+{
+    int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if(sock < 0) TCP_ERROR(\"socket() failed\", 6, -1);
+
+    int opt_value = 1;
+    if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *)&opt_value, sizeof(int)) < 0)
+        TCP_ERROR(\"setsockopt failed\", 7, -1);
+
+    struct sockaddr_in my_addr = to_addr(hostname, port);
+    if(::bind(sock, (struct sockaddr*)&my_addr, sizeof(my_addr)) < 0)
+        TCP_ERROR(\"bind() failed host:\"+hostname+\" port:\"+to_string(port), 10, -1);
+
+    FD_SET(sock, &masterfds);
+	maxfd = sock;
+
+    if(listen(sock, SOMAXCONN) < 0)
+        TCP_ERROR(\"listen() failed host:\"+hostname+\" port:\"+to_string(port), 11, -1);
+
+    return sock;
+}
+
+//Accepts new TCP client and returns client fd.
+int tcp_accept()
+{
+    int client_fd = accept(server_fd, 0, 0);
+    if(client_fd < 0) TCP_ERROR(\"accept() failed\", 12, -1);
+
+    FD_SET(client_fd, &masterfds);
+    if(client_fd > maxfd) maxfd = client_fd;
+
+    return client_fd;
+}
+
+//Reads from fd and adds to input_buffer.
+void tcp_read(int fd)
+{
+    if(recv(fd, input_buffer, RECV_BUF_SIZE+1, 0) <= 0){
+        close(fd);
+        FD_CLR(fd, &masterfds);
+    }
+}
+
+void tcp_server(string host, ldpl_number port, string & var, void (*subpr)())
+{
+    FD_ZERO(&masterfds);
+    FD_ZERO(&tempfds);
+    bzero(&input_buffer, RECV_BUF_SIZE);
+    server_fd = tcp_listen(host, port);
+    while(1){
+        tempfds = masterfds;
+        int sel = select(maxfd + 1, &tempfds, NULL, NULL, NULL);
+        if(sel<=0){ close(server_fd); break; }
+        for(int i = 0; i <= maxfd; ++i){
+            if(!FD_ISSET(i, &tempfds)) continue;
+            if(server_fd == i) {
+                tcp_accept();
+            }else{
+                last_fd = i;
+                tcp_read(i);
+                var.replace(var.begin(), var.end(), input_buffer);
+                subpr();
+                close(i); //close connection after replying
+                FD_CLR(i, &masterfds);
+                bzero(&input_buffer, RECV_BUF_SIZE);
+            }
+        }
+    }
+}
+
+//Replies to client. Must be called in LISTEN callback.
+int tcp_reply(int fd, string msg)
+{
+    int sent = 0, bytes = 0;
+    while(sent < msg.size()){
+        if((bytes = send(fd, msg.c_str(), msg.size(), MSG_DONTWAIT)) < 0)
+            TCP_ERROR(\"send() call failed\", 13, -1);
+        sent += bytes;
+    }
+    return sent;
 }

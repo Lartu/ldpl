@@ -1156,6 +1156,33 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+    if(line_like("SEND $str-expr TO $str-expr AT $num-expr IN $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("SEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code(get_c_variable(state, tokens[7]) + " = tcp_send(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ", " + get_c_expression(state, tokens[1]) + ");");
+        return;
+    }
+    if(line_like("LISTEN ON $str-expr AT $num-expr AND CALL $subprocedure WITH $str-var", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("LISTEN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("tcp_server(" + get_c_expression(state, tokens[2]) + ", " + get_c_expression(state, tokens[4]) + ", " + get_c_variable(state, tokens[9]) + ", " + fix_identifier(tokens[7], false) + ");");
+        return;
+    }
+    if(line_like("REPLY WITH $str-expr", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("REPLY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!state.in_subprocedure)
+            error("REPLY found outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("tcp_reply(last_fd, " + get_c_expression(state, tokens[2]) + ");");
+        return;
+    }
+
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }
 
