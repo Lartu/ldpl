@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <limits>
 #include <limits.h>
 #include <unordered_map>
@@ -413,7 +414,7 @@ std::string trimCopy(std::string line){
 struct sockaddr_in to_addr(string hostname, ldpl_number port)
 {
     struct sockaddr_in addr;
-    bzero(&addr, sizeof(addr));
+    memset(&addr, 0, sizeof(addr));
     struct hostent *h = gethostbyname(hostname.c_str());
     if(h == NULL){
         TCP_ERROR(\"bad hostname: \" + hostname, 1, addr);
@@ -508,7 +509,7 @@ void tcp_server(string host, ldpl_number port, string & var, void (*subpr)())
 {
     FD_ZERO(&masterfds);
     FD_ZERO(&tempfds);
-    bzero(&input_buffer, RECV_BUF_SIZE);
+    memset(&input_buffer, 0, RECV_BUF_SIZE);
     server_fd = tcp_listen(host, port);
     while(1){
         tempfds = masterfds;
@@ -525,7 +526,7 @@ void tcp_server(string host, ldpl_number port, string & var, void (*subpr)())
                 subpr();
                 close(i); //close connection after replying
                 FD_CLR(i, &masterfds);
-                bzero(&input_buffer, RECV_BUF_SIZE);
+                memset(&input_buffer, 0, RECV_BUF_SIZE);
             }
         }
     }
