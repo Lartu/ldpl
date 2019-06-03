@@ -14,24 +14,23 @@ store "localhost" in host
 store 7668 in port
 
 sub-procedure callback
-  display "Got: " data crlf
-  join "You sent: " and data in data
-  reply with data
+    display "Got: " data crlf
+    join "You sent: " and data in data
+    reply with data
 end sub-procedure
 
 if argv:0 is equal to "--server" then
-  display ">> Listening on " host " at " port "..." crlf
-  listen on host at port and call callback with data
+    display ">> Listening on " host " at " port "..." crlf
+    listen on host at port and call callback with data
 
 else if argv:0 is equal to "--client" then
-  while 1 is equal to 1 do
-	display ">> "
-	accept data
-	send data to host at port in response
-	display "<< " response crlf
-  repeat
+    while 1 is equal to 1 do
+        display ">> "
+        accept data
+        send data to host at port in response
+        display "<< " response crlf
+    repeat
 
 else
-  display "usage: echo [--server|--client]" crlf
-
+    display "usage: echo [--server|--client]" crlf
 end if
