@@ -520,7 +520,7 @@ void tcp_read(int fd)
     }
 }
 
-void tcp_server(string host, ldpl_number port, string & var, void (*subpr)())
+void tcp_server(string host, ldpl_number port, ldpl_map<string> & var, void (*subpr)())
 {
     FD_ZERO(&masterfds);
     FD_ZERO(&tempfds);
@@ -537,7 +537,8 @@ void tcp_server(string host, ldpl_number port, string & var, void (*subpr)())
             }else{
                 last_fd = i;
                 tcp_read(i);
-                var.replace(var.begin(), var.end(), input_buffer);
+                var[\"data\"] = input_buffer;
+                var[\"ip\"] = client_ips[i];
                 subpr();
                 //close connection after replying, for now
                 tcp_close(i);
