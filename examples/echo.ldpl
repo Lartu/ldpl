@@ -18,6 +18,7 @@ sub-procedure callback
     display "Got: " request:"data" crlf
     join "You sent: " and request:"data" in request:"data"
     reply with request:"data"
+    close connection to request:"ip"
 end sub-procedure
 
 if argv:0 is equal to "--server" then

@@ -1182,6 +1182,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("tcp_reply(last_fd, " + get_c_expression(state, tokens[2]) + ");");
         return;
     }
+    if(line_like("CLOSE CONNECTION TO $str-expr", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CLOSE CONNECTION statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!state.in_subprocedure)
+            error("CLOSE CONNECTION found outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.add_code("tcp_close(" + get_c_expression(state, tokens[3]) + ");");
+        return;
+    }
 
     error("Malformed statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
 }

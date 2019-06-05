@@ -437,6 +437,17 @@ void tcp_close(int fd)
     client_ips.erase(fd);
 }
 
+//Close the connection to a client by IP.
+void tcp_close(string ip)
+{
+    for (unordered_map<int, string>::const_iterator it = client_ips.begin(); it != client_ips.end(); ++it){
+        if (it->second == ip) {
+            tcp_close(it->first);
+            break;
+        }
+    }
+}
+
 //Opens tcp connection, sends body, reads responses, then closes connection.
 string tcp_send(string hostname, ldpl_number port, string body)
 {
@@ -540,8 +551,6 @@ void tcp_server(string host, ldpl_number port, ldpl_map<string> & var, void (*su
                 var[\"data\"] = input_buffer;
                 var[\"ip\"] = client_ips[i];
                 subpr();
-                //close connection after replying, for now
-                tcp_close(i);
                 memset(&input_buffer, 0, RECV_BUF_SIZE);
             }
         }
