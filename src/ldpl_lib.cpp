@@ -18,6 +18,7 @@
 #include <netdb.h>
 #include <unistd.h>
 
+#define THROWS_TCP_ERROR() { VAR_ERRORTEXT = \"\"; VAR_ERRORCODE = 0; }
 #define TCP_ERROR(text, code, ret) { VAR_ERRORTEXT = text; VAR_ERRORCODE = code; return ret; }
 #define RECV_BUF_SIZE 1024
 
@@ -414,6 +415,7 @@ std::string trimCopy(std::string line){
 
 struct sockaddr_in to_addr(string hostname, ldpl_number port)
 {
+    THROWS_TCP_ERROR();
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     struct hostent *h = gethostbyname(hostname.c_str());
@@ -451,6 +453,7 @@ void tcp_close(string ip)
 //Opens tcp connection, sends body, reads responses, then closes connection.
 string tcp_send(string hostname, ldpl_number port, string body)
 {
+    THROWS_TCP_ERROR();
     int sock;
     if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
         TCP_ERROR(\"socket() failed\", 3, \"\");
@@ -484,6 +487,7 @@ string tcp_send(string hostname, ldpl_number port, string body)
 //Starts TCP listening and returns server fd.
 int tcp_listen(string hostname, ldpl_number port)
 {
+    THROWS_TCP_ERROR();
     int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(sock < 0) TCP_ERROR(\"socket() failed\", 6, -1);
 
@@ -507,6 +511,7 @@ int tcp_listen(string hostname, ldpl_number port)
 //Accepts new TCP client and returns client fd.
 int tcp_accept()
 {
+    THROWS_TCP_ERROR();
     struct sockaddr_storage client;
     socklen_t len = sizeof(client);
     int client_fd = accept(server_fd, (struct sockaddr*)&client, &len);
@@ -560,6 +565,7 @@ void tcp_server(string host, ldpl_number port, ldpl_map<string> & var, void (*su
 //Replies to client. Must be called in LISTEN callback.
 int tcp_reply(int fd, string msg)
 {
+    THROWS_TCP_ERROR();
     int sent = 0, bytes = 0;
     while(sent < msg.size()){
         if((bytes = send(fd, msg.c_str(), msg.size(), MSG_DONTWAIT)) < 0)
