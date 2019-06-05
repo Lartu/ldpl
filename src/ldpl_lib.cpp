@@ -39,6 +39,7 @@ ldpl_number VAR_ERRORCODE = 0;
 string VAR_ERRORTEXT = \"\";
 int server_fd, last_fd;
 unordered_map<int, string> client_ips; //Map client fd to IPv4
+int tcp_connection = -1; //TCP connection as client.
 char tcp_input_buf[RECV_BUF_SIZE];
 fd_set masterfds, tempfds;
 uint16_t maxfd;
@@ -436,6 +437,7 @@ void tcp_close(int fd)
     close(fd); 
     FD_CLR(fd, &masterfds);
     client_ips.erase(fd);
+    if(fd == tcp_connection) tcp_connection = -1;
 }
 
 //Close the connection to a client by IP.
@@ -449,20 +451,34 @@ void tcp_close(string ip)
     }
 }
 
-//Opens tcp connection, sends body, reads responses, then closes connection.
-string tcp_send(string hostname, int port, string body)
+//Open persistent connection as client.
+int tcp_connect(string host, int port)
 {
     ZERO_ERROR();
     int sock;
     if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-        TCP_ERROR(\"socket() failed\", 3, \"\");
+        TCP_ERROR(\"socket() failed\", 3, sock);
 
-    struct sockaddr_in addr = to_addr(hostname, port);
+    struct sockaddr_in addr = to_addr(host, port);
 
-    if(connect(sock,(struct sockaddr*)&addr,sizeof(addr)) < 0)
-        TCP_ERROR(\"connect() failed host:\"+hostname+\" port:\"+to_string(port), 4, \"\");
+    int e;
+    if((e = connect(sock,(struct sockaddr*)&addr,sizeof(addr))) < 0)
+        TCP_ERROR(\"connect() failed host:\"+host+\" port:\"+to_string(port), 4, e);
 
-    if(sock < 0) return \"\";
+    if(sock < 0) return sock;
+
+    return sock;
+}
+
+//Opens tcp connection, sends body, reads responses, then closes connection.
+string tcp_send(int sock, string hostname, int port, string body)
+{
+    ZERO_ERROR();
+    int tmpsock = 0;
+    if(sock < 0){
+        sock = tmpsock = tcp_connect(hostname, port);
+        if(sock < 0) return \"\";
+    }
 
     int sent = 0, total = 0;
     while(total < body.size()){
@@ -480,7 +496,7 @@ string tcp_send(string hostname, int port, string body)
         bytes += n;
         flags = MSG_DONTWAIT; // dont wait if there's no more data
     }
-    close(sock);
+    if(tmpsock) tcp_close(sock);
     return str;
 }
 
