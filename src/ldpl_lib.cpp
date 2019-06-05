@@ -37,6 +37,7 @@ string joinvar; //Generic temporary use text variable (used by join but can be u
 ldpl_number VAR_ERRORCODE = 0;
 string VAR_ERRORTEXT = \"\";
 int server_fd, last_fd;
+unordered_map<int, string> client_ips; //Map client fd to IPv4
 char input_buffer[RECV_BUF_SIZE];
 fd_set masterfds, tempfds;
 uint16_t maxfd;
@@ -428,6 +429,14 @@ struct sockaddr_in to_addr(string hostname, ldpl_number port)
     return addr;
 }
 
+//Close the connection to a client.
+void tcp_close(int fd)
+{
+    close(fd); 
+    FD_CLR(fd, &masterfds);
+    client_ips.erase(fd);
+}
+
 //Opens tcp connection, sends body, reads responses, then closes connection.
 string tcp_send(string hostname, ldpl_number port, string body)
 {
@@ -487,8 +496,15 @@ int tcp_listen(string hostname, ldpl_number port)
 //Accepts new TCP client and returns client fd.
 int tcp_accept()
 {
-    int client_fd = accept(server_fd, 0, 0);
+    struct sockaddr_storage client;
+    socklen_t len = sizeof(client);
+    int client_fd = accept(server_fd, (struct sockaddr*)&client, &len);
     if(client_fd < 0) TCP_ERROR(\"accept() failed\", 12, -1);
+
+    struct sockaddr_in *sin = (struct sockaddr_in *)&client;
+    char ip[16];
+    inet_ntop(AF_INET, sin, ip, 16);
+    client_ips[client_fd] = ip;
 
     FD_SET(client_fd, &masterfds);
     if(client_fd > maxfd) maxfd = client_fd;
@@ -500,8 +516,7 @@ int tcp_accept()
 void tcp_read(int fd)
 {
     if(recv(fd, input_buffer, RECV_BUF_SIZE+1, 0) <= 0){
-        close(fd);
-        FD_CLR(fd, &masterfds);
+        tcp_close(fd);
     }
 }
 
@@ -524,8 +539,8 @@ void tcp_server(string host, ldpl_number port, string & var, void (*subpr)())
                 tcp_read(i);
                 var.replace(var.begin(), var.end(), input_buffer);
                 subpr();
-                close(i); //close connection after replying
-                FD_CLR(i, &masterfds);
+                //close connection after replying, for now
+                tcp_close(i);
                 memset(&input_buffer, 0, RECV_BUF_SIZE);
             }
         }
