@@ -24,6 +24,9 @@ end sub-procedure
 if argv:0 is equal to "--server" then
     display ">> Listening on " host " at " port "..." crlf
     listen on host at port and call callback with request
+	if errorcode is not equal to 0 then
+	  display "\e[1;31mError:\e[0m " errortext crlf
+	end if
 
 else if argv:0 is equal to "--client" then
     while 1 is equal to 1 do

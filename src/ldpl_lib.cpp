@@ -18,15 +18,15 @@
 #include <netdb.h>
 #include <unistd.h>
 
-#define THROWS_TCP_ERROR() { VAR_ERRORTEXT = \"\"; VAR_ERRORCODE = 0; }
-#define TCP_ERROR(text, code, ret) { VAR_ERRORTEXT = text; VAR_ERRORCODE = code; return ret; }
-#define RECV_BUF_SIZE 1024
-
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
 #define CRLF \"\\n\"
 #define ldpl_vector ldpl_map
 #define ldpl_list vector
+
+#define ZERO_ERROR() { VAR_ERRORTEXT = \"\"; VAR_ERRORCODE = 0; }
+#define TCP_ERROR(text, code, ret) { VAR_ERRORTEXT = text; VAR_ERRORCODE = code; return ret; }
+#define RECV_BUF_SIZE 1024*10
 
 using namespace std;
 
@@ -39,7 +39,7 @@ ldpl_number VAR_ERRORCODE = 0;
 string VAR_ERRORTEXT = \"\";
 int server_fd, last_fd;
 unordered_map<int, string> client_ips; //Map client fd to IPv4
-char input_buffer[RECV_BUF_SIZE];
+char tcp_input_buf[RECV_BUF_SIZE];
 fd_set masterfds, tempfds;
 uint16_t maxfd;
 
@@ -413,9 +413,9 @@ std::string trimCopy(std::string line){
     return line;
 }
 
-struct sockaddr_in to_addr(string hostname, ldpl_number port)
+struct sockaddr_in to_addr(string hostname, int port)
 {
-    THROWS_TCP_ERROR();
+    ZERO_ERROR();
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     struct hostent *h = gethostbyname(hostname.c_str());
@@ -451,9 +451,9 @@ void tcp_close(string ip)
 }
 
 //Opens tcp connection, sends body, reads responses, then closes connection.
-string tcp_send(string hostname, ldpl_number port, string body)
+string tcp_send(string hostname, int port, string body)
 {
-    THROWS_TCP_ERROR();
+    ZERO_ERROR();
     int sock;
     if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
         TCP_ERROR(\"socket() failed\", 3, \"\");
@@ -467,7 +467,7 @@ string tcp_send(string hostname, ldpl_number port, string body)
 
     int sent = 0, total = 0;
     while(total < body.size()){
-        if((sent = send(sock, body.c_str(), body.size(), MSG_DONTWAIT)) < 0)
+        if((sent = send(sock, body.c_str()+total, body.size()-total, MSG_DONTWAIT)) < 0)
             TCP_ERROR(\"send() call failed\", 13, \"\");
         total += sent;
     }
@@ -485,9 +485,9 @@ string tcp_send(string hostname, ldpl_number port, string body)
 }
 
 //Starts TCP listening and returns server fd.
-int tcp_listen(string hostname, ldpl_number port)
+int tcp_listen(string hostname, int port)
 {
-    THROWS_TCP_ERROR();
+    ZERO_ERROR();
     int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(sock < 0) TCP_ERROR(\"socket() failed\", 6, -1);
 
@@ -511,7 +511,7 @@ int tcp_listen(string hostname, ldpl_number port)
 //Accepts new TCP client and returns client fd.
 int tcp_accept()
 {
-    THROWS_TCP_ERROR();
+    ZERO_ERROR();
     struct sockaddr_storage client;
     socklen_t len = sizeof(client);
     int client_fd = accept(server_fd, (struct sockaddr*)&client, &len);
@@ -528,10 +528,10 @@ int tcp_accept()
     return client_fd;
 }
 
-//Reads from fd and adds to input_buffer.
+//Reads from fd and adds to tcp_input_buf.
 void tcp_read(int fd)
 {
-    if(recv(fd, input_buffer, RECV_BUF_SIZE+1, 0) <= 0){
+    if(recv(fd, tcp_input_buf, RECV_BUF_SIZE, 0) <= 0){
         tcp_close(fd);
     }
 }
@@ -540,8 +540,9 @@ void tcp_server(string host, ldpl_number port, ldpl_map<string> & var, void (*su
 {
     FD_ZERO(&masterfds);
     FD_ZERO(&tempfds);
-    memset(&input_buffer, 0, RECV_BUF_SIZE);
+    memset(&tcp_input_buf, 0, RECV_BUF_SIZE);
     server_fd = tcp_listen(host, port);
+    if(server_fd<0) return;
     while(1){
         tempfds = masterfds;
         int sel = select(maxfd + 1, &tempfds, NULL, NULL, NULL);
@@ -553,10 +554,10 @@ void tcp_server(string host, ldpl_number port, ldpl_map<string> & var, void (*su
             }else{
                 last_fd = i;
                 tcp_read(i);
-                var[\"data\"] = input_buffer;
+                var[\"data\"] = tcp_input_buf;
                 var[\"ip\"] = client_ips[i];
                 subpr();
-                memset(&input_buffer, 0, RECV_BUF_SIZE);
+                memset(&tcp_input_buf, 0, RECV_BUF_SIZE);
             }
         }
     }
@@ -565,7 +566,7 @@ void tcp_server(string host, ldpl_number port, ldpl_map<string> & var, void (*su
 //Replies to client. Must be called in LISTEN callback.
 int tcp_reply(int fd, string msg)
 {
-    THROWS_TCP_ERROR();
+    ZERO_ERROR();
     int sent = 0, bytes = 0;
     while(sent < msg.size()){
         if((bytes = send(fd, msg.c_str(), msg.size(), MSG_DONTWAIT)) < 0)
