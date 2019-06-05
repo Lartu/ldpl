@@ -415,7 +415,6 @@ std::string trimCopy(std::string line){
 
 struct sockaddr_in to_addr(string hostname, int port)
 {
-    ZERO_ERROR();
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     struct hostent *h = gethostbyname(hostname.c_str());
@@ -472,13 +471,14 @@ string tcp_send(string hostname, int port, string body)
         total += sent;
     }
 
-    int size = 1024, n = 0, bytes = 0;
+    int size = 1024, n = 0, bytes = 0, flags = 0;
     char buf[size];
     string str;
-    while((n = recv(sock, buf, size, 0)) > 0){
+    while((n = recv(sock, buf, size, flags)) > 0){
         buf[n] = 0;
         str += buf;
         bytes += n;
+        flags = MSG_DONTWAIT; // dont wait if there's no more data
     }
     close(sock);
     return str;
@@ -554,9 +554,11 @@ void tcp_server(string host, ldpl_number port, ldpl_map<string> & var, void (*su
             }else{
                 last_fd = i;
                 tcp_read(i);
-                var[\"data\"] = tcp_input_buf;
-                var[\"ip\"] = client_ips[i];
-                subpr();
+                if(tcp_input_buf[0] != 0){
+                    var[\"data\"] = tcp_input_buf;
+                    var[\"ip\"] = client_ips[i];
+                    subpr();
+                }
                 memset(&tcp_input_buf, 0, RECV_BUF_SIZE);
             }
         }
