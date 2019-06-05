@@ -25,7 +25,7 @@
 #define ldpl_list vector
 
 #define ZERO_ERROR() { VAR_ERRORTEXT = \"\"; VAR_ERRORCODE = 0; }
-#define TCP_ERROR(text, code, ret) { VAR_ERRORTEXT = text; VAR_ERRORCODE = code; return ret; }
+#define TCP_ERROR(text, code, ret) { VAR_ERRORTEXT = text; VAR_ERRORCODE = (ldpl_number)code; return ret; }
 #define RECV_BUF_SIZE 1024*10
 
 using namespace std;
@@ -434,6 +434,7 @@ struct sockaddr_in to_addr(string hostname, int port)
 //Close the connection to a client.
 void tcp_close(int fd)
 {
+    if(fd<0) return;
     close(fd); 
     FD_CLR(fd, &masterfds);
     client_ips.erase(fd);
@@ -455,6 +456,9 @@ void tcp_close(string ip)
 int tcp_connect(string host, int port)
 {
     ZERO_ERROR();
+    if(tcp_connection > 0)
+        TCP_ERROR(\"connect() fail: connection open, CLOSE first\", -1, -1);
+
     int sock;
     if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
         TCP_ERROR(\"socket() failed\", 3, sock);
@@ -467,14 +471,15 @@ int tcp_connect(string host, int port)
 
     if(sock < 0) return sock;
 
+    tcp_connection = sock;
     return sock;
 }
 
 //Opens tcp connection, sends body, reads responses, then closes connection.
-string tcp_send(int sock, string hostname, int port, string body)
+string tcp_send(string hostname, int port, string body)
 {
     ZERO_ERROR();
-    int tmpsock = 0;
+    int tmpsock = -1, sock = tcp_connection;
     if(sock < 0){
         sock = tmpsock = tcp_connect(hostname, port);
         if(sock < 0) return \"\";
@@ -496,7 +501,7 @@ string tcp_send(int sock, string hostname, int port, string body)
         bytes += n;
         flags = MSG_DONTWAIT; // dont wait if there's no more data
     }
-    if(tmpsock) tcp_close(sock);
+    if(tmpsock>=0) tcp_close(tmpsock);
     return str;
 }
 
