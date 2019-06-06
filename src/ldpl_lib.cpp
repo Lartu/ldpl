@@ -487,9 +487,9 @@ string tcp_send(int sock, string body)
     }
 
     string str;
-    int size = 1024, bytes = 0, i = 0;
-    char buf[size];
-    while((i=recv(sock,buf+bytes,size-bytes,0))!=0){
+    int bytes = 0, i = 0;
+    char buf[RECV_BUF_SIZE];
+    while((i=recv(sock,buf+bytes,RECV_BUF_SIZE-bytes,0))!=0){
         bytes+=i;
     }
     buf[bytes] = 0;
