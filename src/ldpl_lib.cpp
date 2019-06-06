@@ -475,6 +475,28 @@ int tcp_connect(string host, int port)
     return sock;
 }
 
+string tcp_send(int sock, string body)
+{
+    ZERO_ERROR();
+
+    int sent = 0, total = 0;
+    while(total < body.size()){
+        if((sent = send(sock, body.c_str()+total, body.size()-total, MSG_DONTWAIT)) < 0)
+            TCP_ERROR(\"send() call failed\", 13, \"\");
+        total += sent;
+    }
+
+    string str;
+    int size = 1024, bytes = 0, i = 0;
+    char buf[size];
+    while((i=recv(sock,buf+bytes,size-bytes,0))!=0){
+        bytes+=i;
+    }
+    buf[bytes] = 0;
+    str = buf;
+    return str;
+}
+
 //Opens tcp connection, sends body, reads responses, then closes connection.
 string tcp_send(string hostname, int port, string body)
 {
@@ -484,25 +506,15 @@ string tcp_send(string hostname, int port, string body)
         sock = tmpsock = tcp_connect(hostname, port);
         if(sock < 0) return \"\";
     }
-
-    int sent = 0, total = 0;
-    while(total < body.size()){
-        if((sent = send(sock, body.c_str()+total, body.size()-total, MSG_DONTWAIT)) < 0)
-            TCP_ERROR(\"send() call failed\", 13, \"\");
-        total += sent;
-    }
-
-    int size = 1024, n = 0, bytes = 0, flags = 0;
-    char buf[size];
-    string str;
-    while((n = recv(sock, buf, size, flags)) > 0){
-        buf[n] = 0;
-        str += buf;
-        bytes += n;
-        flags = MSG_DONTWAIT; // dont wait if there's no more data
-    }
+    string str = tcp_send(sock, body);
     if(tmpsock>=0) tcp_close(tmpsock);
     return str;
+}
+
+string tcp_send(string body)
+{
+    if(tcp_connection<0) TCP_ERROR(\"no open connection\", -1, \"\");
+    return tcp_send(tcp_connection, body);
 }
 
 //Starts TCP listening and returns server fd.
