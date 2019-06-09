@@ -182,7 +182,7 @@ int main(int argc, const char* argv[])
     }
     cout << "LDPL: Compiling..." << endl;
     //Compile the C++ code
-    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -o " + final_filename;
+    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
 #ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
@@ -727,7 +727,11 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WAIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
+        #if defined(_WIN32)
+        state.add_code("_sleep((long int)" + get_c_expression(state, tokens[1]) + ");");
+        #else
         state.add_code("std::this_thread::sleep_for(std::chrono::milliseconds((long int)" + get_c_expression(state, tokens[1]) + "));");
+        #endif
         return;
     }
     if(line_like("GOTO $label", tokens, state))
