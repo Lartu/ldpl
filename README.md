@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/development_version-3.0.6_'Diligent_Dreadnoughtus'-red.svg)
 [![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
 
-![LDPL](https://www.ldpl-lang.org/logos/ldpl-logo.png)
+![LDPL](https://github.com/Lartu/ldpl/blob/master/images/ldpl-logo.png)
 
 [LDPL](https://www.ldpl-lang.org/) is a very simple (but powerful) programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of *the good parts of* older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux, Windows and macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
@@ -56,7 +56,7 @@ Once you have LDPL installed, check the LDPL reference to learn how to use the l
 
 ## LDPL documentation & reference
 
-![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
+![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
 
 [The **LDPL documentation** is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)! The documentation is also uploaded to the [ldpl-docs](https://github.com/lartu/ldpl-docs) GitHub repository and can be read and forked from there.
 
@@ -100,7 +100,7 @@ For a guide to writing and building extensions, see [LDPL's official documentati
 
 You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
 
-![Contributing Dragon](https://www.ldpl-lang.org/tutorial-ldpl.png)
+![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
 
 Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md). Tl;dr: be nice.
 
