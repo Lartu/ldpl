@@ -688,16 +688,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("continue;");
         return;
     }
-    if(line_like("CALL $name", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("CALL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!is_subprocedure(tokens[1], state))
-            state.add_expected_subprocedure(fix_identifier(tokens[1], false), tokens[1]);
-        //C Code
-        state.add_code(fix_identifier(tokens[1], false) + "();");
-        return;
-    }
     if(line_like("CALL SUB-PROCEDURE $name", tokens, state))
     {
         if(state.section_state != 2)
@@ -706,6 +696,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             state.add_expected_subprocedure(fix_identifier(tokens[2], false), tokens[1]);
         //C Code
         state.add_code(fix_identifier(tokens[2], false) + "();");
+        return;
+    }
+    if(line_like("CALL $name", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("CALL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!is_subprocedure(tokens[1], state))
+            state.add_expected_subprocedure(fix_identifier(tokens[1], false), tokens[1]);
+        //C Code
+        state.add_code(fix_identifier(tokens[1], false) + "();");
         return;
     }
     if(line_like("CALL EXTERNAL $external", tokens, state))
