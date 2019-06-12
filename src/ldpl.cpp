@@ -698,7 +698,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(fix_identifier(tokens[2], false) + "();");
         return;
     }
-    if(line_like("CALL $name", tokens, state))
+    else if(line_like("CALL $name", tokens, state))
     {
         if(state.section_state != 2)
             error("CALL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
