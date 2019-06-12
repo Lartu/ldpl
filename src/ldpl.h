@@ -85,6 +85,18 @@ struct compiler_state{
     bool closing_while(){
         return !block_stack.empty() && block_stack.top() == 2;
     }
+    //Adds a subprocedure that has been called but hasn't been declared.
+    //If it hasn't been declared when compilation reaches the end of the source,
+    //an error is risen.
+    vector<pair<string, string>> expected_subprocedures;
+    void add_expected_subprocedure(string name, string nameOriginal){
+        for(pair<string, string> & n : expected_subprocedures) if (n.first == name) return;
+        expected_subprocedures.push_back(make_pair(name, nameOriginal));
+        add_var_code("void " + name+"();");
+    }
+    void remove_expected_subprocedure(string name, string nameOriginal){
+        expected_subprocedures.erase(std::remove(expected_subprocedures.begin(), expected_subprocedures.end(), make_pair(name, nameOriginal)), expected_subprocedures.end());
+    }
     stack<string> working_dir;
 };
 

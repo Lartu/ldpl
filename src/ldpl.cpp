@@ -154,6 +154,10 @@ int main(int argc, const char* argv[])
     }
     state.add_code("return 0; \n}");
 
+    //If an expected subprocedure was not declared, raise an error
+    if(state.expected_subprocedures.size() > 0)
+        error("the subprocedure " + state.expected_subprocedures[0].second + " is called but never declared.");
+
     //If only IR was required
     if(show_ir){
         for(string line : state.variable_code) cout << line << endl;
@@ -273,8 +277,6 @@ void compile(vector<string> & lines, compiler_state & state)
                     size_t pos = prev.rfind("\\n");
                     if(pos != string::npos) prev.erase(pos, 2);
                     prev += ";";
-                    cout << "END QUOTE FOUND, CLOSING" << endl;
-                    cout << prev << endl;
                     continue;
                 }
             }
@@ -546,9 +548,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!is_subprocedure(tokens[1], state))
+        if(!is_subprocedure(tokens[1], state)){
             state.subprocedures.push_back(tokens[1]);
-        else
+            state.remove_expected_subprocedure(fix_identifier(tokens[1], false), tokens[1]);
+        }else
             error("Duplicate declaration for subprocedure " + tokens[1] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.closing_subprocedure())
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -686,18 +689,22 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("continue;");
         return;
     }
-    if(line_like("CALL $subprocedure", tokens, state))
+    if(line_like("CALL $name", tokens, state))
     {
         if(state.section_state != 2)
             error("CALL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!is_subprocedure(tokens[1], state))
+            state.add_expected_subprocedure(fix_identifier(tokens[1], false), tokens[1]);
         //C Code
         state.add_code(fix_identifier(tokens[1], false) + "();");
         return;
     }
-    if(line_like("CALL SUB-PROCEDURE $subprocedure", tokens, state))
+    if(line_like("CALL SUB-PROCEDURE $name", tokens, state))
     {
         if(state.section_state != 2)
             error("CALL SUB-PROCEDURE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!is_subprocedure(tokens[1], state))
+            state.add_expected_subprocedure(fix_identifier(tokens[2], false), tokens[1]);
         //C Code
         state.add_code(fix_identifier(tokens[2], false) + "();");
         return;
@@ -1305,10 +1312,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
                     return false;
             }
         }
-        else if(model_tokens[i] == "$subprocedure") //$subprocedure is a SUB-PROCEDURE (?
+        /*else if(model_tokens[i] == "$subprocedure") //$subprocedure is a SUB-PROCEDURE (?
         {
             if(!is_subprocedure(tokens[j], state)) return false;
-        }
+        }*/
         else if(model_tokens[i] == "$external") //$external is a C++ function defined elsewhere
         {
             return !is_subprocedure(tokens[j], state) && !is_expression(tokens[j], state);
