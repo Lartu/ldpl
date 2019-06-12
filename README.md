@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/development_version-3.0.6_'Diligent_Dreadnoughtus'-red.svg)
 [![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
 
-![LDPL](https://www.ldpl-lang.org/logos/ldpl-logo.png)
+![LDPL](https://github.com/Lartu/ldpl/blob/master/images/ldpl-logo.png)
 
 [LDPL](https://www.ldpl-lang.org/) is a very simple (but powerful) programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of *the good parts of* older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux, Windows and macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
@@ -46,7 +46,7 @@ You can get yourself a precompiled LDPL binary or compile LDPL from source. Chec
 | **If you want to download a compiled binary** | **If you want to build LDPL yourself** |
 | ---                                           | --- |
 | Compiled binaries contain the latest stable release. Might not be up to date with the newest, bleeding edge features, but will work fine on most systems and are already compiled for you. | Building LDPL yourself gives you access to the latest features of the language. Development LDPL code tends to be stable, compile and work fine, but hidden bugs may still lurk in there! |
-| ![Current Release Logo](https://camo.githubusercontent.com/2c18c279a920081dcbc27286d04936ad99573eac/68747470733a2f2f7777772e6c64706c2d6c616e672e6f72672f6c6f676f732f6c64706c2d722d332e302e352d666c61742e706e67) | ![Current Development Version Logo](https://raw.githubusercontent.com/Lartu/ldpl/master/images/release-logos/diligent-dreadnoughtus-dev.png) |
+| ![Current Release Logo](https://github.com/Lartu/ldpl/blob/master/images/release-logos/creative-carnotaurus.png) | ![Current Development Version Logo](https://raw.githubusercontent.com/Lartu/ldpl/master/images/release-logos/diligent-dreadnoughtus-dev.png) |
 | **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
 
 **Note for Windows users:** compilation under Windows has been tested with [MinGW](http://www.mingw.org/wiki/Getting_Started) as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL.
@@ -56,7 +56,7 @@ Once you have LDPL installed, check the LDPL reference to learn how to use the l
 
 ## LDPL documentation & reference
 
-![Compiling Dragon](https://www.ldpl-lang.org/reference/ldpl-reference.png)
+![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
 
 [The **LDPL documentation** is available here](https://docs.ldpl-lang.org). Check that to learn yourself some LDPL (*for the greater good*)! The documentation is also uploaded to the [ldpl-docs](https://github.com/lartu/ldpl-docs) GitHub repository and can be read and forked from there.
 
@@ -100,7 +100,7 @@ For a guide to writing and building extensions, see [LDPL's official documentati
 
 You can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
 
-![Contributing Dragon](https://www.ldpl-lang.org/tutorial-ldpl.png)
+![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
 
 Contributors are expected to behave by the [Dragon Tamers Code](/CODE_OF_CONDUCT.md). Tl;dr: be nice.
 

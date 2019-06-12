@@ -190,7 +190,11 @@ int main(int argc, const char* argv[])
         for(string & extension : extensions) compile_line += " "+extension;
     }
     int compiled = system(compile_line.c_str());
-    system("rm ldpl-temp.cpp");
+    #if defined(_WIN32)
+        system("del ldpl-temp.cpp");
+    #else
+        system("rm ldpl-temp.cpp");
+    #endif
     if(compiled == 0){
         cout << "*\033[32;1m File(s) compiled successfully.\033[0m" << endl;
         cout << "* Saved as " << final_filename << endl;
