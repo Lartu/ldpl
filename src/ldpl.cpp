@@ -285,10 +285,10 @@ void compile(vector<string> & lines, compiler_state & state)
         if(tokens.size() == 0) continue;
         compile_line(tokens, line_num, state);
     }
-    if(state.open_quote) error("your QUOTE block was not terminated.");
-    if(state.closing_subprocedure()) error("your SUB-PROCEDURE block was not terminated.");
-    if(state.closing_if()) error("your IF block was not terminated.");
-    if(state.closing_while()) error("your WHILE block was not terminated.");
+    if(state.open_quote) error("a QUOTE block was not terminated.");
+    if(state.closing_subprocedure()) error("a SUB-PROCEDURE block was not terminated.");
+    if(state.closing_if()) error("a IF block was not terminated.");
+    if(state.closing_while()) error("a WHILE block was not terminated.");
 }
 
 //Tokenizes a line with optional convertion of tokens to uppercase (except in string)

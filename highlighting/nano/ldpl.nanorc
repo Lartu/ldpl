@@ -1,0 +1,67 @@
+syntax "LDPL" ".(ldpl|lsc)$"
+
+# Operators
+color cyan "(\:..*|\+|\-|\*|\/|\(|\)|\%)"
+
+# Sections
+color red "(DATA:|PROCEDURE:)"
+color red "EXTERNAL"
+color red "(data:|procedure:)"
+color red "external"
+
+# Data types
+color cyan "(NUMBER|TEXT|LIST|VECTOR|IS)"
+color cyan "(number|text|list|vector|is)"
+
+# Sub-Procedure Stuff
+color cyan "(SUB-PROCEDURE|END SUB-PROCEDURE|RETURN)"
+color cyan "LABEL"
+color cyan "(sub-procedure|end sub-procedure|return)"
+color cyan "label"
+
+# Statements
+color yellow "(STORE|IN)"
+color yellow "(EXIT|GOTO)"
+color yellow "(WAIT|MILLISECONDS)"
+color yellow "(ADD|AND|FROM|BY|SUBTRACT|MULTIPLY|DIVIDE|MODULO|IN|ABS|RANDOM)"
+color yellow "(FLOOR|CEIL|INCR|DECR|SOLVE)"
+color yellow "(JOIN|REPLACE|WITH|SPLIT|GET CHARACTER AT|STORE LENGTH OF)"
+color yellow "(STORE CHARACTER|STORE CHARACTER CODE OF|STORE QUOTE)"
+color yellow "(GET INDEX OF|COUNT|SUBSTRING|LENGTH|TRIM)"
+color yellow "(CLEAR|COPY|TO|STORE INDEX COUNT OF|STORE INDICES OF)"
+color yellow "(DISPLAY|ACCEPT|EXECUTE|AND STORE OUTPUT IN)"
+color yellow "(AND STORE EXIT CODE IN|UNTIL EOF|LOAD FILE|WRITE|TO FILE)"
+color yellow "(APPEND|CALL|CALL SUB-PROCEDURE)"
+color yellow "(store|in)"
+color yellow "(exit|goto)"
+color yellow "(wait|milliseconds)"
+color yellow "(add|and|from|by|subtract|multiply|divide|modulo|in|abs|random)"
+color yellow "(floor|ceil|incr|decr|solve)"
+color yellow "(join|replace|with|split|get character at|store length of)"
+color yellow "(store character|store character code of|store quote)"
+color yellow "(get index of|count|substring|length|trim)"
+color yellow "(clear|copy|to|store index count of|store indices of)"
+color yellow "(display|accept|execute|and store output in)"
+color yellow "(and store exit code in|until eof|load file|write|to file)"
+color yellow "(append|call|call sub-procedure)"
+
+# Block Stuff and Conditions
+color magenta "(IF|THEN|ELSE|END IF|ENDIF)"
+color magenta "(IS EQUAL TO|IS NOT EQUAL TO|IS LESS THAN|IS GREATER THAN|IS LESS THAN OR EQUAL TO|IS GREATER THAN OR EQUAL TO)"
+color magenta "(WHILE|DO|REPEAT|BREAK|CONTINUE)"
+color magenta "(if|then|else|end if|endif)"
+color magenta "(is equal to|is not equal to|is less than|is greater than|is less than or equal to|is greater than or equal to)"
+color magenta "(while|do|repeat|break|continue)"
+
+# Comments
+color green "\#.*"
+
+# Numbers, Strings & Constants
+color blue "(|-)[0-9][0-9]*"
+color blue "\".*\""
+color blue "CRLF"
+color blue "crlf"
+
+
+
+
