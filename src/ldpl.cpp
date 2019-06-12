@@ -265,13 +265,16 @@ void compile(vector<string> & lines, compiler_state & state)
                 string upper = "";
                 for(char c : line) upper += toupper(c);
                 trim(upper);
+                cout << upper << endl;
                 if(upper == "END QUOTE"){
                     state.open_quote = false;
                     //Kill final newline. Programs can add crlf if needed.
-                    string & prev = state.output_code.back();
+                    string & prev = state.in_subprocedure ? state.subroutine_code.back() : state.output_code.back();
                     size_t pos = prev.rfind("\\n");
                     if(pos != string::npos) prev.erase(pos, 2);
                     prev += ";";
+                    cout << "END QUOTE FOUND, CLOSING" << endl;
+                    cout << prev << endl;
                     continue;
                 }
             }
