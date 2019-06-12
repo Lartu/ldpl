@@ -692,8 +692,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("CALL SUB-PROCEDURE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!is_subprocedure(tokens[1], state))
-            state.add_expected_subprocedure(fix_identifier(tokens[2], false), tokens[1]);
+        if(!is_subprocedure(tokens[2], state))
+            state.add_expected_subprocedure(fix_identifier(tokens[2], false), tokens[2]);
         //C Code
         state.add_code(fix_identifier(tokens[2], false) + "();");
         return;
