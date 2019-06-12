@@ -1,0 +1,15 @@
+
+ DATA:
+    n is number
+    mod is number
+
+ PROCEDURE:
+    # Ask user for a number
+    display "Enter a number: "
+    accept n
+    display "Even numbers between 0 and " n crlf
+
+    # Print all even numbers between n and 0
+    while n is greater than or equal to 0 do
+
+    repeat

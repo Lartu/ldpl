@@ -1,17 +1,13 @@
 syntax "LDPL" ".(ldpl|lsc)$"
 
 # Operators
-color cyan "(\:..*|\+|\-|\*|\/|\(|\)|\%)"
+color cyan "(\:|\+|\-|\*|\/|\(|\)|\%)"
 
 # Sections
 color red "(DATA:|PROCEDURE:)"
 color red "EXTERNAL"
 color red "(data:|procedure:)"
 color red "external"
-
-# Data types
-color cyan "(NUMBER|TEXT|LIST|VECTOR|IS)"
-color cyan "(number|text|list|vector|is)"
 
 # Sub-Procedure Stuff
 color cyan "(SUB-PROCEDURE|END SUB-PROCEDURE|RETURN)"
@@ -44,6 +40,10 @@ color yellow "(clear|copy|to|store index count of|store indices of)"
 color yellow "(display|accept|execute|and store output in)"
 color yellow "(and store exit code in|until eof|load file|write|to file)"
 color yellow "(append|call|call sub-procedure|end quote)"
+
+# Data types
+color cyan "(NUMBER|IS TEXT|LIST|VECTOR|IS)"
+color cyan "(number|is text|list|vector|is)"
 
 # Block Stuff and Conditions
 color magenta "(IF|THEN|ELSE|END IF|ENDIF)"
