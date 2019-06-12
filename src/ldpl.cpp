@@ -269,7 +269,6 @@ void compile(vector<string> & lines, compiler_state & state)
                 string upper = "";
                 for(char c : line) upper += toupper(c);
                 trim(upper);
-                cout << upper << endl;
                 if(upper == "END QUOTE"){
                     state.open_quote = false;
                     //Kill final newline. Programs can add crlf if needed.
