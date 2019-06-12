@@ -65,9 +65,9 @@ available in the [man](/man) folder of this repository.
 
 ## LDPL compatible editors
 
-![VSC](https://www.ldpl-lang.org/vsc.png) ![VIM](https://www.ldpl-lang.org/vim.png) ![ATOM](https://www.ldpl-lang.org/atom.png)
+![VSC](https://www.ldpl-lang.org/vsc.png) ![VIM](https://www.ldpl-lang.org/vim.png) ![ATOM](https://www.ldpl-lang.org/atom.png) ![nano](https://www.ldpl-lang.org/images/nano.png)
 
-We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)) and [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)).
+We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
 
 You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
 
