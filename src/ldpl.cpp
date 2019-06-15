@@ -700,8 +700,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("BREAK outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_whiles == 0)
-            error("BREAK without WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.open_whiles == 0 && state.open_fors == 0)
+            error("BREAK without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("break;");
         return;
@@ -710,8 +710,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("CONTINUE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_whiles == 0)
-            error("CONTINUE without WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.open_whiles == 0 && state.open_fors == 0)
+            error("CONTINUE without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("continue;");
         return;
