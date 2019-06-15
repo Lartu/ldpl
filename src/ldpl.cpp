@@ -668,6 +668,34 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("}");
         return;
     }
+    if(line_like("FOR $num-var FROM $num-expr TO $num-expr STEP $num-expr", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("FOR outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.open_for();
+        string var = get_c_variable(state, tokens[1]);
+        string from = get_c_expression(state, tokens[3]);
+        string to = get_c_expression(state, tokens[5]);
+        string step = get_c_expression(state, tokens[7]);
+        string init = var + " = " + from;
+        string condition = from + " < " + to + " ? " +
+                           var + " <= " + to + " : " + var + " >= " + to;
+        string increment = var + " += " + step;
+        //C Code
+        state.add_code("for (" + init + "; " + condition + "; " + increment + ") {");
+        return;
+    }
+    if(line_like("NEXT", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("NEXT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!state.closing_for())
+            error("NEXT without FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C Code
+        state.close_for();
+        state.add_code("}");
+        return;
+    }
     if(line_like("BREAK", tokens, state))
     {
         if(state.section_state != 2)
