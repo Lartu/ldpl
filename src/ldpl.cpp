@@ -668,7 +668,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("}");
         return;
     }
-    if(line_like("FOR $num-var FROM $num-expr TO $num-expr STEP $num-expr", tokens, state))
+    if(line_like("FOR $num-var FROM $num-expr TO $num-expr STEP $num-expr DO", tokens, state))
     {
         if(state.section_state != 2)
             error("FOR outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
