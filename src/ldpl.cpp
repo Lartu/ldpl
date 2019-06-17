@@ -678,7 +678,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         string to = get_c_expression(state, tokens[5]);
         string step = get_c_expression(state, tokens[7]);
         string init = var + " = " + from;
-        string condition = from + " < " + to + " ? " +
+        string condition = step + " >= 0 ? " +
                            var + " <= " + to + " : " + var + " >= " + to;
         string increment = var + " += " + step;
         //C Code
