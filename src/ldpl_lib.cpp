@@ -11,6 +11,7 @@
 #include <thread>
 #include <time.h>
 #include <vector>
+#include <dirent.h>
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
@@ -75,7 +76,7 @@ ldpl_number input_number(){
             ldpl_number num = stod(s);
             return num;
         }
-        catch (const std::invalid_argument& ia) {
+        catch (const invalid_argument& ia) {
             cout << \"Redo from start: \" << flush;
         }
     }
@@ -93,7 +94,7 @@ ldpl_number to_number(const string & a){
         ldpl_number num = stod(a);
         return num;
     }
-    catch (const std::invalid_argument& ia) {
+    catch (const invalid_argument& ia) {
         return 0;
     }
 }
@@ -315,7 +316,7 @@ void load_file(string filename, string & destination)
     //Fail if the file couldn't be loaded
     if(!file.is_open()){
         destination = \"\";
-        VAR_ERRORTEXT = \"Error: The file '\" + filename + \"' couldn't be opened.\";
+        VAR_ERRORTEXT = \"The file '\" + filename + \"' couldn't be opened.\";
         VAR_ERRORCODE = 1;
         return;
     }
@@ -361,17 +362,17 @@ ldpl_number utf8Count(string a, string needle){
 }
 
 //Removes all trailing and ending whitespace from a string
-std::string trimCopy(std::string line){
-    //If the std::string is empty
+string trimCopy(string line){
+    //If the string is empty
     if(line.size() == 0) return line;
 
     //If the string has only one character
-    if(line.size() == 1 && !std::isspace(line[0])) return line;
+    if(line.size() == 1 && !isspace(line[0])) return line;
 
     //Left trim
     int first = 0;
     for(unsigned int i = 0; i < line.size(); ++i){
-        if (!std::isspace(line[i])){
+        if (!isspace(line[i])){
             first = i;
             break;
         }
@@ -380,7 +381,7 @@ std::string trimCopy(std::string line){
     //Right trim
     int last = 0;
     for(unsigned int i = line.size()-1; i >= 0; --i){
-        if (!std::isspace(line[i])){
+        if (!isspace(line[i])){
             last = i+1;
             break;
         }
@@ -392,8 +393,27 @@ std::string trimCopy(std::string line){
         }
     }
 
-    //Trim the std::string
+    //Trim the string
     line = line.substr(first, last-first);
 
     return line;
+}
+
+vector<string> GetDirectoryFiles(const string dir) {
+    //Taken from http://www.codebind.com/cpp-tutorial/cpp-program-list-files-directory-windows-linux/
+    vector<string> files;
+    shared_ptr<DIR> directory_ptr(opendir(dir.c_str()), [](DIR* dir){ dir && closedir(dir); });
+    struct dirent *dirent_ptr;
+    VAR_ERRORTEXT = \"\";
+    VAR_ERRORCODE = 0;
+    if (!directory_ptr) {
+        VAR_ERRORTEXT = \"Error opening directory '\" + dir + \"'.\";
+        VAR_ERRORCODE = 1;
+        return files;
+    }
+
+    while ((dirent_ptr = readdir(directory_ptr.get())) != nullptr) {
+        files.push_back(string(dirent_ptr->d_name));
+    }
+    return files;
 }
