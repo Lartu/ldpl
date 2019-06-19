@@ -15,6 +15,10 @@ color cyan "LABEL"
 color cyan "(sub-procedure|end sub-procedure|return)"
 color cyan "label"
 
+# Data types
+color cyan "(NUMBER|IS TEXT|LIST|VECTOR|IS)"
+color cyan "(number|is text|list|vector|is)"
+
 # Statements
 color yellow "(STORE|IN)"
 color yellow "(EXIT|GOTO)"
@@ -40,10 +44,6 @@ color yellow "(clear|copy|to|store index count of|store indices of)"
 color yellow "(display|accept|execute|and store output in)"
 color yellow "(and store exit code in|until eof|load file|write|to file)"
 color yellow "(append|call|call sub-procedure|end quote)"
-
-# Data types
-color cyan "(NUMBER|IS TEXT|LIST|VECTOR|IS)"
-color cyan "(number|is text|list|vector|is)"
 
 # Block Stuff and Conditions
 color magenta "(IF|THEN|ELSE|END IF|ENDIF)"

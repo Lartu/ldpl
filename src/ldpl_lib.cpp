@@ -413,7 +413,8 @@ vector<string> GetDirectoryFiles(const string dir) {
     }
 
     while ((dirent_ptr = readdir(directory_ptr.get())) != nullptr) {
-        files.push_back(string(dirent_ptr->d_name));
+        string fileName = string(dirent_ptr->d_name);
+        if(fileName != \".\" && fileName != \"..\") files.push_back(fileName);
     }
     return files;
 }
