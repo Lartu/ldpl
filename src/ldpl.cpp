@@ -373,7 +373,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     //import
     if(line_like("import $file", tokens, state)) {
         if(state.section_state != 0)
-            error("can only import files declared at the start of the file (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)")
+            error("can only import files declared at the start of the file (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else
             load_and_compile(tokens[1], state);
         return;
