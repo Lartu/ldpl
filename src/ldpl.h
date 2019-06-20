@@ -46,9 +46,8 @@ struct compiler_state{
     }
     bool open_quote = false;
     bool in_subprocedure = false;
-    int open_whiles = 0;
-    int open_fors = 0;
-    stack<int> block_stack; //0 sub-procedure, 1 if or else if, 2 while, 3 else, 4 for
+    int open_loops = 0;
+    stack<int> block_stack; //0 sub-procedure, 1 if or else if, 2 while/for, 3 else
     void open_subprocedure(){
         in_subprocedure = true;
         block_stack.push(0);
@@ -75,27 +74,16 @@ struct compiler_state{
     bool closing_else(){
         return !block_stack.empty() && block_stack.top() == 3;
     }
-    void open_while(){
-        ++open_whiles;
+    void open_loop(){
+        ++open_loops;
         block_stack.push(2);
     }
-    void close_while(){
-        --open_whiles;
+    void close_loop(){
+        --open_loops;
         block_stack.pop();
     }
-    bool closing_while(){
+    bool closing_loop(){
         return !block_stack.empty() && block_stack.top() == 2;
-    }
-    void open_for(){
-        ++open_fors;
-        block_stack.push(4);
-    }
-    void close_for(){
-        --open_fors;
-        block_stack.pop();
-    }
-    bool closing_for(){
-        return !block_stack.empty() && block_stack.top() == 4;
     }
     //Adds a subprocedure that has been called but hasn't been declared.
     //If it hasn't been declared when compilation reaches the end of the source,

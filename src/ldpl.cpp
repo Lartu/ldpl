@@ -296,7 +296,7 @@ void compile(vector<string> & lines, compiler_state & state)
     if(state.open_quote) error("a QUOTE block was not terminated.");
     if(state.closing_subprocedure()) error("a SUB-PROCEDURE block was not terminated.");
     if(state.closing_if()) error("a IF block was not terminated.");
-    if(state.closing_while()) error("a WHILE block was not terminated.");
+    if(state.closing_loop()) error("a WHILE or FOR block was not terminated.");
 }
 
 //Tokenizes a line with optional convertion of tokens to uppercase (except in string)
@@ -556,8 +556,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else if(state.closing_if())
             error("Subprocedure declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        else if(state.closing_while())
-            error("Subprocedure declaration inside WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_loop())
+            error("Subprocedure declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure();
         //C Code
@@ -572,8 +572,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else if(state.closing_if())
             error("Subprocedure declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        else if(state.closing_while())
-            error("Subprocedure declaration inside WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_loop())
+            error("Subprocedure declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure();
         //C Code
@@ -653,7 +653,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state != 2)
             error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.open_while();
+        state.open_loop();
         state.add_code("while (" + get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1)) + "){");
         return;
     }
@@ -661,10 +661,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("REPEAT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!state.closing_while())
-            error("REPEAT without WHILE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(!state.closing_loop())
+            error("REPEAT without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.close_while();
+        state.close_loop();
         state.add_code("}");
         return;
     }
@@ -672,7 +672,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("FOR outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.open_for();
+        state.open_loop();
         string var = get_c_variable(state, tokens[1]);
         string from = get_c_expression(state, tokens[3]);
         string to = get_c_expression(state, tokens[5]);
@@ -685,22 +685,11 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("for (" + init + "; " + condition + "; " + increment + ") {");
         return;
     }
-    if(line_like("NEXT", tokens, state))
-    {
-        if(state.section_state != 2)
-            error("NEXT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!state.closing_for())
-            error("NEXT without FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.close_for();
-        state.add_code("}");
-        return;
-    }
     if(line_like("BREAK", tokens, state))
     {
         if(state.section_state != 2)
             error("BREAK outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_whiles == 0 && state.open_fors == 0)
+        if(state.open_loops == 0)
             error("BREAK without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("break;");
@@ -710,7 +699,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state != 2)
             error("CONTINUE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.open_whiles == 0 && state.open_fors == 0)
+        if(state.open_loops == 0)
             error("CONTINUE without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
         state.add_code("continue;");
