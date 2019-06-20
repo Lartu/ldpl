@@ -144,7 +144,6 @@ int main(int argc, const char* argv[])
         //Reset state section for this file
         state.section_state = 0;
         if(filename != "-c"){
-            state.current_file = filename;
             load_and_compile(filename, state);
         }else{
             state.current_file = "standard input";
@@ -209,6 +208,7 @@ int main(int argc, const char* argv[])
 
 void load_and_compile(string & filename, compiler_state & state)
 {
+    state.current_file = filename;
     //Accept input from stdin
     ifstream file(filename);
     //Fail if the file couldn't be loaded
@@ -367,7 +367,7 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
 //Compiles line per line
 void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state)
 {
-    string & current_file = state.current_file;
+    string current_file = state.current_file;
     ++line_num;
 
     //import
@@ -385,6 +385,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                 file_to_compile = current_file.substr(0, last_sep) + "/" + file_to_compile;
             load_and_compile(file_to_compile, state);
             state.section_state = 0;
+            state.current_file = current_file;
         }
         return;
     }
