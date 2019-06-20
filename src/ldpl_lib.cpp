@@ -164,7 +164,7 @@ ldpl_list<string> utf8_split_list(const string & s, const string & sep){
         if(sep.empty()){
             v.push_back(cp);
         }else if(sep == cp){
-            if(current_token.size()) v.push_back(current_token);
+            v.push_back(current_token);
             current_token = \"\";
         }else{
             current_token += cp;
