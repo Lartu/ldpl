@@ -685,6 +685,25 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("for (" + init + "; " + condition + "; " + increment + ") {");
         return;
     }
+    if(line_like("FOR EACH $var IN $collection DO", tokens, state))
+    {
+        if(state.section_state != 2)
+            error("FOR EACH outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(is_num_var(tokens[2], state) != (is_num_vector(tokens[4], state) || is_num_list(tokens[4], state)))
+            error("FOR EACH iteration variable type doesn't match collection type (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.open_loop();
+        //C Code
+        string range_var = state.new_range_var();
+        string collection = get_c_variable(state, tokens[4]);
+        string iteration_var = range_var;
+        if (is_vector(tokens[4], state)) {
+            collection += ".inner_map";
+            iteration_var += ".second";
+        }
+        state.add_code("for (auto& " + range_var + " : " + collection + ") {");
+        state.add_code(get_c_variable(state, tokens[2]) + " = " + iteration_var + ";");
+        return;
+    }
     if(line_like("BREAK", tokens, state))
     {
         if(state.section_state != 2)
@@ -1304,7 +1323,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             if(!is_variable(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$vector"){ //$vector is TEXT MAP, NUMBER MAP
-            if(!is_num_vector(tokens[j], state) && !is_txt_vector(tokens[j], state)) return false;
+            if(!is_vector(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$num-vec") //$num-vec is NUMBER vector
         {
@@ -1315,7 +1334,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             if(!is_txt_vector(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$list"){ //$list is a LIST
-            if(!is_num_list(tokens[j], state) && !is_txt_list(tokens[j], state)) return false;
+            if(!is_list(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$num-list") //$num-vec is NUMBER list
         {
@@ -1324,6 +1343,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$str-list") //$str-vec is TEXT list
         {
             if(!is_txt_list(tokens[j], state)) return false;
+        }
+        else if(model_tokens[i] == "$collection") //$collection is either a MAP or a LIST
+        {
+            if(!is_vector(tokens[j], state) && !is_list(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$literal") //$literal is either a NUMBER or a TEXT
         {
@@ -1538,6 +1561,11 @@ bool is_txt_list(string & token, compiler_state & state)
 bool is_vector(string & token, compiler_state & state)
 {
     return is_num_vector(token, state) || is_txt_vector(token, state);
+}
+
+bool is_list(string & token, compiler_state & state)
+{
+    return is_num_list(token, state) || is_txt_list(token, state);
 }
 
 bool is_num_var(string & token, compiler_state & state)

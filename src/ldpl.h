@@ -85,6 +85,11 @@ struct compiler_state{
     bool closing_loop(){
         return !block_stack.empty() && block_stack.top() == 2;
     }
+    //We keep track of declared variables used in range-based loops
+    int range_vars = 0;
+    string new_range_var(){
+        return "RVAR_" + to_string(range_vars++);
+    }
     //Adds a subprocedure that has been called but hasn't been declared.
     //If it hasn't been declared when compilation reaches the end of the source,
     //an error is risen.
@@ -121,6 +126,8 @@ bool is_num_vector(string & token, compiler_state & state);
 bool is_txt_vector(string & token, compiler_state & state);
 bool is_num_list(string & token, compiler_state & state);
 bool is_txt_list(string & token, compiler_state & state);
+bool is_vector(string & token, compiler_state & state);
+bool is_list(string & token, compiler_state & state);
 bool is_external(string & token, compiler_state & state);
 bool variable_exists(string & token, compiler_state & state);
 bool is_subprocedure(string & token, compiler_state & state);
