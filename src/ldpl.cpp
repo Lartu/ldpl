@@ -374,8 +374,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     if(line_like("IMPORT $string", tokens, state)) {
         if(state.section_state != 0)
             error("can only import files declared at the start of the file (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
-        else
-            load_and_compile(tokens[1].substr(1, tokens[1].size() - 1), state);
+        else {
+            string file_to_compile = tokens[1].substr(1, tokens[1].size() - 1);
+            load_and_compile(file_to_compile, state);
+        }
         return;
     }
 
