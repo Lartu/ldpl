@@ -376,6 +376,13 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("can only import files declared at the start of the file (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else {
             string file_to_compile = tokens[1].substr(1, tokens[1].size() - 2);
+            string separators = "/";
+            #if defined(_WIN32)
+            separators += "\\";
+            #endif
+            size_t last_sep = current_file.find_last_of(separators);
+            if (last_sep != string::npos)
+                file_to_compile = current_file.substr(0, last_sep) + "/" + file_to_compile;
             load_and_compile(file_to_compile, state);
             state.section_state = 0;
         }
