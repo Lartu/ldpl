@@ -86,6 +86,9 @@ int main(int argc, const char* argv[])
         for(string & arg : args){
             if(arg.size() > 1 && arg[0] != '-'){
                 if(output_filename == "") output_filename = arg;
+                if(files_to_compile.size() > 0){
+                    warning("passing multiple LDPL source files to the\ncompiler is deprecated and may be removed in the future.\nPlease use the IMPORT statement instead.");
+                }
                 files_to_compile.push_back(arg);
             }
             else if(arg == "-r"){
@@ -101,6 +104,9 @@ int main(int argc, const char* argv[])
             }
             else if(arg.substr(0, 3) == "-i="){
                 if(0 == arg.compare(arg.length()-5, 5, ".ldpl")||0 == arg.compare(arg.length()-4, 4, ".lsc")){
+                    if(files_to_compile.size() > 0){
+                        warning("passing multiple LDPL source files to the\ncompiler is deprecated and may be removed in the future.\nPlease use the IMPORT statement instead.");
+                    }
                     files_to_compile.push_back(arg.substr(3));
                 }else{
                     //pass everything but .ldpl and .lsc files to the c++ compiler
@@ -136,7 +142,7 @@ int main(int argc, const char* argv[])
     state.add_code(fix_identifier("ARGC", true) + " = argc - 1;");
 
     //Fail if file was not passed
-    if(files_to_compile.size() == 0) error("Filename expected.");
+    if(files_to_compile.size() == 0) error("filename expected.");
 
     //For each file, compile each file into one big code
     for(string & filename : files_to_compile)
@@ -144,8 +150,10 @@ int main(int argc, const char* argv[])
         //Reset state section for this file
         state.section_state = 0;
         if(filename != "-c"){
+            bullet_msg("Loading " + filename);
             load_and_compile(filename, state);
         }else{
+            bullet_msg("Waiting for standard input...");
             state.current_file = "standard input";
             accept_and_compile(state);
         }
@@ -183,14 +191,17 @@ int main(int argc, const char* argv[])
         if(final_filename.size() == 0) final_filename = "ldpl-output";
         final_filename += "-bin";
     }
-    cout << "LDPL: Compiling..." << endl;
+    bullet_msg("Building " + final_filename);
     //Compile the C++ code
     string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
 #ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
     if(!extensions.empty()){
-        for(string & extension : extensions) compile_line += " "+extension;
+        for(string & extension : extensions){
+            bullet_msg("Including C++ extension " + extension);
+            compile_line += " "+extension;
+        }
     }
     int compiled = system(compile_line.c_str());
     #if defined(_WIN32)
@@ -199,8 +210,8 @@ int main(int argc, const char* argv[])
         system("rm ldpl-temp.cpp");
     #endif
     if(compiled == 0){
-        cout << "*\033[32;1m File(s) compiled successfully.\033[0m" << endl;
-        cout << "* Saved as " << final_filename << endl;
+        bullet_msg("Saved as " + final_filename);
+        bullet_msg("\033[32;1mFile(s) compiled successfully.\033[0m");
     }else{
         error("compilation failed.");
     }
@@ -212,7 +223,7 @@ void load_and_compile(string & filename, compiler_state & state)
     //Accept input from stdin
     ifstream file(filename);
     //Fail if the file couldn't be loaded
-    if(!file.is_open()) error("The file '" + filename + "' couldn't be opened.");
+    if(!file.is_open()) error("The file '" + filename + "' couldn't be loaded.");
     //Get file contents
     vector<string> lines;
     string line = "";
@@ -221,6 +232,7 @@ void load_and_compile(string & filename, compiler_state & state)
         replace_whitespace(line);
         lines.push_back(line);
     }
+    bullet_msg("Compiling " + filename);
     compile(lines, state);
 }
 
@@ -233,6 +245,7 @@ void accept_and_compile(compiler_state & state){
         replace_whitespace(line);
         lines.push_back(line);
     }
+    bullet_msg("Compiling");
     compile(lines, state);
 }
 
@@ -244,6 +257,21 @@ void replace_whitespace(string & code)
             c = ' ';
         }
     }
+}
+
+//Shows message preceded by a *
+void bullet_msg(const string & msg)
+{
+    cerr << "\033[1;33m*\033[0m ";
+    cerr << msg << endl;
+}
+
+//Shows warning message
+void warning(const string & msg)
+{
+    cerr << "\033[1;35mLDPL Warning: ";
+    cerr << msg;
+    cerr << "\033[0m" << endl;
 }
 
 //Shows error message and exits
