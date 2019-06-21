@@ -699,7 +699,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         string step = get_c_expression(state, tokens[7]);
         string init = var + " = " + from;
         string condition = step + " >= 0 ? " +
-                           var + " <= " + to + " : " + var + " >= " + to;
+                           var + " < " + to + " : " + var + " > " + to;
         string increment = var + " += " + step;
         //C Code
         state.add_code("for (" + init + "; " + condition + "; " + increment + ") {");
