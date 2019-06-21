@@ -437,156 +437,48 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Variable Declaration
-    if(line_like("$name IS NUMBER", tokens, state))
+    if(line_like("$name IS $anything", tokens, state))
     {
         if(state.section_state != 1)
             error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state))
+        if(variable_exists(tokens[0], state))
+            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(tokens.size() > 5)
+            error("Invalid type for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        string extern_keyword = ""; // C++ extern keyword to prepend to the type (empty if not EXTERNAL)
+        string type; // C++ variable type
+        string assign_default; // default value assignation to variable
+        size_t i = 2;
+        if (tokens[i] == "EXTERNAL") {
+            state.externals[tokens[0]] = true;
+            extern_keyword = "extern ";
+            ++i;
+        }
+        if (tokens[i] == "NUMBER") {
             state.variables[tokens[0]] = 1;
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_var_code("ldpl_number " + fix_identifier(tokens[0], true) + " = 0;");
-        return;
-    }
-    if(line_like("$name IS TEXT", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state))
+            type = "ldpl_number";
+            if (extern_keyword == "") assign_default = " = 0";
+        } else if (tokens[i] == "TEXT") {
             state.variables[tokens[0]] = 2;
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_var_code("string " + fix_identifier(tokens[0], true) + " = \"\";");
-        return;
-    }
-    if(line_like("$name IS NUMBER VECTOR", tokens, state) || line_like("$name IS NUMBER MAP", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 3;
+            type = "string";
+            if (extern_keyword == "") assign_default = " = \"\"";
+        } else {
+            error("Invalid type for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_var_code("ldpl_vector<ldpl_number> " + fix_identifier(tokens[0], true) + ";");
-        return;
-    }
-    if(line_like("$name IS TEXT VECTOR", tokens, state) || line_like("$name IS TEXT MAP", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 4;
+        if (++i < tokens.size()) {
+            // Collections
+            assign_default = ""; // Collections are initially empty
+            if (tokens[i] == "MAP" || tokens[i] == "VECTOR") {
+                state.variables[tokens[0]] += 2; // 1 -> 3, 2 -> 4
+                type = "ldpl_vector<" + type + ">";
+            } else if (tokens[i] == "LIST") {
+                state.variables[tokens[0]] += 4; // 1 -> 5, 2 -> 6
+                type = "ldpl_list<" + type + ">";
+            } else {
+                error("Invalid type for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            }
         }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_var_code("ldpl_vector<string> " + fix_identifier(tokens[0], true) + ";");
-        return;
-    }
-    if(line_like("$name IS NUMBER LIST", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 5;
-        }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_var_code("ldpl_list<ldpl_number> " + fix_identifier(tokens[0], true) + ";");
-        return;
-    }
-    if(line_like("$name IS TEXT LIST", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 6;
-        }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_var_code("ldpl_list<string> " + fix_identifier(tokens[0], true) + ";");
-        return;
-    }
-    if(line_like("$name IS EXTERNAL NUMBER", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state))
-            state.variables[tokens[0]] = 1;
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_var_code("extern ldpl_number " + fix_external_identifier(tokens[0], true) + ";");
-        state.externals[tokens[0]] = true;
-        return;
-    }
-    if(line_like("$name IS EXTERNAL TEXT", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state))
-            state.variables[tokens[0]] = 2;
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_var_code("extern string " + fix_external_identifier(tokens[0], true) + ";");
-        state.externals[tokens[0]] = true;
-        return;
-    }
-    if(line_like("$name IS EXTERNAL NUMBER VECTOR", tokens, state) || line_like("$name IS EXTERNAL TEXT MAP", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 3;
-        }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_var_code("extern ldpl_vector<ldpl_number> " + fix_external_identifier(tokens[0], true) + ";");
-        state.externals[tokens[0]] = true;
-        return;
-    }
-    if(line_like("$name IS EXTERNAL TEXT VECTOR", tokens, state) || line_like("$name IS EXTERNAL TEXT MAP", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 4;
-        }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_var_code("extern ldpl_vector<string> " + fix_external_identifier(tokens[0], true) + ";");
-        state.externals[tokens[0]] = true;
-        return;
-    }
-    if(line_like("$name IS EXTERNAL NUMBER LIST", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 3;
-        }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_var_code("extern ldpl_list<ldpl_number> " + fix_external_identifier(tokens[0], true) + ";");
-        state.externals[tokens[0]] = true;
-        return;
-    }
-    if(line_like("$name IS EXTERNAL TEXT LIST", tokens, state))
-    {
-        if(state.section_state != 1)
-            error("Variable declaration outside DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!variable_exists(tokens[0], state)){
-            state.variables[tokens[0]] = 4;
-        }
-        else
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_var_code("extern ldpl_list<string> " + fix_external_identifier(tokens[0], true) + ";");
-        state.externals[tokens[0]] = true;
+        state.add_var_code(extern_keyword + type + " " + fix_identifier(tokens[0], true, state) + assign_default +  ";");
         return;
     }
 
@@ -1511,6 +1403,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
                     return false;
             }
         }
+        else if(model_tokens[i] == "$anything") return true;
         else if(model_tokens[i] != tokens[j]) return false;
         ++j;
     }
