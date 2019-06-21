@@ -105,6 +105,8 @@ struct compiler_state{
     stack<string> working_dir;
 };
 
+void bullet_msg(const string & msg);
+void warning(const string & msg);
 void error(const string & msg);
 void compile(vector<string> & lines, compiler_state & state);
 void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase);
