@@ -24,7 +24,7 @@ using namespace std;
 //TODO: Change vectors to maps
 struct compiler_state{
     unsigned int section_state = 0;
-    //0 no section, 1 data, 2 procedure, 3 sub-procedure start, 4 parameters, 5 local data
+    //0 no section, 1 data or local, 2 procedure, 3 sub-procedure start, 4 parameters
     unsigned int current_line = 0;
     string current_file = "";
     //Code to output (plain C code)
@@ -32,7 +32,7 @@ struct compiler_state{
     vector<string> output_code;
     vector<string> subroutine_code; //code outside main()
     //variables
-    map<string, unsigned int> variables;
+    map<string, map<string, unsigned int>> variables; //variables by subprocedure (or "" for main)
     map<string, bool> externals; //variables defined in c++ extensions
     //1 number, 2 text, 3 number map/vector, 4 text map/vector, 5 number list, 6 text list
     vector<string> subprocedures;
@@ -149,3 +149,4 @@ string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
 string fix_identifier(string identifier);
 bool in_procedure_section(compiler_state & state);
+unsigned int variable_type(string & token, compiler_state & state);

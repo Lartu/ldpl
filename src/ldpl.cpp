@@ -131,12 +131,12 @@ int main(int argc, const char* argv[])
     state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
 
-    state.variables["ARGC"] = 1;
+    state.variables[""]["ARGC"] = 1;
     state.add_var_code("ldpl_number "+fix_identifier("ARGC", true)+";");
-    state.variables["ARGV"] = 4;
+    state.variables[""]["ARGV"] = 4;
     state.add_var_code("ldpl_vector<string> "+fix_identifier("ARGV", true)+";");
-    state.variables["ERRORCODE"] = 1; //Declared in ldpl_lib.cpp
-    state.variables["ERRORTEXT"] = 2; //Declared in ldpl_lib.cpp
+    state.variables[""]["ERRORCODE"] = 1; //Declared in ldpl_lib.cpp
+    state.variables[""]["ERRORTEXT"] = 2; //Declared in ldpl_lib.cpp
     state.add_code("for(int i = 1; i < argc; ++i)");
     state.add_code(fix_identifier("ARGV", true) + "[i-1] = argv[i];");
     state.add_code(fix_identifier("ARGC", true) + " = argc - 1;");
@@ -435,11 +435,22 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.section_state = 2;
         return;
     }
+    if(line_like("LOCAL DATA:", tokens, state))
+    {
+        if(state.current_subprocedure == "")
+            error("LOCAL DATA section outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.section_state == 1)
+            error("Duplicate LOCAL DATA section declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.section_state == 2)
+            error("LOCAL DATA section declaration within PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.section_state = 1;
+        return;
+    }
 
     // Variable Declaration
     if(line_like("$name IS $anything", tokens, state))
     {
-        if(state.section_state != 1 && state.section_state != 4 && state.section_state != 5)
+        if(state.section_state != 1 && state.section_state != 4)
             error("Variable declaration outside DATA, PARAMETERS or LOCAL DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(variable_exists(tokens[0], state))
             error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -449,17 +460,17 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         string type; // C++ variable type
         string assign_default; // default value assignation to variable
         size_t i = 2;
-        if (tokens[i] == "EXTERNAL" && state.section_state == 1) { // EXTERNAL is only valid in DATA section
+        if (tokens[i] == "EXTERNAL" && state.current_subprocedure == "") { // EXTERNAL is only valid in DATA section
             state.externals[tokens[0]] = true;
             extern_keyword = "extern ";
             ++i;
         }
         if (tokens[i] == "NUMBER") {
-            state.variables[tokens[0]] = 1;
+            state.variables[state.current_subprocedure][tokens[0]] = 1;
             type = "ldpl_number";
             if (extern_keyword == "") assign_default = " = 0";
         } else if (tokens[i] == "TEXT") {
-            state.variables[tokens[0]] = 2;
+            state.variables[state.current_subprocedure][tokens[0]] = 2;
             type = "string";
             if (extern_keyword == "") assign_default = " = \"\"";
         } else {
@@ -469,10 +480,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             // Collections
             assign_default = ""; // Collections are initially empty
             if (tokens[i] == "MAP" || tokens[i] == "VECTOR") {
-                state.variables[tokens[0]] += 2; // 1 -> 3, 2 -> 4
+                state.variables[state.current_subprocedure][tokens[0]] += 2; // 1 -> 3, 2 -> 4
                 type = "ldpl_vector<" + type + ">";
             } else if (tokens[i] == "LIST") {
-                state.variables[tokens[0]] += 4; // 1 -> 5, 2 -> 6
+                state.variables[state.current_subprocedure][tokens[0]] += 4; // 1 -> 5, 2 -> 6
                 type = "ldpl_list<" + type + ">";
             } else {
                 error("Invalid type for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -499,6 +510,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else if(state.closing_loop())
             error("Subprocedure declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.open_subprocedure(tokens[1]);
+        state.section_state = 3;
         //C Code
         state.add_code("void "+fix_identifier(tokens[1], false)+"(){");
         return;
@@ -1204,7 +1216,10 @@ string fix_identifier(string ident, bool isVar, compiler_state & state){
     if(is_external(ident, state)){
         return fix_external_identifier(ident, isVar);
     }else{
-        return fix_identifier(ident, isVar);
+        string local_prefix = ""; // Used for PARAMETERS and LOCAL DATA variables
+        if (isVar && state.current_subprocedure != "")
+            local_prefix = "LVAR_" + fix_identifier(state.current_subprocedure, false) + "_";
+        return local_prefix + fix_identifier(ident, isVar);
     }
 }
 
@@ -1476,25 +1491,25 @@ bool is_string(string & token){
 
 bool is_num_vector(string & token, compiler_state & state)
 {
-    if(state.variables.count(token) > 0 && state.variables[token] == 3) return true;
+    if(variable_type(token, state) == 3) return true;
     return false;
 }
 
 bool is_txt_vector(string & token, compiler_state & state)
 {
-    if(state.variables.count(token) > 0 && state.variables[token] == 4) return true;
+    if(variable_type(token, state) == 4) return true;
     return false;
 }
 
 bool is_num_list(string & token, compiler_state & state)
 {
-    if(state.variables.count(token) > 0 && state.variables[token] == 5) return true;
+    if(variable_type(token, state) == 5) return true;
     return false;
 }
 
 bool is_txt_list(string & token, compiler_state & state)
 {
-    if(state.variables.count(token) > 0 && state.variables[token] == 6) return true;
+    if(variable_type(token, state) == 6) return true;
     return false;
 }
 
@@ -1511,7 +1526,7 @@ bool is_list(string & token, compiler_state & state)
 bool is_num_var(string & token, compiler_state & state)
 {
     //Check if var
-    if(state.variables.count(token) > 0 && state.variables[token] == 1) return true;
+    if(variable_type(token, state) == 1) return true;
     //Check if num_vector:index
     string vector, index;
     split_vector(token, vector, index);
@@ -1521,7 +1536,7 @@ bool is_num_var(string & token, compiler_state & state)
 bool is_txt_var(string & token, compiler_state & state)
 {
     //Check if var
-    if(state.variables.count(token) > 0 && state.variables[token] == 2) return true;
+    if(variable_type(token, state) == 2) return true;
     //Check if txt_vector:index
     string vector, index;
     split_vector(token, vector, index);
@@ -1575,7 +1590,7 @@ void split_vector(string & token, string & vector, string & index)
  un subíndice de vector no sería una variable.*/
 bool variable_exists(string & token, compiler_state & state)
 {
-    return state.variables.count(token) > 0;
+    return variable_type(token, state) != 0;
 }
 
 bool is_subprocedure(string & token, compiler_state & state)
@@ -1686,4 +1701,13 @@ string & escape_c_quotes(string & str)
 bool in_procedure_section(compiler_state & state) {
     if (state.section_state == 3) state.section_state = 2; //We're inside a SUB-PROCEDURE procedure with no sections
     return state.section_state == 2;
+}
+
+// Return the number of the type or 0 if the variable doesn't exist
+unsigned int variable_type(string & token, compiler_state & state) {
+    if (state.variables[""].count(token) > 0)
+        return state.variables[""][token];
+    if (state.variables[state.current_subprocedure].count(token) > 0)
+        return state.variables[state.current_subprocedure][token];
+    return 0;
 }
