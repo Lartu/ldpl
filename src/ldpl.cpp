@@ -1217,7 +1217,7 @@ string fix_identifier(string ident, bool isVar, compiler_state & state){
         return fix_external_identifier(ident, isVar);
     }else{
         string local_prefix = ""; // Used for PARAMETERS and LOCAL DATA variables
-        if (isVar && state.current_subprocedure != "")
+        if (isVar && state.variables[""].count(ident) == 0)
             local_prefix = "LVAR_" + fix_identifier(state.current_subprocedure, false) + "_";
         return local_prefix + fix_identifier(ident, isVar);
     }
