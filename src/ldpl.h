@@ -23,7 +23,8 @@ using namespace std;
 
 //TODO: Change vectors to maps
 struct compiler_state{
-    unsigned int section_state = 0; //0 no section, 1 data, 2 procedure
+    unsigned int section_state = 0;
+    //0 no section, 1 data, 2 procedure, 3 sub-procedure start, 4 parameters, 5 local data
     unsigned int current_line = 0;
     string current_file = "";
     //Code to output (plain C code)
@@ -39,21 +40,21 @@ struct compiler_state{
         this->variable_code.push_back(code);
     }
     void add_code(string code){
-        if(!in_subprocedure)
+        if(current_subprocedure == "")
             this->output_code.push_back(code);
         else
             this->subroutine_code.push_back(code);
     }
     bool open_quote = false;
-    bool in_subprocedure = false;
+    string current_subprocedure = "";
     int open_loops = 0;
     stack<int> block_stack; //0 sub-procedure, 1 if or else if, 2 while/for, 3 else
-    void open_subprocedure(){
-        in_subprocedure = true;
+    void open_subprocedure(string & subprocedure){
+        current_subprocedure = subprocedure;
         block_stack.push(0);
     }
     void close_subprocedure(){
-        in_subprocedure = false;
+        current_subprocedure = "";
         block_stack.pop();
     }
     bool closing_subprocedure(){
@@ -147,3 +148,4 @@ string fix_external_identifier(string identifier, bool isVariable);
 string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
 string fix_identifier(string identifier);
+bool in_procedure_section(compiler_state & state);
