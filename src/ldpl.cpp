@@ -1221,26 +1221,37 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         vector<pair<string, string>> parameters = state.subprocedures[tokens[4]];
         trim(model_line);
         tokenize(model_line, 0, model_tokens, state.current_file, true);
-        if ((size_t)count(model_tokens.begin(), model_tokens.end(), "$") != parameters.size())
-            error("CREATE STATEMENT parameters count doesn't match SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        size_t i = 0;
-        for (string & token : model_tokens) if (token == "$") {
-            if (parameters[i].first == "ldpl_number")
-                token = "$num-expr";
-            else if (parameters[i].first == "string")
-                token = "$str-expr";
-            else if (parameters[i].first == "ldpl_vector<ldpl_number>")
-                token = "$num-vec";
-            else if (parameters[i].first == "ldpl_list<ldpl_number>")
-                token = "$num-list";
-            else if (parameters[i].first == "ldpl_vector<string>")
-                token = "$str-vec";
-            else if (parameters[i].first == "ldpl_list<string>")
-                token = "$str-list";
-            i++;
-        }
+        size_t param_count = 0;
+        size_t keyword_count = 0;
+        string valid_keyword_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         model_line = "";
-        for (i = 0; i < model_tokens.size(); i++) model_line += model_tokens[i] + " ";
+        for (string & token : model_tokens) {
+            if (token == "$") {
+                ++param_count;
+                if (param_count > parameters.size()) break;
+                if (parameters[param_count-1].first == "ldpl_number")
+                    model_line += "$num-expr";
+                else if (parameters[param_count-1].first == "string")
+                    model_line += "$str-expr";
+                else if (parameters[param_count-1].first == "ldpl_vector<ldpl_number>")
+                    model_line += "$num-vec";
+                else if (parameters[param_count-1].first == "ldpl_list<ldpl_number>")
+                    model_line += "$num-list";
+                else if (parameters[param_count-1].first == "ldpl_vector<string>")
+                    model_line += "$str-vec";
+                else if (parameters[param_count-1].first == "ldpl_list<string>")
+                    model_line += "$str-list";
+            } else if (token.find_first_not_of(valid_keyword_chars) == string::npos) {
+                ++keyword_count;
+                model_line += token;
+            } else {
+                error("CREATE STATEMENT with invalid token \"" + token + "\" (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            }
+        }
+        if (param_count != parameters.size())
+            error("CREATE STATEMENT parameters count doesn't match SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if (keyword_count == 0)
+            error("CREATE STATEMENT without keywords (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.custom_statements.emplace_back(model_line, tokens[4]);
         return;
     }
