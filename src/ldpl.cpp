@@ -433,7 +433,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state == 2)
             error("Duplicate PROCEDURE section declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.section_state = 2;
-        if (state.current_subprocedure != "") open_subprocedure_code(state, line_num, current_file);
+        if (state.current_subprocedure != "" && state.section_state >= 3) open_subprocedure_code(state, line_num, current_file);
         return;
     }
     if(line_like("PARAMETERS:", tokens, state))
@@ -458,6 +458,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.section_state == 2)
             error("LOCAL DATA section declaration within PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.section_state = 1;
+        open_subprocedure_code(state, line_num, current_file);
         return;
     }
 
