@@ -432,8 +432,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(state.section_state == 2)
             error("Duplicate PROCEDURE section declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if (state.current_subprocedure != "" && state.section_state >= 3)
+            open_subprocedure_code(state, line_num, current_file);
         state.section_state = 2;
-        if (state.current_subprocedure != "" && state.section_state >= 3) open_subprocedure_code(state, line_num, current_file);
         return;
     }
     if(line_like("PARAMETERS:", tokens, state))
