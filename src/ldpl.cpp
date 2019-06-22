@@ -505,9 +505,13 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             }
         }
         string identifier = fix_identifier(tokens[0], true, state);
-        if (state.section_state == 1) // DATA or LOCAL DATA
-            state.add_var_code(extern_keyword + type + " " + identifier + assign_default +  ";");
-        else // PARAMETERS
+        if (state.section_state == 1) { // DATA or LOCAL DATA
+            string code = extern_keyword + type + " " + identifier + assign_default + ";";
+            if (state.current_subprocedure == "") // DATA
+                state.add_var_code(code);
+            else
+                state.add_code(code); // LOCAL DATA
+        } else // PARAMETERS
             state.subprocedures[state.current_subprocedure].emplace_back(type, identifier);
         return;
     }
@@ -1259,10 +1263,7 @@ string fix_identifier(string ident, bool isVar, compiler_state & state){
     if(is_external(ident, state)){
         return fix_external_identifier(ident, isVar);
     }else{
-        string local_prefix = ""; // Used for PARAMETERS and LOCAL DATA variables
-        if (isVar && state.variables[""].count(ident) == 0)
-            local_prefix = "LVAR_" + fix_identifier(state.current_subprocedure, false) + "_";
-        return local_prefix + fix_identifier(ident, isVar);
+        return fix_identifier(ident, isVar);
     }
 }
 
