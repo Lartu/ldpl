@@ -713,7 +713,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                     types.push_back("ldpl_vector<string>");
                 else if(is_txt_list(tokens[i], state))
                     types.push_back("ldpl_list<string>");
-                code += get_c_expression(state, tokens[i]);
+                if (is_number(tokens[i]) || is_string(tokens[i])) {
+                    // C++ doen't allow passing literals in  reference parameters, we create vars for them
+                    string literal_paramter_var = state.new_literal_parameter_var();
+                    state.add_code(types.back() + " " + literal_paramter_var + " = " + tokens[i] + ";");
+                    code += literal_paramter_var;
+                } else {
+                    code += get_c_variable(state, tokens[i]);
+                }
                 if (i < tokens.size() - 1) code += ", ";
             }
             bool correct_types = state.correct_subprocedure_types(name, types);

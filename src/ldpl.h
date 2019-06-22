@@ -91,6 +91,11 @@ struct compiler_state{
     string new_range_var(){
         return "RVAR_" + to_string(range_vars++);
     }
+    //We keep track of declared variables used to pass literal parameters
+    int literal_paramter_vars = 0;
+    string new_literal_parameter_var(){
+        return "LPVAR_" + to_string(literal_paramter_vars++);
+    }
     //Adds a subprocedure that has been called but hasn't been declared.
     //If it hasn't been declared when compilation reaches the end of the source,
     //an error is risen.
