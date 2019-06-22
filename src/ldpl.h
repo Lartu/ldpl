@@ -130,6 +130,7 @@ struct compiler_state{
         return true;
     }
     stack<string> working_dir;
+    vector<pair<string, string>> custom_statements; // (statement model line, subprocedure name)
 };
 
 void bullet_msg(const string & msg);
@@ -177,3 +178,4 @@ string fix_identifier(string identifier);
 bool in_procedure_section(compiler_state & state, unsigned int line_num, string & current_file);
 unsigned int variable_type(string & token, compiler_state & state);
 void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file);
+void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num);
