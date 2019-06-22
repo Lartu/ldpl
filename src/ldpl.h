@@ -35,7 +35,7 @@ struct compiler_state{
     map<string, map<string, unsigned int>> variables; //variables by subprocedure (or "" for main)
     map<string, bool> externals; //variables defined in c++ extensions
     //1 number, 2 text, 3 number map/vector, 4 text map/vector, 5 number list, 6 text list
-    vector<string> subprocedures;
+    map<string, vector<pair<string, string>>> subprocedures; // subprocedure -> list of C++ parameter types and identifiers
     void add_var_code(string code){
         this->variable_code.push_back(code);
     }
@@ -94,14 +94,35 @@ struct compiler_state{
     //Adds a subprocedure that has been called but hasn't been declared.
     //If it hasn't been declared when compilation reaches the end of the source,
     //an error is risen.
-    vector<pair<string, string>> expected_subprocedures;
-    void add_expected_subprocedure(string name, string nameOriginal){
-        for(pair<string, string> & n : expected_subprocedures) if (n.first == name) return;
-        expected_subprocedures.push_back(make_pair(name, nameOriginal));
-        add_var_code("void " + name+"();");
+    vector<pair<string, vector<string>>> expected_subprocedures; // subprocedure -> list of C++ parameter types
+    void add_expected_subprocedure(string name, string fixed_name, vector<string> & types){
+        for(auto & subprocedure : expected_subprocedures) if (subprocedure.first == name) return;
+        expected_subprocedures.emplace_back(name, types);
+        string code = "void " + fixed_name + "(";
+        for (size_t i = 0; i < types.size(); ++i) {
+            code += types[i] + "&";
+            if (i < types.size() - 1) code += ", ";
+        }
+        code += ");";
+        add_var_code(code);
     }
-    void remove_expected_subprocedure(string name, string nameOriginal){
-        expected_subprocedures.erase(std::remove(expected_subprocedures.begin(), expected_subprocedures.end(), make_pair(name, nameOriginal)), expected_subprocedures.end());
+    void remove_expected_subprocedure(string & name){
+        for (auto it = expected_subprocedures.begin(); it != expected_subprocedures.end(); ++it) {
+            if (it->first == name) {
+                expected_subprocedures.erase(it);
+                return;
+            }
+        }
+    }
+    bool correct_subprocedure_types(string & name, vector<string> & types){
+        for(auto & subprocedure : expected_subprocedures) if (subprocedure.first == name)
+            return types == subprocedure.second;
+        for(auto & subprocedure : subprocedures) if(subprocedure.first == name) {
+            vector<string> actual_types;
+            for (auto & paramter : subprocedure.second) actual_types.push_back(paramter.first);
+            return types == actual_types;
+        }
+        return true;
     }
     stack<string> working_dir;
 };
@@ -148,5 +169,6 @@ string fix_external_identifier(string identifier, bool isVariable);
 string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
 string fix_identifier(string identifier);
-bool in_procedure_section(compiler_state & state);
+bool in_procedure_section(compiler_state & state, unsigned int line_num, string & current_file);
 unsigned int variable_type(string & token, compiler_state & state);
+void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file);
