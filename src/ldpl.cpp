@@ -699,12 +699,37 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         size_t i = 1;
         if(tokens[i] == "SUB-PROCEDURE") i++;
+        string subprocedure = tokens[i];
         // Valid options: No WITH or WITH with at least one paramter
         if (i == tokens.size()-1 || (i < tokens.size()-2 && tokens[i+1] == "WITH")) {
             if(!in_procedure_section(state, line_num, current_file))
                 error("CALL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             vector<string> parameters(i != tokens.size()-1 ? tokens.begin() + i + 2 : tokens.end(), tokens.end());
-            add_call_code(tokens[i], parameters, state, line_num);
+            vector<string> types;
+            for (string & parameter : parameters) {
+                if (is_num_expr(parameter, state))
+                    types.push_back("ldpl_number");
+                else if(is_txt_expr(parameter, state))
+                    types.push_back("string");
+                else if(is_num_vector(parameter, state))
+                    types.push_back("ldpl_vector<ldpl_number>");
+                else if(is_num_list(parameter, state))
+                    types.push_back("ldpl_list<ldpl_number>");
+                else if(is_txt_vector(parameter, state))
+                    types.push_back("ldpl_vector<string>");
+                else if(is_txt_list(parameter, state))
+                    types.push_back("ldpl_list<string>");
+            }
+            bool correct_types = state.correct_subprocedure_types(subprocedure, types);
+            if(!is_subprocedure(subprocedure, state)) {
+                if(!correct_types)
+                    error("CALL parameter types doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                state.add_expected_subprocedure(subprocedure, fix_identifier(subprocedure, false), types);
+            } else {
+                if(!correct_types)
+                    error("CALL parameter types doesn't match SUB-PROCEDURE declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            }
+            add_call_code(subprocedure, parameters, state, line_num);
             return;
         }
     }
@@ -1815,38 +1840,17 @@ void open_subprocedure_code(compiler_state & state, unsigned int line_num, strin
 void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num) {
     string current_file = state.current_file;
     string code = fix_identifier(subprocedure, false) + "(";
-    vector<string> types;
     for (size_t i = 0; i < parameters.size(); ++i) {
-        if (is_num_expr(parameters[i], state))
-            types.push_back("ldpl_number");
-        else if(is_txt_expr(parameters[i], state))
-            types.push_back("string");
-        else if(is_num_vector(parameters[i], state))
-            types.push_back("ldpl_vector<ldpl_number>");
-        else if(is_num_list(parameters[i], state))
-            types.push_back("ldpl_list<ldpl_number>");
-        else if(is_txt_vector(parameters[i], state))
-            types.push_back("ldpl_vector<string>");
-        else if(is_txt_list(parameters[i], state))
-            types.push_back("ldpl_list<string>");
         if (is_number(parameters[i]) || is_string(parameters[i])) {
             // C++ doen't allow passing literals in  reference parameters, we create vars for them
-            string literal_paramter_var = state.new_literal_parameter_var();
-            state.add_code(types.back() + " " + literal_paramter_var + " = " + parameters[i] + ";");
-            code += literal_paramter_var;
+            string literal_paramater_var = state.new_literal_parameter_var();
+            state.add_code(is_number(parameters[i]) ? "ldpl_number " : "string "
+                           + literal_paramater_var + " = " + parameters[i] + ";");
+            code += literal_paramater_var;
         } else {
             code += get_c_variable(state, parameters[i]);
         }
         if (i < parameters.size() - 1) code += ", ";
-    }
-    bool correct_types = state.correct_subprocedure_types(subprocedure, types);
-    if(!is_subprocedure(subprocedure, state)) {
-        if(!correct_types)
-            error("CALL parameter types doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_expected_subprocedure(subprocedure, fix_identifier(subprocedure, false), types);
-    } else {
-        if(!correct_types)
-            error("CALL parameter types doesn't match SUB-PROCEDURE declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
     }
     code += ");";
     state.add_code(code);
