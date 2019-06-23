@@ -719,6 +719,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                     types.push_back("ldpl_vector<string>");
                 else if(is_txt_list(parameter, state))
                     types.push_back("ldpl_list<string>");
+                else
+                    error("CALL with invalid parameter \"" + parameter + "\" (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             }
             bool correct_types = state.correct_subprocedure_types(subprocedure, types);
             if(!is_subprocedure(subprocedure, state)) {
