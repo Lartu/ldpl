@@ -501,7 +501,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                 valid_type = false;
             }
         }
-        if (valid_type) {
+        if (valid_type && i >= tokens.size() - 1) {
             if(state.section_state != 1 && state.section_state != 4)
                 error("Variable declaration outside DATA, PARAMETERS or LOCAL DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             if(state.variables[state.current_subprocedure].count(tokens[0]) > 0)
