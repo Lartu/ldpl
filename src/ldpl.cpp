@@ -466,55 +466,58 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     // Variable Declaration
     if(line_like("$name IS $anything", tokens, state))
     {
-        if(state.section_state != 1 && state.section_state != 4)
-            error("Variable declaration outside DATA, PARAMETERS or LOCAL DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(state.variables[state.current_subprocedure].count(tokens[0]) > 0)
-            error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(tokens.size() > 5)
-            error("Invalid type for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         string extern_keyword = ""; // C++ extern keyword to prepend to the type (empty if not EXTERNAL)
         string type; // C++ variable type
+        unsigned int type_number;
         string assign_default; // default value assignation to variable
         size_t i = 2;
+        bool valid_type = true;
         if (tokens[i] == "EXTERNAL" && state.current_subprocedure == "") { // EXTERNAL is only valid in DATA section
             state.externals[tokens[0]] = true;
             extern_keyword = "extern ";
             ++i;
         }
         if (tokens[i] == "NUMBER") {
-            state.variables[state.current_subprocedure][tokens[0]] = 1;
+            type_number = 1;
             type = "ldpl_number";
             if (extern_keyword == "") assign_default = " = 0";
         } else if (tokens[i] == "TEXT") {
-            state.variables[state.current_subprocedure][tokens[0]] = 2;
+            type_number = 2;
             type = "string";
             if (extern_keyword == "") assign_default = " = \"\"";
         } else {
-            error("Invalid type for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            valid_type = false;
         }
-        if (++i < tokens.size()) {
+        if (valid_type && ++i < tokens.size()) {
             // Collections
             assign_default = ""; // Collections are initially empty
             if (tokens[i] == "MAP" || tokens[i] == "VECTOR") {
-                state.variables[state.current_subprocedure][tokens[0]] += 2; // 1 -> 3, 2 -> 4
+                type_number += 2; // 1 -> 3, 2 -> 4
                 type = "ldpl_vector<" + type + ">";
             } else if (tokens[i] == "LIST") {
-                state.variables[state.current_subprocedure][tokens[0]] += 4; // 1 -> 5, 2 -> 6
+                type_number += 4; // 1 -> 5, 2 -> 6
                 type = "ldpl_list<" + type + ">";
             } else {
-                error("Invalid type for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                valid_type = false;
             }
         }
-        string identifier = fix_identifier(tokens[0], true, state);
-        if (state.section_state == 1) { // DATA or LOCAL DATA
-            string code = extern_keyword + type + " " + identifier + assign_default + ";";
-            if (state.current_subprocedure == "") // DATA
-                state.add_var_code(code);
-            else
-                state.add_code(code); // LOCAL DATA
-        } else // PARAMETERS
-            state.subprocedures[state.current_subprocedure].emplace_back(type, identifier);
-        return;
+        if (valid_type) {
+            if(state.section_state != 1 && state.section_state != 4)
+                error("Variable declaration outside DATA, PARAMETERS or LOCAL DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            if(state.variables[state.current_subprocedure].count(tokens[0]) > 0)
+                error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            state.variables[state.current_subprocedure][tokens[0]] = type_number;
+            string identifier = fix_identifier(tokens[0], true, state);
+            if (state.section_state == 1) { // DATA or LOCAL DATA
+                string code = extern_keyword + type + " " + identifier + assign_default + ";";
+                if (state.current_subprocedure == "") // DATA
+                    state.add_var_code(code);
+                else
+                    state.add_code(code); // LOCAL DATA
+            } else // PARAMETERS
+                state.subprocedures[state.current_subprocedure].emplace_back(type, identifier);
+            return;
+        }
     }
 
     // SUB-PROCEDURE Declaration
