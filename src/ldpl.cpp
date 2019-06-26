@@ -1817,10 +1817,10 @@ bool in_procedure_section(compiler_state & state, unsigned int line_num, string 
 
 // Return the number of the type or 0 if the variable doesn't exist
 unsigned int variable_type(string & token, compiler_state & state) {
-    if (state.variables[""].count(token) > 0)
-        return state.variables[""][token];
     if (state.variables[state.current_subprocedure].count(token) > 0)
         return state.variables[state.current_subprocedure][token];
+    if (state.variables[""].count(token) > 0)
+        return state.variables[""][token];
     return 0;
 }
 
