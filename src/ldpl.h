@@ -23,7 +23,8 @@ using namespace std;
 
 //TODO: Change vectors to maps
 struct compiler_state{
-    unsigned int section_state = 0; //0 no section, 1 data, 2 procedure
+    unsigned int section_state = 0;
+    //0 no section, 1 data or local, 2 procedure, 3 sub-procedure start, 4 parameters
     unsigned int current_line = 0;
     string current_file = "";
     //Code to output (plain C code)
@@ -31,29 +32,29 @@ struct compiler_state{
     vector<string> output_code;
     vector<string> subroutine_code; //code outside main()
     //variables
-    map<string, unsigned int> variables;
+    map<string, map<string, unsigned int>> variables; //variables by subprocedure (or "" for main)
     map<string, bool> externals; //variables defined in c++ extensions
     //1 number, 2 text, 3 number map/vector, 4 text map/vector, 5 number list, 6 text list
-    vector<string> subprocedures;
+    map<string, vector<pair<string, string>>> subprocedures; // subprocedure -> list of C++ parameter types and identifiers
     void add_var_code(string code){
         this->variable_code.push_back(code);
     }
     void add_code(string code){
-        if(!in_subprocedure)
+        if(current_subprocedure == "")
             this->output_code.push_back(code);
         else
             this->subroutine_code.push_back(code);
     }
     bool open_quote = false;
-    bool in_subprocedure = false;
+    string current_subprocedure = "";
     int open_loops = 0;
     stack<int> block_stack; //0 sub-procedure, 1 if or else if, 2 while/for, 3 else
-    void open_subprocedure(){
-        in_subprocedure = true;
+    void open_subprocedure(string & subprocedure){
+        current_subprocedure = subprocedure;
         block_stack.push(0);
     }
     void close_subprocedure(){
-        in_subprocedure = false;
+        current_subprocedure = "";
         block_stack.pop();
     }
     bool closing_subprocedure(){
@@ -90,19 +91,46 @@ struct compiler_state{
     string new_range_var(){
         return "RVAR_" + to_string(range_vars++);
     }
+    //We keep track of declared variables used to pass literal parameters
+    int literal_paramter_vars = 0;
+    string new_literal_parameter_var(){
+        return "LPVAR_" + to_string(literal_paramter_vars++);
+    }
     //Adds a subprocedure that has been called but hasn't been declared.
     //If it hasn't been declared when compilation reaches the end of the source,
     //an error is risen.
-    vector<pair<string, string>> expected_subprocedures;
-    void add_expected_subprocedure(string name, string nameOriginal){
-        for(pair<string, string> & n : expected_subprocedures) if (n.first == name) return;
-        expected_subprocedures.push_back(make_pair(name, nameOriginal));
-        add_var_code("void " + name+"();");
+    vector<pair<string, vector<string>>> expected_subprocedures; // subprocedure -> list of C++ parameter types
+    void add_expected_subprocedure(string name, string fixed_name, vector<string> & types){
+        for(auto & subprocedure : expected_subprocedures) if (subprocedure.first == name) return;
+        expected_subprocedures.emplace_back(name, types);
+        string code = "void " + fixed_name + "(";
+        for (size_t i = 0; i < types.size(); ++i) {
+            code += types[i] + "&";
+            if (i < types.size() - 1) code += ", ";
+        }
+        code += ");";
+        add_var_code(code);
     }
-    void remove_expected_subprocedure(string name, string nameOriginal){
-        expected_subprocedures.erase(std::remove(expected_subprocedures.begin(), expected_subprocedures.end(), make_pair(name, nameOriginal)), expected_subprocedures.end());
+    void remove_expected_subprocedure(string & name){
+        for (auto it = expected_subprocedures.begin(); it != expected_subprocedures.end(); ++it) {
+            if (it->first == name) {
+                expected_subprocedures.erase(it);
+                return;
+            }
+        }
+    }
+    bool correct_subprocedure_types(string & name, vector<string> & types){
+        for(auto & subprocedure : expected_subprocedures) if (subprocedure.first == name)
+            return types == subprocedure.second;
+        for(auto & subprocedure : subprocedures) if(subprocedure.first == name) {
+            vector<string> actual_types;
+            for (auto & paramter : subprocedure.second) actual_types.push_back(paramter.first);
+            return types == actual_types;
+        }
+        return true;
     }
     stack<string> working_dir;
+    vector<pair<string, string>> custom_statements; // (statement model line, subprocedure name)
 };
 
 void bullet_msg(const string & msg);
@@ -147,3 +175,7 @@ string fix_external_identifier(string identifier, bool isVariable);
 string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
 string fix_identifier(string identifier);
+bool in_procedure_section(compiler_state & state, unsigned int line_num, string & current_file);
+unsigned int variable_type(string & token, compiler_state & state);
+void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file);
+void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num);
