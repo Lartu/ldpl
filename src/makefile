@@ -4,7 +4,7 @@
 # | LDPL Version Details |
 # +----------------------+
 
-VERSION = '"3.1-dev"'  #LDPL Version
+VERSION = '"3.1.0-dev"'  #LDPL Version
 VERSIONNAME = '"Diligent Dreadnoughtus"' #LDPL Version Name
 
 # +-----------------+
