@@ -5,7 +5,7 @@ ldpl - The LDPL programming language compiler
 
 .SH SYNOPSIS
 .PP
-ldpl [-i=<included file>]... <source file>|-c
+ldpl [-i=<extension file>]... <source file>|-c
      [-o=<output name>|-r] [-f=<c++ flag>]... [-n]
 .br
 ldpl [-v|-h]
@@ -38,7 +38,7 @@ Documentation and reference for the LDPL Programming Language can be found in th
     You can set the output file for the compiled binary with the -o flag. For example, if you want to name your program "dog", you could compile it with ldpl -o=dog main.ldpl.
 
 -i=<file>
-    You can import files to your LDPL compilation by using the -i flag. For example, say you have a library mylib.ldpl and a source file mysource.ldpl, you can compile both and include the library by running ldpl -i=mylibrary.ldpl mysource.ldpl. Multiple -i= can be used to import multiple files. Extensions can also be imported by using this flag; see the Extensions section.
+    Extensions can be imported by using this flag; see the Extensions section.
 
 -f=<flag>
     The -f flag can be used to add flags to the C++ compilation line. See the Building C++ Extensions section for more information.
@@ -137,11 +137,27 @@ When you are done installing LDPL, write some LDPL source code, say 'source.ldpl
 
 .SH LDPL COMPILER SWITCHES
 
-You can import files to your LDPL compilation by using the '-i' flag. For example, say you have a library 'mylib.ldpl' and a source file 'mysource.ldpl', you can compile both and include the library by running 'ldpl -i=mylibrary.ldpl mysource.ldpl'. Multiple '-i=' can be used to import multiple files. Extensions can also be imported by using this flag; see the Extensions section.
+To compile an LDPL source file, the syntax is as follow:
 
-By using '-r' you can just compile the project and print the C++ representation for that code.
+'$ ldpl <ldpl_source_file> [[-i=]<ldpl_source_file>]* [flag]*'
 
-You can set the output file for the compiled binary with the '-o' flag. For example, if you want to name your program "dog", you could compile it with 'ldpl -o=dog main.ldpl'.
+The first part of the command, 'ldpl' runs the LDPL compiler. Then it checks every other part of the command for either files or compiler flags. Compiler flags are preceded by '-' or '--', all the remaining tokens are considered to be files to be compiled. Except when importing source files (more on this below), the order of the parameters of the compilation line doesn't really matter.
+
+You can pass the LDPL compiler as many source files as you want and all these files will be compiled into one big executable, respecing the order in which they were passed to the compiler. For example, if you have three scripts 'helloWorld.ldpl' (that prints "Hello World!" when executed), 'byeByeWorld.ldpl' (that prints "Bye Bye World!") when executed, and 'hiThere.ldpl' (that prints "Hi there~" when executed), you could compile all three files into one single executable by running
+
+'$ ldpl helloWorld.ldpl byeByeWorld.ldpl hiThere.ldpl'
+
+and this would create an executable file called 'helloWorld-bin'. By default, the name used to save the executable is the name of the first LDPL source code passed to the compiler, minus the extension, plus '-bin' (or '-bin.exe' on Windows).
+
+When you run 'helloWorld-bin', "Hello World! Bye Bye World! Hi there~" will be printed to the screen, respecting the order in which the sources where compiled. If you were to change the order of the sources in the compilation line, the order of execution of the binary file would change as well.
+
+Flags alter the way the compiler works by default. The list of available flags can be found by running '$ ldpl -h'.
+
+You can import files to your LDPL compilation by using the '-i=' flag. For example, say you have a library 'mylib.ldpl' and a source file 'mysource.ldpl', you can compile both and include the library by running 'ldpl -i=mylibrary.ldpl mysource.ldpl'. Multiple '-i=' can be used to import multiple files. While the '-i=' flag is not mandatory when including LDPL sources, as seen above, importing C++ Extensions requires this flag to be used; see the Extensions section for more information.
+
+By using the '-r' flag you can just transpile the project into C++ and print the C++ representation for that code.
+
+You can set the output file name for the compiled binary with the '-o' flag. For example, if in the example above you wanted to name your program "myProgram" instead of "helloWorld-bin", you could compile it with 'ldpl main.ldpl -o=myProgram'.
 
 On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the '-n' flag (or the alternative '--non-static' flag).
 
@@ -199,13 +215,13 @@ Comments in LDPL are denoted with a hash symbol ('\#') and can be placed both on
 
 .SH DATA SECTION
 
-As stated in Structure of LDPL Source Code, LDPL programs are divided in two sections, one of them being the DATA section. The DATA section is where variables are declared. In no other part of a LDPL source can variables be declared. If no variables are declared, the DATA section can be skipped altogether.
+As stated in Structure of LDPL Source Code, LDPL programs are divided in two sections, one of them being the DATA section. The DATA section is where global variables are declared (you can use them anywhere in your program). If no variables are declared, the DATA section can be skipped altogether.
 
-All variables in LDPL are global (LDPL has no concept of scope) and have a defined data type.
+All variables in LDPL have a defined data type.
 
 -- Note:
 .br
-Available data types are NUMBER, TEXT, NUMBER VECTOR and TEXT VECTOR.
+Available data types are 'NUMBER', 'TEXT', 'NUMBER LIST', 'TEXT LIST', 'NUMBER MAP' and 'TEXT MAP'.
 .br
 --
 
@@ -235,17 +251,18 @@ A DATA section cannot contain anything but variable declarations, comments and e
 .br
 2 |   myNumber IS NUMBER
 .br
-3 |   #Next I'm going to declare a text vector
+3 |   #Next I'm going to declare a text map
 .br
-4 |   niceTextVector IS TEXT VECTOR
+4 |   niceTextMap IS TEXT MAP
 .br
-5 | 
+5 |   myAwesomeList IS NUMBER LIST # I've declared a number list!
 .br
-6 | PROCEDURE:
+6 | 
 .br
-7 |   #This is a comment within the PROCEDURE section!
+7 | PROCEDURE:
 .br
-
+8 |   #This is a comment within the PROCEDURE section!
+.br
 
 
 .SH DATA TYPES
@@ -262,17 +279,19 @@ The TEXT data type, as its name suggests, represents alphanumeric strings. In th
 
 Both variables and string constants can be members of the TEXT type.
 
-The VECTOR data type is not a type itself but a collection of NUMBER or TEXT variables. This implies that only variables can be members of the VECTOR type, as collections of constants (and thus, constant VECTORs) are not present in the language.
+The LIST data type is a collection of NUMBER or TEXT values. Values can be pushed to LISTs and then accessed and modified using the ':' operator. LIST indexes consist of integer numbers. The first index of a LIST is index 0, and the rest count up to the length of the list minus one. LISTs are explained in greater detail in the 'Declaring LIST Variables' section.
 
-VECTORs superficially resemble arrays in other programming languages but with fundamental differences. In LDPL, there's no need to specify the size of a VECTOR before you start to use it. Additionally, any number or string in LDPL may be used as an array index, not just consecutive integers.
+LISTs, as collections of NUMBER or TEXT values, can only have one defined type at any given time: TEXT or NUMBER. A single LIST is not capable of storing both numeric and alphanumeric values.
 
-VECTORs, as collections of NUMBER or TEXT variables, can only have one defined type at any given time: TEXT or NUMBER. A single VECTOR is not capable of storing both numeric and alphanumeric values.
+The MAP data type is a collection of NUMBER or TEXT values. MAPs superficially resemble LISTs but with fundamental differences. The biggest one is that any number or string in LDPL may be used as an array index, not just consecutive integers. Also, values in MAPs have no order, so there's no one coming before or after any other. MAPs are explained in greater detail in the 'Declaring MAP Variables' section.
+
+MAPs, as collections of NUMBER or TEXT values, can only have one defined type at any given time: TEXT or NUMBER. A single MAP is not capable of storing both numeric and alphanumeric values.
 
 
 
 .SH PROCEDURE SECTION
 
-As stated in Structure of LDPL Source Code, LDPL programs are divided in two sections, one of them being the DATA section, the other being the PROCEDURE section. The PROCEDURE section is where all the code of a LDPL program that is not a variable declaration is written. A LDPL program must contain a PROCEDURE section, even if it's empty. Compilation will fail otherwise.
+As stated in Structure of LDPL Source Code, LDPL programs are divided in two sections, one of them being the DATA section, the other being the PROCEDURE section. The PROCEDURE section is where all the code of a LDPL program that is not a variable declaration is written. A LDPL program must contain a PROCEDURE section, even if it's empty. Compilation will fail otherwise. If your program consists of multiple LDPL source files, each file must have its own PROCEDURE section.
 
 Within the PROCEDURE section, every line can contain either a comment, a statement, a statement and a comment or be empty. No two statements can be written on the same line.
 
@@ -293,9 +312,40 @@ Code within the PROCEDURE section is executed from top to bottom, skipping SUB-P
 
 .SH SUB-PROCEDURES
 
-A SUB-PROCEDURE is a piece of code that can be called and executed from other parts of the script. SUB-PROCEDURE subsections must be declared within the PROCEDURE section of the code using a 'SUB-PROCEDURE <name>' statement and end with an 'END SUB-PROCEDURE' statement. Bear in mind that you can't define a SUB-PROCEDURE within a SUB-PROCEDURE. Also bear in mind that a SUB-PROCEDURE has to be declared before it can be CALLed.
+A SUB-PROCEDURE is a piece of code that can be called and executed from other parts of the script. SUB-PROCEDURE subsections must be declared within the PROCEDURE section of the code using a 'SUB-PROCEDURE <name>' statement and end with an 'END SUB-PROCEDURE' statement. Bear in mind that you can't define a SUB-PROCEDURE within a SUB-PROCEDURE. Also bear in mind that you can CALL a SUB-PROCEDURE before it has been declared, but the compilation process will fail if the compiler doesn't find the SUB-PROCEDURE once it has parsed all the files in your program.
 
 The syntax for declaring sub-procedures is this one:
+
+1 | DATA:
+.br
+2 |   # ...
+.br
+3 | PROCEDURE:
+.br
+4 |   # ...
+.br
+5 |   SUB-PROCEDURE mySubprocedure
+.br
+6 |     PARAMETERS:
+.br
+7 |         # Parameters declaration
+.br
+8 |     LOCAL DATA:
+.br
+9 |         # Local variables declaration
+.br
+10|     PROCEDURE:
+.br
+11|         # Sub procedure code
+.br
+12|         # goes here.
+.br
+13|   END SUB-PROCEDURE
+.br
+
+Of course, you cannot have two SUB-PROCEDUREs with the same name. SUB-PROCEDURE names follow the same naming guidelines variable names follow.
+
+A SUB-PROCEDURE has three sections: 'PARAMETERS', 'LOCAL DATA' and 'PROCEDURE'. The first two sections are optional and 'PROCEDURE' is mandatory, but you can skip the 'PROCEDURE:' label if you only use this section, like this:
 
 1 | DATA:
 .br
@@ -314,8 +364,114 @@ The syntax for declaring sub-procedures is this one:
 8 |   END SUB-PROCEDURE
 .br
 
-Of course, you cannot have two sub-procedures with the same name. Sub-procedure names follow the same naming guidelines variable names follow.
+In 'PROCEDURE' you write the code of the SUB-PROCEDURE using statements like in the main 'PROCEDURE' section, with the addition of RETURN.
 
+In 'PARAMETERS' and 'LOCAL DATA' you can only use variable declaration statements, just like in the DATA section. The variables defined here can only be used inside the 'PROCEDURE' section of the SUB-PROCEDURE where they are declared. You can declare variables with names declared in other SUB-PROCEDURE or 'DATA', if you use the variable in your SUB-PROCEDURE code it will always refers to the one you declared in the SUB-PROCEDURE, for example:
+
+1 | DATA:
+.br
+2 |   i IS number
+.br
+3 | PROCEDURE:
+.br
+4 |   SUB-PROCEDURE mySubprocedure
+.br
+5 |     LOCAL DATA:
+.br
+6 |         i IS text
+.br
+7 |     PROCEDURE:
+.br
+8 |         STORE "I'm a variable from mySubprocedure! " IN i
+.br
+9 |         DISPLAY i
+.br
+10|   END SUB-PROCEDURE
+.br
+11| 
+.br
+12|   STORE 42 IN i
+.br
+13|   CALL mySubprocedure
+.br
+14|   DISPLAY i
+.br
+15|   # The output of this program is "I'm a variable from mySubprocedure! 42"
+.br
+
+At the start of the SUB-PROCEDURE execution, all the variables declared in 'LOCAL DATA' will be initialized with its default value, and each invocation of the SUB-PROCEDURE will have its own copy of the local variables. This is important if you want to implement a recursive SUB-PROCEDURE, for example:
+
+1 | DATA:
+.br
+2 |   executions IS number
+.br
+3 | PROCEDURE:
+.br
+4 |   SUB-PROCEDURE myRecursiveSubprocedure
+.br
+5 |     LOCAL DATA:
+.br
+6 |         myLocalVar IS number
+.br
+7 |     PROCEDURE:
+.br
+8 |         INCR executions
+.br
+9 |         IF executions IS EQUAL TO 3 THEN
+.br
+10|             RETURN  # We don't want this to run forever!
+.br
+11|         END IF
+.br
+12|         DISPLAY "[myLocalVar starts at " myLocalVar "!"
+.br
+13|         STORE executions IN myLocalVar
+.br
+14|         CALL myRecursiveSubprocedure
+.br
+15|         DISPLAY "I'm execution Nº " myLocalVar "!]"
+.br
+16|   END SUB-PROCEDURE
+.br
+17| 
+.br
+18|   CALL myRecursiveSubprocedure
+.br
+19|   # The output of this program is
+.br
+20|   # "[myLocalVar starts at 0![myLocalVar starts at 0!I'm execution Nº 2!]I'm execution Nº 1!]"
+.br
+
+Variables declared in 'PARAMETERS' are quite different, they will start with the value passed from the CALL using the 'WITH' keyword. Variables are passed by reference. This means that if you modify a parameter in a SUB-PROCEDURE, the variable passed in the 'CALL' will also be modified. Be careful with this, and make sure to copy a parameter in a local variable if you need it. Passing variables by reference lets you return results from your SUB-PROCEDURE, for example:
+
+1 | DATA:
+.br
+2 |   i IS number
+.br
+3 | PROCEDURE:
+.br
+4 |   SUB-PROCEDURE duplicate
+.br
+5 |     PARAMETERS:
+.br
+6 |         input IS number
+.br
+7 |         result IS number
+.br
+8 |     PROCEDURE:
+.br
+9 |         IN result solve input + input
+.br
+10|   END SUB-PROCEDURE
+.br
+11| 
+.br
+12|   CALL duplicate WITH 2 i
+.br
+13|   DISPLAY i
+.br
+14|   # The output of this program is "4"
+.br
 
 
 .SH VARIABLES IN LDPL
@@ -346,25 +502,98 @@ Available replacement values are:
 
 
 
-.SH USAGE OF VECTORS
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
 
-A vector is a table of values, called elements. The elements of a vector are distinguished by their indices. Indices may be either NUMBER or TEXT literals. Vectors in LDPL are variables that hold a collection of values. When you declare a vector, you declare a structure that lets you store values of its type on any sub-index of the variable. For example, say you declare the vector 'myVector':
+.SH DECLARING LIST VARIABLES
+
+A LIST is a sequence of values, called elements. The elements of a LIST are distinguished by their indices. Indices are NUMBER literals that start at 0 (the first element of the list) and grow up to the length of the list minus one (the last element of the list). LISTs in LDPL are variables that hold a collection of values. When you declare a LIST, you declare a structure that lets you store values of its type one after another. For example, say you declare the list 'myList':
 
 1 | DATA:
 .br
-2 |   myVector IS NUMBER VECTOR
+2 |   myList IS NUMBER LIST
 .br
 
-Then you can use 'myVector' as a multivariable with various indexes where you can store NUMBERs.
+Then you can use 'myList' as a multi-variable with various indexes where you can store NUMBERs.
 
-LDPL provides one-dimensional vectors for storing groups of related strings or numbers.
+LDPL provides one-dimensional LISTs for storing groups of related strings or numbers (but not at the same time: LISTs can be either 'NUMBER LIST' or 'TEXT LIST' and each can only be used to store values of the chosen data type).
 
-In most other languages, you have to declare an array (other languages' equivalents of LDPL vectors) and specify how many elements or components it contains. In such languages, the declaration causes a contiguous block of memory to be allocated for that many elements. An index in the array usually must be a positive integer; for example, the index zero specifies the first element in the array, which is actually stored at the beginning of the block of memory. Index one specifies the second element, which is stored in memory right after the first element, and so on. It is impossible to add more elements to the array, because it has room for only as many elements as you declared (some languages allow arbitrary starting and ending indices, e.g., '15 .. 27', but the size of the array is still fixed when the array is declared).
+In most other languages, you may have to declare a LIST and specify how many elements or components it contains. In such languages, the declaration causes a contiguous block of memory to be allocated for that many elements. LDPL LISTs, however, are different: they are dynamic. This means that you can store as many values as you want in a single LIST without fear of running out of place (of course, this is limited by the memory allocated by your operating system for your LDPL program).
 
-LDPL vectors different: they are associative. This means that each vector is a collection of pairs: an index, and its corresponding vector element value:
+Suppose you store the values '"hi"', '"there"', '"I love"' and '"LDPL, it's great!"' in a 'TEXT LIST', in that particular order. Then the contents of the list and the index associated with each element will be
 
 .br
-| Index | Value |
+| Index | Element |
+.br
+| :---: | :---: |
+.br
+| 0 | '"hi"' |
+.br
+| 1 | '"there"' |
+.br
+| 2 | '"I love"' |
+.br
+| 3 | '"LDPL, it's great!"' |
+
+We have shown the pairs in order because their order is relevant: if you added a new element to the LIST, it would be inserted after the last element, thus being associated with index '4'.
+
+To add values to a LIST, you must first push them to the list. For example, if you want to add the numbers '10', '20' and '30' to a 'NUMBER LIST', your code should look like this:
+
+1 | DATA:
+.br
+2 |   myList IS NUMBER LIST
+.br
+3 | PROCEDURE:
+.br
+4 |   PUSH 10 TO myList # 10 is stored in index 0 of myList
+.br
+5 |   PUSH 20 TO myList # 20 is stored in index 1 of myList
+.br
+6 |   PUSH 30 TO myList # 30 is stored in index 2 of myList
+.br
+
+Values in LISTs can be stored and accessed just like any other variable (see the STORE - IN statement for further details) using the ':' operator. This operator indicates what index of the LIST we are writing to or reading from. Here we declare a 'NUMBER LIST' and store the values '5' and '-10.2' in it, and then replace the number '5' by the number '890':
+
+1 | DATA:
+.br
+2 |   myList IS NUMBER LIST
+.br
+3 | PROCEDURE:
+.br
+4 |   PUSH 5 TO myList # 5 is stored in index 0 of myList
+.br
+5 |   PUSH -10.2 TO myList # -10.2 is stored in index 1 of myList
+.br
+6 |   STORE 890 IN myList:0 #We store 890 in index 0 of myList, thus replacing the 5
+.br
+
+Please note that as a LIST is variable that's a collection of values, a single index of a LIST is a variable in itself. This means that any subindex of a LIST can be used in any position where you could use a variable of the same type of the LIST. So, if you have something like this:
+
+1 | STORE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+You could use a 'NUMBER LIST' with a defined sub-index (for example, in the example above, 'myList:0') where it says NUMBER-VAR, just like in the 'STORE - IN' examples in the code extracts above.
+
+In the LIST STATEMENTS section you'll find a collection of statements that can be used to work with LISTs.
+
+
+
+.SH DECLARING MAP VARIABLES
+
+A MAP is a table of values, called elements. The elements of a MAP are distinguished by their keys. Keys may be either NUMBER or TEXT literals. MAPs in LDPL are variables that hold a collection of values. When you declare a MAP, you declare a structure that lets you store values of its type on any sub-index of the variable. For example, say you declare the map 'myMap':
+
+1 | DATA:
+.br
+2 |   myMap IS NUMBER MAP
+.br
+
+Then you can use 'myMap' as a multi-variable with various indexes where you can store NUMBERs.
+
+Unlike LISTs, MAPs are associative. This means that each MAP is a collection of pairs: a key and its corresponding element. For example, you could have a 'NUMBER MAP' with the following contents:
+
+.br
+| Key | Element |
 .br
 | :---: | :---: |
 .br
@@ -376,28 +605,28 @@ LDPL vectors different: they are associative. This means that each vector is a c
 .br
 | "99ldplrocks89" | 0 |
 
-We have shown the pairs in jumbled order because their order is irrelevant. One advantage of associative vectors is that new pairs can be added at any time. Vectors can be sparse: it can have missing indices (say for example you have indices 1 and 5, but don't have indices 2, 3 and 4). Another consequence of associative vectors is that the indices don't have to be positive integers. Any number, or even a string, can be an index.
+We have shown the pairs in jumbled order because their order is irrelevant. One advantage of MAPs is that new pairs can be added at any time. MAPs can be sparse: they can have missing keys (say for example you have keys 1 and 5, but don't have keys 2, 3 and 4). Another consequence of MAPs is that the keys don't necessarily have to be positive integers. Any number, or even a string, can be a key.
 
-Values in vectors can be stored and accessed just like any other variable (see the STORE - IN statement for further details). Here we declare a NUMBER vector and store the values '5' and '-10.2' in the indices '1' and '5', respectively.
+Values in MAPs can be stored and accessed just like any other variable (see the STORE - IN statement for further details) using the ':' operator. This operator indicates what key of the MAP we are writing to or reading from. Here we declare a 'NUMBER MAP' and store the values '5' and '-10.2' in the keys '1' and '5', respectively.
 
 1 | DATA:
 .br
-2 |   myVector IS NUMBER VECTOR
+2 |   myMap IS NUMBER MAP
 .br
 3 | PROCEDURE:
 .br
-4 |   STORE 5 IN myVector:1 #Stores 5 in the subindex 1 of myVector
+4 |   STORE 5 IN myMap:1 #Stores 5 in key 1 of myMap
 .br
-5 |   STORE -10.2 IN myVector:5 #Stores -10.2 in the subindex 5 of myVector
+5 |   STORE -10.2 IN myMap:5 #Stores -10.2 in key 5 of myMap
 .br
 
-As stated before, vector sub-indexes don't always have to be constant NUMBERs. They can also be NUMBER variables, TEXT and TEXT variables, or even sub-indexes of other arrays. For example:
+As stated before, MAP keys don't always have to be constant NUMBERs. They can also be NUMBER variables, TEXT and TEXT variables, or even sub-indexes of LISTs or elements from other MAPs. For example:
 
 1 | DATA:
 .br
-2 |   myVector IS NUMBER VECTOR
+2 |   myMap IS NUMBER MAP
 .br
-3 |   myOtherVector IS NUMBER VECTOR
+3 |   myOtherMap IS NUMBER MAP
 .br
 4 |   myVar IS NUMBER
 .br
@@ -407,62 +636,71 @@ As stated before, vector sub-indexes don't always have to be constant NUMBERs. T
 .br
 7 |   STORE 17 IN myVar
 .br
-8 |   STORE 1 IN myVector:"hello" #Stores 1 in the subindex "hello" of myVector
+8 |   STORE 1 IN myMap:"hello" #Stores 1 in key "hello" of myMap
 .br
-9 |   STORE 7 IN myVector:myVar #Stores 7 in the position of index value of myVar
+9 |   STORE 7 IN myMap:myVar #Stores 7 in a key equal to the current value of myVar
 .br
-10|   STORE 3 IN myVector:myOtherVector:4
+10|   STORE 3 IN myMap:myOtherMap:4
 .br
-11|   #Stores 3 in the position of index value of myVar of myOtherVector
+11|   #Stores 3 in a key of equal value to the key of myMap with value equal to
+.br
+12|   #key 4 of myOtherMap
 .br
 
-In fact, when you use a NUMBER value as a subindex for a VECTOR, it is silently casted into a TEXT value. For example, 'myVector:1' will be interpreted (an thus, the same) as 'myVector:"1"'.
+In fact, when you use a NUMBER value as a subindex for a MAP, it is silently casted into a TEXT value. For example, 'myMap:1' will be interpreted (an thus, the same) as 'myMap:"1"'.
 
-Please note that as a VECTOR is variable that's a collection of values, a single index of a VECTOR is a variable in itself. This means that any subindex of a VECTOR can be used in any position where you could use a variable of the same type of the vector. So, if you have something like this:
+Please note that as a MAP is variable that's a collection of values, a single key of a MAP is a variable in itself. This means that any key of a MAP can be used in any position where you could use a variable of the same type of the MAP. So, if you have something like this:
 
 1 | STORE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 .br
 
-You could use a NUMBER VECTOR with a defined sub-index where it says NUMBER-VAR, just like in the 'STORE - IN' examples in the code extracts above.
+You could use a 'NUMBER MAP' with a particular key where it says NUMBER-VAR, just like in the 'STORE - IN' examples in the code extracts above (for example 'myMap:"hello"').
 
-When LDPL creates an array for you, e.g., with the SPLIT built-in statement, that vector's indices are consecutive integers starting at zero ('0', '1', '2', etc.).
+When LDPL creates a MAP for you using a built-in statement that automatically inserts values into the MAP, for example the SPLIT built-in statement with a MAP for destination, the keys used will be consecutive integers starting at zero ('0', '1', '2', etc.).
 
-As you'll see in the Default Variable Values section, you can access undeclared indices of a vector just like if they were declared. See the following example:
+As you'll see in the Default Variable Values section, you can access undeclared keys of a MAP just like if they were declared. See the following example:
 
 1 | DATA:
 .br
-2 |   myVector IS NUMBER VECTOR
+2 |   myMap IS NUMBER MAP
 .br
 3 | PROCEDURE:
 .br
-4 |   DISPLAY myVector:99
+4 |   DISPLAY myMap:99
 .br
 
-In the example above, '0' will be printed and no errors displayed during compilation, even though the index '99' of 'myVector' hasn't been explicitly declared. This is because when you try to access an element that hasn't been declared yet, LDPL declares it for you and initializes it to its type default value.
+In the example above, '0' will be printed and no errors displayed during compilation, even though the key'99' of 'myMap' hasn't been explicitly declared. This is because when you try to access an element that hasn't been declared yet, LDPL declares it for you and initializes it to its type default value.
 
-It's important to note that this very feature is a double-edged weapon. While you can use it to access uninitialized vector positions, you cannot check if a value exists in a vector without initializing it if it wasn't there before. Statements like STORE INDEX COUNT OF and STORE INDICES OF are provided as means to overcome this situation.
+It's important to note that this very feature is a double-edged weapon. While you can use it to access uninitialized MAP keys, you cannot check if a value exists in a MAP without initializing it if it wasn't there before. Statements like STORE KEY COUNT OF and STORE KEYS OF are provided as means to overcome this situation.
 
-(Also, as some parts of LDPL vectors work just like arrays do in awk, some parragraphs of this section are heavily based on the ones found on http://kirste.userpage.fu-berlin.de/chemnet/use/info/gawk/gawk\\_12.html).
+In the MAP STATEMENTS section you'll find a collection of statements that can be used to work with MAPs.
 
+-- Warning:
+.br
+In older versions of LDPL, MAPs where called VECTORs. Starting from LDPL 3.1.0 Diligent Dreadnoughtus, they have been renamed to reflect the real data structure they represent. While it is still possible to call them VECTORs in code, and legacy code that declares MAPs as VECTORs is and will continue be supported, this nomenclature is deprecated and shouldn't be used anymore.
+.br
+--
 
 
 .SH DEFAULT VARIABLE VALUES
 
 In LDPL each variable is initialized with a value by default. This means that when you declare a variable, it will, by default, hold this value until it's changed.
 
-NUMBER variables are initialized with the value '0'. Each position of a NUMBER VECTOR is a NUMBER variable, and thus also initialized to '0'.
+NUMBER variables are initialized with the value '0'. Each element of a NUMBER MAP is a NUMBER variable, and thus also initialized to '0'.
 
-TEXT variables are initialized to the empty string '""'. Same goes to TEXT VECTORs, where each position is also initialized to '""'.
+TEXT variables are initialized to the empty string '""'. Same goes to TEXT MAPs, where each element is also initialized to '""'.
+
+LISTs are initialized empty by default and trying to access a non-existing index will result in an error.
 
 
 
 .SH COMMAND LINE ARGUMENTS
 
-Every LDPL program comes with two variables declared by default: 'argc', of the NUMBER type, and 'argv', a TEXT VECTOR. If you pass command line arguments to your LDPL compiled program (running, for example, something like 'myBinary argument1 argument2)', the value stored in the variable 'argc' (_argument count_) will reflect the number of arguments passed to the script (in this case, two), while the 'argv' vector (_argument vector_) will store in its 0-based natural number positions (that is 0, 1, 2, 3, etc.) the values of each argument passed (in this case, '"argument1"' will be stored in 'argv:0' and '"argument2"' in 'argv:1').
+Every LDPL program comes with two variables declared by default: 'argc', of the NUMBER type, and 'argv', a TEXT MAP. If you pass command line arguments to your LDPL compiled program (running, for example, something like 'myBinary argument1 argument2)', the value stored in the variable 'argc' (_argument count_) will reflect the number of arguments passed to the script (in this case, two), while the 'argv' vector (_argument vector_) will store in its 0-based natural number keys (that is 0, 1, 2, 3, etc.) the values of each argument passed (in this case, '"argument1"' will be stored in 'argv:0' and '"argument2"' in 'argv:1').
 
 -- Note:
 .br
-Given that 'argv' is a TEXT VECTOR, the values passed as arguments are always stored as TEXT.
+Given that 'argv' is a TEXT MAP, the values passed as arguments are always stored as TEXT.
 .br
 --
 
@@ -487,6 +725,8 @@ The 'ERRORTEXT' variable is a TEXT variable that will be empty if the statement 
 When handling ERROR checks, please bear in mind that the content of the 'ERRORTEXT' variable may change in future releases of LDPL. The value stored in 'ERRORCODE', however, will not change and so that's the value that should be used to check whether an operation ran successfully or not.
 .br
 --
+
+
 
 
 
@@ -535,7 +775,7 @@ when printed to the console.
 Variables and SUB-PROCEDURE names follow the same naming rules. These names can't be empty and may consist of any character with few exceptions (listed below). Like statements, variable and SUB-PROCEDURE names in LDPL are not case sensitive.
 
 .br
-[*] Variable and SUB-PROCEDURE names cannot contain the character ':', it is used for vector accesses.
+[*] Variable and SUB-PROCEDURE names cannot contain the character ':', it is used for MAP and LIST accesses.
 .br
 [*] Variable and SUB-PROCEDURE names cannot contain the character '"', it is used to delimit strings.
 .br
@@ -583,7 +823,7 @@ The 'IF' statement evaluates if the condition given by the relational operator b
 
 .B Syntax:
 
-1 | IF <NUMBER-VAR or NUMBER> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER> THEN
+1 | IF <NUMBER-VAR or NUMBER or MAP or LIST> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER or MAP or LIST> THEN
 .br
 2 |  #Code goes here (positive branch)
 .br
@@ -596,7 +836,7 @@ The 'IF' statement evaluates if the condition given by the relational operator b
 
 or
 
-1 | IF <TEXT-VAR or TEXT> IS <REL-OP-TEXT> <TEXT-VAR or TEXT> THEN
+1 | IF <TEXT-VAR or TEXT or MAP or LIST> IS <REL-OP-TEXT> <TEXT-VAR or TEXT or MAP or LIST> THEN
 .br
 2 |  #Code goes here (positive branch)
 .br
@@ -609,7 +849,7 @@ or
 
 or
 
-1 | IF <NUMBER-VAR or NUMBER> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER> THEN
+1 | IF <NUMBER-VAR or NUMBER or MAP or LIST> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER or MAP or LIST> THEN
 .br
 2 |  #Code goes here (positive branch)
 .br
@@ -618,7 +858,7 @@ or
 
 or
 
-1 | IF <TEXT-VAR or TEXT> IS <REL-OP-TEXT> <TEXT-VAR or TEXT> THEN
+1 | IF <TEXT-VAR or TEXT or VECTOR or LIST> IS <REL-OP-TEXT> <TEXT-VAR or TEXT or VECTOR or LIST> THEN
 .br
 2 |  #Code goes here (positive branch)
 .br
@@ -646,7 +886,6 @@ Possible values of 'REL-OP-TEXT' (text relational operator):
 [*] 'EQUAL TO'
 .br
 [*] 'NOT EQUAL TO'
-
 
 
 .SH ELSE IF - IS - THEN
@@ -694,7 +933,7 @@ The 'WHILE' statement evaluates if the condition given by the relational operato
 
 .B Syntax:
 
-1 | WHILE <NUMBER-VAR or NUMBER> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER> DO
+1 | WHILE <NUMBER-VAR or NUMBER or MAP or LIST> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER or MAP or LIST> DO
 .br
 2 |  #Code goes here
 .br
@@ -703,7 +942,7 @@ The 'WHILE' statement evaluates if the condition given by the relational operato
 
 or
 
-1 | WHILE <TEXT-VAR or TEXT> IS <REL-OP-TEXT> <TEXT-VAR or TEXT> DO
+1 | WHILE <TEXT-VAR or TEXT or MAP or LIST> IS <REL-OP-TEXT> <TEXT-VAR or TEXT or MAP or LIST> DO
 .br
 2 |  #Code goes here
 .br
@@ -733,12 +972,125 @@ Possible values of 'REL-OP-TEXT' (text relational operator):
 [*] 'NOT EQUAL TO'
 
 
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
 
+.SH FOR - FROM - TO - STEP - DO
+
+The 'FOR' statement repeatedly run the code in its body a number of times, given a 'counter' variable, the 'start' of the range, its 'end' and a 'step'.
+
+When the loop starts, 'start' is assigned to 'counter' and starts an iteration, evaluating a condition. The condition is 'counter < end' if 'step >= 0' and 'counter > end' if 'step < 0'. If the condition passes, the code in the body of the 'FOR' is executed, otherwise the loop will end. After the code is ran the 'counter' is incremeted by 'step' and a new iteration is started (checking the condition and so on).
+
+.B Syntax:
+
+1 | FOR <NUMBER-VAR> FROM <NUMBER-VAR or NUMBER> TO <NUMBER-VAR or NUMBER> STEP <NUMBER-VAR or NUMBER> DO
+.br
+2 |  #Code goes here
+.br
+3 | REPEAT
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   i IS NUMBER
+.br
+3 | PROCEDURE:
+.br
+4 |   FOR i FROM 0 TO 10 STEP 2 DO
+.br
+5 |     DISPLAY i " "
+.br
+6 |   REPEAT
+.br
+7 |   # Will display "0 2 4 6 8 10"
+.br
+
+
+
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
+
+.SH FOR EACH - IN - DO
+
+The 'FOR EACH' statement repeatedly run the code in its body for every element in a given 'LIST' or 'MAP'. At the start of each iteration an element of the collection is assigned to a variable matching its type.
+
+If the collection is a 'LIST', its elements will be iterated increasingly from index '0', while in the case of a 'MAP' all the elements will be iterated in no particular order.
+
+.B Syntax:
+
+1 | FOR EACH <NUMBER-VAR> IN <NUMBER-LIST or NUMBER-MAP> DO
+.br
+2 |  #Code goes here
+.br
+3 | REPEAT
+.br
+4 | FOR EACH <TEXT-VAR> IN <TEXT-LIST or TEXT-MAP> DO
+.br
+5 |  #Code goes here
+.br
+6 | REPEAT
+.br
+
+.B Example 1:
+
+1 | DATA:
+.br
+2 |   letter IS TEXT
+.br
+3 |   letters IS TEXT LIST
+.br
+4 | PROCEDURE:
+.br
+5 |   PUSH "L" TO letters
+.br
+6 |   PUSH "D" TO letters
+.br
+7 |   PUSH "P" TO letters
+.br
+8 |   PUSH "L" TO letters
+.br
+9 |   FOR EACH letter IN letters DO
+.br
+10|     DISPLAY letter
+.br
+11|   REPEAT
+.br
+12|   # Will display "LDPL"
+.br
+
+.B Example 2:
+
+1 | DATA:
+.br
+2 |   number IS NUMBER
+.br
+3 |   numbers IS NUMBER MAP
+.br
+4 | PROCEDURE:
+.br
+5 |   STORE 1 IN numbers:"One"
+.br
+6 |   STORE 2 IN numbers:"Two"
+.br
+7 |   STORE 3 IN numbers:"Three"
+.br
+8 |   FOR EACH number IN numbers DO
+.br
+9 |     DISPLAY number
+.br
+10|   REPEAT
+.br
+11|   # Will display "312" or any permutation
+.br
 
 
 .SH BREAK
 
-The 'BREAK' statement breaks the execution of a 'WHILE' loop. Will throw a compiler error if used outside one.
+The 'BREAK' statement breaks the execution of the innermost 'WHILE' or 'FOR' loop. Will throw a compiler error if used outside one.
 
 .B Syntax:
 
@@ -749,7 +1101,7 @@ The 'BREAK' statement breaks the execution of a 'WHILE' loop. Will throw a compi
 
 .SH CONTINUE
 
-The 'CONTINUE' statement jumps to the next iteration of a 'WHILE' loop. Will throw a compiler error if used outside one.
+The 'CONTINUE' statement jumps to the next iteration of the innermost 'WHILE' or 'FOR' loop. Will throw a compiler error if used outside one.
 
 .B Syntax:
 
@@ -766,14 +1118,19 @@ The 'CALL SUB-PROCEDURE' statement executes a SUB-PROCEDURE. Once the SUB-PROCED
 
 1 | CALL SUB-PROCEDURE <sub-procedure name>
 .br
+2 | CALL SUB-PROCEDURE <sub-procedure name> WITH <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR, MAP or LIST>
+.br
 
 or just
 
 1 | CALL <sub-procedure name>
 .br
+2 | CALL <sub-procedure name> WITH <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR, MAP or LIST>
+.br
 
-Of course, a sub-procedure must be declared before calling it.
+Of course, a SUB-PROCEDURE must be declared somewhere in your program if you call it.
 
+If the SUB-PROCEDURE you call doesn't have declared parameters, you must call it without the 'WITH' keyword, otherwise you must include it and after it pass all the parameters in the same order declared in the 'PARAMETERS' section of the SUB-PROCEDURE. Remember that variables are passed by reference, see the SUB-PROCEDUREs documentation for more details.
 
 
 .SH RETURN
@@ -1000,6 +1357,10 @@ The 'CEIL' statement rounds up the value of NUMBER-VAR to the nearest greater in
 
 
 
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
 .SH INCR & DECR
 
 The 'INCR' and 'DECR'statements add or subtract from a NUMBER variable by one. The variable is updated with the new value in place.
@@ -1118,6 +1479,10 @@ If any of the values to be joined is a NUMBER value, the value will be converted
 
 
 
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
 .SH REPLACE - FROM - WITH - IN
 
 The 'REPLACE' statement finds and replaces every occurrence of some TEXT in a TEXT variable or value some other TEXT.  The result is then stored in a TEXT variable.
@@ -1141,22 +1506,37 @@ Outputs:
 
 
 
+---
+description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+---
+
 .SH SPLIT - BY - IN
 
-The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a TEXT vector, starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'
+The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a 'TEXT LIST' or keys of a 'TEXT MAP', starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'
 
 To break TEXT into individual characters, split by the empty string of '""'.
 
 Syntax:
 
-1 | SPLIT <TEXT-VAR or TEXT> BY TEXT-VAR or TEXT> IN <TEXT-VECTOR>
+1 | SPLIT <TEXT-VAR or TEXT> BY <TEXT-VAR or TEXT> IN <TEXT-LIST>
+.br
+
+or
+
+1 | SPLIT <TEXT-VAR or TEXT> BY <TEXT-VAR or TEXT> IN <TEXT-MAP>
 .br
 
 Example:
 
-1 | SPLIT "Hello there!" BY " " IN parts
+1 | DATA:
 .br
-2 | display parts:0 crlf parts:1 crlf
+2 |   parts IS TEXT LIST
+.br
+3 | PROCEDURE:
+.br
+4 |   SPLIT "Hello there!" BY " " IN parts
+.br
+5 |   display parts:0 crlf parts:1 crlf
 .br
 
 will output:
@@ -1168,9 +1548,15 @@ will output:
 
 Split into characters:
 
-1 | SPLIT "onomatopoeia" BY "" IN parts
+1 | DATA:
 .br
-2 | DISPLAY parts:3 " is M " crlf
+2 |   parts IS TEXT MAP
+.br
+3 | PROCEDURE:
+.br
+4 |   SPLIT "onomatopoeia" BY "" IN parts
+.br
+5 |   DISPLAY parts:3 " is M " crlf
 .br
 
 will output:
@@ -1232,6 +1618,12 @@ Multi-byte characters (like emojis and non-ASCII characters) cannot be parsed by
 [*] 'ERRORCODE': 1
 .br
 [*] 'ERRORTEXT': "Multibyte character received (probably UTF-8). Can't be parsed into a single number."
+
+-- Warning:
+.br
+Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
+.br
+--
 
 
 
@@ -1306,7 +1698,7 @@ description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 
 .SH GET INDEX OF - FROM - IN
 
-The 'GET INDEX OF - FROM - IN' statement stores in a NUMBER variable the position of the first occurrence of a specified value in a string or TEXT variable. The first position of a string (the first letter) is considered to be the position number '0'.
+The 'GET INDEX OF - FROM - IN' statement stores in a NUMBER variable the position of the first occurrence of a specified value in a string or TEXT variable. The first position of a string (the first letter) is considered to be the position number '0'. The value '-1' is stored if there are no occurrences.
 
 .B Syntax:
 
@@ -1431,7 +1823,146 @@ The 'TRIM - IN' statement removes whitespace from both sides of a string and sto
 
 
 .ce 1
-.SH -=-=-=-=- DOCS: VECTOR STATEMENTS -=-=-=-=-
+.SH -=-=-=-=- DOCS: LIST STATEMENTS -=-=-=-=-
+
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
+
+.SH PUSH - TO
+
+The 'PUSH - TO' statement is used to add elements to a LIST. When you push an element to a LIST it is appended at the end of the list.
+
+.B Syntax:
+
+1 | PUSH <NUMBER-VAR or NUMBER> TO <NUMBER-LIST>
+.br
+2 | PUSH <TEXT-VAR or TEXT> TO <TEXT-LIST>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT LIST
+.br
+3 | PROCEDURE:
+.br
+4 |   PUSH "First index" TO foo
+.br
+5 |   PUSH "Second index" TO foo
+.br
+
+In the above example, 'foo' now contains the value '"First index"' at index '0' and the value '"Second index"' at index '1'.
+
+
+
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
+
+.SH CLEAR
+
+The 'CLEAR' statement empties a LIST, thus deleting all its contents. The LIST itself is not deleted though, and can still be used and filled with new elements after a 'CLEAR' statement has been executed.
+
+.B Syntax:
+
+1 | CLEAR <LIST>
+.br
+
+
+
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
+
+.SH COPY - TO
+
+The 'COPY - TO' statement copies all the elements of a LIST with their respective indices to another LIST of the same type. The original LIST is untouched, but the destination LIST is completely overwritten by the contents of the copied LIST and any elements that existed in it prior to the copy are deleted. In other words, the destination LIST is CLEARed before the copy.
+
+.B Syntax:
+
+1 | COPY <TEXT-LIST> TO <TEXT-LIST>
+.br
+2 | COPY <NUMBER-LIST> TO <NUMBER-LIST>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT LIST
+.br
+3 |   bar IS TEXT LIST
+.br
+4 | PROCEDURE:
+.br
+5 |   PUSH "Hello there!" TO foo
+.br
+6 |   PUSH "How are you?" TO foo
+.br
+7 |   COPY foo TO bar
+.br
+8 |   DISPLAY bar:0 " " bar:1 CRLF
+.br
+9 |   # Will display "Hello there! How are you?"
+.br
+
+
+
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
+
+.SH STORE LENGTH OF - IN
+
+The 'STORE LENGTH OF - IN' statement stores the amount of elements stored in a LIST (or, analogously, the length of the LIST) into a numeric variable.
+
+.B Syntax:
+
+1 | STORE LENGHT OF <LIST> IN <NUMBER-VAR>
+.br
+
+.B Example:
+
+1 | DATA:
+.br
+2 |   foo IS TEXT LIST
+.br
+3 |   count IS NUMBER
+.br
+4 | PROCEDURE:
+.br
+5 |   PUSH "Hello there!" TO foo
+.br
+6 |   PUSH "How are you?" TO foo
+.br
+7 |   STORE LENGTH OF foo IN count
+.br
+8 |   DISPLAY count CRLF
+.br
+9 |   # Will display 2
+.br
+
+
+
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
+
+.SH DELETE LAST ELEMENT OF
+
+The 'DELETE LAST ELEMENT OF' deletes the last element pushed to a LIST. If the LIST was empty, this statement does nothing.
+
+.B Syntax:
+
+1 | DELETE LAST ELEMENT OF <LIST>
+.br
+
+
+
+.ce 1
+.SH -=-=-=-=- DOCS: MAP STATEMENTS <A ID="VECTOR-STATEMENTS"></A> -=-=-=-=-
 
 ---
 description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
@@ -1439,11 +1970,11 @@ description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 
 .SH CLEAR
 
-The 'CLEAR' statement empties a vector, thus deleting all its contents. The vector itself is not deleted though, and can still be used and filled with new elements after a 'CLEAR' statement has been executed.
+The 'CLEAR' statement empties a MAP, thus deleting all its contents. The MAP itself is not deleted though, and can still be used and filled with new elements after a 'CLEAR' statement has been executed.
 
 .B Syntax:
 
-1 | CLEAR <VECTOR>
+1 | CLEAR <MAP>
 .br
 
 
@@ -1454,22 +1985,22 @@ description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 
 .SH COPY - TO
 
-The 'COPY - TO' statement copies all the elements of a vector with their respective indices to another vector of the same type. The original vector is untouched, but the destination vector is completely overwritten by the contents of the copied vector and any elements that existed in it prior to the copy are deleted. In other words, the destination vector is CLEARED before the copy.
+The 'COPY - TO' statement copies all the elements of a MAP with their respective keys to another MAP of the same type. The original MAP is untouched, but the destination MAP is completely overwritten by the contents of the copied MAP and any elements that existed in it prior to the copy are deleted. In other words, the destination MAP is CLEARed before the copy.
 
 .B Syntax:
 
-1 | COPY <TEXT-VECTOR> TO <TEXT-VECTOR>
+1 | COPY <TEXT-MAP> TO <TEXT-MAP>
 .br
-2 | COPY <NUMBER-VECTOR> TO <NUMBER-VECTOR>
+2 | COPY <NUMBER-MAP> TO <NUMBER-MAP>
 .br
 
 .B Example:
 
 1 | DATA:
 .br
-2 |   foo IS TEXT VECTOR
+2 |   foo IS TEXT MAP
 .br
-3 |   bar IS TEXT VECTOR
+3 |   bar IS TEXT MAP
 .br
 4 | PROCEDURE:
 .br
@@ -1490,20 +2021,20 @@ The 'COPY - TO' statement copies all the elements of a vector with their respect
 description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 ---
 
-.SH STORE INDEX COUNT OF - IN
+.SH STORE KEY COUNT OF - IN
 
-The 'STORE INDEX COUNT OF - IN' statement stores the amount of elements (or, analogously, indices) stored in a vector into a numeric variable.
+The 'STORE KEY COUNT OF - IN' statement stores the amount of elements (or, analogously, keys) stored in a MAP into a numeric variable.
 
 .B Syntax:
 
-1 | STORE INDEX COUNT OF <VECTOR> IN <NUMBER-VAR>
+1 | STORE KEY COUNT OF <MAP> IN <NUMBER-VAR>
 .br
 
 .B Example:
 
 1 | DATA:
 .br
-2 |   foo IS TEXT VECTOR
+2 |   foo IS TEXT MAP
 .br
 3 |   count IS NUMBER
 .br
@@ -1513,14 +2044,18 @@ The 'STORE INDEX COUNT OF - IN' statement stores the amount of elements (or, ana
 .br
 6 |   STORE "How are you?" IN foo:7
 .br
-7 |   STORE INDEX COUNT OF foo IN count
+7 |   STORE KEY COUNT OF foo IN count
 .br
 8 |   DISPLAY count CRLF
 .br
 9 |   # Will display 2
 .br
 
-
+-- Warning:
+.br
+Please note that as MAPs where called VECTORs prior to LDPL 3.1.0 Diligent Dreadnoughtus, this statement was called 'STORE INDEX COUNT OF - IN'. While we still support and will continue to support legacy code that uses the old syntax, it is deprecated and should not be used anymore.
+.br
+--
 
 
 
@@ -1528,22 +2063,22 @@ The 'STORE INDEX COUNT OF - IN' statement stores the amount of elements (or, ana
 description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 ---
 
-.SH STORE INDICES OF - IN
+.SH STORE KEYS OF - IN
 
-The 'STORE INDICES OF - IN' statement stores all the indices of a vector into another vector. Say you have a vector with indices '0', '"cat"' and '"dog"'. The elements these indices point to are not important. Using the 'STORE INDICES OF' statement, you can copy the indices of this vector to another vector as elements. Thus, the resulting vector will (for example) have the value '0' at index 0, the value '"cat"' at index 1 and the value '"dog"' at index 2 (the order is not relevant and no ordering criteria is provided). This statement is thus used to find all the indices of a particular vector.
+The 'STORE KEYS OF - IN' statement stores all the keys of a MAP into another MAP. Say you have a MAP with keys '0', '"cat"' and '"dog"'. The elements these keys point to are not important. Using the 'STORE KEYS OF' statement, you can copy the keys of this MAP to another MAP as elements. Thus, the resulting MAP will (for example) have the value '0' at key 0, the value '"cat"' at key 1 and the value '"dog"' at key 2 (the order is not relevant and no ordering criteria is provided). This statement is thus used to find all the keys of a particular MAP.
 
 .B Syntax:
 
-1 | STORE INDICES OF <VECTOR> IN <TEXT-VECTOR>
+1 | STORE KEYS OF <MAP> IN <TEXT-MAP>
 .br
 
 .B Example:
 
 1 | DATA:
 .br
-2 |   foo IS TEXT VECTOR
+2 |   foo IS TEXT MAP
 .br
-3 |   bar IS TEXT VECTOR
+3 |   bar IS TEXT MAP
 .br
 4 | PROCEDURE:
 .br
@@ -1557,10 +2092,16 @@ The 'STORE INDICES OF - IN' statement stores all the indices of a vector into an
 .br
 9 |   STORE "LDPL is nice" IN foo:3
 .br
-10|   STORE INDICES OF foo IN bar
+10|   STORE KEYS OF foo IN bar
 .br
 
-At the end of the execution of the previous excerpt of code, the TEXT vector 'bar' will contain the values '"0"', '"7"', '"cat"', '"dog"' and '"3"' in indices that are consecutive integers starting at zero, but in no particular order (meaning that '"0"' may come before '"7"' or after it, no ordering criteria is provided by this standard).
+At the end of the execution of the previous excerpt of code, the 'TEXT MAP' called 'bar' will contain the values '"0"', '"7"', '"cat"', '"dog"' and '"3"' at keys that are consecutive integers starting at zero, but in no particular order (meaning that '"0"' may come before '"7"' or after it, no ordering criteria is provided by this standard).
+
+-- Warning:
+.br
+Please note that as MAPs where called VECTORs prior to LDPL 3.1.0 Diligent Dreadnoughtus, this statement was called 'STORE INDICES OF - IN'. While we still support and will continue to support legacy code that uses the old syntax, it is deprecated and should not be used anymore.
+.br
+--
 
 
 
@@ -1578,7 +2119,7 @@ The 'DISPLAY' statement outputs the values passed to the output stream. 'CRLF' m
 
 .B Example:
 
-1 | DISPLAY "Hello World! " myVariable CRLF
+1 | DISPLAY "Hello, " nameVariable "! This is a number -> " 89.1 " :)" CRLF
 .br
 
 
@@ -1681,7 +2222,13 @@ If the LOAD operation should fail, the following values will be returned into th
 .br
 [*] 'ERRORCODE': 1
 .br
-[*] 'ERRORTEXT': "Error: The file '<filename>' couldn't be opened."
+[*] 'ERRORTEXT': "The file '<filename>' couldn't be opened."
+
+-- Warning:
+.br
+Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
+.br
+--
 
 
 
@@ -1721,6 +2268,41 @@ in this case, the file 'hello.txt', created here and modified as stated on that 
 .br
 2 | How are you?
 .br
+
+
+
+---
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
+---
+
+.SH LIST CONTENTS OF DIRECTORY - IN
+
+The 'LIST CONTENTS OF DIRECTORY - IN' statement does what it says on the tin: stores the names of all the files in a certain directory in a 'TEXT LIST'. If the directory cannot be read (or the directory doesn't exist, or the route passed does not lead to a directory but a regular file) the 'ERRORCODE' variable is altered and a message detailing the error is stored in the 'ERRORTEXT' variable.
+
+.B Syntax: <a id="syntax"></a>
+
+1 | LIST CONTENTS OF DIRECTORY <TEXT or TEXT-VAR> IN <TEXT-LIST>
+.br
+
+.B Example: <a id="example"></a>
+
+1 | LIST CONTENTS OF DIRECTORY "/route/to/directory" IN listOfFiles
+.br
+
+.B Error codes: <a id="error-codes"></a>
+
+If the 'LIST CONTENTS OF DIRECTORY - IN' operation should fail, the following values will be returned into the 'ERRORCODE' and 'ERRORTEXT' variables:
+
+.br
+[*] 'ERRORCODE': 1
+.br
+[*] 'ERRORTEXT': "Error opening directory '<route>'."
+
+-- Warning:
+.br
+Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
+.br
+--
 
 
 
@@ -1806,11 +2388,17 @@ For the second, here's the mapping between types:
 .br
 | 'TEXT' | 'std::string' |
 .br
-| 'NUMBER' | 'double' |
+| 'NUMBER' | 'ldpl_number' |
 .br
-| 'TEXT VECTOR' | 'ldpl_vector<std::string>' |
+| 'TEXT MAP' | 'ldpl_vector<std::string>' |
 .br
-| 'NUMBER VECTOR' | 'ldpl_vector<double>' |
+| 'NUMBER MAP' | 'ldpl_vector<ldpl_number>' |
+.br
+| 'TEXT LIST' | 'ldpl_list<std::string>' |
+.br
+| 'NUMBER LIST' | 'ldpl_list<ldpl_number>' |
+
+The declarations for this data types are included when your C++ code merged with LDPL code by the LDPL compiler.
 
 .B Example
 
@@ -1818,7 +2406,7 @@ Declaring 'TEXT'and 'NUMBER' variables is easy on the C++ side:
 
 1 | std::string NAME;
 .br
-2 | double AGE;
+2 | ldpl_number AGE;
 .br
 3 | std::string STREET_ADDRESS;
 .br
@@ -1838,7 +2426,7 @@ These will be available to an LDPL program to declare in its 'DATA:' section:
 
 Since LDPL and C++ are using the same variable when you use the 'EXTERNAL' keyword, any changes you make to the variable's content are shared. Just use them like you would use regular C++ variables.
 
-1 | double A, B, SUM;
+1 | ldpl_number A, B, SUM;
 .br
 2 | void ADD()
 .br
@@ -1872,9 +2460,9 @@ Since LDPL and C++ are using the same variable when you use the 'EXTERNAL' keywo
 
 Building and running this program will print '350'.
 
-.B LDPL Vectors
+.B LDPL MAPs
 
-The 'VECTOR' types are a bit trickier - they are defined as 'ldpl_vector<T>', so you'll want to declare this prototype in your '.cpp' or '.h' file to use it in your extension:
+The 'MAP' types are a bit trickier - they are defined as 'ldpl_vector<T>', so you'll want to declare this prototype in your '.cpp' or '.h' file to use it in your extension:
 
 1 | #ifndef ldpl_vector
 .br
@@ -1891,11 +2479,11 @@ The 'VECTOR' types are a bit trickier - they are defined as 'ldpl_vector<T>', so
 7 | #endif
 .br
 
-Now you can use vectors in LDPL:
+Now you can use MAPs in LDPL:
 
 1 | DATA:
 .br
-2 | Names IS EXTERNAL TEXT VECTOR
+2 | Names IS EXTERNAL TEXT MAP
 .br
 
 And in C++:
@@ -1910,6 +2498,12 @@ And in C++:
 .br
 5 | NAMES[1] = "just Paul"
 .br
+
+-- Note:
+.br
+The internal datatype for LDPL MAPs is called ldpl\\_vector because in LDPL releases prior to LDPL 3.1.0 Diligent Dreadnoughtus, MAPs where called VECTORs.
+.br
+--
 
 
 

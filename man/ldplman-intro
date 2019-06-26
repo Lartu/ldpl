@@ -5,7 +5,7 @@ ldpl - The LDPL programming language compiler
 
 .SH SYNOPSIS
 .PP
-ldpl [-i=<included file>]... <source file>|-c
+ldpl [-i=<extension file>]... <source file>|-c
      [-o=<output name>|-r] [-f=<c++ flag>]... [-n]
 .br
 ldpl [-v|-h]
@@ -38,7 +38,7 @@ Documentation and reference for the LDPL Programming Language can be found in th
     You can set the output file for the compiled binary with the -o flag. For example, if you want to name your program "dog", you could compile it with ldpl -o=dog main.ldpl.
 
 -i=<file>
-    You can import files to your LDPL compilation by using the -i flag. For example, say you have a library mylib.ldpl and a source file mysource.ldpl, you can compile both and include the library by running ldpl -i=mylibrary.ldpl mysource.ldpl. Multiple -i= can be used to import multiple files. Extensions can also be imported by using this flag; see the Extensions section.
+    Extensions can be imported by using this flag; see the Extensions section.
 
 -f=<flag>
     The -f flag can be used to add flags to the C++ compilation line. See the Building C++ Extensions section for more information.
