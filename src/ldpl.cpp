@@ -558,7 +558,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // SUB-PROCEDURE Declaration
-    if(line_like("SUB-PROCEDURE $name", tokens, state))
+    if(line_like("SUB-PROCEDURE $name", tokens, state) || line_like("SUB $name", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -575,7 +575,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.subprocedures.emplace(tokens[1], vector<pair<string, string>>());
         return;
     }
-    if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state))
+    if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state) || line_like("EXTERNAL SUB $external", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -591,7 +591,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){");
         return;
     }
-    if(line_like("END SUB-PROCEDURE", tokens, state))
+    if(line_like("END SUB-PROCEDURE", tokens, state) || line_like("END SUB", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("END SUB-PROCEDURE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1529,6 +1529,8 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             // which is always the case in IF and WHILE statements
             string first_value = tokens[j];
             string second_value = tokens.rbegin()[1];
+
+            //Get the type of the values we are comparing
             bool text_values = false;
             bool vector_values = false;
             bool list_values = false;
@@ -1553,6 +1555,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             for(++j; j < tokens.size() - 2; ++j){
                 rel_op += tokens[j] + " ";
             }
+
+            //The comparisons can only be EQUAL TO, NON EQUAL TO, GREATER THAN... or LESS THAN...
+            //So if it's not EQUAL TO or NOT EQUAL TO, then it must be one of the others.
+            //(or not be a $condition token at all)
             if(rel_op != "EQUAL TO " && rel_op != "NOT EQUAL TO "){
                 if(text_values) return false;
                 if(vector_values) return false;
@@ -1804,8 +1810,8 @@ string get_c_condition(compiler_state & state, vector<string> tokens) {
         else
             return first_value + " != " + second_value;
     }
-    // Vectors
-    else if(is_vector(tokens[0], state)){
+    // Vectors and Lists
+    else if(is_vector(tokens[0], state) || is_list(tokens[0], state)){
         if(rel_op == "EQUAL TO ")
             return get_c_variable(state, first_value) + " == " + get_c_variable(state, second_value);
         else
