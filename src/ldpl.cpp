@@ -21,6 +21,9 @@ static bool contains_any(vector<T> const& vec, vector<T> vals)
     return false;
 }
 
+vector<string> extensions; //C++ extensions to add to the file
+vector<string> extension_flags; //Flags to pass to the C++ Compiler
+
 int main(int argc, const char* argv[])
 {
     //Get command line arguments as string vector
@@ -71,7 +74,6 @@ int main(int argc, const char* argv[])
 
     compiler_state state; //Compiler state (holds variables, sections, functions, etc)
     vector<string> files_to_compile;
-    vector<string> extensions;
     add_ldpllib(state);
 
 #ifdef STATIC_BUILDS
@@ -115,7 +117,7 @@ int main(int argc, const char* argv[])
             }
             else if(arg.substr(0, 3) == "-f="){
                 //pass flags to the c++ compiler (for example -f=-lSDL)
-                extensions.push_back(arg.substr(3));
+                extension_flags.push_back(arg.substr(3));
             }
             else if(arg == "-c"){
                 files_to_compile.push_back(arg);
@@ -200,7 +202,13 @@ int main(int argc, const char* argv[])
     if(!extensions.empty()){
         for(string & extension : extensions){
             bullet_msg("Including C++ extension " + extension);
-            compile_line += " "+extension;
+            compile_line += " " + extension;
+        }
+    }
+    if(!extension_flags.empty()){
+        for(string & flag : extension_flags){
+            bullet_msg("using C++ switch " + flag);
+            compile_line += " " + flag;
         }
     }
     int compiled = system(compile_line.c_str());
@@ -401,7 +409,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     //import
     if(line_like("IMPORT $string", tokens, state)) {
         if(state.section_state != 0)
-            error("can only import files declared at the start of the file (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
+            error("you can only use the IMPORT statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else {
             string file_to_compile = tokens[1].substr(1, tokens[1].size() - 2);
             string separators = "/";
@@ -414,6 +422,35 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             load_and_compile(file_to_compile, state);
             state.section_state = 0;
             state.current_file = current_file;
+        }
+        return;
+    }
+
+    //extension (IMPORT but for c++ extensions)
+    if(line_like("EXTENSION $string", tokens, state)) {
+        if(state.section_state != 0)
+            error("you can only use the EXTENSION statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
+        else {
+            string file_to_add = tokens[1].substr(1, tokens[1].size() - 2);
+            string separators = "/";
+            #if defined(_WIN32)
+            separators += "\\";
+            #endif
+            size_t last_sep = current_file.find_last_of(separators);
+            if (last_sep != string::npos)
+                file_to_add = current_file.substr(0, last_sep) + "/" + file_to_add;
+            extensions.push_back(file_to_add);
+        }
+        return;
+    }
+
+    //extension flags (for the C++ compiler)
+    if(line_like("FLAG $string", tokens, state)) {
+        if(state.section_state != 0)
+            error("you can only use the FLAG statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
+        else {
+            string flag = tokens[1].substr(1, tokens[1].size() - 2);
+            extension_flags.push_back(flag);
         }
         return;
     }
