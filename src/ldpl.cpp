@@ -1132,7 +1132,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         //C Code
         state.add_code("joinvar = " + get_c_expression(state, tokens[1]) + ";");
         state.add_code(get_c_variable(state, tokens[7]) + " = utf8_substr(joinvar, " + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ");");
-        return; 
+        return;
     }
     if(line_like("TRIM $str-expr IN $str-var", tokens, state))
     {
