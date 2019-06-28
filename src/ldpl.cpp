@@ -1813,9 +1813,9 @@ string get_c_condition(compiler_state & state, vector<string> tokens) {
     // Vectors and Lists
     else if(is_vector(tokens[0], state) || is_list(tokens[0], state)){
         if(rel_op == "EQUAL TO ")
-            return get_c_variable(state, first_value) + " == " + get_c_variable(state, second_value);
+            return first_value + " == " + second_value;
         else
-            return "!(" + get_c_variable(state, first_value) + " == " + get_c_variable(state, second_value) + ")";
+            return "!(" + first_value + " == " + second_value + ")";
     }
     // Numeric expressions
     else {
