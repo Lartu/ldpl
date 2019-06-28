@@ -49,6 +49,12 @@ struct ldpl_list {
     vector<T> inner_collection;
 
     T& operator [] (ldpl_number i) {
+        i = floor(i);
+        if (i < 0 || i >= inner_collection.size()) {
+            cerr << \"Runtime Error: LIST index \" << i << \" out of range [0, \"
+                 << inner_collection.size() << \")\" << endl;
+            exit(1);
+        }
         return inner_collection[i];
     }
 };
