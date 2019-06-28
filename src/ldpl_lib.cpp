@@ -16,7 +16,7 @@
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
 #define CRLF \"\\n\"
-#define ldpl_vector ldpl_map 
+#define ldpl_vector ldpl_map
 #define ldpl_list vector
 
 using namespace std;
@@ -128,51 +128,6 @@ ldpl_number modulo(ldpl_number a, ldpl_number b){
 
 void join(const string & a, const string & b, string & c){
     c = a + b;
-}
-
-ldpl_vector<string> utf8_split(const string & s, const string & sep){
-    ldpl_vector<string> v;
-    unsigned int z = 0;
-    for(unsigned int i = 0; i < s.length();){
-        int cplen = 1;
-        int c = s[i];
-        if      (c>=0 && c<=127)     cplen=1;
-        else if ((c & 0xE0) == 0xC0) cplen=2;
-        else if ((c & 0xF0) == 0xE0) cplen=3;
-        else if ((c & 0xF8) == 0xF0) cplen=4;
-        string cp = s.substr(i, cplen);
-        if(sep.empty()) v[z++] = cp;
-        else if(sep == cp) ++z;
-        else v[z] += cp;
-        i+=cplen;
-    }
-    return v;
-}
-
-ldpl_list<string> utf8_split_list(const string & s, const string & sep){
-    ldpl_list<string> v;
-    unsigned int z = 0;
-    string current_token = \"\";
-    for(unsigned int i = 0; i < s.length();){
-        int cplen = 1;
-        int c = s[i];
-        if      (c>=0 && c<=127)     cplen=1;
-        else if ((c & 0xE0) == 0xC0) cplen=2;
-        else if ((c & 0xF0) == 0xE0) cplen=3;
-        else if ((c & 0xF8) == 0xF0) cplen=4;
-        string cp = s.substr(i, cplen); //Current char
-        if(sep.empty()){
-            v.push_back(cp);
-        }else if(sep == cp){
-            v.push_back(current_token);
-            current_token = \"\";
-        }else{
-            current_token += cp;
-        }
-        i+=cplen;
-    }
-    if(current_token.size() > 0) v.push_back(current_token);
-    return v;
 }
 
 //http://www.zedwood.com/article/cpp-utf8-strlen-function
@@ -332,6 +287,40 @@ void load_file(string filename, string & destination)
     VAR_ERRORCODE = 0;
     destination = text;
     file.close();
+}
+
+ldpl_list<string> utf8_split_list(const string & haystack, const string & needle){
+    ldpl_list<string> result;
+    int lenHaystack = utf8_strlen(haystack);
+    int lenNeedle = utf8_strlen(needle);
+    if (lenNeedle > 0) {
+        int i = 0;
+        int last_start = 0;
+        while (i + lenNeedle <= lenHaystack) {
+            if (utf8_substr(haystack, i, lenNeedle) == needle) {
+                result.push_back(utf8_substr(haystack, last_start, i - last_start));
+                i += lenNeedle;
+                last_start = i;
+            } else {
+                ++i;
+            }
+        }
+        // Grab everything after the last needle
+        result.push_back(utf8_substr(haystack, last_start, lenHaystack - last_start));
+    } else {
+        // Split into individual characters
+        for (int i = 0; i < lenHaystack; i++)
+            result.push_back(charat(haystack, i));
+    }
+    return result;
+}
+
+ldpl_vector<string> utf8_split(const string & haystack, const string & needle){
+    ldpl_vector<string> result;
+    ldpl_list<string> list_result = utf8_split_list(haystack, needle);
+    for (int i = 0; i < list_result.size();  i++)
+        result[i] = list_result[i];
+    return result;
 }
 
 ldpl_number utf8GetIndexOf(string a, string needle){
