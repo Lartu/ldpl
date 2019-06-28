@@ -1,7 +1,7 @@
 # Bellman-Ford's Algorithm
 # written in LDPL by Martín del Río
 # https://www.ldpl-lang.org/
-# Created for LDPL 3.0.6 'Diligent Dreadnoughtus'
+# Created for LDPL 3.1.0 'Diligent Dreadnoughtus'
 
 # --- Description ------------------------------------
 # This algorithm finds the shortest distance from a

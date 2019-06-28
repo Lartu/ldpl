@@ -1,7 +1,7 @@
 # File or Folder Example
 # written in LDPL by Martín del Río
 # https://www.ldpl-lang.org/
-# Created for LDPL 3.0.6 'Diligent Dreadnoughtus'
+# Created for LDPL 3.1.0 'Diligent Dreadnoughtus'
 
 # --- Description -------------------------------------
 # Lists all the files in the current directory. Then,
