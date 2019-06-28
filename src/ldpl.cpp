@@ -705,10 +705,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.open_loop();
         //C Code
         string range_var = state.new_range_var();
-        string collection = get_c_variable(state, tokens[4]);
+        string collection = get_c_variable(state, tokens[4]) + ".inner_collection";
         string iteration_var = range_var;
         if (is_vector(tokens[4], state)) {
-            collection += ".inner_map";
             iteration_var += ".second";
         }
         state.add_code("for (auto& " + range_var + " : " + collection + ") {");
@@ -1142,36 +1141,30 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = trimCopy(" + get_c_expression(state, tokens[1]) +  ");");
         return;
     }
-    if(line_like("CLEAR $vector", tokens, state))
+    if(line_like("CLEAR $collection", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("CLEAR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + ".clear();");
+        state.add_code(get_c_variable(state, tokens[1]) + ".inner_collection.clear();");
         return;
     }
-    if(line_like("COPY $str-vec TO $str-vec", tokens, state))
+    if(line_like("COPY $collection TO $collection", tokens, state))
     {
-        if(!in_procedure_section(state, line_num, current_file))
+        if(variable_type(tokens[1], state) == variable_type(tokens[3], state)) {
+            if(!in_procedure_section(state, line_num, current_file))
             error("COPY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
-        return;
-    }
-    if(line_like("COPY $num-vec TO $num-vec", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("COPY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
-        return;
+            //C Code
+            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection = " + get_c_variable(state, tokens[1]) + ".inner_collection;");
+            return;
+        }
     }
     if(line_like("STORE INDEX COUNT OF $vector IN $num-var", tokens, state)) //Deprecated
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("STORE INDEX COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".count();");
+        state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".inner_collection.size();");
         return;
     }
     if(line_like("STORE INDICES OF $vector IN $str-vec", tokens, state)) //Deprecated
@@ -1187,7 +1180,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("STORE KEY COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".count();");
+        state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".inner_collection.size();");
         return;
     }
     if(line_like("STORE KEYS OF $vector IN $str-vec", tokens, state))
@@ -1198,36 +1191,23 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("get_indices(" + get_c_variable(state, tokens[5]) + ", " + get_c_variable(state, tokens[3]) + ");");
         return;
     }
-    if(line_like("PUSH $num-expr TO $num-list", tokens, state))
+    if(line_like("PUSH $expression TO $list", tokens, state))
     {
-        if(!in_procedure_section(state, line_num, current_file))
+        // The type of the pushed element must match the collection type
+        if(is_num_expr(tokens[1], state) == is_num_list(tokens[3], state)) {
+            if(!in_procedure_section(state, line_num, current_file))
             error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + ".push_back(" + get_c_expression(state, tokens[1]) + ");");
-        return;
-    }
-    if(line_like("PUSH $str-expr TO $str-list", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + ".push_back(" + get_c_expression(state, tokens[1]) + ");");
-        return;
-    }
-    if(line_like("CLEAR $list", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("CLEAR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[1]) + ".clear();");
-        return;
+            //C Code
+            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(" + get_c_expression(state, tokens[1]) + ");");
+            return;
+        }
     }
     if(line_like("STORE LENGTH OF $list IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("STORE LENGTH OF (list) statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".size();");
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".inner_collection.size();");
         return;
     }
     if(line_like("DELETE LAST ELEMENT OF $list", tokens, state))
@@ -1235,24 +1215,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("DELETE LAST ELEMENT OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code("if(" + get_c_variable(state, tokens[4]) + ".size() > 0)");
-        state.add_code(get_c_variable(state, tokens[4]) + ".pop_back();");
-        return;
-    }
-    if(line_like("COPY $str-list TO $str-list", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("COPY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
-        return;
-    }
-    if(line_like("COPY $num-list TO $num-list", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("COPY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = " + get_c_variable(state, tokens[1]) + ";");
+        state.add_code("if(" + get_c_variable(state, tokens[4]) + ".inner_collection.size() > 0)");
+        state.add_code(get_c_variable(state, tokens[4]) + ".inner_collection.pop_back();");
         return;
     }
     if(line_like("SPLIT $str-expr BY $str-expr IN $str-list", tokens, state))
@@ -1813,9 +1777,9 @@ string get_c_condition(compiler_state & state, vector<string> tokens) {
     // Vectors and Lists
     else if(is_vector(tokens[0], state) || is_list(tokens[0], state)){
         if(rel_op == "EQUAL TO ")
-            return first_value + " == " + second_value;
+            return first_value + ".inner_collection == " + second_value + ".inner_collection";
         else
-            return "!(" + first_value + " == " + second_value + ")";
+            return first_value + ".inner_collection != " + second_value + ".inner_collection";
     }
     // Numeric expressions
     else {

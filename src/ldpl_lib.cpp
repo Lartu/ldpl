@@ -17,7 +17,6 @@
 #define ldpl_number double
 #define CRLF \"\\n\"
 #define ldpl_vector ldpl_map
-#define ldpl_list vector
 
 using namespace std;
 
@@ -34,38 +33,34 @@ string to_ldpl_string(double x);
 
 template<typename T>
 struct ldpl_map {
-    unordered_map<string, T> inner_map;
+    unordered_map<string, T> inner_collection;
 
     T& operator [] (const string& i) {
-        return inner_map[i];
+        return inner_collection[i];
     }
 
     T& operator [] (ldpl_number i) {
-        return inner_map[to_ldpl_string(i)];
+        return inner_collection[to_ldpl_string(i)];
     }
+};
 
-    void clear(){
-        inner_map.clear();
-    }
+template<typename T>
+struct ldpl_list {
+    vector<T> inner_collection;
 
-    ldpl_number count(){
-        return inner_map.size();
+    T& operator [] (ldpl_number i) {
+        return inner_collection[i];
     }
 };
 
 template<typename T>
 void get_indices(ldpl_vector<string> & dest, ldpl_vector<T> & source){
-    dest.clear();
+    dest.inner_collection.clear();
     int i = 0;
-    for (const auto &keyPair : source.inner_map) {
+    for (const auto &keyPair : source.inner_collection) {
         dest[i] = keyPair.first;
         ++i;
     }
-}
-
-template<typename T>
-bool operator == (const ldpl_vector<T> &v1, const ldpl_vector<T> &v2){
-    return (v1.inner_map == v2.inner_map);
 }
 
 ldpl_number input_number(){
@@ -298,7 +293,7 @@ ldpl_list<string> utf8_split_list(const string & haystack, const string & needle
         int last_start = 0;
         while (i + lenNeedle <= lenHaystack) {
             if (utf8_substr(haystack, i, lenNeedle) == needle) {
-                result.push_back(utf8_substr(haystack, last_start, i - last_start));
+                result.inner_collection.push_back(utf8_substr(haystack, last_start, i - last_start));
                 i += lenNeedle;
                 last_start = i;
             } else {
@@ -306,11 +301,11 @@ ldpl_list<string> utf8_split_list(const string & haystack, const string & needle
             }
         }
         // Grab everything after the last needle
-        result.push_back(utf8_substr(haystack, last_start, lenHaystack - last_start));
+        result.inner_collection.push_back(utf8_substr(haystack, last_start, lenHaystack - last_start));
     } else {
         // Split into individual characters
         for (int i = 0; i < lenHaystack; i++)
-            result.push_back(charat(haystack, i));
+            result.inner_collection.push_back(charat(haystack, i));
     }
     return result;
 }
@@ -318,7 +313,7 @@ ldpl_list<string> utf8_split_list(const string & haystack, const string & needle
 ldpl_vector<string> utf8_split(const string & haystack, const string & needle){
     ldpl_vector<string> result;
     ldpl_list<string> list_result = utf8_split_list(haystack, needle);
-    for (int i = 0; i < list_result.size();  i++)
+    for (int i = 0; i < list_result.inner_collection.size();  i++)
         result[i] = list_result[i];
     return result;
 }
@@ -388,9 +383,9 @@ string trimCopy(string line){
     return line;
 }
 
-vector<string> GetDirectoryFiles(const string dir) {
+ldpl_list<string> GetDirectoryFiles(const string dir) {
     //Taken from http://www.codebind.com/cpp-tutorial/cpp-program-list-files-directory-windows-linux/
-    vector<string> files;
+    ldpl_list<string> files;
     shared_ptr<DIR> directory_ptr(opendir(dir.c_str()), [](DIR* dir){ dir && closedir(dir); });
     struct dirent *dirent_ptr;
     VAR_ERRORTEXT = \"\";
@@ -403,7 +398,7 @@ vector<string> GetDirectoryFiles(const string dir) {
 
     while ((dirent_ptr = readdir(directory_ptr.get())) != nullptr) {
         string fileName = string(dirent_ptr->d_name);
-        if(fileName != \".\" && fileName != \"..\") files.push_back(fileName);
+        if(fileName != \".\" && fileName != \"..\") files.inner_collection.push_back(fileName);
     }
     return files;
 }
