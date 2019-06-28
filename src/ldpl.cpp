@@ -1645,7 +1645,8 @@ bool is_num_var(string & token, compiler_state & state)
     //Check if num_vector:index
     string vector, index;
     split_vector(token, vector, index);
-    return (is_num_vector(vector, state) || is_num_list(vector, state)) && is_expression(index, state);
+    return (is_num_vector(vector, state) && is_expression(index, state))
+        || (is_num_list(vector, state) && is_num_expr(index, state));
 }
 
 bool is_txt_var(string & token, compiler_state & state)
@@ -1655,7 +1656,8 @@ bool is_txt_var(string & token, compiler_state & state)
     //Check if txt_vector:index
     string vector, index;
     split_vector(token, vector, index);
-    return (is_txt_vector(vector, state) || is_txt_list(vector, state)) && index != "" && is_expression(index, state);
+    return (is_txt_vector(vector, state) && is_expression(index, state))
+        || (is_txt_list(vector, state) && is_num_expr(index, state));
 }
 
 bool is_variable(string & token, compiler_state & state)
