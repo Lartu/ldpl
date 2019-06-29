@@ -338,6 +338,7 @@ void compile(vector<string> & lines, compiler_state & state)
 //Tokenizes a line with optional convertion of tokens to uppercase (except in string)
 void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase)
 {
+    ++line_num;
     bool in_string = false;
     string current_token = "";
     //For each letter in the line
