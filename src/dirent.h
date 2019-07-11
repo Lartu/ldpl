@@ -229,7 +229,7 @@ struct _wdirent {
     /* Structure size */
     unsigned short d_reclen;
 
-    /* Length of name without \0 */
+    /* Length of name without \\0 */
     size_t d_namlen;
 
     /* File type */
@@ -269,7 +269,7 @@ struct dirent {
     /* Structure size */
     unsigned short d_reclen;
 
-    /* Length of name without \0 */
+    /* Length of name without \\0 */
     size_t d_namlen;
 
     /* File type */
@@ -358,7 +358,7 @@ _wopendir(
     wchar_t *p;
 
     /* Must have directory name */
-    if (dirname == NULL  ||  dirname[0] == '\0') {
+    if (dirname == NULL  ||  dirname[0] == '\\0') {
         dirent_set_errno (ENOENT);
         return NULL;
     }
@@ -413,22 +413,22 @@ _wopendir(
     wcsncpy_s (dirp->patt, n+1, dirname, n);
 #endif
 
-    /* Append search pattern \* to the directory name */
+    /* Append search pattern \\* to the directory name */
     p = dirp->patt + n;
     switch (p[-1]) {
-    case '\\':
+    case '\\\\':
     case '/':
     case ':':
-        /* Directory ends in path separator, e.g. c:\temp\ */
+        /* Directory ends in path separator, e.g. c:\\temp\\ */
         /*NOP*/;
         break;
 
     default:
         /* Directory name doesn't end in path separator */
-        *p++ = '\\';
+        *p++ = '\\\\';
     }
     *p++ = '*';
-    *p = '\0';
+    *p = '\\0';
 
     /* Open directory stream and retrieve the first entry */
     if (!dirent_first (dirp)) {
@@ -680,7 +680,7 @@ opendir(
     struct DIR *dirp;
 
     /* Must have directory name */
-    if (dirname == NULL  ||  dirname[0] == '\0') {
+    if (dirname == NULL  ||  dirname[0] == '\\0') {
         dirent_set_errno (ENOENT);
         return NULL;
     }
@@ -779,7 +779,7 @@ readdir_r(
          * name unless the file system provides one.  At least
          * VirtualBox shared folders fail to do this.
          */
-        if (error  &&  datap->cAlternateFileName[0] != '\0') {
+        if (error  &&  datap->cAlternateFileName[0] != '\\0') {
             error = dirent_wcstombs_s(
                 &n, entry->d_name, PATH_MAX + 1,
                 datap->cAlternateFileName, PATH_MAX + 1);
@@ -815,7 +815,7 @@ readdir_r(
              * of directory entries completely.
              */
             entry->d_name[0] = '?';
-            entry->d_name[1] = '\0';
+            entry->d_name[1] = '\\0';
             entry->d_namlen = 1;
             entry->d_type = DT_UNKNOWN;
             entry->d_ino = 0;
@@ -1113,7 +1113,7 @@ dirent_wcstombs_s(
             if (n >= sizeInBytes) {
                 n = sizeInBytes - 1;
             }
-            mbstr[n] = '\0';
+            mbstr[n] = '\\0';
         }
 
         /* Length of resulting multi-bytes string WITH zero-terminator */
