@@ -1228,14 +1228,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split_list(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
-    if(line_like("LIST CONTENTS OF DIRECTORY $str-expr IN $str-list", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("LIST CONTENTS OF DIRECTORY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = GetDirectoryFiles(" + get_c_expression(state, tokens[4]) + ");");
-        return;
-    }
 
     // Custom Statements
     if(line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens, state))
