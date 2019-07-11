@@ -1228,7 +1228,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split_list(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
-
     // Custom Statements
     if(line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens, state))
     {
