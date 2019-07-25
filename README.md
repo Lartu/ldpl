@@ -11,30 +11,17 @@
 This repository contains the source code and releases of the LDPL compiler.
 Check https://www.ldpl-lang.org/ for more information on the language, tutorials, examples and more!
 
-## Example LDPL code
+### Example LDPL code
 
 ```coffeescript
 data: 
   name is text     # Your name goes here! 
-  age is number    # Your age goes here!
 
 procedure: 
   # Simple Hello World
   display "Hello World" crlf "What's your name? " 
   accept name 
   display "你好, " name "! Welcome to LDPL!" crlf
-  if name is equal to "ldplsaur" then
-    display "Woah, great name!" crlf
-  end if
-  
-  # Ask for age
-  display "How old are you? "
-  accept age
-  if age is greater than or equal to 2 then
-    display "You are older than LDPL!" crlf
-  else
-    display "You are so young!" crlf
-  end if
 ```
 
 This greets the user, ask them for their name and then prints *你好, &lt;name&gt;!* followed by a line-break. Easy as pie. Super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
@@ -54,6 +41,14 @@ Also, it is advised to configure git autoclrf to use Unix-style end-of-line: `gi
 
 Once you have LDPL installed, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided below.
 
+## LDPL compatible editors
+
+![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
+
+We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
+
+You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
+
 ## LDPL documentation & reference
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
@@ -63,14 +58,6 @@ Once you have LDPL installed, check the LDPL reference to learn how to use the l
 The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install`. The man page is also
 available in the [man](/man) folder of this repository.
 
-## LDPL compatible editors
-
-![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
-
-We have highlighting and code formatting extensions available for [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dvkt.vscode-ldpl) (thanks to [ʇʞʌp](https://github.com/dvkt)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
-
-You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
-
 ## How to use this compiler
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
@@ -79,7 +66,7 @@ Once the compiler is set up, go write some LDPL source code, say `source.lsc`.
 Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `source-bin`.
 Done! For more info on the compiler run `ldpl -h`.
 
-## Compiler options
+### Compiler options
 
  * The `-f` flag can be used to pass extra options to the compiler when building extensions. For example, `-f=-lSDL` could be used to link against SDL.
  * By using `-r` you can just compile the project and print the C++ representation for that code.
@@ -90,7 +77,7 @@ Done! For more info on the compiler run `ldpl -h`.
  * `-v` and `--version` print out version info and release details.
  * `-h` and `--help` print this list of options.
 
-## C++ extensions
+### C++ extensions
 
 LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `-i=` compiler flag. For example `ldpl -i=lib.cpp source.ldpl`.
 
