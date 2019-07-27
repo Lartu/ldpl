@@ -1,0 +1,20 @@
+# Arguments Example
+# written in LDPL by Martín del Río
+# https://www.ldpl-lang.org/
+# Created for LDPL 4.0 'Diligent Dreadnoughtus'
+
+# --- Description ------------------------------------
+# Run this example like this:
+# ./arguments "some argument" otherargument 1 2 etc
+# with any command line argument you want. All passed
+# arguments will be printed to the screen.
+# ----------------------------------------------------
+
+data:
+    argument is text
+
+procedure:
+    display "You passed these arguments to the program:" crlf
+    for each argument in argv do
+        display "- " argument crlf
+    repeat

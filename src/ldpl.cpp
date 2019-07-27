@@ -138,7 +138,7 @@ int main(int argc, const char* argv[])
     state.variables[""]["ERRORCODE"] = 1; //Declared in ldpl_lib.cpp
     state.variables[""]["ERRORTEXT"] = 2; //Declared in ldpl_lib.cpp
     state.add_code("for(int i = 1; i < argc; ++i)");
-    state.add_code(fix_identifier("ARGV", true) + ".push_back(argv[i]);");
+    state.add_code(fix_identifier("ARGV", true) + ".inner_collection.push_back(argv[i]);");
 
     //Fail if file was not passed
     if(files_to_compile.size() == 0) error("filename expected.");
