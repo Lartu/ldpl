@@ -69,7 +69,7 @@ Done! For more info on the compiler run `ldpl -h`.
  * The `-f` flag can be used to pass extra options to the compiler when building extensions. For example, `-f=-lSDL` could be used to link against SDL.
  * By using `-r` you can just compile the project and print the C++ representation for that code.
  * You can set the output file for the compiled binary with the `-o` flag. For example, if you want to name your program "dog", you could compile it with `ldpl -o=dog main.ldpl`.
- * On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the `-ns` flag.
+ * On Linux platforms, LDPL builds static binaries by default. If you want to build non-static ones use the `-ns` flag.
  * The `-c` flag tells LDPL to accept source code from the standard input. 
  * You can import extensions to your LDPL compilation by using the `-i=` flag. Extensions can be imported by passing `.o`, `.a`, or `.cpp` files to this flag; see the Extensions section below.
  * `-v` and `--version` print out version info and release details.
