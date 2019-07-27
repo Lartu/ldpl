@@ -813,7 +813,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Arithmetic Statements
-    if(line_like("MODULO $num-expr BY $num-expr IN $num-var", tokens, state))
+    if(line_like("MODULO $num-expr BY $num-expr IN $num-var", tokens, state)) //TODO move this into the standard library
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("MODULO statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1019,14 +1019,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = str_replace(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
     }
-    if(line_like("SPLIT $str-expr BY $str-expr IN $str-vec", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("SPLIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
-        return;
-    }
     if(line_like("GET INDEX OF $str-expr FROM $str-expr IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
@@ -1078,22 +1070,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             return;
         }
     }
-    if(line_like("GET INDEX COUNT OF $vector IN $num-var", tokens, state)) //Deprecated
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("GET INDEX COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".inner_collection.size();");
-        return;
-    }
-    if(line_like("GET INDICES OF $vector IN $str-vec", tokens, state)) //Deprecated
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("GET INDICES statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("get_indices(" + get_c_variable(state, tokens[5]) + ", " + get_c_variable(state, tokens[3]) + ");");
-        return;
-    }
     if(line_like("GET KEY COUNT OF $vector IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
@@ -1102,7 +1078,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".inner_collection.size();");
         return;
     }
-    if(line_like("GET KEYS OF $vector IN $str-vec", tokens, state))
+    if(line_like("GET KEYS OF $vector IN $str-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET KEYS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");

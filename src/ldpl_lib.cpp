@@ -59,11 +59,11 @@ struct ldpl_list {
 };
 
 template<typename T>
-void get_indices(ldpl_vector<string> & dest, ldpl_vector<T> & source){
+void get_indices(ldpl_list<string> & dest, ldpl_vector<T> & source){
     dest.inner_collection.clear();
     int i = 0;
     for (const auto &keyPair : source.inner_collection) {
-        dest[i] = keyPair.first;
+        dest.inner_collection.push_back(keyPair.first);
         ++i;
     }
 }
