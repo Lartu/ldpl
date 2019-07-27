@@ -68,8 +68,6 @@ This is free software: you are free to change and redistribute it. There is NO W
 
 The LDPL Community has compiled this document with the desire to teach and standardize the LDPL programming language.
 
-This document is definitive and backwards compatible, and any future revisions that build upon it will only add features to the language, not remove nor change any functionality and, as such, any code written for a previous LDPL specification should continue to run as it did with the specification it was written for.
-
 
 Feedback, corrections and suggestions are welcome, both on the main LDPL repository or by e-mail to mdelrio (at) dc.uba.ar. You can join the LDPL community at r/ldpl or via IRC on irc.freenode.net channel \#ldpl.
 
@@ -81,7 +79,8 @@ This reference can be forked on GitHub.
 
 .B What is LDPL?
 
-LDPL (Lartu's Definitive Programming Language) is a programming language designed from the ground up to be excessively expressive, fast, readable and easy to learn. It mimics English in the likeness of \[the good parts of\] older languages like COBOL, with the desire that it can be understood by anybody. It's highly portable and runs on a plethora of different architectures and operating systems including AMD-64, ARMv8 and PowerPC Linux and Mac OS X. It also supports UTF-8 out of the box.
+
+LDPL (Lartu's Definitive Programming Language) is a programming language designed from the ground up to be excessively expressive, fast, readable and easy to learn. It mimics English in the likeness of the good parts of older languages like COBOL, with the desire that it can be understood by anybody. It's highly portable and runs on a plethora of different architectures and operating systems including AMD-64, ARMv8 and PowerPC Linux and Mac OS X. It also supports UTF-8 out of the box.
 
 1 | data:
 .br
@@ -125,13 +124,13 @@ To use the compiler, you must have a C++ compiler already installed on your syst
 .br
 [*] If you want to build LDPL yourself: first, clone this repository. Then 'make' and 'make install' LDPL in the 'src' folder. This will install LDPL and the LDPL documentation ('man ldpl') on your system. LDPL requires only C++11 to compile.
 
--- Warning:
+When you are done installing LDPL, write some LDPL source code, say 'source.ldpl'. Then compile the source code using 'ldpl source.ldpl'. The compiled, executable binary file will be saved as 'ldpl-bin'. Done! For more info on the compiler run 'ldpl -h'. Example code can be found on the LDPL website.
+
+{% hint style="danger
 .br
-Note for Windows users: compilation under Windows has been tested with MinGW as installed on that guide. MinGW-w64 seems to have some problems compiling LDPL. Also, it is advised to configure git 'autoclrf' to use Unix-style end-of-line: 'git config core.autocrlf input'. LDPL relies on an AWK script which will not work properly with DOS-style newlines (CLRF).
+Please note that Windows support has been dropped as of LDPL 4.0.
 .br
 --
-
-When you are done installing LDPL, write some LDPL source code, say 'source.ldpl'. Then compile the source code using 'ldpl source.ldpl'. The compiled, executable binary file will be saved as 'ldpl-bin'. Done! For more info on the compiler run 'ldpl -h'. Example code can be found on the LDPL website.
 
 
 
@@ -147,19 +146,19 @@ You can pass the LDPL compiler as many source files as you want and all these fi
 
 '$ ldpl helloWorld.ldpl byeByeWorld.ldpl hiThere.ldpl'
 
-and this would create an executable file called 'helloWorld-bin'. By default, the name used to save the executable is the name of the first LDPL source code passed to the compiler, minus the extension, plus '-bin' (or '-bin.exe' on Windows).
+and this would create an executable file called 'helloWorld-bin'. By default, the name used to save the executable is the name of the first LDPL source code passed to the compiler, minus the extension, plus '-bin'.
 
 When you run 'helloWorld-bin', "Hello World! Bye Bye World! Hi there~" will be printed to the screen, respecting the order in which the sources where compiled. If you were to change the order of the sources in the compilation line, the order of execution of the binary file would change as well.
 
 Flags alter the way the compiler works by default. The list of available flags can be found by running '$ ldpl -h'.
 
-You can import files to your LDPL compilation by using the '-i=' flag. For example, say you have a library 'mylib.ldpl' and a source file 'mysource.ldpl', you can compile both and include the library by running 'ldpl -i=mylibrary.ldpl mysource.ldpl'. Multiple '-i=' can be used to import multiple files. While the '-i=' flag is not mandatory when including LDPL sources, as seen above, importing C++ Extensions requires this flag to be used; see the Extensions section for more information.
+You can import extensions to your LDPL compilation by using the '-i=' flag. Extensions can be imported by passing '.o', '.a', or '.cpp' files to this flag. Multiple '-i=' can be used to import multiple files. See the Extensions section for more information.
 
 By using the '-r' flag you can just transpile the project into C++ and print the C++ representation for that code.
 
 You can set the output file name for the compiled binary with the '-o' flag. For example, if in the example above you wanted to name your program "myProgram" instead of "helloWorld-bin", you could compile it with 'ldpl main.ldpl -o=myProgram'.
 
-On Linux and Windows platforms, LDPL builds static binaries by default. If you want to build non-static ones use the '-n' flag (or the alternative '--non-static' flag).
+On Linux platforms, LDPL builds static binaries by default. If you want to build non-static ones use the '-ns' flag.
 
 The '-c' flag tells LDPL to accept source code from the standard input.
 
@@ -229,8 +228,6 @@ The DATA section is defined and preceded by the 'DATA:' keyword. An empty data s
 
 1 | DATA:
 .br
-2 | 
-.br
 
 On every line within the DATA section (that is, on every line after the 'DATA:' keyword and before the 'PROCEDURE:' keyword) one and only one variable can be declared.
 
@@ -263,6 +260,7 @@ A DATA section cannot contain anything but variable declarations, comments and e
 .br
 8 |   #This is a comment within the PROCEDURE section!
 .br
+
 
 
 .SH DATA TYPES
@@ -314,7 +312,39 @@ Code within the PROCEDURE section is executed from top to bottom, skipping SUB-P
 
 A SUB-PROCEDURE is a piece of code that can be called and executed from other parts of the script. SUB-PROCEDURE subsections must be declared within the PROCEDURE section of the code using a 'SUB-PROCEDURE <name>' statement and end with an 'END SUB-PROCEDURE' statement. Bear in mind that you can't define a SUB-PROCEDURE within a SUB-PROCEDURE. Also bear in mind that you can CALL a SUB-PROCEDURE before it has been declared, but the compilation process will fail if the compiler doesn't find the SUB-PROCEDURE once it has parsed all the files in your program.
 
-The syntax for declaring sub-procedures is this one:
+The full syntax for declaring sub-procedures is this one:
+
+1 | SUB-PROCEDURE procedureName
+.br
+2 |     PARAMETERS:
+.br
+3 |         < parameters go here >
+.br
+4 |     LOCAL DATA:
+.br
+5 |         < local variable declarations go here >
+.br
+6 |     PROCEDURE:
+.br
+7 |         < code goes here >
+.br
+8 | END SUB-PROCEDURE
+.br
+
+The 'PARAMETERS:' and 'LOCAL DATA:' sub-sections are optional (more on these later). If you decide to not include both the 'PARAMETERS:' and 'LOCAL DATA:' sub-sections, you can skip the 'PROCEDURE:' tag and just go ahead writing your code like this:
+
+1 | SUB mySub
+.br
+2 |     # Your code goes here! For example
+.br
+3 |     DISPLAY "I love sub-procedures!" crlf
+.br
+4 | END SUB
+.br
+
+As shown in the example above, the statements 'SUB' and 'END SUB' can be used instead of 'SUB-PROCEDURE' and 'END SUB-PROCEDURE', if you prefer.
+
+In context, the full declaration of a SUB-PROCEDURE looks like this:
 
 1 | DATA:
 .br
@@ -345,7 +375,7 @@ The syntax for declaring sub-procedures is this one:
 
 Of course, you cannot have two SUB-PROCEDUREs with the same name. SUB-PROCEDURE names follow the same naming guidelines variable names follow.
 
-A SUB-PROCEDURE has three sections: 'PARAMETERS', 'LOCAL DATA' and 'PROCEDURE'. The first two sections are optional and 'PROCEDURE' is mandatory, but you can skip the 'PROCEDURE:' label if you only use this section, like this:
+SUB-PROCEDUREs have three sub-sections: 'PARAMETERS:', 'LOCAL DATA:' and 'PROCEDURE:'. Again, the first two sub-sections are optional and only 'PROCEDURE:' is mandatory, but you can skip the 'PROCEDURE:' label if you only use this section, like this:
 
 1 | DATA:
 .br
@@ -364,9 +394,9 @@ A SUB-PROCEDURE has three sections: 'PARAMETERS', 'LOCAL DATA' and 'PROCEDURE'. 
 8 |   END SUB-PROCEDURE
 .br
 
-In 'PROCEDURE' you write the code of the SUB-PROCEDURE using statements like in the main 'PROCEDURE' section, with the addition of RETURN.
+In the 'PROCEDURE:' sub-section, you write the code of the SUB-PROCEDURE using statements like in the main 'PROCEDURE:' section, with the addition of the RETURN statement.
 
-In 'PARAMETERS' and 'LOCAL DATA' you can only use variable declaration statements, just like in the DATA section. The variables defined here can only be used inside the 'PROCEDURE' section of the SUB-PROCEDURE where they are declared. You can declare variables with names declared in other SUB-PROCEDURE or 'DATA', if you use the variable in your SUB-PROCEDURE code it will always refers to the one you declared in the SUB-PROCEDURE, for example:
+In 'PARAMETERS:' and 'LOCAL DATA:' you can only use variable declaration statements, just like in the DATA section. The variables defined here can only be used inside the 'PROCEDURE:' sub-section of the SUB-PROCEDURE where they are declared; you can declare variables with names declared in other SUB-PROCEDURE or in the main 'DATA:' section, but bear in mind that if you use these variables in your SUB-PROCEDURE code, they will always refer to the ones you declared within the SUB-PROCEDURE. For example:
 
 1 | DATA:
 .br
@@ -399,7 +429,7 @@ In 'PARAMETERS' and 'LOCAL DATA' you can only use variable declaration statement
 15|   # The output of this program is "I'm a variable from mySubprocedure! 42"
 .br
 
-At the start of the SUB-PROCEDURE execution, all the variables declared in 'LOCAL DATA' will be initialized with its default value, and each invocation of the SUB-PROCEDURE will have its own copy of the local variables. This is important if you want to implement a recursive SUB-PROCEDURE, for example:
+At the start of the SUB-PROCEDURE execution, all the variables declared in 'LOCAL DATA:' will be initialized with its default value, and each invocation of the SUB-PROCEDURE will have its own copy of the local variables. This is important if you want to implement a recursive SUB-PROCEDURE, for example:
 
 1 | DATA:
 .br
@@ -442,7 +472,7 @@ At the start of the SUB-PROCEDURE execution, all the variables declared in 'LOCA
 20|   # "[myLocalVar starts at 0![myLocalVar starts at 0!I'm execution Nº 2!]I'm execution Nº 1!]"
 .br
 
-Variables declared in 'PARAMETERS' are quite different, they will start with the value passed from the CALL using the 'WITH' keyword. Variables are passed by reference. This means that if you modify a parameter in a SUB-PROCEDURE, the variable passed in the 'CALL' will also be modified. Be careful with this, and make sure to copy a parameter in a local variable if you need it. Passing variables by reference lets you return results from your SUB-PROCEDURE, for example:
+Variables declared in 'PARAMETERS:' are quite different, they will start with the value passed from the CALL using the 'WITH' keyword. Variables are passed by reference. This means that if you modify a parameter in a SUB-PROCEDURE, the variable passed in the 'CALL' will also be modified. Be careful with this, and make sure to copy a parameter in a local variable if you need it. Passing variables by reference lets you return results from your SUB-PROCEDURE, for example:
 
 1 | DATA:
 .br
@@ -472,6 +502,49 @@ Variables declared in 'PARAMETERS' are quite different, they will start with the
 .br
 14|   # The output of this program is "4"
 .br
+
+
+
+.SH IMPORTING OTHER SOURCES
+
+You can import other LDPL source codes to your LDPL source by using the 'INCLUDE' statement. For example, say you have two sources:
+
+File: firstSource.ldpl
+.br
+1 | procedure:
+.br
+2 |   call someSubprocedure
+.br
+
+
+and
+
+File: included.ldpl
+.br
+1 | procedure:
+.br
+2 |   sub someSubprocedure
+.br
+3 |     display "Hi there!"
+.br
+4 |   end sub
+.br
+
+
+You can import the second source into the first one in order to create one big source file like this:
+
+File: firstSource.ldpl
+.br
+1 | include "included.ldpl"
+.br
+2 | procedure:
+.br
+3 |   call someSubprocedure
+.br
+
+
+The location where the included files are searched is relative to the file that includes them.
+
 
 
 .SH VARIABLES IN LDPL
@@ -682,6 +755,7 @@ In older versions of LDPL, MAPs where called VECTORs. Starting from LDPL 3.1.0 D
 --
 
 
+
 .SH DEFAULT VARIABLE VALUES
 
 In LDPL each variable is initialized with a value by default. This means that when you declare a variable, it will, by default, hold this value until it's changed.
@@ -696,15 +770,15 @@ LISTs are initialized empty by default and trying to access a non-existing index
 
 .SH COMMAND LINE ARGUMENTS
 
-Every LDPL program comes with two variables declared by default: 'argc', of the NUMBER type, and 'argv', a TEXT MAP. If you pass command line arguments to your LDPL compiled program (running, for example, something like 'myBinary argument1 argument2)', the value stored in the variable 'argc' (_argument count_) will reflect the number of arguments passed to the script (in this case, two), while the 'argv' vector (_argument vector_) will store in its 0-based natural number keys (that is 0, 1, 2, 3, etc.) the values of each argument passed (in this case, '"argument1"' will be stored in 'argv:0' and '"argument2"' in 'argv:1').
+Every LDPL program comes with a variable declared by default: 'argv', a TEXT LIST. If you pass command line arguments to your LDPL compiled program (running, for example, something like 'myBinary argument1 argument2)', the value stored in the 'argv' list (_argument vector_) will store the values of each argument passed (in this case, '"argument1"' will be stored in 'argv:0' and '"argument2"' in 'argv:1').
 
 -- Note:
 .br
-Given that 'argv' is a TEXT MAP, the values passed as arguments are always stored as TEXT.
+Given that 'argv' is a TEXT LIST, the values passed as arguments are always stored as TEXT.
 .br
 --
 
-Naturally, if no arguments are passed to the program, the value of 'argc' will be zero and 'argv' will be empty.
+Naturally, if no arguments are passed to the program, 'argv' will be empty.
 
 
 
@@ -888,6 +962,7 @@ Possible values of 'REL-OP-TEXT' (text relational operator):
 [*] 'NOT EQUAL TO'
 
 
+
 .SH ELSE IF - IS - THEN
 
 The 'ELSE IF' statement is equivalent to writing an 'IF' statement inside the 'ELSE' statement of another 'IF' statement, but shorter. Must be used after an IF statement and before 'END IF' or 'ELSE'.
@@ -970,6 +1045,7 @@ Possible values of 'REL-OP-TEXT' (text relational operator):
 [*] 'EQUAL TO'
 .br
 [*] 'NOT EQUAL TO'
+
 
 
 ---
@@ -1088,6 +1164,7 @@ If the collection is a 'LIST', its elements will be iterated increasingly from i
 .br
 
 
+
 .SH BREAK
 
 The 'BREAK' statement breaks the execution of the innermost 'WHILE' or 'FOR' loop. Will throw a compiler error if used outside one.
@@ -1131,6 +1208,7 @@ or just
 Of course, a SUB-PROCEDURE must be declared somewhere in your program if you call it.
 
 If the SUB-PROCEDURE you call doesn't have declared parameters, you must call it without the 'WITH' keyword, otherwise you must include it and after it pass all the parameters in the same order declared in the 'PARAMETERS' section of the SUB-PROCEDURE. Remember that variables are passed by reference, see the SUB-PROCEDUREs documentation for more details.
+
 
 
 .SH RETURN
@@ -1253,161 +1331,149 @@ In order to keep 'GOTO' from turning your source into "_unmaintainable spaghetti
 
 
 
-.ce 1
-.SH -=-=-=-=- DOCS: ARITHMETIC STATEMENTS -=-=-=-=-
-
-.SH ADD - AND - IN
-
-The 'ADD' statement adds two NUMBER values and stores the result in a NUMBER variable.
-
-.B Syntax:
-
-1 | ADD <NUMBER-VAR or NUMBER> AND <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
-.br
-
-
-
-.SH SUBTRACT - FROM - IN
-
-The 'SUBTRACT' statement subtracts two NUMBER values and stores the result in a NUMBER variable.
-
-.B Syntax:
-
-1 | SUBTRACT <NUMBER-VAR or NUMBER> FROM <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
-.br
-
-
-
-.SH MULTIPLY - BY - IN
-
-The 'MULTIPLY' statement multiplies two NUMBER values and stores the result in a NUMBER variable.
-
-.B Syntax:
-
-1 | MULTIPLY <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
-.br
-
-
-
-
-
-.SH DIVIDE - BY - IN
-
-The 'DIVIDE' statement divides two NUMBER values and stores the result in a NUMBER variable.
-
-.B Syntax:
-
-1 | DIVIDE <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
-.br
-
-
-
-.SH MODULO - BY - IN
-
-The 'MODULO' statement calculates the remainder of the modulo operation between two NUMBER values and stores the result in a NUMBER variable.
-
-.B Syntax:
-
-1 |  MODULO <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
-.br
-
-
-
-.SH ABS
-
-The 'ABS' statement calculates the absolute value of a NUMBER variable and stores it in that same variable.
-
-.B Syntax:
-
-1 | ABS <NUMBER-VAR>
-.br
-
-
-
-.SH STORE RANDOM IN
-
-The 'STORE RANDOM' statement stores a random value between 0 (inclusive) and 1 (noninclusive) in a NUMBER variable.
-
-.B Syntax:
-
-1 | STORE RANDOM IN <NUMBER-VAR>
-.br
-
-
-
-.SH FLOOR
-
-The 'FLOOR' statement rounds down the value of NUMBER-VAR to the nearest lower integer.
-
-.B Syntax:
-
-1 | FLOOR <NUMBER-VAR>
-.br
-
-
-
-.SH CEIL
-
-The 'CEIL' statement rounds up the value of NUMBER-VAR to the nearest greater integer.
-
-.B Syntax:
-
-1 | CEIL <NUMBER-VAR>
-.br
-
-
-
 ---
-description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
+description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
 ---
 
-.SH INCR & DECR
+.SH CREATE STATEMENT - EXECUTING
 
-The 'INCR' and 'DECR'statements add or subtract from a NUMBER variable by one. The variable is updated with the new value in place.
+The 'CREATE STATEMENT' statement lets you add custom statements to LDPL that execute SUB-PROCEDUREs.
 
 .B Syntax:
 
-1 | INCR <NUMBER-VAR>
+1 | CREATE STATEMENT <TEXT> EXECUTING <sub-procedure name>
 .br
 
-1 | DECR <NUMBER-VAR>
+The 'TEXT' describes the new statement syntax and must contain tokens separated by whitespace. Each token can be a keyword, which is a word with 'A-Z' characters (preferably in English), or '"$"', a character that marks where parameters are passed. At least one keyword token is required and the number of '"$"' tokens must be the same as the number of parameters of the SUB-PROCEDURE you pass after 'EXECUTING'. For example, a valid 'TEXT' is '"DISPLAY $ $ TIMES"' if the SUB-PROCEDURE has exactly two parameters. The SUB-PROCEDURE must be declared before creating the statement.
+
+After a statement is created you can use it like any other LDPL statement in 'PROCEDURE' sections, just write a line with all the tokens of the 'TEXT' in the same order but placing values instead of '"$"'. The types of the values must be the same as the parameter types of the SUB-PROCEDURE the statement executes following the same order. Using the new statement will produce the same effect as CALLing the SUB-PROCEDURE (parameters are passed by reference too).
+
+You can create two different statements with same 'TEXT' and use both if at least one of the parameter types are different in each SUB-PROCEDURE, because the resulting syntaxes will differ from each other. Using this you can create two versions of the same statements dealing with different parameter types, like the first example shows.
+
+Bear in mind that a line in your program could match more than one statement: If all of them were created with 'CREATE STATEMENT', the one that was created first will be executed. If one of the them is a LDPL built-in statement, this will be executed. For example, if you create '"DISPLAY $ $ TIMES"', declare a variable 'TIMES' and use the line 'DISPLAY "Hi!" 3 TIMES', the LDPL DISPLAY statement will be executed, because the line matches its syntax. This is illustrated in the second example.
+
+.B Example 1:
+
+1 | PROCEDURE:
+.br
+2 |   SUB-PROCEDURE displayNValueTimes
+.br
+3 |     PARAMETERS:
+.br
+4 |       value is number
+.br
+5 |       times is number
+.br
+6 |     LOCAL DATA:
+.br
+7 |       i is number
+.br
+8 |     PROCEDURE:
+.br
+9 |       FOR i FROM 0 TO times STEP 1 DO
+.br
+10|         DISPLAY value " "
+.br
+11|       REPEAT
+.br
+12|   END SUB-PROCEDURE
+.br
+13|   CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayNValueTimes
+.br
+14|   # Syntax for this new statement: DISPLAY <NUMBER or NUMBER-VAR> <NUMBER or NUMBER-VAR> TIMES
+.br
+15| 
+.br
+16|   SUB-PROCEDURE displayTValueTimes
+.br
+17|     PARAMETERS:
+.br
+18|       value is text
+.br
+19|       times is number
+.br
+20|     LOCAL DATA:
+.br
+21|       i is number
+.br
+22|     PROCEDURE:
+.br
+23|       FOR i FROM 0 to times STEP 1 DO
+.br
+24|         DISPLAY value " "
+.br
+25|       REPEAT
+.br
+26|   END SUB-PROCEDURE
+.br
+27|   CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayTValueTimes
+.br
+28|   # Syntax for this new statement: DISPLAY <TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
+.br
+29| 
+.br
+30|   # We can imagine that we have only one new statement:
+.br
+31|   # DISPLAY <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
+.br
+32| 
+.br
+33|   DISPLAY 100 2 TIMES # This executes: CALL displayNValueTimes with 100 2
+.br
+34|   DISPLAY "Hi!" 3 TIMES # This executes: CALL displayTValueTimes with "Hi!" 3
+.br
+35| 
+.br
+36|   # This program displays "100 100 Hi! Hi! "
 .br
 
-Example:
+.B Example 2:
 
 1 | DATA:
 .br
-2 | x is number
+2 |   times is number
 .br
-3 | 
+3 | PROCEDURE:
 .br
-4 | PROCEDURE:
+4 |   SUB-PROCEDURE displayTValueTimes
 .br
-5 | STORE 0 IN x
+5 |     PARAMETERS:
 .br
-6 | WHILE x IS LESS THAN 5 DO
+6 |       value is text
 .br
-7 |   DISPLAY "x: " x crlf
+7 |       times is number
 .br
-8 |   INCR x
+8 |     LOCAL DATA:
 .br
-9 | REPEAT
+9 |       i is number
+.br
+10|     PROCEDURE:
+.br
+11|       FOR i FROM 0 to times STEP 1 DO
+.br
+12|         DISPLAY value " "
+.br
+13|       REPEAT
+.br
+14|   END SUB-PROCEDURE
+.br
+15|   CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayTValueTimes
+.br
+16|   # Syntax for this new statement: DISPLAY <TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
+.br
+17| 
+.br
+18|   DISPLAY "Hi!" 3 TIMES # This executes the LDPL DISPLAY statement!
+.br
+19| 
+.br
+20|   # This program displays "Hi!30" because times is equal to 0
 .br
 
-Outputs:
-
-1 | x: 0
-.br
-2 | x: 1
-.br
-3 | x: 2
-.br
-4 | x: 3
-.br
-5 | x: 4
-.br
 
 
+.ce 1
+.SH -=-=-=-=- DOCS: ARITHMETIC STATEMENTS -=-=-=-=-
 
 .SH IN - SOLVE
 
@@ -1461,6 +1527,39 @@ Outputs:
 
 
 
+.SH FLOOR
+
+The 'FLOOR' statement rounds down the value of NUMBER-VAR to the nearest lower integer.
+
+.B Syntax:
+
+1 | FLOOR <NUMBER-VAR>
+.br
+
+
+
+.SH MODULO - BY - IN
+
+The 'MODULO' statement calculates the remainder of the modulo operation between two NUMBER values and stores the result in a NUMBER variable.
+
+.B Syntax:
+
+1 |  MODULO <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+
+
+.SH GET RANDOM IN
+
+The 'GET RANDOM' statement stores a random value between 0 (inclusive) and 1 (noninclusive) in a NUMBER variable.
+
+.B Syntax:
+
+1 | GET RANDOM IN <NUMBER-VAR>
+.br
+
+
+
 .ce 1
 .SH -=-=-=-=- DOCS: TEXT STATEMENTS -=-=-=-=-
 
@@ -1485,7 +1584,7 @@ description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 
 .SH REPLACE - FROM - WITH - IN
 
-The 'REPLACE' statement finds and replaces every occurrence of some TEXT in a TEXT variable or value some other TEXT.  The result is then stored in a TEXT variable.
+The 'REPLACE' statement finds and replaces every occurrence of some TEXT in a TEXT variable or value some other TEXT. The result is then stored in a TEXT variable.
 
 Syntax:
 
@@ -1512,18 +1611,13 @@ description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 
 .SH SPLIT - BY - IN
 
-The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a 'TEXT LIST' or keys of a 'TEXT MAP', starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'
+The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a 'TEXT LIST', starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'
 
 To break TEXT into individual characters, split by the empty string of '""'.
 
 Syntax:
 
 1 | SPLIT <TEXT-VAR or TEXT> BY <TEXT-VAR or TEXT> IN <TEXT-LIST>
-.br
-
-or
-
-1 | SPLIT <TEXT-VAR or TEXT> BY <TEXT-VAR or TEXT> IN <TEXT-MAP>
 .br
 
 Example:
@@ -1550,7 +1644,7 @@ Split into characters:
 
 1 | DATA:
 .br
-2 |   parts IS TEXT MAP
+2 |   parts IS TEXT LIST
 .br
 3 | PROCEDURE:
 .br
@@ -1577,37 +1671,37 @@ The 'GET CHARACTER AT' statement gets the character at the position indicated by
 
 
 
-.SH STORE LENGTH OF - IN
+.SH GET LENGTH OF - IN
 
-The 'STORE LENGTH OF' statement counts the number of characters in the passed TEXT and stores that number in the NUMBER variable.
+The 'GET LENGTH OF' statement counts the number of characters in the passed TEXT and stores that number in the NUMBER variable.
 
 .B Syntax:
 
-1 | STORE LENGTH OF <TEXT-VAR or TEXT> IN <NUMBER-VAR>
+1 | GET LENGTH OF <TEXT-VAR or TEXT> IN <NUMBER-VAR>
 .br
 
 
 
 
 
-.SH STORE CHARACTER - IN
+.SH GET ASCII CHARACTER - IN
 
-The 'STORE CHARACTER' statement stores the character with the ASCII code passed in NUMBER or NUMBER-VAR in TEXT-VAR.
+The 'GET ASCII CHARACTER' statement stores the character with the ASCII code passed in NUMBER or NUMBER-VAR in TEXT-VAR.
 
 .B Syntax:
 
-1 | STORE CHARACTER <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
+1 | GET ASCII CHARACTER <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
 .br
 
 
 
-.SH STORE CHARACTER CODE OF - IN
+.SH GET CHARACTER CODE OF - IN
 
-The 'STORE CHARACTER CODE OF' statement stores the ASCII code of the character passed in TEXT or TEXT-VAR in NUMBER-VAR. Will fail if the length of the string passed in TEXT or TEXT-VAR is not 1.
+The 'GET CHARACTER CODE OF' statement stores the ASCII code of the character passed in TEXT or TEXT-VAR in NUMBER-VAR. Will fail if the length of the string passed in TEXT or TEXT-VAR is not 1.
 
 .B Syntax:
 
-1 | STORE CHARACTER CODE OF <TEXT or TEXT-VAR> IN <NUMBER-VAR>
+1 | GET CHARACTER CODE OF <TEXT or TEXT-VAR> IN <NUMBER-VAR>
 .br
 
 .B Error codes:
@@ -1719,8 +1813,6 @@ The 'GET INDEX OF - FROM - IN' statement stores in a NUMBER variable the positio
 .br
 6 |   # Will display 5.
 .br
-
-
 
 
 
@@ -1914,13 +2006,13 @@ The 'COPY - TO' statement copies all the elements of a LIST with their respectiv
 description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
 ---
 
-.SH STORE LENGTH OF - IN
+.SH GET LENGTH OF - IN
 
-The 'STORE LENGTH OF - IN' statement stores the amount of elements stored in a LIST (or, analogously, the length of the LIST) into a numeric variable.
+The 'GET LENGTH OF - IN' statement stores the amount of elements stored in a LIST (or, analogously, the length of the LIST) into a numeric variable.
 
 .B Syntax:
 
-1 | STORE LENGHT OF <LIST> IN <NUMBER-VAR>
+1 | GET LENGHT OF <LIST> IN <NUMBER-VAR>
 .br
 
 .B Example:
@@ -2021,13 +2113,13 @@ The 'COPY - TO' statement copies all the elements of a MAP with their respective
 description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 ---
 
-.SH STORE KEY COUNT OF - IN
+.SH GET KEY COUNT OF - IN
 
-The 'STORE KEY COUNT OF - IN' statement stores the amount of elements (or, analogously, keys) stored in a MAP into a numeric variable.
+The 'GET KEY COUNT OF - IN' statement stores the amount of elements (or, analogously, keys) stored in a MAP into a numeric variable.
 
 .B Syntax:
 
-1 | STORE KEY COUNT OF <MAP> IN <NUMBER-VAR>
+1 | GET KEY COUNT OF <MAP> IN <NUMBER-VAR>
 .br
 
 .B Example:
@@ -2044,18 +2136,12 @@ The 'STORE KEY COUNT OF - IN' statement stores the amount of elements (or, analo
 .br
 6 |   STORE "How are you?" IN foo:7
 .br
-7 |   STORE KEY COUNT OF foo IN count
+7 |   GET KEY COUNT OF foo IN count
 .br
 8 |   DISPLAY count CRLF
 .br
 9 |   # Will display 2
 .br
-
--- Warning:
-.br
-Please note that as MAPs where called VECTORs prior to LDPL 3.1.0 Diligent Dreadnoughtus, this statement was called 'STORE INDEX COUNT OF - IN'. While we still support and will continue to support legacy code that uses the old syntax, it is deprecated and should not be used anymore.
-.br
---
 
 
 
@@ -2063,13 +2149,13 @@ Please note that as MAPs where called VECTORs prior to LDPL 3.1.0 Diligent Dread
 description: Introduced in LDPL 3.0.5 - Creative Carnotaurus
 ---
 
-.SH STORE KEYS OF - IN
+.SH GET KEYS OF - IN
 
-The 'STORE KEYS OF - IN' statement stores all the keys of a MAP into another MAP. Say you have a MAP with keys '0', '"cat"' and '"dog"'. The elements these keys point to are not important. Using the 'STORE KEYS OF' statement, you can copy the keys of this MAP to another MAP as elements. Thus, the resulting MAP will (for example) have the value '0' at key 0, the value '"cat"' at key 1 and the value '"dog"' at key 2 (the order is not relevant and no ordering criteria is provided). This statement is thus used to find all the keys of a particular MAP.
+The 'GET KEYS OF - IN' statement stores all the keys of a MAP into a TEXT LIST. Say you have a MAP with keys '0', '"cat"' and '"dog"'. The elements these keys point to are not important. Using the 'GET KEYS OF' statement, you can copy the keys of this MAP to a LIST. Thus, the resulting LIST will (for example) have the value '0' at index 0, the value '"cat"' at index 1 and the value '"dog"' at index 2. This statement is thus used to find all the keys of a particular MAP.
 
 .B Syntax:
 
-1 | STORE KEYS OF <MAP> IN <TEXT-MAP>
+1 | GET KEYS OF <MAP> IN <TEXT-LIST>
 .br
 
 .B Example:
@@ -2078,7 +2164,7 @@ The 'STORE KEYS OF - IN' statement stores all the keys of a MAP into another MAP
 .br
 2 |   foo IS TEXT MAP
 .br
-3 |   bar IS TEXT MAP
+3 |   bar IS TEXT LIST
 .br
 4 | PROCEDURE:
 .br
@@ -2092,16 +2178,10 @@ The 'STORE KEYS OF - IN' statement stores all the keys of a MAP into another MAP
 .br
 9 |   STORE "LDPL is nice" IN foo:3
 .br
-10|   STORE KEYS OF foo IN bar
+10|   GET KEYS OF foo IN bar
 .br
 
-At the end of the execution of the previous excerpt of code, the 'TEXT MAP' called 'bar' will contain the values '"0"', '"7"', '"cat"', '"dog"' and '"3"' at keys that are consecutive integers starting at zero, but in no particular order (meaning that '"0"' may come before '"7"' or after it, no ordering criteria is provided by this standard).
-
--- Warning:
-.br
-Please note that as MAPs where called VECTORs prior to LDPL 3.1.0 Diligent Dreadnoughtus, this statement was called 'STORE INDICES OF - IN'. While we still support and will continue to support legacy code that uses the old syntax, it is deprecated and should not be used anymore.
-.br
---
+At the end of the execution of the previous excerpt of code, the 'TEXT LIST' called 'bar' will contain the values '"0"', '"7"', '"cat"', '"dog"' and '"3"' at indexes that are consecutive integers starting at zero.
 
 
 
@@ -2268,41 +2348,6 @@ in this case, the file 'hello.txt', created here and modified as stated on that 
 .br
 2 | How are you?
 .br
-
-
-
----
-description: Introduced in LDPL 3.1.0 - Diligent Dreadnoughtus
----
-
-.SH LIST CONTENTS OF DIRECTORY - IN
-
-The 'LIST CONTENTS OF DIRECTORY - IN' statement does what it says on the tin: stores the names of all the files in a certain directory in a 'TEXT LIST'. If the directory cannot be read (or the directory doesn't exist, or the route passed does not lead to a directory but a regular file) the 'ERRORCODE' variable is altered and a message detailing the error is stored in the 'ERRORTEXT' variable.
-
-.B Syntax: <a id="syntax"></a>
-
-1 | LIST CONTENTS OF DIRECTORY <TEXT or TEXT-VAR> IN <TEXT-LIST>
-.br
-
-.B Example: <a id="example"></a>
-
-1 | LIST CONTENTS OF DIRECTORY "/route/to/directory" IN listOfFiles
-.br
-
-.B Error codes: <a id="error-codes"></a>
-
-If the 'LIST CONTENTS OF DIRECTORY - IN' operation should fail, the following values will be returned into the 'ERRORCODE' and 'ERRORTEXT' variables:
-
-.br
-[*] 'ERRORCODE': 1
-.br
-[*] 'ERRORTEXT': "Error opening directory '<route>'."
-
--- Warning:
-.br
-Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
-.br
---
 
 
 
@@ -2516,6 +2561,19 @@ For example, if your LDPL source file is called 'mySource.ldpl' and you want to 
 1 | $ ldpl -i=otherFile.cpp mySource.ldpl
 .br
 
+Starting from LDPL 4.0, you can also use the 'EXTENSION' statement to include extensions to your project, just like you'd use the INCLUDE statement to include LDPL source files:
+
+1 | EXTENSION "myExtension.cpp"
+.br
+2 | 
+.br
+3 | procedure:
+.br
+4 |   call external someFunction
+.br
+
+The location where extensions are searched when using the 'EXTENSION' statement is relative to the file that includes them.
+
 If your C++ extension files require extra flags to be passed to the C++ compiler in order to compile (for example, '-lSDL' when working with SDL) you can use the '-f=' flag to pass those flags to it. Following the SDL example, you could do
 
 1 | $ ldpl -i=mySDLSource.cpp mySource.ldpl -f=-lSDL
@@ -2524,6 +2582,21 @@ If your C++ extension files require extra flags to be passed to the C++ compiler
 and the C++ compiler will be executed with the '-lSDL' flag.
 
 1 | $ ldpl -i=<extension file> code.ldpl
+.br
+
+Starting from LDPL 4.0, you can also use the 'FLAG' statement to pass flags to the C++ compiler:
+
+1 | EXTENSION "myExtension.cpp"
+.br
+2 | FLAG "-fpermissive" # This is the same as passing -f=-fpermissive to the LDPL compiler.
+.br
+3 | FLAG "-lSDL2" # This is the same as passing -f=-lSDL2 to the LDPL compiler.
+.br
+4 | 
+.br
+5 | procedure:
+.br
+6 |   call external someFunction
 .br
 
 
@@ -2628,7 +2701,7 @@ File: simple.ldpl
 
 .SH CALL EXTERNAL
 
-The 'CALL EXTERNAL' statement executes a SUB-PROCEDURE defined in an extension to LDPL, typically in C++. It otherwise operates the same as 'CALL SUB-PROCEDURE'.
+The 'CALL EXTERNAL' statement executes a SUB-PROCEDURE defined in an extension to LDPL, typically in C++. It otherwise operates the same as 'CALL SUB-PROCEDURE', except that external SUB-PROCEDURES do not receive parameters.
 
 .B Syntax:
 
@@ -2668,7 +2741,7 @@ Note that EXTERNAL SUB-PROCEDUREs cannot receive any kind of parameters and must
 
 Once that's taken care of, you can declare your EXTERNAL SUB-PROCEDURE as any other SUB-PROCEDURE in LDPL by preppending the identifier EXTERNAL to the SUB-PROCEDURE declaration:
 
-1 | EXTERNAL SUB-PROCEDURE helloWorld
+1 | EXTERNAL SUB-PROCEDURE helloWorld #or EXTERNAL SUB
 .br
 2 |   #Code here...
 .br
