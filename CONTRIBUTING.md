@@ -8,7 +8,7 @@ Anyone can contribute to the LDPL project! As stated on the README.md file, we a
 
 ### What do I need to know to contribute to LDPL?
 
-Please take a moment to familiarize yourself with the [Dragon Tamers Code](/CODE_OF_CONDUCT) (LDPL's code of conduct, you are expected and required to behave by this code) and the [LDPL reference](https://docs.ldpl-lang.org/) (not really a *must* per se, but that's where all the language is documented).
+Please take a moment to familiarize yourself with the [Code Of Conduct](/CODE_OF_CONDUCT) (you are expected and required to behave by this code) and the [LDPL reference](https://docs.ldpl-lang.org/) (not really a *must* per se, but that's where all the language is documented).
 
 C++ knowledge is a must if you want to contribute to the compiler code, and LDPL knowledge is a must if you want to write examples or LDPL software. Drawing is not really a must if you want to submit a drawing, but you may get better results if you know how to draw. We'll love your art anyway, though.
 
@@ -30,7 +30,7 @@ If you are writing LDPL software, please try to make your code clear as well. It
 
 If you are submiting issues, PLEASE be as clear as possible. Tell us where the error happened, tell us what where you doint, what code triggered it, etc. It just doesn't work when someone posts "please fix this function it doesn't work thx bye".
 
-If you are submiting a drawing, feel free to take any artistic license you like. "Look mom, I drew the LDPL dragon!".
+If you are submiting a drawing, feel free to take any artistic license you like. "Look mom, I drew the LDPL dinosaur!".
 
 If you are submiting LDPL fanfiction, please ask yourself why am I doing this. Then kindly create a pull request.
 
@@ -40,5 +40,5 @@ If you are submiting LDPL fanfiction, please ask yourself why am I doing this. T
 - LDPL Reference: [https://docs.ldpl-lang.org/](https://docs.ldpl-lang.org/)
 - LDPL Reddit Community: [https://reddit.com/r/ldpl](https://reddit.com/r/ldpl)
 - IRC Channel: #ldpl at [irc.freenode.net](http://irc.freenode.net)
-- [Dragon Tamers Code](/CODE_OF_CONDUCT)
+- [dinosaur Tamers Code](/CODE_OF_CONDUCT)
 - You can also send me an email at *mdelrio (at) dc.uba.ar*.

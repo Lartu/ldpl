@@ -241,7 +241,6 @@ string to_ldpl_string(ldpl_number x){
 #include <array>
 
 string exec(const char* cmd) {
-    //TODO: Check if this works on windows
     array<char, 128> buffer;
     string result;
     unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, \"r\"), pclose);
