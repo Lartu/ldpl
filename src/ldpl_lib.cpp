@@ -314,14 +314,6 @@ ldpl_list<string> utf8_split_list(const string & haystack, const string & needle
     return result;
 }
 
-ldpl_vector<string> utf8_split(const string & haystack, const string & needle){
-    ldpl_vector<string> result;
-    ldpl_list<string> list_result = utf8_split_list(haystack, needle);
-    for (int i = 0; i < list_result.inner_collection.size();  i++)
-        result[i] = list_result[i];
-    return result;
-}
-
 ldpl_number utf8GetIndexOf(string a, string needle){
     string haystack = a;
     int lenHaystack = utf8_strlen(haystack);
