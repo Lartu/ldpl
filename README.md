@@ -82,7 +82,7 @@ For a guide to writing and building extensions, see [LDPL's official documentati
 
 ### 📖 The LDPL Standard Library
 
-A number of useful statements and subroutines are available in the [LDPL Standard Library](https://github.com/Lartu/ldpl-std). Just `INCLUDE` the desired files in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
+A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `INCLUDE` the desired files in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
 
 ### 🦕 Some other LDPL Libraries
 
