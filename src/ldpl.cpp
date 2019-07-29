@@ -190,7 +190,6 @@ int main(int argc, const char* argv[])
         if(final_filename.size() == 0) final_filename = "ldpl-output";
         final_filename += "-bin";
     }
-    bullet_msg("Building " + final_filename);
     //Compile the C++ code
     string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
 #ifdef STATIC_BUILDS
@@ -208,6 +207,7 @@ int main(int argc, const char* argv[])
             compile_line += " " + flag;
         }
     }
+    bullet_msg("Building " + final_filename);
     int compiled = system(compile_line.c_str());
     system("rm ldpl-temp.cpp");
     if(compiled == 0){
