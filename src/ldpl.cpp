@@ -620,7 +620,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
     if(line_like("ELSE IF $condition THEN", tokens, state))
     {
-        string condition = get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1));
+        string condition = get_c_condition(state, vector<string>(tokens.begin()+2, tokens.end()-1));
         if (condition != "[ERROR]") {
             if(!in_procedure_section(state, line_num, current_file))
                 error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
