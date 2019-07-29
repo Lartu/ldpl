@@ -1,7 +1,7 @@
 # The LDPL Programming Language
 
-![Version](https://img.shields.io/badge/current_release-3.0.5_'Creative_Carnotaurus'-blue.svg)
-![Version](https://img.shields.io/badge/development_version-4.0_'Diligent_Dreadnoughtus'-purple.svg)
+![Version](https://img.shields.io/badge/current_release-4.0_'Diligent_Dreadnoughtus'-blue.svg)
+![Version](https://img.shields.io/badge/development_version-4.1-purple.svg)
 [![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
 
 ![LDPL](https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png)
@@ -34,7 +34,6 @@ You can get yourself a precompiled LDPL binary or compile LDPL from source. Chec
 | **If you want to download a compiled binary** | **If you want to build LDPL yourself** |
 | ---                                           | --- |
 | Compiled binaries contain the latest stable release. Might not be up to date with the newest, bleeding edge features, but will work fine on most systems and are already compiled for you. | Building LDPL yourself gives you access to the latest features of the language. Development LDPL code tends to be stable, compile and work fine, but hidden bugs may still lurk in there! |
-| ![Current Release Logo](https://github.com/Lartu/ldpl/blob/master/images/release-logos/creative-carnotaurus.png) | ![Current Development Version Logo](https://raw.githubusercontent.com/Lartu/ldpl/master/images/release-logos/diligent-dreadnoughtus-dev.png) |
 | **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
@@ -83,7 +82,15 @@ For a guide to writing and building extensions, see [LDPL's official documentati
 
 ### 📖 The LDPL Standard Library
 
-A number of useful statements and subroutines are available in the [LDPL Standard Library](https://github.com/Lartu/ldpl-std). Just `INCLUDE` the desired files in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
+A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `INCLUDE` the desired files in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
+
+### 🦕 Some other LDPL Libraries
+
+- [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible.
+- [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages.
+- [**The LDPL IRC Bot Library**](https://github.com/Lartu/ldpl-irc-bot): the LDPL IRC Bot Library lets you write LDPL programs that connect to IRC servers, join channels, send messages and more in the simplest
+way possible.
+- [**LDPLNOISE**](https://github.com/dvkt/ldplnoise): LDPL extension with linenoise support. Linenoise is a minimal, zero-config, BSD licensed, readline replacement used in Redis, MongoDB, and Android.
 
 ## 👨🏼‍💻 How can I contribute to LDPL?
 
