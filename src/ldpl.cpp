@@ -885,7 +885,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("GET ASCII CHARACTER statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
-        state.add_code(get_c_variable(state, tokens[4]) + " = (char)" + get_c_expression(state, tokens[2]) + ";");
+        state.add_code(get_c_variable(state, tokens[5]) + " = (char)" + get_c_expression(state, tokens[3]) + ";");
         return;
     }
     if(line_like("GET CHARACTER CODE OF $str-expr IN $num-var", tokens, state))
