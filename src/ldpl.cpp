@@ -318,7 +318,7 @@ void compile(vector<string> & lines, compiler_state & state)
         //Split line in various tokens
         vector<string> tokens;
         tokenize(line, line_num, tokens, state.current_file, true);
-        for(string & token : tokens) if(token == "CRLF") token = "\"\\r\\n\"";
+        for(string & token : tokens) if(token == "CRLF" || token == "LF") token = "\"\\n\"";
         if(tokens.size() == 0) continue;
         compile_line(tokens, line_num, state);
     }
