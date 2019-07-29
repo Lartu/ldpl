@@ -608,22 +608,28 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
     if(line_like("IF $condition THEN", tokens, state))
     {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.open_if();
-        state.add_code("if (" + get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1)) + "){");
-        return;
+        string condition = get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1));
+        if (condition != "[ERROR]") {
+            if(!in_procedure_section(state, line_num, current_file))
+                error("IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            //C Code
+            state.open_if();
+            state.add_code("if (" + condition + "){");
+            return;
+        }
     }
     if(line_like("ELSE IF $condition THEN", tokens, state))
     {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(!state.closing_if())
-            error("ELSE IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.add_code("} else if (" + get_c_condition(state, vector<string>(tokens.begin()+2, tokens.end()-1)) + "){");
-        return;
+        string condition = get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1));
+        if (condition != "[ERROR]") {
+            if(!in_procedure_section(state, line_num, current_file))
+                error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            if(!state.closing_if())
+                error("ELSE IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            //C Code
+            state.add_code("} else if (" + condition + "){");
+            return;
+        }
     }
     if(line_like("ELSE", tokens, state))
     {
@@ -649,12 +655,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
     if(line_like("WHILE $condition DO", tokens, state))
     {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
-        state.open_loop();
-        state.add_code("while (" + get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1)) + "){");
-        return;
+        string condition = get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1));
+        if (condition != "[ERROR]") {
+            if(!in_procedure_section(state, line_num, current_file))
+                error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            //C Code
+            state.open_loop();
+            state.add_code("while (" + condition + "){");
+            return;
+        }
     }
     if(line_like("REPEAT", tokens, state))
     {
@@ -1375,48 +1384,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$condition") //$condition is a IF/WHILE condition
         {
-            // Note: We assume that there is only one token after $condition,
-            // which is always the case in IF and WHILE statements
-            string first_value = tokens[j];
-            string second_value = tokens.rbegin()[1];
-
-            //Get the type of the values we are comparing
-            bool text_values = false;
-            bool vector_values = false;
-            bool list_values = false;
-            if(is_num_expr(first_value, state) && is_num_expr(second_value, state))
-                text_values = false;
-            else if(is_txt_expr(first_value, state) && is_txt_expr(second_value, state))
-                text_values = true;
-            else if(is_num_vector(first_value, state) && is_num_vector(second_value, state))
-                vector_values = true;
-            else if(is_txt_vector(first_value, state) && is_txt_vector(second_value, state))
-                vector_values = true;
-            else if(is_num_list(first_value, state) && is_num_list(second_value, state))
-                list_values = true;
-            else if(is_txt_list(first_value, state) && is_txt_list(second_value, state))
-                list_values = true;
-            else
-                return false;
-
-            if(tokens[++j] != "IS") return false;
-
-            string rel_op;
-            for(++j; j < tokens.size() - 2; ++j){
-                rel_op += tokens[j] + " ";
-            }
-
-            //The comparisons can only be EQUAL TO, NON EQUAL TO, GREATER THAN... or LESS THAN...
-            //So if it's not EQUAL TO or NOT EQUAL TO, then it must be one of the others.
-            //(or not be a $condition token at all)
-            if(rel_op != "EQUAL TO " && rel_op != "NOT EQUAL TO "){
-                if(text_values) return false;
-                if(vector_values) return false;
-                if(list_values) return false;
-                if(rel_op != "GREATER THAN " && rel_op != "GREATER THAN OR EQUAL TO "
-                && rel_op != "LESS THAN " && rel_op != "LESS THAN OR EQUAL TO ")
-                    return false;
-            }
+            // Skip to the last token (THEN/DO),
+            // the condition is validated in get_c_condition
+            j = tokens.size() - 1;
+            continue;
         }
         else if(model_tokens[i] == "$anything") return true;
         else if(model_tokens[i] != tokens[j]) return false;
@@ -1647,45 +1618,123 @@ string get_c_number(compiler_state & state, string & expression)
     return c_expression;
 }
 
+// Returns [ERROR] if invalid condtion, otherwise returns C++ condition
 string get_c_condition(compiler_state & state, vector<string> tokens) {
-    string first_value = get_c_expression(state, tokens[0]);
-    string second_value = get_c_expression(state, tokens.rbegin()[0]);
+    unsigned int ct = 0;
+    string condition = get_c_condition(state, tokens, ct);
+    if (ct < tokens.size()) return "[ERROR]";
+    return condition;
+}
 
-    string rel_op = "";
-    for(unsigned int i = 2; i < tokens.size() - 1; ++i){
-        rel_op += tokens[i] + " ";
-    }
-    // Text expressions
-    if(is_txt_expr(tokens[0], state)) {
-        if(rel_op == "EQUAL TO ")
-            return first_value + " == " + second_value;
+#define MATCH(x) \
+    if (ct < tokens.size() && tokens[ct] == x) ct++; \
+    else return "[ERROR]";
+string get_c_condition(compiler_state & state, vector<string> tokens, unsigned int & ct) {
+    if (ct >= tokens.size()) return "[ERROR]";
+    string condition;
+    if (tokens[ct] == "(") {
+        MATCH("(");
+        condition = get_c_condition(state, tokens, ct);
+        if (condition == "[ERROR]") return condition;
+        MATCH(")");
+        condition =  "(" + condition + ")";
+    } else {
+        string first_value = tokens[ct];
+        ct++; // We validate the token after we get the second value
+        MATCH("IS");
+
+        string rel_op;
+        if (tokens[ct] == "EQUAL") {
+            MATCH("EQUAL"); MATCH("TO");
+            rel_op = "EQUAL TO";
+        } else if (tokens[ct] == "NOT") {
+            MATCH("NOT"); MATCH("EQUAL"); MATCH("TO");
+            rel_op = "NOT EQUAL TO";
+        } else if (tokens[ct] == "GREATER") {
+            MATCH("GREATER"); MATCH("THAN");
+            if (ct+1 < tokens.size() && tokens[ct+1] == "EQUAL") {
+                // We check the next token instead of the curent one
+                // because "OR" could be a variable after "GREATER THAN"
+                MATCH("OR"); MATCH("EQUAL"); MATCH("TO");
+                rel_op = "GREATER THAN OR EQUAL TO";
+            } else {
+                rel_op = "GREATER THAN";
+            }
+        } else if (tokens[ct] == "LESS") {
+            MATCH("LESS"); MATCH("THAN");
+            if (ct+1 < tokens.size() && tokens[ct+1] == "EQUAL") {
+                // We check the next token instead of the curent one
+                // because "OR" could be a variable after "LESS THAN"
+                MATCH("OR"); MATCH("EQUAL"); MATCH("TO");
+                rel_op = "LESS THAN OR EQUAL TO";
+            } else {
+                rel_op = "LESS THAN";
+            }
+        } else {
+            return "[ERROR]";
+        }
+
+        string second_value = tokens[ct];
+        ++ct;
+
+        string type;
+        if(is_num_expr(first_value, state) && is_num_expr(second_value, state))
+            type = "NUMBER";
+        else if(is_txt_expr(first_value, state) && is_txt_expr(second_value, state))
+            type = "TEXT";
+        else if(is_num_vector(first_value, state) && is_num_vector(second_value, state))
+            type = "NUMBER MAP";
+        else if(is_txt_vector(first_value, state) && is_txt_vector(second_value, state))
+            type = "TEXT MAP";
+        else if(is_num_list(first_value, state) && is_num_list(second_value, state))
+            type = "NUMBER LIST";
+        else if(is_txt_list(first_value, state) && is_txt_list(second_value, state))
+            type = "TEXT LIST";
         else
-            return first_value + " != " + second_value;
+            return "[ERROR]";
+
+        first_value = get_c_expression(state, first_value);
+        second_value = get_c_expression(state, second_value);
+        if (type == "NUMBER") {
+            if (rel_op == "EQUAL TO")
+                condition = "num_equal(" + first_value + ", " + second_value + ")";
+            else if (rel_op == "NOT EQUAL TO")
+                condition = "!num_equal(" + first_value + ", " + second_value + ")";
+            else if (rel_op == "GREATER THAN")
+                condition = first_value + " > " + second_value;
+            else if(rel_op == "LESS THAN")
+                condition = first_value + " < " + second_value;
+            else if (rel_op == "GREATER THAN OR EQUAL TO")
+                condition = "(" + first_value + " > " + second_value
+                + " || num_equal(" + first_value + ", " + second_value + "))";
+            else
+                condition = "(" + first_value + " < " + second_value
+                + " || num_equal(" + first_value + ", " + second_value + "))";
+        } else {
+            if (type != "TEXT") {
+                first_value += ".inner_collection";
+                second_value += ".inner_collection";
+            }
+            if( rel_op == "EQUAL TO")
+                condition =  first_value + " == " + second_value;
+            else if (rel_op == "NOT EQUAL TO")
+                condition = first_value + " != " + second_value;
+            else // >, >, <= and >= are only valid in NUMBER
+                return "[ERROR]";
+        }
+
+        if (ct < tokens.size() && (tokens[ct] == "AND" || tokens[ct] == "OR")) {
+            if (tokens[ct] == "AND")
+                condition += " && ";
+            else if(tokens[ct] == "OR")
+                condition += " || ";
+            ++ct;
+            string next_condition = get_c_condition(state, tokens, ct);
+            if (next_condition == "[ERROR]") return next_condition;
+            condition += next_condition;
+        }
     }
-    // Vectors and Lists
-    else if(is_vector(tokens[0], state) || is_list(tokens[0], state)){
-        if(rel_op == "EQUAL TO ")
-            return first_value + ".inner_collection == " + second_value + ".inner_collection";
-        else
-            return first_value + ".inner_collection != " + second_value + ".inner_collection";
-    }
-    // Numeric expressions
-    else {
-        if(rel_op == "EQUAL TO ")
-            return "num_equal(" + first_value + ", " + second_value + ")";
-        else if(rel_op == "NOT EQUAL TO ")
-            return "!num_equal(" + first_value + ", " + second_value + ")";
-        else if(rel_op == "GREATER THAN ")
-            return first_value + " > " + second_value;
-        else if(rel_op == "LESS THAN ")
-            return first_value + " < " + second_value;
-        else if(rel_op == "GREATER THAN OR EQUAL TO ")
-            return first_value + " > " + second_value
-            + " || num_equal(" + first_value + ", " + second_value + ")";
-        else
-            return first_value + " < " + second_value
-            + " || num_equal(" + first_value + ", " + second_value + ")";
-    }
+    return condition;
 }
 
 //Escapes " char in string so it can be emitted as c++
