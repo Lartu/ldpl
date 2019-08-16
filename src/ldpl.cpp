@@ -1710,16 +1710,29 @@ string get_c_condition(compiler_state & state, vector<string> tokens, unsigned i
             else
                 condition = "(" + first_value + " < " + second_value
                 + " || num_equal(" + first_value + ", " + second_value + "))";
+        } else if (type == "TEXT") {
+            if (rel_op == "EQUAL TO")
+                condition = "str_cmp(" + first_value + ", " + second_value + ") == 0";
+            else if (rel_op == "NOT EQUAL TO")
+                condition = "str_cmp(" + first_value + ", " + second_value + ") != 0";
+            else if (rel_op == "GREATER THAN")
+                condition = "str_cmp(" + first_value + ", " + second_value + ") > 0";
+            else if (rel_op == "LESS THAN")
+                condition = "str_cmp(" + first_value + ", " + second_value + ") < 0";
+            else if (rel_op == "GREATER THAN OR EQUAL TO")
+                condition = "str_cmp(" + first_value + ", " + second_value + ") >= 0";
+            else if (rel_op == "LESS THAN OR EQUAL TO")
+                condition = "str_cmp(" + first_value + ", " + second_value + ") <= 0";
+            else
+                return "[ERROR]";
         } else {
-            if (type != "TEXT") {
-                first_value += ".inner_collection";
-                second_value += ".inner_collection";
-            }
+            first_value += ".inner_collection";
+            second_value += ".inner_collection";
             if( rel_op == "EQUAL TO")
                 condition =  first_value + " == " + second_value;
             else if (rel_op == "NOT EQUAL TO")
                 condition = first_value + " != " + second_value;
-            else // >, >, <= and >= are only valid in NUMBER
+            else // >, >, <= and >= are only valid in NUMBER and TEXT
                 return "[ERROR]";
         }
 

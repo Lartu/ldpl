@@ -122,6 +122,10 @@ bool num_equal(ldpl_number a, ldpl_number b){
     return fabs(a - b) < NVM_FLOAT_EPSILON;
 }
 
+int str_cmp(string a, string b) {
+  return a.compare(b);
+}
+
 ldpl_number modulo(ldpl_number a, ldpl_number b){
     return (int) floor(a) % (int) floor(b);
 }
