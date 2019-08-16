@@ -8,7 +8,7 @@
 
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
-Please note that Windows support has been dropped as of LDPL 4.0 'Diligent Dreadnoughtus', due to a lack of Windows curators. If you use Windows and would like to support LDPL on Windows, we'd love if you did!
+Please note that Windows support has been dropped as of LDPL 4.0 'Diligent Dreadnoughtus', due to a lack of Windows curators. If you use Windows and would like to support LDPL on Windows, we'd love if you could help us!
 
 This repository contains the source code and releases of the LDPL compiler (and other goodies!).
 
