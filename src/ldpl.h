@@ -9,7 +9,11 @@
 #include <locale>
 #include "cpptrim.h"
 #include <sstream>
-#include <sys/wait.h>
+#ifdef _WIN32	
+    #include <windows.h>
+#else	
+    #include <sys/wait.h>
+#endif
 
 using namespace std;
 
@@ -28,9 +32,9 @@ struct compiler_state{
     vector<string> output_code;
     vector<string> subroutine_code; //code outside main()
     //variables
-    map<string, map<string, unsigned int>> variables; //variables by subprocedure (or "" for main)
+    map<string, map<string, vector<unsigned int>>> variables; //map<subprocedure (or "" for main), map<variable name, vector<types>>> (variables are stored here)
     map<string, bool> externals; //variables defined in c++ extensions
-    //1 number, 2 text, 3 number map/vector, 4 text map/vector, 5 number list, 6 text list
+    //1 number, 2 text, 3 list, 4 map --> <2, 3, 4, 4> means, for example, map of map of list of text
     map<string, vector<pair<string, string>>> subprocedures; // subprocedure -> list of C++ parameter types and identifiers
     void add_var_code(string code){
         this->variable_code.push_back(code);
@@ -133,8 +137,8 @@ void bullet_msg(const string & msg);
 void warning(const string & msg);
 void error(const string & msg);
 void compile(vector<string> & lines, compiler_state & state);
-void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase);
-void split_vector(string & token, string & vector, string & index);
+void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase, char splitChar);
+void split_vector(string & token, string & var_name, vector<string> & indexes, compiler_state & state);
 void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state);
 bool line_like(string model_line, vector<string> & tokens, compiler_state & state); //Important to pass tokens by copy
 bool is_number(string & number);
@@ -173,6 +177,6 @@ string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
 string fix_identifier(string identifier);
 bool in_procedure_section(compiler_state & state, unsigned int line_num, string & current_file);
-unsigned int variable_type(string & token, compiler_state & state);
+vector<unsigned int> variable_type(string & token, compiler_state & state);
 void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file);
 void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num);

@@ -133,10 +133,10 @@ int main(int argc, const char* argv[])
     state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
 
-    state.variables[""]["ARGV"] = 6; //Type 6 = Text List
+    state.variables[""]["ARGV"] = {2, 3}; //List of text
     state.add_var_code("ldpl_list<string> "+fix_identifier("ARGV", true)+";");
-    state.variables[""]["ERRORCODE"] = 1; //Declared in ldpl_lib.cpp
-    state.variables[""]["ERRORTEXT"] = 2; //Declared in ldpl_lib.cpp
+    state.variables[""]["ERRORCODE"] = {1}; //Declared in ldpl_lib.cpp
+    state.variables[""]["ERRORTEXT"] = {2}; //Declared in ldpl_lib.cpp
     state.add_code("for(int i = 1; i < argc; ++i)");
     state.add_code(fix_identifier("ARGV", true) + ".inner_collection.push_back(argv[i]);");
 
@@ -209,7 +209,11 @@ int main(int argc, const char* argv[])
     }
     bullet_msg("Building " + final_filename);
     int compiled = system(compile_line.c_str());
-    system("rm ldpl-temp.cpp");
+    #if defined(_WIN32)
+        system("del ldpl-temp.cpp");	
+    #else	
+        system("rm ldpl-temp.cpp");	
+    #endif
     if(compiled == 0){
         bullet_msg("Saved as " + final_filename);
         bullet_msg("\033[32;1mFile(s) compiled successfully.\033[0m");
@@ -317,7 +321,7 @@ void compile(vector<string> & lines, compiler_state & state)
         trim(line);
         //Split line in various tokens
         vector<string> tokens;
-        tokenize(line, line_num, tokens, state.current_file, true);
+        tokenize(line, line_num, tokens, state.current_file, true, ' ');
         for(string & token : tokens) if(token == "CRLF" || token == "LF") token = "\"\\n\"";
         if(tokens.size() == 0) continue;
         compile_line(tokens, line_num, state);
@@ -328,8 +332,8 @@ void compile(vector<string> & lines, compiler_state & state)
     if(state.closing_loop()) error("a WHILE or FOR block was not terminated.");
 }
 
-//Tokenizes a line with optional convertion of tokens to uppercase (except in string)
-void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase)
+//Tokenizes a line splitting by 'splitChar' with optional convertion of tokens to uppercase (except in strings)
+void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase, char splitChar)
 {
     ++line_num;
     bool in_string = false;
@@ -338,7 +342,7 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
     for(unsigned int i = 0; i < line.size(); ++i)
     {
         char letter = line[i];
-        if(letter == ' ')
+        if(letter == splitChar)
         {
             if(in_string) current_token += letter;
             else
@@ -385,7 +389,7 @@ void tokenize(string & line, unsigned int line_num, vector<string> & tokens, str
         {
             current_token += (uppercase && !in_string)? toupper(letter) : letter;
         }
-        if(i == line.size() - 1 && letter != ' ')
+        if(i == line.size() - 1 && letter != splitChar)
         {
             if(in_string) error("Unterminated string (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             if(current_token.size() > 0)
@@ -407,6 +411,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else {
             string file_to_compile = tokens[1].substr(1, tokens[1].size() - 2);
             string separators = "/";
+            #if defined(_WIN32)	
+                separators += "\\";	
+            #endif
             size_t last_sep = current_file.find_last_of(separators);
             if (last_sep != string::npos)
                 file_to_compile = current_file.substr(0, last_sep) + "/" + file_to_compile;
@@ -424,6 +431,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else {
             string file_to_add = tokens[1].substr(1, tokens[1].size() - 2);
             string separators = "/";
+            #if defined(_WIN32)	
+                separators += "\\";	
+            #endif
             size_t last_sep = current_file.find_last_of(separators);
             if (last_sep != string::npos)
                 file_to_add = current_file.substr(0, last_sep) + "/" + file_to_add;
@@ -489,42 +499,43 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Variable Declaration
-    if(line_like("$name IS $anything", tokens, state))
+    if(line_like("$name IS $anything", tokens, state))                      // If it's a variable declaration
     {
-        string extern_keyword = ""; // C++ extern keyword to prepend to the type (empty if not EXTERNAL)
-        string type; // C++ variable type
-        unsigned int type_number;
-        string assign_default; // default value assignation to variable
-        size_t i = 2;
-        bool valid_type = true;
-        if (tokens[i] == "EXTERNAL" && state.current_subprocedure == "") { // EXTERNAL is only valid in DATA section
-            state.externals[tokens[0]] = true;
-            extern_keyword = "extern ";
-            ++i;
+        string extern_keyword = "";                                         // C++ extern keyword to prepend to the type (empty if not EXTERNAL)
+        string type;                                                        // C++ variable type
+        vector<unsigned int> type_number;                                   // All data types in LDPL have a list of numbers that represent its type
+        string assign_default;                                              // Default Value to asign to the variable
+        size_t i = 2;                                                       // i is used to check all the words after 'IS' and thus starts in 2.
+        bool valid_type = true;                                             // Used to check if it's a valid tipe
+        if (tokens[i] == "EXTERNAL" && state.current_subprocedure == "") {  // EXTERNAL is only valid in DATA section (not in LOCAL DATA)
+            state.externals[tokens[0]] = true;                              // Add it to the list of external variables
+            extern_keyword = "extern ";                                     // Set the prepended keyword to 'extern'
+            ++i;                                                            // Check the next word.
         }
-        if (tokens[i] == "NUMBER") {
-            type_number = 1;
-            type = "ldpl_number";
-            if (extern_keyword == "") assign_default = " = 0";
-        } else if (tokens[i] == "TEXT") {
-            type_number = 2;
-            type = "string";
-            if (extern_keyword == "") assign_default = " = \"\"";
+        if (tokens[i] == "NUMBER") {                                        // If it's a number...
+            type_number.push_back(1);                                       // Then the type number is 1
+            type = "ldpl_number";                                           // and the used type (for C++) is ldpl_number
+            if (extern_keyword == "") assign_default = " = 0";              // if its not an external variable, set a default value for it.
+        } else if (tokens[i] == "TEXT") {                                   // If we are dealing with a text variable...
+            type_number.push_back(2);                                       // The type number is 2
+            type = "string";                                                // The C++ data type is just string
+            if (extern_keyword == "") assign_default = " = \"\"";           // And if it's not external, we set it to a default value.
         } else {
-            valid_type = false;
-        }
-        if (valid_type && ++i < tokens.size()) {
-            // Collections
-            assign_default = ""; // Collections are initially empty
-            if (tokens[i] == "MAP" || tokens[i] == "VECTOR") {
-                type_number += 2; // 1 -> 3, 2 -> 4
-                type = "ldpl_vector<" + type + ">";
-            } else if (tokens[i] == "LIST") {
-                type_number += 4; // 1 -> 5, 2 -> 6
-                type = "ldpl_list<" + type + ">";
-            } else {
-                valid_type = false;
+            valid_type = false;                                             // If its not a NUMBER, a TEXT or a collection of these data types
+        }                                                                   // then it's not a valid LDPL data type.
+        ++i;                                                                // Move to the next keyword.
+        while (valid_type && i < tokens.size()) {                           // If up to this point we got a valid data type, we check for containers.
+            assign_default = "";                                            // Collections are not initialized with any default values.
+            if (tokens[i] == "MAP" || tokens[i] == "VECTOR") {              // If its a MAP (aka VECTOR)
+                type_number.push_back(4);                                   // We add the MAP type (4) to its type list
+                type = "ldpl_vector<" + type + ">";                         // Set the C++ type
+            } else if (tokens[i] == "LIST") {                               // If its a LIST
+                type_number.push_back(3);                                   // We add the LIST type (3) to its type list
+                type = "ldpl_list<" + type + ">";                           // Set the C++ type
+            } else {                                                        // If the container is not a VECTOR nor a MAP
+                valid_type = false;                                         // then it's not a valid data type.
             }
+            ++i;                                                            // Move to the next keyword.
         }
         if (valid_type && i >= tokens.size() - 1) {
             if(state.section_state != 1 && state.section_state != 4)
@@ -803,7 +814,11 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("WAIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C Code
+        #if defined(_WIN32)	
+        state.add_code("_sleep((long int)" + get_c_expression(state, tokens[1]) + ");");	
+        #else
         state.add_code("std::this_thread::sleep_for(std::chrono::milliseconds((long int)" + get_c_expression(state, tokens[1]) + "));");
+        #endif
         return;
     }
     if(line_like("GOTO $label", tokens, state))
@@ -1146,7 +1161,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         vector<string> model_tokens;
         vector<pair<string, string>> parameters = state.subprocedures[tokens[4]];
         trim(model_line);
-        tokenize(model_line, 0, model_tokens, state.current_file, true);
+        tokenize(model_line, 0, model_tokens, state.current_file, true, ' ');
         size_t param_count = 0;
         size_t keyword_count = 0;
         string valid_keyword_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -1189,7 +1204,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                 error(prefix + "statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             vector<string> model_tokens;
             vector<string> parameters;
-            tokenize(statement.first, line_num, model_tokens, state.current_file, false);
+            tokenize(statement.first, line_num, model_tokens, state.current_file, false, ' ');
             for (size_t i = 0; i < model_tokens.size(); i++) {
                 if (model_tokens[i][0] == '$')
                     parameters.push_back(tokens[i]);
@@ -1249,7 +1264,7 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
 {
     //Tokenize model line
     vector<string> model_tokens;
-    tokenize(model_line, 0, model_tokens, state.current_file, false);
+    tokenize(model_line, 0, model_tokens, state.current_file, false, ' ');
     //Check that tokens match between line and model line
     if(tokens.size() < model_tokens.size()) return false;
     unsigned int i = 0;
@@ -1463,25 +1478,29 @@ bool is_string(string & token){
 
 bool is_num_vector(string & token, compiler_state & state)
 {
-    if(variable_type(token, state) == 3) return true;
+    vector<unsigned int> type = variable_type(token, state);
+    if(type[0] == 1 && type.back() == 4) return true;
     return false;
 }
 
 bool is_txt_vector(string & token, compiler_state & state)
 {
-    if(variable_type(token, state) == 4) return true;
+    vector<unsigned int> type = variable_type(token, state);
+    if(type[0] == 2 && type.back() == 4) return true;
     return false;
 }
 
 bool is_num_list(string & token, compiler_state & state)
 {
-    if(variable_type(token, state) == 5) return true;
+    vector<unsigned int> type = variable_type(token, state);
+    if(type[0] == 1 && type.back() == 3) return true;
     return false;
 }
 
 bool is_txt_list(string & token, compiler_state & state)
 {
-    if(variable_type(token, state) == 6) return true;
+    vector<unsigned int> type = variable_type(token, state);
+    if(type[0] == 2 && type.back() == 3) return true;
     return false;
 }
 
@@ -1495,26 +1514,56 @@ bool is_list(string & token, compiler_state & state)
     return is_num_list(token, state) || is_txt_list(token, state);
 }
 
+// Checks if token is a NUMBER variable (or an access to a container that results in a NUMBER variable)
 bool is_num_var(string & token, compiler_state & state)
 {
-    //Check if var
-    if(variable_type(token, state) == 1) return true;
-    //Check if num_vector:index
-    string vector, index;
-    split_vector(token, vector, index);
-    return (is_num_vector(vector, state) && is_expression(index, state))
-        || (is_num_list(vector, state) && is_num_expr(index, state));
+    // Our precondition is that the variable we are trying to check exists.
+    // We first want to get the type of the variable. In order to do this,
+    // we have first to call split_vector to split it into var_name and
+    // indexes, just in case we are dealing with a container and not a scalar
+    // variable.
+    string var_name;
+    vector<string> indexes;
+    split_vector(token, var_name, indexes, state);
+    // Now that we have the variable name, we get its type.
+    vector<unsigned int> var_types = variable_type(token, state);
+    //If the type is NUMBER (1), we are dealing with a scalar variable and
+    // we just return true.
+    if(var_types == vector<unsigned int>{1}) return true;
+    // If the type is not (1), we might be dealing with a container. We'll
+    // first have to check if the container is a NUMBER container. If it's not,
+    // we just return false.
+    if(var_types[0] != 1) return false;
+    // If we have a NUMBER container, we have to check that the number of
+    // indexes it has matches the number of indexes it expects. If it does,
+    // the container results in a NUMBER variable.
+    return indexes.size() == var_types.size() - 1;
 }
 
+// Checks if token is a TEXT variable (or an access to a container that results in a TEXT variable)
 bool is_txt_var(string & token, compiler_state & state)
 {
-    //Check if var
-    if(variable_type(token, state) == 2) return true;
-    //Check if txt_vector:index
-    string vector, index;
-    split_vector(token, vector, index);
-    return (is_txt_vector(vector, state) && is_expression(index, state))
-        || (is_txt_list(vector, state) && is_num_expr(index, state));
+    // Our precondition is that the variable we are trying to check exists.
+    // We first want to get the type of the variable. In order to do this,
+    // we have first to call split_vector to split it into var_name and
+    // indexes, just in case we are dealing with a container and not a scalar
+    // variable.
+    string var_name;
+    vector<string> indexes;
+    split_vector(token, var_name, indexes, state);
+    // Now that we have the variable name, we get its type.
+    vector<unsigned int> var_types = variable_type(token, state);
+    //If the type is TEXT (2), we are dealing with a scalar variable and
+    // we just return true.
+    if(var_types == vector<unsigned int>{2}) return true;
+    // If the type is not (2), we might be dealing with a container. We'll
+    // first have to check if the container is a TEXT container. If it's not,
+    // we just return false.
+    if(var_types[0] != 2) return false;
+    // If we have a TEXT container, we have to check that the number of
+    // indexes it has matches the number of indexes it expects. If it does,
+    // the container results in a TEXT variable.
+    return indexes.size() == var_types.size() - 1;
 }
 
 bool is_variable(string & token, compiler_state & state)
@@ -1542,19 +1591,93 @@ bool is_external(string & token, compiler_state & state)
     return state.externals[token];
 }
 
-void split_vector(string & token, string & vector, string & index)
+// Given a 'full variable' (for example 'bar' or 'foo:0:"hi there":4'), a place to store a variable
+// name and a vector of strings to store all indexes, we get the variable name and all its subindexes (if any)
+// into the corresponding variables.
+void split_vector(string & token, string & var_name, vector<string> & indexes, compiler_state & state)
 {
+    // First of all we want to know if we are dealing with a container variable,
+    // that is a LIST of something of a MAP of something. Thus, we look for any
+    // ':' in the full variable and store the possition of the (possible) first
+    // one.
     size_t pos = token.find(":");
+    // If we didn't find any ':', then we are dealing with a scalar variable.
+    // We just get its name (the full variable) and an empty vector of indexes.
     if (pos == string::npos) {
-        vector = token;
-        index = "";
-        //Bear in mind that if we are storing a value in vector:"",
-        //this means that index will contain "\"\"", and not "".
-    } else if (pos == token.size() - 1)
-        error("Incomplete MAP or LIST access found (can't end on ':'!).");
+        var_name = token;
+        indexes = {};
+    }
+    // If we found a ':', but it's the last character in the full variable, that
+    // means that we received something like 'foo:'. That's not right, so we rise
+    // an error.
+    else if (pos == token.size() - 1)
+        error("Incomplete MAP or LIST access found (can't end on ':').");
     else{
-        vector = token.substr(0, pos);
-        index = token.substr(pos+1);
+        // If none of the above happened, then our container is formatted correctly. Now
+        // it's time to split it. As we can have something like 
+        // foo IS NUMBER LIST LIST
+        // bar IS NUMBER LIST
+        // and try to access foo using a value stored in bar (for example foo:bar:0:1,
+        // meaning the foo[bar[0]][1]), we have to know how many indexes our container
+        // expects. We tokenize our container using the tokenize function.
+        vector<string> tokens;
+        tokenize(token, 0, tokens, state.current_file, true, ':');
+        // We take the first token as the variable name and then discard it.
+        var_name = tokens[0];
+        tokens.erase (tokens.begin(), tokens.begin()+1);
+        // For each of the remaining, we have to check if its a variable or not. If
+        // its a variable name, it may be another container. For each container we
+        // find, we append as many indexes that container requires to the previous
+        // token we found (the index name). So, if we had foo and bar as stated above,
+        // the parsing of foo:bar:0:1 would go like this:
+        // - foo is taken as the variable name and thus skipped.
+        // - bar is a container that takes one index. We'll then 'skip' one index.
+        //   We then push bar to a list of tokens we've already checked.
+        // - 1 is an index, and we said we were going to 'skip' one index. What we do
+        //   is, instead of pushing 1 to the list of tokens we've already checked, we
+        //   append it to the last token we found as an index access. So we take the
+        //   'bar' that's already in our checked list and we turn it into 'bar:1'.
+        // - 0 is an index. We are not skipping anymore indexes as we already skipped
+        //   '1', so we push it into our checked tokens list.
+        // Our checked tokens list will end up like {'bar:1', 0}, that are the indexes
+        // of foo we are trying to access.
+        vector<string> checked_tokens;
+        size_t tokens_to_skip = 0;
+        for(size_t i = 0; i < tokens.size(); ++i){
+            if(is_number(tokens[i]) || is_string(tokens[i])){
+                if(tokens_to_skip > 0){
+                    checked_tokens.back() += ":" + tokens[i];
+                    tokens_to_skip--;
+                }else{
+                    checked_tokens.push_back(tokens[i]);
+                }
+            }
+            // If the current token is not a number nor a string, it must be a variable
+            // name.
+            else{
+                // We get the types of the current variable.
+                vector<unsigned int> cvar_types = variable_type(tokens[i], state);
+                // If the variable doesn't exist, we raise an error.
+                if(cvar_types == vector<unsigned int>{0}){
+                    error("The variable " + tokens[i] + " doesn't exist in " + token + ".");
+                }
+                // We remove an element of the current variable types as the main type (NUMBER
+                // or TEXT) never names a container type and thus cannot be indexed.
+                cvar_types.pop_back();
+                // If we had to skip this token, we append it to the last token we have.
+                if(tokens_to_skip > 0){
+                    checked_tokens.back() += ":" + tokens[i];
+                    tokens_to_skip--;
+                }else{
+                    checked_tokens.push_back(tokens[i]);
+                }
+                // We tell the splitter to skip this many tokens.
+                tokens_to_skip += cvar_types.size();
+            }
+        }
+        // After we've got all indexes we needed, we store our checked tokens list into the
+        // indexes vector, that is what we are going to return with the variable name.
+        indexes = checked_tokens;
     }
 }
 
@@ -1564,7 +1687,7 @@ void split_vector(string & token, string & vector, string & index)
  un subíndice de vector no sería una variable.*/
 bool variable_exists(string & token, compiler_state & state)
 {
-    return variable_type(token, state) != 0;
+    return variable_type(token, state) != vector<unsigned int>{0};
 }
 
 bool is_subprocedure(string & token, compiler_state & state)
@@ -1574,16 +1697,32 @@ bool is_subprocedure(string & token, compiler_state & state)
     return false;
 }
 
+// Given a full variable (with accesses and everything, like foo:0:'hi there' or bar) returns
+// the C++ representation of said variable in order to be accessed.
 string get_c_variable(compiler_state & state, string & variable)
 {
-    string var_name, index;
-    split_vector(variable, var_name, index);
+    // We want to get two things in order to create the correct C++ representation
+    // of a 'full variable': the variable name and all the indexess we are trying
+    // to access that correspond to this particular variable (because we could have
+    // foo number list list and bar number list and try to access foo:bar:0:1. In this
+    // case, we would be interested in getting 'foo', 'bar:0' and '1'.
+    string var_name;
+    vector<string> indexes;
+    // We use the split_vector function to get these values into our variables.
+    split_vector(variable, var_name, indexes, state);
+    // We 'fix' the variable name, turning all characters not accepted by C++ into
+    // LDPL codes that C++ does accept.
     var_name = fix_identifier(var_name, true, state);
-    //Single variable
-    if(index.empty())
+    // If split_vector didn't return any indexes, then we are dealing with a scalar
+    // variable. We just return the C++ variable name and we are done.
+    if (indexes.empty())
         return var_name;
-    //Vector variable
-    return var_name + '[' + get_c_expression(state, index) + ']';
+    // If our indexes vector is not empty, however, we recreate the correct C++
+    // container access, with one dimension for each value in our indexes vector.
+    for (size_t i = 0; i < indexes.size(); ++i)
+        var_name += '[' + get_c_expression(state, indexes[i]) + ']';
+    // Once we are done, we return the variable name.
+    return var_name;
 }
 
 string get_c_expression(compiler_state & state, string & expression)
@@ -1772,13 +1911,39 @@ bool in_procedure_section(compiler_state & state, unsigned int line_num, string 
     return state.section_state == 2;
 }
 
-// Return the number of the type or 0 if the variable doesn't exist
-unsigned int variable_type(string & token, compiler_state & state) {
-    if (state.variables[state.current_subprocedure].count(token) > 0)
-        return state.variables[state.current_subprocedure][token];
-    if (state.variables[""].count(token) > 0)
-        return state.variables[""][token];
-    return 0;
+// Return the number of the type or {0} if the variable doesn't exist
+vector<unsigned int> variable_type(string & token, compiler_state & state) {
+    // Variables can have mixed types. For example, a LIST of MAPS of NUMBERS called foo
+    // is a NUMBER when you access both containers (foo:0:"hi")
+    // a NUMBER MAP when you access just the list (foo:0)
+    // or a NUMBER MAP LIST when you access nothing (foo)
+    // So we first split the full variable with accesses and everything into tokens by :
+    vector<string> tokens;
+    string varName = "";
+    tokenize(token, 0, tokens, state.current_file, true, ':');
+    // So, for example, foo:0:"hi" will be split into {foo, 0, "hi"}
+    // We take the first element as the variable name
+    varName = tokens[0];
+    // Then we check if the variable exists. If it does, we store its types in a variable.
+    vector<unsigned int> types;
+    if (state.variables[state.current_subprocedure].count(varName) > 0)
+        types = state.variables[state.current_subprocedure][varName];
+    else if (state.variables[""].count(varName) > 0)
+        types = state.variables[""][varName];
+    // If the variable wasn't found, we return {0}
+    else return {0};
+    // If it was found, though, we want to get its current type.
+    // If, in the example above, we had foo:0, then our current type would be {1, 4}
+    // meaning, a NUMBER (1) MAP (4). But the type the variable has stored is {1, 4, 3},
+    // because it is a NUMBER MAP LIST (LIST is 3). We have to remove all accessed elements
+    // from the type vector ({1, 4, 3} would turn into {1, 4} because we accessed the list
+    // when we did :0). The number of elements to pop from the vector is equal to the number
+    // of : found within the full variable (foo:0). As we've already splitted the variable
+    // into tokens, the number of elements to pop from the vector is equal to the number of
+    // tokens we have minus one.
+    for(size_t i = 0; i < tokens.size() - 1; ++i) types.pop_back();
+    // Now we have the types and can return them.
+    return types;
 }
 
 // This is called when we know all parameters of a subprocedure
