@@ -586,7 +586,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("Subprocedure declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure(tokens[2]);
-        //C Code
+        //C++ Code
         state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){");
         return;
     }
@@ -596,7 +596,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("END SUB-PROCEDURE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!state.closing_subprocedure())
             error("END SUB-PROCEDURE without SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("}");
         //Cierro la subrutina
         state.close_subprocedure();
@@ -608,7 +608,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
         error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         string rhand;
         if (is_num_var(tokens[3], state))
         rhand = get_c_number(state, tokens[1]);
@@ -623,7 +623,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if (condition != "[ERROR]") {
             if(!in_procedure_section(state, line_num, current_file))
                 error("IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-            //C Code
+            //C++ Code
             state.open_if();
             state.add_code("if (" + condition + "){");
             return;
@@ -637,7 +637,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                 error("ELSE IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             if(!state.closing_if())
                 error("ELSE IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-            //C Code
+            //C++ Code
             state.add_code("} else if (" + condition + "){");
             return;
         }
@@ -648,7 +648,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("ELSE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!state.closing_if())
             error("ELSE without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.open_else();
         state.add_code("}else{");
         return;
@@ -659,7 +659,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("END IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!state.closing_if() && !state.closing_else())
             error("END IF without IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.close_if();
         state.add_code("}");
         return;
@@ -670,7 +670,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if (condition != "[ERROR]") {
             if(!in_procedure_section(state, line_num, current_file))
                 error("WHILE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-            //C Code
+            //C++ Code
             state.open_loop();
             state.add_code("while (" + condition + "){");
             return;
@@ -682,7 +682,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("REPEAT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(!state.closing_loop())
             error("REPEAT without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.close_loop();
         state.add_code("}");
         return;
@@ -700,7 +700,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         string condition = step + " >= 0 ? " +
                            var + " < " + to + " : " + var + " > " + to;
         string increment = var + " += " + step;
-        //C Code
+        //C++ Code
         state.add_code("for (" + init + "; " + condition + "; " + increment + ") {");
         return;
     }
@@ -708,14 +708,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("FOR EACH outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(is_num_var(tokens[2], state) != (is_num_vector(tokens[4], state) || is_num_list(tokens[4], state)))
+        if(is_num_var(tokens[2], state) != (is_num_map(tokens[4], state) || is_num_list(tokens[4], state)))
             error("FOR EACH iteration variable type doesn't match collection type (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.open_loop();
         //C Code
         string range_var = state.new_range_var();
         string collection = get_c_variable(state, tokens[4]) + ".inner_collection";
         string iteration_var = range_var;
-        if (is_vector(tokens[4], state)) {
+        if (is_map(tokens[4], state)) {
             iteration_var += ".second";
         }
         state.add_code("for (auto& " + range_var + " : " + collection + ") {");
@@ -728,7 +728,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("BREAK outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.open_loops == 0)
             error("BREAK without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("break;");
         return;
     }
@@ -738,7 +738,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("CONTINUE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.open_loops == 0)
             error("CONTINUE without WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("continue;");
         return;
     }
@@ -758,11 +758,11 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                     types.push_back("ldpl_number");
                 else if(is_txt_expr(parameter, state))
                     types.push_back("string");
-                else if(is_num_vector(parameter, state))
+                else if(is_num_map(parameter, state))
                     types.push_back("ldpl_vector<ldpl_number>");
                 else if(is_num_list(parameter, state))
                     types.push_back("ldpl_list<ldpl_number>");
-                else if(is_txt_vector(parameter, state))
+                else if(is_txt_map(parameter, state))
                     types.push_back("ldpl_vector<string>");
                 else if(is_txt_list(parameter, state))
                     types.push_back("ldpl_list<string>");
@@ -797,7 +797,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("RETURN outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.current_subprocedure == "")
             error("RETURN found outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("return;");
         return;
     }
@@ -805,7 +805,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXIT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("exit(0);");
         return;
     }
@@ -813,7 +813,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("WAIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         #if defined(_WIN32)	
         state.add_code("_sleep((long int)" + get_c_expression(state, tokens[1]) + ");");	
         #else
@@ -841,7 +841,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("MODULO statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
@@ -849,7 +849,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("RANDOM outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[3]) + " = get_random();");
         return;
     }
@@ -857,7 +857,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("FLOOR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[1]) + " = floor(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
@@ -884,7 +884,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("join(" + get_c_string(state, tokens[1]) + ", " + get_c_string(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
@@ -892,7 +892,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET CHARACTER statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[7]) + " = charat(" + get_c_expression(state, tokens[5]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
@@ -900,7 +900,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET LENGTH OF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[5]) + " = str_len(" + get_c_expression(state, tokens[3]) + ");");
         return;
     }
@@ -908,7 +908,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET ASCII CHARACTER statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[5]) + " = (char)" + get_c_expression(state, tokens[3]) + ";");
         return;
     }
@@ -916,7 +916,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET CHARACTER CODE OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[6]) + " = get_char_num(" + get_c_expression(state, tokens[4]) + ");");
         return;
     }
@@ -925,7 +925,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("STORE QUOTE IN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.open_quote = true;
-        //C code. More strings will get emitted
+        //C++ Code. More strings will get emitted
         state.add_code(get_c_variable(state, tokens[3]) + " = \"\"");
         return;
     }
@@ -937,7 +937,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("IN-JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(tokens.size() < 5)
             error("IN-JOIN expects at least two values to join (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("joinvar = \"\";");
         for(unsigned int i = 3; i < tokens.size(); ++i){
             state.add_code("join(joinvar, " + get_c_string(state, tokens[i]) + ", joinvar);");
@@ -951,10 +951,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("DISPLAY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         for(unsigned int i = 1; i < tokens.size(); ++i){
             //TODO ADD COLORS HERE
-            if(is_variable(tokens[i], state)){
+            if(is_scalar_variable(tokens[i], state)){
                 state.add_code("cout << " + get_c_variable(state, tokens[i]) + " << flush;");
             }
             else{
@@ -967,7 +967,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         if(is_num_var(tokens[1], state))
             state.add_code(get_c_variable(state, tokens[1]) + " = input_number();");
         else
@@ -978,7 +978,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("system(" + get_c_char_array(state, tokens[1]) + ");");
         return;
     }
@@ -986,7 +986,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[6]) + " = exec(" + get_c_char_array(state, tokens[1]) + ");");
         return;
     }
@@ -994,7 +994,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[7]) + " = (system(" + get_c_char_array(state, tokens[1]) + ") >> 8) & 0xff;"); //shift wait() val and get lowest 2
         return;
     }
@@ -1002,7 +1002,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[1])+" = input_until_eof();");
         return;
     }
@@ -1010,7 +1010,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("load_file(" + get_c_expression(state, tokens[2]) + ", " + get_c_variable(state, tokens[4]) +");");
         return;
     }
@@ -1018,7 +1018,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("file_writing_stream.open(" + get_c_expression(state, tokens[4]) + ", ios_base::out);");
         state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
@@ -1028,7 +1028,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("file_writing_stream.open(" + get_c_expression(state, tokens[4]) + ", ios_base::app);");
         state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
@@ -1039,7 +1039,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[7]) + " = str_replace(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
     }
@@ -1047,7 +1047,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[7]) + " = utf8GetIndexOf(" + get_c_expression(state, tokens[5]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
@@ -1055,7 +1055,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[5]) + " = utf8Count(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[1]) + ");");
         return;
     }
@@ -1063,7 +1063,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("SUBSTRING statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("joinvar = " + get_c_expression(state, tokens[1]) + ";");
         state.add_code(get_c_variable(state, tokens[7]) + " = utf8_substr(joinvar, " + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
@@ -1072,7 +1072,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("TRIM statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[3]) + " = trimCopy(" + get_c_expression(state, tokens[1]) +  ");");
         return;
     }
@@ -1080,7 +1080,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("CLEAR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[1]) + ".inner_collection.clear();");
         return;
     }
@@ -1089,7 +1089,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(variable_type(tokens[1], state) == variable_type(tokens[3], state)) {
             if(!in_procedure_section(state, line_num, current_file))
             error("COPY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-            //C Code
+            //C++ Code
             state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection = " + get_c_variable(state, tokens[1]) + ".inner_collection;");
             return;
         }
@@ -1098,7 +1098,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET KEY COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".inner_collection.size();");
         return;
     }
@@ -1106,8 +1106,32 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET KEYS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("get_indices(" + get_c_variable(state, tokens[5]) + ", " + get_c_variable(state, tokens[3]) + ");");
+        return;
+    }
+    if(line_like("PUSH MAP TO $map-list", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+        error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        if(variable_type(tokens[3], state)[0] == 1){
+            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_vector<ldpl_number>{});");
+        }else{
+            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_vector<string>{});");
+        }
+        return;
+    }
+    if(line_like("PUSH LIST TO $list-list", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+        error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        if(variable_type(tokens[3], state)[0] == 1){
+            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_list<ldpl_number>{});");
+        }else{
+            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_list<string>{});");
+        }
         return;
     }
     if(line_like("PUSH $expression TO $list", tokens, state))
@@ -1116,16 +1140,18 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(is_num_expr(tokens[1], state) == is_num_list(tokens[3], state)) {
             if(!in_procedure_section(state, line_num, current_file))
             error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-            //C Code
+            //C++ Code
             state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(" + get_c_expression(state, tokens[1]) + ");");
             return;
+        }else{
+            error("List - Value type mismatch (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         }
     }
     if(line_like("GET LENGTH OF $list IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET LENGTH OF (list) statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".inner_collection.size();");
         return;
     }
@@ -1133,7 +1159,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("DELETE LAST ELEMENT OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code("if(" + get_c_variable(state, tokens[4]) + ".inner_collection.size() > 0)");
         state.add_code(get_c_variable(state, tokens[4]) + ".inner_collection.pop_back();");
         return;
@@ -1142,7 +1168,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("SPLIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        //C Code
+        //C++ Code
         state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split_list(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
@@ -1293,18 +1319,22 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$var") //$var is either a NUMBER variable or a TEXT variable
         {
-            if(!is_variable(tokens[j], state)) return false;
+            if(!is_scalar_variable(tokens[j], state)) return false;
+        }
+        else if(model_tokens[i] == "$anyVar") //$var is either any variable
+        {
+            if(!is_scalar_variable(tokens[j], state) && !is_map(tokens[j], state) && !is_list(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$vector"){ //$vector is TEXT MAP, NUMBER MAP
-            if(!is_vector(tokens[j], state)) return false;
+            if(!is_map(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$num-vec") //$num-vec is NUMBER vector
         {
-            if(!is_num_vector(tokens[j], state)) return false;
+            if(!is_num_map(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$str-vec") //$str-vec is TEXT vector
         {
-            if(!is_txt_vector(tokens[j], state)) return false;
+            if(!is_txt_map(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$list"){ //$list is a LIST
             if(!is_list(tokens[j], state)) return false;
@@ -1317,9 +1347,17 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_txt_list(tokens[j], state)) return false;
         }
+        else if(model_tokens[i] == "$list-list") //$str-vec is a LIST of LISTs
+        {
+            if(!is_list_list(tokens[j], state)) return false;
+        }
+        else if(model_tokens[i] == "$map-list") //$str-vec is LIST of MAPs
+        {
+            if(!is_map_list(tokens[j], state)) return false;
+        }
         else if(model_tokens[i] == "$collection") //$collection is either a MAP or a LIST
         {
-            if(!is_vector(tokens[j], state) && !is_list(tokens[j], state)) return false;
+            if(!is_map(tokens[j], state) && !is_list(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$literal") //$literal is either a NUMBER or a TEXT
         {
@@ -1476,39 +1514,71 @@ bool is_string(string & token){
     return true;
 }
 
-bool is_num_vector(string & token, compiler_state & state)
+// Returns if the variable is a NUMBER MAP or an access to a multicontainer that results in a NUMBER MAP
+bool is_num_map(string & token, compiler_state & state)
 {
     vector<unsigned int> type = variable_type(token, state);
-    if(type[0] == 1 && type.back() == 4) return true;
+    if(type.size() == 2 && type[0] == 1 && type[1] == 4) return true;
     return false;
 }
 
-bool is_txt_vector(string & token, compiler_state & state)
+// Returns if the variable is a TEXT MAP or an access to a multicontainer that results in a TEXT MAP
+bool is_txt_map(string & token, compiler_state & state)
 {
     vector<unsigned int> type = variable_type(token, state);
-    if(type[0] == 2 && type.back() == 4) return true;
+    if(type.size() == 2 && type[0] == 2 && type[1] == 4) return true;
     return false;
 }
 
+// Returns if the variable is a NUMBER LIST or an access to a multicontainer that results in a NUMBER LIST
 bool is_num_list(string & token, compiler_state & state)
 {
     vector<unsigned int> type = variable_type(token, state);
-    if(type[0] == 1 && type.back() == 3) return true;
+    if(type.size() == 2 && type[0] == 1 && type[1] == 3) return true;
     return false;
 }
 
+// Returns if the variable is a TEXT MAP or an access to a multicontainer that results in a TEXT MAP
 bool is_txt_list(string & token, compiler_state & state)
 {
     vector<unsigned int> type = variable_type(token, state);
-    if(type[0] == 2 && type.back() == 3) return true;
+    if(type.size() == 2 && type[0] == 2 && type[1] == 3) return true;
     return false;
 }
 
-bool is_vector(string & token, compiler_state & state)
+// Returns if the variable is a NUMBER/TEXT LIST LIST multicontainer or a multicontainer access that results in a LIST of LISTs
+bool is_list_list(string & token, compiler_state & state)
 {
-    return is_num_vector(token, state) || is_txt_vector(token, state);
+    vector<unsigned int> type = variable_type(token, state);
+    if(type.size() >= 2 && type[type.size()-2] == 3 && type.back() == 3) return true;
+    return false;
 }
 
+// Returns if the variable is a multicontainer NUMBER/TEXT LIST MAP or a multicontainer access that results in a LIST of MAPs
+bool is_map_list(string & token, compiler_state & state)
+{
+    vector<unsigned int> type = variable_type(token, state);
+    if(type.size() >= 2 && type[type.size()-2] == 4 && type.back() == 3) return true;
+    return false;
+}
+
+// Returns if the variable is a NUMBER MAP or an access to a multicontainer that results in a NUMBER MAP
+// or if the variable is a TEXT MAP or an access to a multicontainer that results in a TEXT MAP
+bool is_map(string & token, compiler_state & state)
+{
+    return is_num_map(token, state) || is_txt_map(token, state);
+}
+
+// Returns if the variable is a NUMBER/TEXT MAP MAP multicontainer or a multicontainer access that results in a MAP of MAPs
+bool is_map_map(string & token, compiler_state & state)
+{
+    vector<unsigned int> type = variable_type(token, state);
+    if(type.size() >= 2 && type[type.size()-2] == 4 && type.back() == 4) return true;
+    return false;
+}
+
+// Returns if the variable is a NUMBER LIST or an access to a multicontainer that results in a NUMBER LIST
+// or if the variable is a TEXT LIST or an access to a multicontainer that results in a TEXT LIST
 bool is_list(string & token, compiler_state & state)
 {
     return is_num_list(token, state) || is_txt_list(token, state);
@@ -1527,7 +1597,7 @@ bool is_num_var(string & token, compiler_state & state)
     split_vector(token, var_name, indexes, state);
     // Now that we have the variable name, we get its type.
     vector<unsigned int> var_types = variable_type(token, state);
-    //If the type is NUMBER (1), we are dealing with a scalar variable and
+    // If the type is NUMBER (1), we are dealing with a scalar variable and
     // we just return true.
     if(var_types == vector<unsigned int>{1}) return true;
     // If the type is not (1), we might be dealing with a container. We'll
@@ -1553,7 +1623,7 @@ bool is_txt_var(string & token, compiler_state & state)
     split_vector(token, var_name, indexes, state);
     // Now that we have the variable name, we get its type.
     vector<unsigned int> var_types = variable_type(token, state);
-    //If the type is TEXT (2), we are dealing with a scalar variable and
+    // If the type is TEXT (2), we are dealing with a scalar variable and
     // we just return true.
     if(var_types == vector<unsigned int>{2}) return true;
     // If the type is not (2), we might be dealing with a container. We'll
@@ -1566,7 +1636,7 @@ bool is_txt_var(string & token, compiler_state & state)
     return indexes.size() == var_types.size() - 1;
 }
 
-bool is_variable(string & token, compiler_state & state)
+bool is_scalar_variable(string & token, compiler_state & state)
 {
     return is_num_var(token, state) || is_txt_var(token, state);
 }
@@ -1681,7 +1751,7 @@ void split_vector(string & token, string & var_name, vector<string> & indexes, c
     }
 }
 
-/*La diferencia entre is_variable y variable_exists es que is_variable
+/*La diferencia entre is_scalar_variable y variable_exists es que is_scalar_variable
  no toma los vectores como una variable, sino los índices de los vectores.
  Variable exists te dice si una variable está declarada como tal, por lo que
  un subíndice de vector no sería una variable.*/
@@ -1727,7 +1797,7 @@ string get_c_variable(compiler_state & state, string & variable)
 
 string get_c_expression(compiler_state & state, string & expression)
 {
-    if(is_variable(expression, state) || variable_exists(expression, state))
+    if(is_scalar_variable(expression, state) || variable_exists(expression, state))
         return get_c_variable(state, expression);
     is_number(expression); //We fix the expression should it be a number literal
     return expression;
@@ -1821,9 +1891,9 @@ string get_c_condition(compiler_state & state, vector<string> tokens, unsigned i
             type = "NUMBER";
         else if(is_txt_expr(first_value, state) && is_txt_expr(second_value, state))
             type = "TEXT";
-        else if(is_num_vector(first_value, state) && is_num_vector(second_value, state))
+        else if(is_num_map(first_value, state) && is_num_map(second_value, state))
             type = "NUMBER MAP";
-        else if(is_txt_vector(first_value, state) && is_txt_vector(second_value, state))
+        else if(is_txt_map(first_value, state) && is_txt_map(second_value, state))
             type = "TEXT MAP";
         else if(is_num_list(first_value, state) && is_num_list(second_value, state))
             type = "NUMBER LIST";
@@ -1911,7 +1981,8 @@ bool in_procedure_section(compiler_state & state, unsigned int line_num, string 
     return state.section_state == 2;
 }
 
-// Return the number of the type or {0} if the variable doesn't exist
+// Return the number of the type or {0} if the variable doesn't exist. This function can take full variables (foo:0:"hi"). Returns all the types of the variable.
+// If foo is number map list {1, 4, 3} and we just pass it foo:0, it will return {1, 4}, that is the type foo:0 has.
 vector<unsigned int> variable_type(string & token, compiler_state & state) {
     // Variables can have mixed types. For example, a LIST of MAPS of NUMBERS called foo
     // is a NUMBER when you access both containers (foo:0:"hi")
