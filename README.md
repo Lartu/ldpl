@@ -36,7 +36,7 @@ You can get yourself a precompiled LDPL binary or compile LDPL from source. Chec
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
 
-Please note that in order to compile LDPL on Windows you must have [Mingw-w64](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download) installed on your system. We only support Win32 threads on Windows so when installing Mingw-w64 be sure to choose that option.
+Please note that in order to compile LDPL on **Windows** you must have [Mingw-w64](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download) installed on your system. We only support Win32 threads so when installing Mingw-w64 be sure to choose that option.
 
 ### 📝 LDPL compatible editors
 
