@@ -6,9 +6,7 @@
 
 ![LDPL](https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png)
 
-[**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux and macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
-
-Please note that Windows support has been dropped as of LDPL 4.0 'Diligent Dreadnoughtus', due to a lack of Windows curators. If you use Windows and would like to support LDPL on Windows, we'd love if you could help us!
+[**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Windows, Linux, macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
 This repository contains the source code and releases of the LDPL compiler (and other goodies!).
 
@@ -34,9 +32,11 @@ You can get yourself a precompiled LDPL binary or compile LDPL from source. Chec
 | **If you want to download a compiled binary** | **If you want to build LDPL yourself** |
 | ---                                           | --- |
 | Compiled binaries contain the latest stable release. Might not be up to date with the newest, bleeding edge features, but will work fine on most systems and are already compiled for you. | Building LDPL yourself gives you access to the latest features of the language. Development LDPL code tends to be stable, compile and work fine, but hidden bugs may still lurk in there! |
-| **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
+| **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` (or `mingw32-make` on Windows) and `make install` (or `mingw32-make install` on Windows) LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`, not available on Windows) on your system. LDPL requires only C++11 to compile. |
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
+
+Please note that in order to compile LDPL on Windows you must have [Mingw-w64](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download) installed on your system. We only support Win32 threads on Windows so when installing Mingw-w64 be sure to choose that option.
 
 ### 📝 LDPL compatible editors
 
@@ -68,7 +68,7 @@ Done! For more info on the compiler run `ldpl -h`.
  * The `-f` flag can be used to pass extra options to the compiler when building extensions. For example, `-f=-lSDL` could be used to link against SDL.
  * By using `-r` you can just compile the project and print the C++ representation for that code.
  * You can set the output file for the compiled binary with the `-o` flag. For example, if you want to name your program "dog", you could compile it with `ldpl -o=dog main.ldpl`.
- * On Linux platforms, LDPL builds static binaries by default. If you want to build non-static ones use the `-ns` flag.
+ * On Windows and Linux platforms, LDPL builds static binaries by default. If you want to build non-static ones use the `-ns` flag.
  * The `-c` flag tells LDPL to accept source code from the standard input. 
  * You can import extensions to your LDPL compilation by using the `-i=` flag. Extensions can be imported by passing `.o`, `.a`, or `.cpp` files to this flag; see the Extensions section below.
  * `-v` and `--version` print out version info and release details.
