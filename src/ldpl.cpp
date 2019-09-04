@@ -2012,7 +2012,28 @@ vector<unsigned int> variable_type(string & token, compiler_state & state) {
     // of : found within the full variable (foo:0). As we've already splitted the variable
     // into tokens, the number of elements to pop from the vector is equal to the number of
     // tokens we have minus one.
-    for(size_t i = 0; i < tokens.size() - 1; ++i) types.pop_back();
+    // If the container access should contain other container accesses (for example foo:bar:0),
+    // the thing changes, and we must make sure to discard those indexes that access the other
+    // containers and not the one we are trying to get the types of.
+    size_t tokensToSkip = 0;
+    for(size_t i = 1; i < tokens.size(); ++i){
+        // If the current token is a number or a string, we can pop or skip it safely.
+        if(is_number(tokens[i]) || is_string(tokens[i])){
+            if(tokensToSkip > 0) tokensToSkip--;
+            else types.pop_back();
+        }
+        // If it's not, then it must be a variable name.
+        else{
+            // If the variable doesn't exist in the current context, we rise an error.
+            if(state.variables[state.current_subprocedure].count(tokens[i]) == 0){
+                error("The variable " + tokens[i] + " doesn't exist in " + token + ".");
+            }
+            // If the variable exists, then we skip as many tokens as that variable takes.
+            vector<unsigned int> cvar_types = variable_type(tokens[i], state);
+            if(tokensToSkip == 0) types.pop_back();
+            tokensToSkip += cvar_types.size() - 1;
+        }
+    }
     // Now we have the types and can return them.
     return types;
 }
