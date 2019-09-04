@@ -2025,8 +2025,8 @@ vector<unsigned int> variable_type(string & token, compiler_state & state) {
         // If it's not, then it must be a variable name.
         else{
             // If the variable doesn't exist in the current context, we rise an error.
-            if(state.variables[state.current_subprocedure].count(tokens[i]) == 0){
-                error("The variable " + tokens[i] + " doesn't exist in " + token + ".");
+            if(state.variables[state.current_subprocedure].count(tokens[i]) == 0 && state.variables[""].count(tokens[i]) == 0){
+                error("The variable " + tokens[i] + " used in " + token + " doesn't exist.");
             }
             // If the variable exists, then we skip as many tokens as that variable takes.
             vector<unsigned int> cvar_types = variable_type(tokens[i], state);
