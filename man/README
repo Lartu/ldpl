@@ -1,3 +1,19 @@
++------------------------------+
+| LDPL Only Man File Generator |
+|         (LDPL OMFG)          |
++------------------------------+
+
+*** Usage ***
+
+Run the command:
+
+  $ ./generateMan.sh
+
+to generate an updated LDPL man page. Done.
+Your new man page is 'ldpl.1'.
+
+*** Alternatively, you can walk through the process step-by-step ***
+
 To recompile a man page for LDPL, clone the LDPL documentation repository
 (git clone https://www.github.com/lartu/ldpl-docs) in this folder.
 

@@ -69,7 +69,7 @@ This is free software: you are free to change and redistribute it. There is NO W
 The LDPL Community has compiled this document with the desire to teach and standardize the LDPL programming language.
 
 
-Feedback, corrections and suggestions are welcome, both on the main LDPL repository or by e-mail to mdelrio (at) dc.uba.ar. You can join the LDPL community at r/ldpl or via IRC on irc.freenode.net channel \#ldpl.
+Feedback, corrections and suggestions are welcome, both on the main LDPL repository or by e-mail to martin@ldpl-lang.org. You can join the LDPL community at r/ldpl or via IRC on irc.freenode.net channel \#ldpl.
 
 This reference can be forked on GitHub.
 
@@ -855,17 +855,19 @@ Variables and SUB-PROCEDURE names follow the same naming rules. These names can'
 .br
 [*] Variable and SUB-PROCEDURE names cannot contain spaces.
 .br
-[*] Variable and SUB-PROCEDURE names cannot be valid numbers.
+[*] Variable and SUB-PROCEDURE names cannot be valid numbers (they may contain numbers, though).
 .br
 [*] Variable and SUB-PROCEDURE names cannot contain the character '(' nor the character ')' as these characters are used in mathematical expressions.
 .br
 [*] Variables and SUB-PROCEDUREs cannot be called 'CRLF', as it is internally turned into '"\\r\\n"'.
 .br
+[*] Variables and SUB-PROCEDUREs cannot be called 'LF', as it is internally turned into '"\\r\\n"'.
+.br
 [*] Variables and SUB-PROCEDUREs cannot be called '+' nor '-' nor '*' nor '/' as these characters are used in mathematical expressions.
 
 .B LABEL naming scheme
 
-Labels in LDPL can't be empty and may contain any character except spaces and '"'. LABELs can't be named 'CRLF' for the same reasons explained in the section above.
+Labels in LDPL can't be empty and may contain any character except spaces and '"'. LABELs can't be named 'CRLF' nor 'LF' for the same reasons explained in the section above.
 
 .B External Identifier Naming Scheme
 
@@ -893,11 +895,11 @@ If the value to be stored is NUMBER and it's to be stored in a TEXT variable, th
 
 .SH IF - IS - THEN
 
-The 'IF' statement evaluates if the condition given by the relational operator between the first and second values is positive. If it is, the code in the positive branch is executed. If it is not, the code in the negative branch is executed (if available). Execution then continues normally.
+The 'IF' statement evaluates if the condition given is positive. If it is, the code in the positive branch is executed. If it is not, the code in the negative branch is executed (if available). Execution then continues normally.
 
 .B Syntax:
 
-1 | IF <NUMBER-VAR or NUMBER or MAP or LIST> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER or MAP or LIST> THEN
+1 | IF <CONDITION> THEN
 .br
 2 |  #Code goes here (positive branch)
 .br
@@ -910,36 +912,29 @@ The 'IF' statement evaluates if the condition given by the relational operator b
 
 or
 
-1 | IF <TEXT-VAR or TEXT or MAP or LIST> IS <REL-OP-TEXT> <TEXT-VAR or TEXT or MAP or LIST> THEN
-.br
-2 |  #Code goes here (positive branch)
-.br
-3 | ELSE
-.br
-4 |  #Code goes here (negative branch)
-.br
-5 | END IF
-.br
-
-or
-
-1 | IF <NUMBER-VAR or NUMBER or MAP or LIST> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER or MAP or LIST> THEN
+1 | IF <CONDITION> THEN
 .br
 2 |  #Code goes here (positive branch)
 .br
 3 | END IF
 .br
 
-or
+The '<CONDITION>' may be a relational operator between two values with the same type:
 
-1 | IF <TEXT-VAR or TEXT or VECTOR or LIST> IS <REL-OP-TEXT> <TEXT-VAR or TEXT or VECTOR or LIST> THEN
 .br
-2 |  #Code goes here (positive branch)
+[*] '<NUMBER-VAR or NUMBER> IS <REL-OP-A> <NUMBER-VAR or NUMBER>'
 .br
-3 | END IF
+[*] '<TEXT-VAR or TEXT> IS <REL-OP-B> <TEXT-VAR or TEXT>'
 .br
+[*] '<NUMBER LIST> IS <REL-OP-B> <NUMBER LIST>'
+.br
+[*] '<TEXT LIST> IS <REL-OP-B> <TEXT LIST>'
+.br
+[*] '<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>'
+.br
+[*] '<TEXT MAP> IS <REL-OP-B> <TEXT MAP>'
 
-Possible values of 'REL-OP-NUM' (number relational operator):
+Possible values of 'REL-OP-A':
 
 .br
 [*] 'EQUAL TO'
@@ -954,12 +949,46 @@ Possible values of 'REL-OP-NUM' (number relational operator):
 .br
 [*] 'LESS THAN OR EQUAL TO'
 
-Possible values of 'REL-OP-TEXT' (text relational operator):
+Possible values of 'REL-OP-B':
 
 .br
 [*] 'EQUAL TO'
 .br
 [*] 'NOT EQUAL TO'
+
+You can also write compound conditions using 'AND', 'OR' and parenthesis:
+
+.br
+[*] '<CONDITION> AND <CONDITION>' is positive if both conditions are positive
+.br
+[*] '<CONDITION> OR <CONDITION>' is positive if both conditions are positive
+.br
+[*] '( <CONDITION> )' is positive if the condition is positive, it's used to alter the default precedence
+
+The 'AND' has higher precedence than 'OR', and the conditions inside parenthesis will be evaluated first. That means that 'C1 AND C2 OR C3' is the same as '( C1 AND C2 ) OR C3', but you can make the 'OR' evaluate first if you write 'C1 AND ( C2 OR C3 )'.
+
+Both 'AND' and 'OR' perform short-circuit evaluation: If the first operand of an AND is negative the second will not be evaluated and the 'AND' condition is determined as negative. If the first operand of an OR is positive the second will not be evaluated and the 'OR' condition is determined as positive.
+
+For example:
+
+1 | DATA:
+.br
+2 | names IS TEXT LIST
+.br
+3 | length IS NUMBER
+.br
+4 | PROCEDURE:
+.br
+5 | GET LENGTH OF names IN length
+.br
+6 | IF length IS GREATER THAN 0 AND ( names:0 IS EQUAL TO "Alice" OR names:0 IS EQUAL TO "Bob" ) THEN
+.br
+7 |  #Code
+.br
+8 | END IF
+.br
+
+The 'names' list is empty, so the 'length is greater than 0' condition is negative, and the second one is not evaluated (and the execution continues after the 'END IF'). Thanks to short-circuit evaluation 'names:0' is not evaluated and we don\\'t get an index out of range runtime error!
 
 
 
@@ -1004,47 +1033,18 @@ All the different 'IF' variants of the IF statement apply, just with 'ELSE' adde
 
 .SH WHILE - IS - DO
 
-The 'WHILE' statement evaluates if the condition given by the relational operator between the first and second values is positive. While it is, the code between the 'WHILE' and 'REPEAT' statements is repeatedly ran.
+The 'WHILE' statement evaluates if the condition given is positive. While it is, the code between the 'WHILE' and 'REPEAT' statements is repeatedly ran.
 
 .B Syntax:
 
-1 | WHILE <NUMBER-VAR or NUMBER or MAP or LIST> IS <REL-OP-NUM> <NUMBER-VAR or NUMBER or MAP or LIST> DO
+1 | WHILE <CONDITION> DO
 .br
 2 |  #Code goes here
 .br
 3 | REPEAT
 .br
 
-or
-
-1 | WHILE <TEXT-VAR or TEXT or MAP or LIST> IS <REL-OP-TEXT> <TEXT-VAR or TEXT or MAP or LIST> DO
-.br
-2 |  #Code goes here
-.br
-3 | REPEAT
-.br
-
-Possible values of 'REL-OP-NUM' (number relational operator):
-
-.br
-[*] 'EQUAL TO'
-.br
-[*] 'NOT EQUAL TO'
-.br
-[*] 'GREATER THAN'
-.br
-[*] 'LESS THAN'
-.br
-[*] 'GREATER THAN OR EQUAL TO'
-.br
-[*] 'LESS THAN OR EQUAL TO'
-
-Possible values of 'REL-OP-TEXT' (text relational operator):
-
-.br
-[*] 'EQUAL TO'
-.br
-[*] 'NOT EQUAL TO'
+The '<CONDITION>' that you can use are the same as the IF statement ones.
 
 
 
@@ -2443,7 +2443,7 @@ For the second, here's the mapping between types:
 .br
 | 'NUMBER LIST' | 'ldpl_list<ldpl_number>' |
 
-The declarations for this data types are included when your C++ code merged with LDPL code by the LDPL compiler.
+The definitions for these data types can be found in the LDPL C++ Types section.
 
 .B Example
 
@@ -2770,6 +2770,82 @@ Example:
 3 | WINDOW.SIZE IS EXTERNAL NUMBER
 .br
 
+
+
+
+
+.SH LDPL C++ TYPES
+
+File: TEXT
+.br
+1 | //TEXT is just std::string
+.br
+
+
+File: NUMBER
+.br
+1 | #define ldpl_number double
+.br
+
+
+File: MAP
+.br
+1 | template<typename T>
+.br
+2 | struct ldpl_map {
+.br
+3 |     unordered_map<string, T> inner_collection;
+.br
+4 | 
+.br
+5 |     T& operator [] (const string& i) {
+.br
+6 |         return inner_collection[i];
+.br
+7 |     }
+.br
+8 | 
+.br
+9 |     T& operator [] (ldpl_number i) {
+.br
+10|         return inner_collection[to_ldpl_string(i)];
+.br
+11|     }
+.br
+12| };
+.br
+
+
+File: LIST
+.br
+1 | template<typename T>
+.br
+2 | struct ldpl_list {
+.br
+3 |     vector<T> inner_collection;
+.br
+4 | 
+.br
+5 |     T& operator [] (ldpl_number i) {
+.br
+6 |         i = floor(i);
+.br
+7 |         if (i < 0 || i >= inner_collection.size()) {
+.br
+8 |             cerr << \\"Runtime Error: LIST index \\" << i << \\" out of range [0, \\"
+.br
+9 |                  << inner_collection.size() << \\")\\" << endl;
+.br
+10|             exit(1);
+.br
+11|         }
+.br
+12|         return inner_collection[i];
+.br
+13|     }
+.br
+14| };
+.br
 
 
 
