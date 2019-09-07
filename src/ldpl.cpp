@@ -34,7 +34,7 @@ int main(int argc, const char* argv[])
         cout << " This is \033[32;1mLDPL version " << VERSION << "\033[0m '\033[32;1m" << VERSIONNAME << "\033[0m'." << endl << endl;
         cout << " Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
         cout << " Built with amazing contributions from \033[35;1mdvkt\033[0m, \033[35;1mDamián Garro\033[0m," << endl;
-        cout << " \033[35;1mfireasembler\033[0m and a bunch of other contributors." << endl << endl;
+        cout << " \033[35;1mfireasembler\033[0m and a bunch of other awesome contributors." << endl << endl;
         cout << " The LDPL Home Page can be found at \033[36;1mwww.ldpl-lang.org\033[0m." << endl;
         cout << " The LDPL source code is available at \033[36;1mwww.github.com/lartu/ldpl\033[0m." << endl << endl;
         cout << " Complete documentation for LDPL should be found on this system" << endl;
@@ -42,7 +42,7 @@ int main(int argc, const char* argv[])
         cout << " documentation can also be found online at \033[36;1mdocs.ldpl-lang.org\033[0m." << endl << endl;
         cout << " LDPL may be copied only under the terms of the GNU General" << endl;
         cout << " Public License 3.0, which may be found in the LDPL repository." << endl <<endl;
-        cout << " Compiled on \033[31;1m" << COMPILEDATE << "\033[0m at \033[31;1m" << COMPILEHOUR << "\033[0m." << endl;
+        cout << " This binary was compiled on \033[31;1m" << COMPILEDATE << "\033[0m at \033[31;1m" << COMPILEHOUR << "\033[0m." << endl;
         cout << endl;
         return 0;
     }
