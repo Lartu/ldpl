@@ -14,9 +14,9 @@ procedure:
     sub-procedure is-multiple-of
         modulo i by 3 in remainder3
         modulo i by 5 in remainder5
-        multiply remainder3 by remainder5 in remainder
+        in remainder solve remainder3 * remainder5
         if remainder is equal to 0 then
-            add i and result in result
+            in result solve result + i
         end if
     end sub-procedure
     
@@ -24,7 +24,7 @@ procedure:
     store 0 in result
     while i is less than 1000 do
         call sub-procedure is-multiple-of
-        add 1 and i in i
+        in i solve i + 1
     repeat
     
     display result crlf

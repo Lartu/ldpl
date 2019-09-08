@@ -17,8 +17,8 @@ store 1 in result
 
 # Calculate factorial
 while n is greater than 0 do
-    multiply n by result in result
-    subtract 1 from n in n
+    in result solve result * n
+    in n solve n - 1
 repeat
 
 # Display result

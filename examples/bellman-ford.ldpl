@@ -34,7 +34,7 @@ store 6 in nodeCount
 # Initialize each index of the distances list to infinity
 while j is less than nodeCount do
     push ∞ to distances
-    incr j
+    in j solve j + 1
 repeat
 
 # Set distance from starting node to itself to 0
@@ -74,7 +74,7 @@ push  4 to edgesEnd
 push  3 to edgesWeight
 
 # Store the number of edges in our graph
-store length of edgesWeight in edgeCount
+get length of edgesWeight in edgeCount
 
 # --- Invariant -------------------------------------------------
 # When the k-th iteration is over, our distances list holds the
@@ -96,9 +96,9 @@ while i is less than nodeCount do
             #...then this path is shorter, so we'll take it.
             store newDistance in distances:edgesEnd:j
         end if
-        incr j
+        in j solve j + 1
     repeat
-    incr i
+    in i solve i + 1
 repeat
 
 # --- Negative cycles ----------------------------------------------
@@ -115,7 +115,7 @@ display "["
 store 0 in i
 while i is less than nodeCount do
     display distances:i
-    incr i
+    in i solve i + 1
     if i is less than nodeCount then
         display ", "
     end if

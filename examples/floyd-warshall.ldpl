@@ -66,7 +66,7 @@ while k is less than nodeCount do
             in IJ solve j + (i * nodeCount)
             in IK solve k + (i * nodeCount)
             in KJ solve j + (k * nodeCount)
-            add distances:IK and distances:KJ in distanceIKJ
+            in distanceIKJ solve distances:IK + distances:KJ
             # If the length of the path i -> k -> j
             # is shorter than the length of i -> j...
             if distanceIKJ is less than distances:IJ then
@@ -74,16 +74,16 @@ while k is less than nodeCount do
                 # between these two nodes for the one that we've just found.
                 store distanceIKJ in distances:IJ
             end if
-            incr j
+            in j solve j + 1
         repeat
-        incr i
+        in i solve i + 1
     repeat
-    incr k
+    in k solve k + 1
 repeat
 
 # --- Negative cycles ----------------------------------------------
 # While the algorithm asumes that no negative cycles are to be found
-# in the graph, we can detect wether the graph has negative cycles
+# in the graph, we can detect whether the graph has negative cycles
 # or not by executing the loop above one more time and inspecting
 # the diagonal of the distances matrix: the presence of a negative
 # number indicates that the graph contains at least one negative
@@ -100,8 +100,8 @@ while i is less than nodeCount do
             display " "
         end if
         display distances:IJ " "
-        incr j
+        in j solve j + 1
     repeat
     display crlf
-    incr i
+    in i solve i + 1
 repeat
