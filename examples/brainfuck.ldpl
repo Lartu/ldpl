@@ -11,6 +11,7 @@
 # information on how to use these functions.
 
 DATA:
+argc is number                  # Argument count
 source-file is text             # Brainfuck source code
 source-length is number         # Length of Brainfuck Source File
 current-char is text            # Current character in source
@@ -23,15 +24,15 @@ open-[]-found is number         # Number of open []s found
 
 PROCEDURE:
 # Check if we received a filename
+get length of argv in argc
 if argc is less than 1 then
-    display "No file to execute passed!" crlf "Usage: ldpl brainfuck.ldpl <filename>" crlf
+    display "No file to execute passed!" crlf "Usage: brainfuck-bin <filename>" crlf
     exit
 end if
 
 # Load brainfuck source file
-join "cat " and argv:0 in argv:0
-execute argv:0 and store output in source-file
-store length of source-file in source-length
+load file argv:0 in source-file
+get length of source-file in source-length
 display "Source loaded." crlf
 display "Source length: " source-length crlf
 
@@ -40,83 +41,53 @@ while ip is less than source-length do
     get character at ip from source-file in current-char
     
     if current-char is equal to "+" then
-        add 1 and tape:pointer in tape:pointer
-        add 1 and ip in ip
-        continue
-    end if
-    
-    if current-char is equal to "-" then
-        subtract 1 from tape:pointer in tape:pointer
-        add 1 and ip in ip
-        continue
-    end if
-    
-    if current-char is equal to ">" then
-        add 1 and pointer in pointer
-        add 1 and ip in ip
-        continue
-    end if
-    
-    if current-char is equal to "<" then
-        subtract 1 from pointer in pointer
-        add 1 and ip in ip
-        continue
-    end if
-    
-    if current-char is equal to "." then
-        store character tape:pointer in temp-text
+        in tape:pointer solve 1 + tape:pointer
+
+    else if current-char is equal to "-" then
+        in tape:pointer solve tape:pointer - 1
+
+    else if current-char is equal to ">" then
+        in pointer solve 1 + pointer
+
+    else if current-char is equal to "<" then
+        in pointer solve pointer - 1
+
+    else if current-char is equal to "." then
+        get ascii character tape:pointer in temp-text
         display temp-text
-        add 1 and ip in ip
-        continue
-    end if
-    
-    if current-char is equal to "," then
+
+    else if current-char is equal to "," then
         accept tape:pointer
-        add 1 and ip in ip
-        continue
-    end if
-    
-    if current-char is equal to "[" then
+
+    else if current-char is equal to "[" then
         if tape:pointer is equal to 0 then
-            while 1 is equal to 1 do
-                add 1 and ip in ip
+            store 1 in open-[]-found
+            while open-[]-found is greater than 0 do
+                in ip solve 1 + ip
                 get character at ip from source-file in temp-text
                 if temp-text is equal to "[" then
-                    add 1 and open-[]-found in open-[]-found
-                end if
-                if temp-text is equal to "]" then
-                    if open-[]-found is equal to 0 then
-                        break
-                    else
-                        subtract 1 from open-[]-found in open-[]-found
-                    end if
+                    in open-[]-found solve 1 + open-[]-found
+                else if temp-text is equal to "]" then
+                    in open-[]-found solve open-[]-found - 1
                 end if
             repeat
         end if
-        add 1 and ip in ip
-        continue
-    end if
-    
-    if current-char is equal to "]" then
+
+    else if current-char is equal to "]" then
         if tape:pointer is not equal to 0 then
-            while 1 is equal to 1 do
-                subtract 1 from ip in ip
+            store 1 in open-[]-found
+            while open-[]-found is greater than 0 do
+                in ip solve ip - 1
                 get character at ip from source-file in temp-text
                 if temp-text is equal to "]" then
-                    add 1 and open-[]-found in open-[]-found
-                end if
-                if temp-text is equal to "[" then
-                    if open-[]-found is equal to 0 then
-                        break
-                    else
-                        subtract 1 from open-[]-found in open-[]-found
-                    end if
+                    in open-[]-found solve 1 + open-[]-found
+                else if temp-text is equal to "[" then
+                    in open-[]-found solve open-[]-found - 1
                 end if
             repeat
         end if
-        add 1 and ip in ip
-        continue
     end if
     
-    add 1 and ip in ip
+    # Otherwise character is ignored as per spec
+    in ip solve 1 + ip
 repeat

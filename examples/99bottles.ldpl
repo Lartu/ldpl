@@ -23,7 +23,7 @@ while bottles-in-the-wall is greater than 0 do
     display bottles-in-the-wall " bottle" plural " of beer on the wall," crlf
     display bottles-in-the-wall " bottle" plural " of beer." crlf
     display "Take one down, pass it around," crlf
-    subtract 1 from bottles-in-the-wall in bottles-in-the-wall
+    in bottles-in-the-wall solve bottles-in-the-wall - 1
     call sub-procedure check-plural
     if bottles-in-the-wall is greater than 0 then
         display bottles-in-the-wall " bottle" plural " of beer on the wall." crlf crlf

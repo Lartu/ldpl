@@ -29,9 +29,9 @@ sub-procedure square-root
     store 0 in sqrt/last-value
     store 1 in sqrt/result
     while 1 is equal to 1 do
-        divide sqrt/radicand by sqrt/result in sqrt/aux
-        add sqrt/aux and sqrt/result in sqrt/result
-        divide sqrt/result by 2 in sqrt/result
+        in sqrt/aux solve sqrt/radicand / sqrt/result
+        in sqrt/result solve sqrt/aux + sqrt/result
+        in sqrt/result solve sqrt/result / 2
         if sqrt/result is not equal to sqrt/last-value then
             store sqrt/result in sqrt/last-value
         else
