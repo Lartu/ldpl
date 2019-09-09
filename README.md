@@ -8,22 +8,36 @@
 
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Windows, Linux, macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
-This repository contains the source code and releases of the LDPL compiler (and other goodies!).
+This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler (and other goodies!).
 
 ### 📒 Example LDPL code
 
 ```coffeescript
 data: 
   name is text     # Your name goes here! 
+  age is number
   
 procedure: 
   # Simple Hello World
   display "Hello World" crlf "What's your name? " 
   accept name 
-  display "你好, " name "! Welcome to LDPL!" crlf
+  display "你好, " name "! How old are you?" crlf
+  accept age
+  if age is greater than 200 then
+    display "Woah, you are really old!" crlf
+  end if
 ```
 
 Greet the user, ask them for their name and then print *你好, &lt;name&gt;!* followed by a line-break. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+
+### 🎏 What can I use LDPL for?
+
+LDPL can be used to write software just like any other language you know. You can open, edit and save files, do math,
+parse and modify text, etc. Some of these tasks are made easier by the fact that LDPL natively knows how to work with
+UTF-8 strings. By using the [available libraries](https://github.com/Lartu/ldpl#-some-other-ldpl-libraries), LDPL becomes
+a language *specially* well suited for writing **Telegram Bots**, **IRC Bots** and **Simple Network Servers**.
+Code written in LDPL is easy to read, runs fast and can easily interface with C++ code,
+so you can do anything you want, really.
 
 ## 💾 How to install LDPL
 
@@ -100,7 +114,7 @@ If you want to contribute to LDPL you can add statements to the language (that's
 
 Contributors are expected to behave by the [LDPL Code of Conduct](/CODE_OF_CONDUCT.md). Tl;dr: be nice to everyone.
 
-If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel #ldpl. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
+If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
 ## 🔎 Where can I get more help, if I need it?
 
