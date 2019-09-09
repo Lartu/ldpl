@@ -1,5 +1,0 @@
-This examples where written before LDPL grew into LDPL 4.0, where a lot of
-redundant statements where removed. If any of them doesn't work, you may need
-to add a briefcase from the standard library to replace the missing statement.
-
-The standard library can be found at https://github.com/Lartu/ldpl-std.
