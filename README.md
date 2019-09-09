@@ -28,7 +28,7 @@ procedure:
   end if
 ```
 
-Greet the user, ask them for their name and then print *你好, &lt;name&gt;!* followed by a line-break. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+This code greets the user, asks them what their name is and then prints *你好, &lt;name&gt;!! How old are you?* followed by a line-break. Then asks them for their age and, if they enter a number greater than 200, it prints *Woah, you are really old!*, followed by a line-break. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
 
 ### 🎏 What can I use LDPL for?
 
