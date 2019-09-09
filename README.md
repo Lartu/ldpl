@@ -39,6 +39,24 @@ a language *specially* well suited for writing **Telegram Bots**, **IRC Bots** a
 Code written in LDPL is easy to read, runs fast and can easily interface with C++ code,
 so you can do anything you want, really.
 
+## 📯 LDPL Philosophy
+
+LDPL is a language designed to be easy to understand and simple to write. Designed to be easy to learn and simple to use.
+We believe that coding should be easy and simple. Nothing should become a frustrating chore. Compiling source code should be easy and
+simple: a single, flagless command should be enough to compile any source code. Every statement in the language should do 
+one and one thing only, not multiple things depending on the context. Complex, low level stuff like encoding, sockets, 
+floating point number comparison, etc., should be dealt by the compiler, transparently to the user. Hard stuff should be
+made easier.
+
+We understand that this philosphy may lead to longer source code, more verbose statements and extra steps to reach an end,
+but we also believe that it should make coding in LDPL easier and more enjoyable than in other languages.
+
+As one user once put it, *"Usually when I'm programming, I feel like I'm in a big fancy jet and there's a lot of turbulence and it's not going well but then all of a sudden it's smooth air again and the drink cart comes along and I get a ginger ale and it's great. But with LDPL, I feel like I'm a cub scout out in the woods with a box of matches and a hatchet and my Scout's Handbook (the LDPL Docs) just exploring and figuring it out as I go. Whenever I run into a problem I just check my handbook and, sure enough, there's a solution right there waiting for me!"*.
+
+We want to make LDPL a language you'll love not because it lets you do many things in one line, nor because of the way
+it runs, nor because of how modern it is: but because it's designed to stay by your side and tell you everything's gonna
+be okay even when times get dark.
+
 ## 💾 How to install LDPL
 
 You can get yourself a precompiled LDPL binary or compile LDPL from source. Check the following table if you are not sure of what to do.
