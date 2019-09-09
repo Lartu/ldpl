@@ -16,9 +16,9 @@ display a crlf b crlf
 store 30 in length
 
 while length is greater than 0 do
-    store a in swap
-    add a and b in a
-    store a in b
-    display a crlf
-    subtract 1 from length in length
+    store b in swap
+    in b solve a + b
+    store swap in a
+    display b crlf
+    in length solve length - 1
 repeat

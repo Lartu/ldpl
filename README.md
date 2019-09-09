@@ -8,22 +8,54 @@
 
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Windows, Linux, macOS, ARMv8 Linux, Android and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
-This repository contains the source code and releases of the LDPL compiler (and other goodies!).
+This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler (and other goodies!).
 
 ### 📒 Example LDPL code
 
 ```coffeescript
 data: 
   name is text     # Your name goes here! 
+  age is number
   
 procedure: 
   # Simple Hello World
   display "Hello World" crlf "What's your name? " 
   accept name 
-  display "你好, " name "! Welcome to LDPL!" crlf
+  display "你好, " name "! How old are you?" crlf
+  accept age
+  if age is greater than 200 then
+    display "Woah, you are really old!" crlf
+  end if
 ```
 
-Greet the user, ask them for their name and then print *你好, &lt;name&gt;!* followed by a line-break. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+This code greets the user, asks them what their name is and then prints *你好, &lt;name&gt;!! How old are you?* followed by a line-break. Then asks them for their age and, if they enter a number greater than 200, it prints *Woah, you are really old!*, followed by a line-break. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+
+### 🎏 What can I use LDPL for?
+
+LDPL can be used to write software just like any other language you know. You can open, edit and save files, do math,
+parse and modify text, etc. Some of these tasks are made easier by the fact that LDPL natively knows how to work with
+UTF-8 strings. By using the [available libraries](https://github.com/Lartu/ldpl#-some-other-ldpl-libraries), LDPL becomes
+a language *specially* well suited for writing **Telegram Bots**, **IRC Bots** and **Simple Network Servers**.
+Code written in LDPL is easy to read, runs fast and can easily interface with C++ code,
+so you can do anything you want, really.
+
+## 📯 LDPL Philosophy
+
+LDPL is a language designed to be easy to understand and simple to write. Designed to be easy to learn and simple to use.
+We believe that coding should be easy and simple. Nothing should become a frustrating chore. Compiling source code should be easy and
+simple: a single, flagless command should be enough to compile any source code. Every statement in the language should do 
+one and one thing only, not multiple things depending on the context. Complex, low level stuff like encoding, sockets, 
+floating point number comparison, etc., should be dealt by the compiler, transparently to the user. Hard stuff should be
+made easier.
+
+We understand that this philosphy may lead to longer source code, more verbose statements and extra steps to reach an end,
+but we also believe that it should make coding in LDPL easier and more enjoyable than in other languages.
+
+As one user once put it, *"Usually when I'm programming, I feel like I'm in a big fancy jet and there's a lot of turbulence and it's not going well but then all of a sudden it's smooth air again and the drink cart comes along and I get a ginger ale and it's great. But with LDPL, I feel like I'm a cub scout out in the woods with a box of matches and a hatchet and my Scout's Handbook (the LDPL Docs) just exploring and figuring it out as I go. Whenever I run into a problem I just check my handbook and, sure enough, there's a solution right there waiting for me!"*.
+
+We want to make LDPL a language you'll love not because it lets you do many things in one line, nor because of the way
+it runs, nor because of how modern it is: but because it's designed to stay by your side and tell you everything's gonna
+be okay even when times get dark.
 
 ## 💾 How to install LDPL
 
@@ -100,7 +132,7 @@ If you want to contribute to LDPL you can add statements to the language (that's
 
 Contributors are expected to behave by the [LDPL Code of Conduct](/CODE_OF_CONDUCT.md). Tl;dr: be nice to everyone.
 
-If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel #ldpl. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
+If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
 ## 🔎 Where can I get more help, if I need it?
 
