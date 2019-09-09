@@ -715,7 +715,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         string range_var = state.new_range_var();
         string collection = get_c_variable(state, tokens[4]) + ".inner_collection";
         string iteration_var = range_var;
-        if (is_map(tokens[4], state)) {
+        if (is_scalar_map(tokens[4], state)) {
             iteration_var += ".second";
         }
         state.add_code("for (auto& " + range_var + " : " + collection + ") {");
@@ -1094,7 +1094,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             return;
         }
     }
-    if(line_like("GET KEY COUNT OF $vector IN $num-var", tokens, state))
+    if(line_like("GET KEY COUNT OF $map IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET KEY COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1102,7 +1102,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".inner_collection.size();");
         return;
     }
-    if(line_like("GET KEYS OF $vector IN $str-list", tokens, state))
+    if(line_like("GET KEYS OF $map IN $str-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET KEYS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1127,14 +1127,18 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
         error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        if(variable_type(tokens[3], state)[0] == 1){
-            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_list<ldpl_number>{});");
-        }else{
-            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_list<string>{});");
+        vector<unsigned int> type = variable_type(tokens[3], state);
+        string textType = "";
+        if(type[0] == 1) textType = "ldpl_number";
+        else textType = "string";
+        for(size_t i = 1; i < type.size() - 1; ++i){
+            if(type[i] == 3) textType = "ldpl_list<" + textType + ">";
+            else textType = "ldpl_vector<" + textType + ">";
         }
+        state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(" + textType + "{});");
         return;
     }
-    if(line_like("PUSH $expression TO $list", tokens, state))
+    if(line_like("PUSH $expression TO $scalar-list", tokens, state))
     {
         // The type of the pushed element must match the collection type
         if(is_num_expr(tokens[1], state) == is_num_list(tokens[3], state)) {
@@ -1323,10 +1327,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$anyVar") //$var is either any variable
         {
-            if(!is_scalar_variable(tokens[j], state) && !is_map(tokens[j], state) && !is_list(tokens[j], state)) return false;
+            if(!is_scalar_variable(tokens[j], state) && !is_scalar_map(tokens[j], state) && !is_scalar_list(tokens[j], state)) return false;
         }
-        else if(model_tokens[i] == "$vector"){ //$vector is TEXT MAP, NUMBER MAP
-            if(!is_map(tokens[j], state)) return false;
+        else if(model_tokens[i] == "$scalar-map"){ //$scalar-map is TEXT MAP, NUMBER MAP
+            if(!is_scalar_map(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$num-vec") //$num-vec is NUMBER vector
         {
@@ -1337,7 +1341,13 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             if(!is_txt_map(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$list"){ //$list is a LIST
-            if(!is_list(tokens[j], state)) return false;
+            if(variable_type(tokens[j], state).back() == 3) return true;
+        }
+        else if(model_tokens[i] == "$map"){ //$map is a MAP
+            if(variable_type(tokens[j], state).back() == 4) return true;
+        }
+        else if(model_tokens[i] == "$scalar-list"){ //$scalar-list is a LIST of scalar values
+            if(!is_scalar_list(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$num-list") //$num-vec is NUMBER list
         {
@@ -1357,7 +1367,8 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         }
         else if(model_tokens[i] == "$collection") //$collection is either a MAP or a LIST
         {
-            if(!is_map(tokens[j], state) && !is_list(tokens[j], state)) return false;
+            //if(!is_scalar_map(tokens[j], state) && !is_scalar_list(tokens[j], state) && (variable_type(tokens[j], state).size() < 2)) return false;
+            if(variable_type(tokens[j], state).size() < 2) return false;
         }
         else if(model_tokens[i] == "$literal") //$literal is either a NUMBER or a TEXT
         {
@@ -1564,7 +1575,7 @@ bool is_map_list(string & token, compiler_state & state)
 
 // Returns if the variable is a NUMBER MAP or an access to a multicontainer that results in a NUMBER MAP
 // or if the variable is a TEXT MAP or an access to a multicontainer that results in a TEXT MAP
-bool is_map(string & token, compiler_state & state)
+bool is_scalar_map(string & token, compiler_state & state)
 {
     return is_num_map(token, state) || is_txt_map(token, state);
 }
@@ -1579,7 +1590,7 @@ bool is_map_map(string & token, compiler_state & state)
 
 // Returns if the variable is a NUMBER LIST or an access to a multicontainer that results in a NUMBER LIST
 // or if the variable is a TEXT LIST or an access to a multicontainer that results in a TEXT LIST
-bool is_list(string & token, compiler_state & state)
+bool is_scalar_list(string & token, compiler_state & state)
 {
     return is_num_list(token, state) || is_txt_list(token, state);
 }
