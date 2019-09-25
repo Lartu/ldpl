@@ -1,7 +1,7 @@
 # The LDPL Programming Language
 
 ![Version](https://img.shields.io/badge/current_release-4.1_'Diligent_Dreadnoughtus'-blue.svg)
-![Version](https://img.shields.io/badge/development_version-4.2-purple.svg)
+![Version](https://img.shields.io/badge/development_version-4.3-purple.svg)
 [![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
 
 ![LDPL](https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png)
