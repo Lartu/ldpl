@@ -19,22 +19,483 @@
 
 using namespace std;
 
+// -------------------------------------------------------
+
+#ifndef CHTEXT
+#define CHTEXT
+#include <string>
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <string.h>
+
+using namespace std;
+
+class chText {
+    private:
+    vector<string> buffer;
+    string stringRep;
+
+    // Gets length of utf8-encoded c++ string
+    size_t chText_get_str_utf8length(const string cstr){
+        size_t len = cstr.size();
+        size_t utf8len = 0;
+        unsigned int c;
+        for (size_t i = 0; i < len; i++)
+        {
+            size_t l = 0;
+            c = (unsigned char) cstr[i];
+            if (c >= 0 && c <= 127) l = 0;
+            else if ((c & 0xE0) == 0xC0) l = 1;
+            else if ((c & 0xF0) == 0xE0) l = 2;
+            else if ((c & 0xF8) == 0xF0) l = 3;
+            else if (c>=248 && c<=255) return 0; //invalid utf8
+            i += l;
+            utf8len++;
+        }
+        return utf8len;
+    }
+    // Fills buffer with utf8-encoded c++ string
+    void createFromString(const string & cstr){
+        buffer.clear();
+        size_t cstrlen = cstr.size();
+        size_t chPos = 0;
+        for(size_t i = 0; i < cstrlen; ++i){
+            string ch = \"\";
+            char c = cstr[i];
+            if (c >= 0 && c <= 127){
+                ch += c;
+            }
+            else if ((c & 0xE0) == 0xC0){
+                ch += c;
+                ch += cstr[++i];
+            }
+            else if ((c & 0xF0) == 0xE0){
+                ch += c;
+                ch += cstr[++i];
+                ch += cstr[++i];
+            }
+            else if ((c & 0xF8) == 0xF0){
+                ch += c;
+                ch += cstr[++i];
+                ch += cstr[++i];
+                ch += cstr[++i];
+            }
+            buffer.push_back(ch);
+            chPos++;
+        }
+    }
+    // Fills buffer with utf8-encoded c++ string
+    void createFromChar(const char * cstr){
+        buffer.clear();
+        size_t cstrlen = strlen(cstr);
+        size_t chPos = 0;
+        for(size_t i = 0; i < cstrlen; ++i){
+            string ch = \"\";
+            char c = cstr[i];
+            if (c >= 0 && c <= 127){
+                ch += c;
+            }
+            else if ((c & 0xE0) == 0xC0){
+                ch += c;
+                ch += cstr[++i];
+            }
+            else if ((c & 0xF0) == 0xE0){
+                ch += c;
+                ch += cstr[++i];
+                ch += cstr[++i];
+            }
+            else if ((c & 0xF8) == 0xF0){
+                ch += c;
+                ch += cstr[++i];
+                ch += cstr[++i];
+                ch += cstr[++i];
+            }
+            buffer.push_back(ch);
+            chPos++;
+        }
+    }
+
+    public:
+    size_t size(){
+        return buffer.size();
+    }
+    bool empty(){
+        return buffer.empty();
+    }
+    size_t length(){
+        return size();
+    }
+    string str_rep(){
+        stringRep = \"\";
+        for(size_t i = 0; i < size(); ++i){
+            stringRep += buffer[i];
+        }
+        return stringRep;
+    }
+    // default constructor
+    chText(){}
+    // conversion from string (constructor):
+    chText (const string& x) {
+        createFromString(x);
+    }
+
+    // conversion from double (constructor):
+    chText (const double& f) {
+        std::string str = to_string (f);
+        str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+        str.erase ( str.find_last_not_of('.') + 1, std::string::npos );
+        createFromString(str);
+    }
+
+    // conversion from string (assignment):
+    chText& operator= (const string& x) {
+        createFromString(x);
+        return *this;
+    }
+    // conversion from char * (constructor):
+    chText (const char * x) {
+        createFromChar(x);
+    }
+    // conversion from char * (assignment):
+    chText& operator= (const char * x) {
+        createFromChar(x);
+        return *this;
+    }
+    // conversion from char (constructor):
+    chText (char x) {
+        string a = \"\";
+        a += x;
+        createFromString(a);
+    }
+    // conversion from char (assignment):
+    chText& operator= (char x) {
+        string a = \"\";
+        a += x;
+        createFromString(a);
+        return *this;
+    }
+    // [] for reading
+    chText operator [](size_t i) const {
+        if(i >= buffer.size()){
+            cout << \"Out-of-bounds index access.\" << endl;
+            exit(1);
+        }
+        chText c = buffer[i];
+        return c;
+    }
+    // [] for setting
+    string & operator [](int i) {
+        if(i >= buffer.size()){
+            cout << \"Out-of-bounds index access.\" << endl;
+            exit(1);
+        }
+        return buffer[i];
+    }
+    // Output operator
+    friend ostream & operator << (ostream &out, const chText &c);
+    // + operator
+    friend chText operator+(const chText &c1, const chText &c2);
+    // + operator
+    friend chText operator+(const string &c1, const chText &c2);
+    // + operator
+    friend chText operator+(const chText &c1, const string &c2);
+    // + operator
+    friend chText operator+(const char * c1, const chText &c2);
+    // + operator
+    friend chText operator+(const chText &c1, const char * c2);
+    // < operator
+    friend bool operator<(const chText &c1, const chText &c2);
+    // > operator
+    friend bool operator>(const chText &c1, const chText &c2);
+    // Equality operator
+    friend bool operator==(const chText& ch1, const chText& ch2);
+    // Equality operator
+    friend bool operator==(const chText& ch1, const string& ch2);
+    // Equality operator
+    friend bool operator==(const chText& ch1, const char * ch2);
+    // Equality operator
+    friend bool operator==(const string& ch2, const chText& ch1);
+    // Equality operator
+    friend bool operator==(const char * ch2, const chText& ch1);
+    // Equality operator
+    friend bool operator==(const chText& ch1, const char ch2);
+    // Equality operator
+    friend bool operator==(const char ch2, const chText& ch1);
+    // Equality operator
+    friend bool operator!=(const chText& ch1, const chText& ch2);
+    // Load a file into this chText
+    bool loadFile(const string &fileName){
+        string line;
+        string fileContents = \"\";
+        ifstream myfile (fileName);
+        if (myfile.is_open())
+        {
+            while ( getline (myfile,line) )
+            {
+                fileContents += line + \"\\n\";
+            }
+            myfile.close();
+        }
+        else return false; 
+        createFromString(fileContents);
+        return true;
+    }
+    // += operator
+    chText & operator += (const chText & txt){
+        for(const string & s : txt.buffer){
+            buffer.push_back(s);
+        }
+        return *this;
+    }
+    // += operator
+    chText & operator += (const string & txt){
+        chText c2 = txt;
+        for(const string & s : c2.buffer){
+            buffer.push_back(s);
+        }
+        return *this;
+    }
+    // += operator
+    chText & operator += (const char * txt){
+        chText c2 = txt;
+        for(const string & s : c2.buffer){
+            buffer.push_back(s);
+        }
+        return *this;
+    }
+
+    bool isAlphanumeric(){
+        for(const string & s : buffer){
+            for(const char & c : s)
+                if(!isalnum(c)) return false;
+        }
+        return true;
+    }
+
+    bool isAlphanumeric(size_t from){
+        for(size_t i = from; i < size(); ++i){
+            for(const char & c : buffer[i])
+                if(!isalnum(c)) return false;
+        }
+        return true;
+    }
+
+    bool isNumber(){
+        string number = \"\";
+        for(size_t i = 0; i < size(); ++i){
+            number += buffer[i];
+        }
+        unsigned int firstchar = 0;
+        if(number[0] == '-') firstchar = 1;
+        if(number[firstchar] == '.') return false; //.12 is not a valid decimal in LDPL, 0.12 is.
+        if(number[firstchar] == '+') return false; //+5 is not a valid decimal in LDPL, 5 is.
+        istringstream iss(number);
+        double f;
+        iss >> f;
+        bool isNumber = iss.eof() && !iss.fail();
+        //If it is a number, it might be an octal literal (e.g. 025, 067, 003 etc)
+        //so we proceed to fix the original number to make it decimal.
+        if(isNumber){
+            string f_number = \"\";
+            unsigned int i;
+            for(i = 1; i < number.length(); ++i){
+                //If prev char not 0
+                if(number[i - 1] != '0'){
+                    //if prev char is -, continue check
+                    if(number[i - 1] == '-') f_number += '-';
+                    //if prev char is number, break
+                    else break;
+                }
+                //If prev number is 0
+                else if(number[i] == '.') {
+                    f_number += '0';
+                }
+            }
+            f_number += number.substr(i - 1);
+            number = f_number;
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    double getNumber(){
+        string number = \"\";
+        for(size_t i = 0; i < size(); ++i){
+            number += buffer[i];
+        }
+        return stod(number);
+    }
+
+    chText substr(size_t from, size_t count){
+        chText newText;
+        for(size_t i = from; i < from + count; ++i){
+            if(i >= buffer.size()) break;
+            newText.buffer.push_back(buffer[i]);
+        }
+        return newText;
+    }
+
+    chText & erase(size_t from, size_t count){
+        for(size_t i = 0; i < count; ++i)
+            buffer.erase(buffer.begin() + from);
+        return *this;
+    }
+
+    chText substr(size_t from){
+        chText newText;
+        for(size_t i = from; i < from + buffer.size(); ++i){
+            if(i >= buffer.size()) break;
+            newText.buffer.push_back(buffer[i]);
+        }
+        return newText;
+    }
+
+    int compare(size_t from, size_t count, chText other){
+        chText newText;
+        for(size_t i = from; i < from + count; ++i){
+            if(i >= buffer.size()) break;
+            newText.buffer.push_back(buffer[i]);
+        }
+        if (newText == other) return 0;
+        if (newText.size() < other.size()) return -1;
+        else return 1;
+    }
+
+    int compare(chText other){
+        if (*this == other) return 0;
+        if (this->size() < other.size()) return -1;
+        else return 1;
+    }
+};
+
+ostream & operator << (ostream &out, const chText &c){
+    for(const string & s : c.buffer){
+        out << s;
+    }
+    return out;
+}
+
+chText operator+(const chText &c1, const chText &c2){
+    chText res = c1;
+	for(const string & s : c2.buffer){
+        res.buffer.push_back(s);
+    }
+    return res;
+}
+
+chText operator+(const string &c1, const chText &c2){
+    chText res = c1;
+	for(const string & s : c2.buffer){
+        res.buffer.push_back(s);
+    }
+    return res;
+}
+
+chText operator+(const chText &c1, const string &str){
+    chText res = c1;
+    chText c2 = str;
+	for(const string & s : c2.buffer){
+        res.buffer.push_back(s);
+    }
+    return res;
+}
+
+chText operator+(const char * c1, const chText &c2){
+    chText res = c1;
+	for(const string & s : c2.buffer){
+        res.buffer.push_back(s);
+    }
+    return res;
+}
+
+chText operator+(const chText &c1, const char * str){
+    chText res = c1;
+    chText c2 = str;
+	for(const string & s : c2.buffer){
+        res.buffer.push_back(s);
+    }
+    return res;
+}
+
+bool operator==(const chText& ch1, const chText& ch2){
+    return ch1.buffer == ch2.buffer;
+}
+
+bool operator==(const string& c1, const chText& ch2){
+    const chText ch1 = c1;
+    return ch1 == ch2;
+}
+
+bool operator==(const chText& ch1, const string& c2){
+    const chText ch2 = c2;
+    return ch1 == ch2;
+}
+
+bool operator==(const char * c1, const chText& ch2){
+    const chText ch1 = c1;
+    return ch1 == ch2;
+}
+
+bool operator==(const chText& ch1, const char * c2){
+    const chText ch2 = c2;
+    return ch1 == ch2;
+}
+
+bool operator==(const char c1, const chText& ch2){
+    const chText ch1 = c1;
+    return ch1 == ch2;
+}
+
+bool operator==(const chText& ch1, const char c2){
+    const chText ch2 = c2;
+    return ch1 == ch2;
+}
+
+bool operator<(const chText &c1, const chText &c2){
+	size_t max = c1.buffer.size() > c2.buffer.size() ? c2.buffer.size() : c1.buffer.size();
+    for(size_t i = 0; i < max; ++i){
+        if(c1.buffer[i] < c2.buffer[i]) return true;
+        else if (c1.buffer[i] > c2.buffer[i]) return false;
+    }
+    return false;
+}
+
+bool operator>(const chText &c1, const chText &c2){
+	size_t max = c1.buffer.size() > c2.buffer.size() ? c2.buffer.size() : c1.buffer.size();
+    for(size_t i = 0; i < max; ++i){
+        if(c1.buffer[i] > c2.buffer[i]) return true;
+        else if (c1.buffer[i] < c2.buffer[i]) return false;
+    }
+    return false;
+}
+
+bool operator!=(const chText& ch1, const chText& ch2){
+    return ch1.buffer != ch2.buffer;
+}
+
+#endif
+
+// ---------------------------------------------------------------------------------------------------
+
 //Global variables
 ifstream file_loading_stream;
 ofstream file_writing_stream;
 string file_loading_line;
-string joinvar; //Generic temporary use text variable (used by join but can be used by any other statement as well)
+chText joinvar; //Generic temporary use text variable (used by join but can be used by any other statement as well)
 ldpl_number VAR_ERRORCODE = 0;
-string VAR_ERRORTEXT = \"\";
+chText VAR_ERRORTEXT = \"\";
 
 //Forward declarations
-string to_ldpl_string(double x);
+chText to_ldpl_string(double x);
 
 template<typename T>
 struct ldpl_map {
-    unordered_map<string, T> inner_collection;
+    unordered_map<chText, T> inner_collection;
 
-    T& operator [] (const string& i) {
+    T& operator [] (const chText& i) {
         return inner_collection[i];
     }
 
@@ -59,7 +520,7 @@ struct ldpl_list {
 };
 
 template<typename T>
-void get_indices(ldpl_list<string> & dest, ldpl_vector<T> & source){
+void get_indices(ldpl_list<chText> & dest, ldpl_vector<T> & source){
     dest.inner_collection.clear();
     int i = 0;
     for (const auto &keyPair : source.inner_collection) {
@@ -82,7 +543,8 @@ ldpl_number input_number(){
     }
 }
 
-ldpl_number to_number(const string & a){
+ldpl_number to_number(chText & textNumber){
+    string a = textNumber.str_rep();
     try {
         //This is used to disallow the use of hexadecimal and binary literals.
         for(char i : a){
@@ -122,7 +584,7 @@ bool num_equal(ldpl_number a, ldpl_number b){
     return fabs(a - b) < NVM_FLOAT_EPSILON;
 }
 
-int str_cmp(string a, string b) {
+int str_cmp(chText a, chText b) {
   return a.compare(b);
 }
 
@@ -130,64 +592,8 @@ ldpl_number modulo(ldpl_number a, ldpl_number b){
     return (int) floor(a) % (int) floor(b);
 }
 
-void join(const string & a, const string & b, string & c){
+void join(const chText & a, const chText & b, chText & c){
     c = a + b;
-}
-
-//http://www.zedwood.com/article/cpp-utf8-strlen-function
-int utf8_strlen(const string& str)
-{
-    int c,i,ix,q;
-    for (q=0, i=0, ix=str.length(); i < ix; i++, q++)
-    {
-        c = (unsigned char) str[i];
-        if      (c>=0   && c<=127) i+=0;
-        else if ((c & 0xE0) == 0xC0) i+=1;
-        else if ((c & 0xF0) == 0xE0) i+=2;
-        else if ((c & 0xF8) == 0xF0) i+=3;
-        else return 0;
-    }
-    return q;
-}
-
-//http://www.zedwood.com/article/cpp-utf-8-mb_substr-function
-string utf8_substr(const string &str,int start, int length=INT_MAX)
-{
-    int i,ix,j,realstart,reallength;
-    if (length==0) return \"\";
-    if (start<0 || length <0)
-    {
-        //find j=utf8_strlen(str);
-        for(j=0,i=0,ix=str.length(); i<ix; i+=1, j++)
-        {
-            unsigned char c= str[i];
-            if      (c>=0   && c<=127) i+=0;
-            else if (c>=192 && c<=223) i+=1;
-            else if (c>=224 && c<=239) i+=2;
-            else if (c>=240 && c<=247) i+=3;
-            else if (c>=248 && c<=255) return \"\";//invalid utf8
-        }
-        if (length !=INT_MAX && j+length-start<=0) return \"\";
-        if (start  < 0 ) start+=j;
-        if (length < 0 ) length=j+length-start;
-    }
-
-    j=0,realstart=0,reallength=0;
-    for(i=0,ix=str.length(); i<ix; i+=1, j++)
-    {
-        if (j==start) { realstart=i; }
-        if (j>=start && (length==INT_MAX || j<=start+length)) { reallength=i-realstart; }
-        unsigned char c= str[i];
-        if      (c>=0   && c<=127) i+=0;
-        else if (c>=192 && c<=223) i+=1;
-        else if (c>=224 && c<=239) i+=2;
-        else if (c>=240 && c<=247) i+=3;
-        else if (c>=248 && c<=255) return \"\";//invalid utf8
-    }
-    if (j==start) { realstart=i; }
-    if (j>=start && (length==INT_MAX || j<=start+length)) { reallength=i-realstart; }
-
-    return str.substr(realstart,reallength);
 }
 
 //https://stackoverflow.com/a/27658515
@@ -204,31 +610,27 @@ string str_replace(string const& s, string const& find, string const& replace){
     return result;
 }
 
-ldpl_number str_len(const string & a){
-    return utf8_strlen(a);
-}
-
-ldpl_number get_char_num(const string & chr){
-    int length = chr.size();
+ldpl_number get_char_num(chText chr){
+    int length = chr.str_rep().size();
     if (length != 1) {
         VAR_ERRORTEXT = \"Multibyte character received (probably UTF-8). Can't be parsed into a single number.\";
         VAR_ERRORCODE = 1;
-        return 0;
+        return -1;
     }
     VAR_ERRORTEXT = \"\";
     VAR_ERRORCODE = 0;
-    ldpl_number ord = (unsigned char) chr[0];
+    ldpl_number ord = (unsigned char) chr.str_rep()[0];
     return ord;
 }
 
-string charat(const string & s, ldpl_number pos){
+chText charat(const chText & s, ldpl_number pos){
     unsigned int _pos = floor(pos);
-    return utf8_substr(s, pos, 1);
+    return s[pos];
 }
 
 //Convert ldpl_number to LDPL string, killing trailing 0's
 //https://stackoverflow.com/questions/16605967/ & https://stackoverflow.com/questions/13686482/
-string to_ldpl_string(ldpl_number x){
+chText to_ldpl_string(ldpl_number x){
     ostringstream out;
     out.precision(10);
     out << fixed << x;
@@ -244,7 +646,7 @@ string to_ldpl_string(ldpl_number x){
 #include <string>
 #include <array>
 
-string exec(const char* cmd) {
+chText exec(const char* cmd) {
     array<char, 128> buffer;
     string result;
     unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, \"r\"), pclose);
@@ -267,10 +669,10 @@ ldpl_number get_random(){
     return r;
 }
 
-void load_file(string filename, string & destination)
+void load_file(chText filename, chText & destination)
 {
     //Load file
-    ifstream file(filename);
+    ifstream file(filename.str_rep());
     //Fail if the file couldn't be loaded
     if(!file.is_open()){
         destination = \"\";
@@ -280,7 +682,7 @@ void load_file(string filename, string & destination)
     }
     //TODO: Turn this into a control variable that can be checked from LDPL.
     //Get file contents
-    string text = \"\";
+    chText text = \"\";
     string line = \"\";
     while(getline(file, line))
     {
@@ -292,61 +694,34 @@ void load_file(string filename, string & destination)
     file.close();
 }
 
-ldpl_list<string> utf8_split_list(const string & haystack, const string & needle){
-    ldpl_list<string> result;
-    int lenHaystack = utf8_strlen(haystack);
-    int lenNeedle = utf8_strlen(needle);
-    if (lenNeedle > 0) {
-        int i = 0;
-        int last_start = 0;
-        while (i + lenNeedle <= lenHaystack) {
-            if (utf8_substr(haystack, i, lenNeedle) == needle) {
-                result.inner_collection.push_back(utf8_substr(haystack, last_start, i - last_start));
-                i += lenNeedle;
-                last_start = i;
-            } else {
-                ++i;
-            }
-        }
-        // Grab everything after the last needle
-        result.inner_collection.push_back(utf8_substr(haystack, last_start, lenHaystack - last_start));
-    } else {
-        // Split into individual characters
-        for (int i = 0; i < lenHaystack; i++)
-            result.inner_collection.push_back(charat(haystack, i));
-    }
-    return result;
-}
-
-ldpl_number utf8GetIndexOf(string a, string needle){
-    string haystack = a;
-    int lenHaystack = utf8_strlen(haystack);
-    int lenNeedle = utf8_strlen(needle);
+ldpl_number utf8GetIndexOf(chText haystack, chText needle){
+    int lenHaystack = haystack.size();
+    int lenNeedle = needle.size();
     if(lenHaystack < lenNeedle) return -1;
     int i = 0;
     while(i + lenNeedle <= lenHaystack){
-        if(utf8_substr(haystack, i, lenNeedle) == needle) return i;
+        if(haystack.substr(i, lenNeedle) == needle) return i;
         ++i;
     }
     return -1;
 }
 
-ldpl_number utf8Count(string a, string needle){
-    string haystack = a;
-    int lenHaystack = utf8_strlen(haystack);
-    int lenNeedle = utf8_strlen(needle);
+ldpl_number utf8Count(chText haystack, chText needle){
+    int lenHaystack = haystack.size();
+    int lenNeedle = needle.size();
     if(lenHaystack < lenNeedle) return 0;
     int i = 0;
     int count = 0;
     while(i + lenNeedle <= lenHaystack){
-        if(utf8_substr(haystack, i, lenNeedle) == needle) ++count;
+        if(haystack.substr(i, lenNeedle) == needle) ++count;
         ++i;
     }
     return count;
 }
 
 //Removes all trailing and ending whitespace from a string
-string trimCopy(string line){
+chText trimCopy(chText _line){
+    string line = _line.str_rep();
     //If the string is empty
     if(line.size() == 0) return line;
 
@@ -381,4 +756,30 @@ string trimCopy(string line){
     line = line.substr(first, last-first);
 
     return line;
+}
+
+ldpl_list<chText> utf8_split_list(chText haystack, chText needle){
+    ldpl_list<chText> result;
+    int lenHaystack = haystack.size();
+    int lenNeedle = needle.size();
+    if (lenNeedle > 0) {
+        int i = 0;
+        int last_start = 0;
+        while (i + lenNeedle <= lenHaystack) {
+            if (haystack.substr(i, lenNeedle) == needle) {
+                result.inner_collection.push_back(haystack.substr(last_start, i - last_start));
+                i += lenNeedle;
+                last_start = i;
+            } else {
+                ++i;
+            }
+        }
+        // Grab everything after the last needle
+        result.inner_collection.push_back(haystack.substr(last_start, lenHaystack - last_start));
+    } else {
+        // Split into individual characters
+        for (int i = 0; i < lenHaystack; i++)
+            result.inner_collection.push_back(charat(haystack, i));
+    }
+    return result;
 }

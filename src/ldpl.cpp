@@ -134,7 +134,7 @@ int main(int argc, const char* argv[])
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
 
     state.variables[""]["ARGV"] = {2, 3}; //List of text
-    state.add_var_code("ldpl_list<string> "+fix_identifier("ARGV", true)+";");
+    state.add_var_code("ldpl_list<chText> "+fix_identifier("ARGV", true)+";");
     state.variables[""]["ERRORCODE"] = {1}; //Declared in ldpl_lib.cpp
     state.variables[""]["ERRORTEXT"] = {2}; //Declared in ldpl_lib.cpp
     state.add_code("for(int i = 1; i < argc; ++i)");
@@ -518,7 +518,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             if (extern_keyword == "") assign_default = " = 0";              // if its not an external variable, set a default value for it.
         } else if (tokens[i] == "TEXT") {                                   // If we are dealing with a text variable...
             type_number.push_back(2);                                       // The type number is 2
-            type = "string";                                                // The C++ data type is just string
+            type = "chText";                                                // The C++ data type is just string
             if (extern_keyword == "") assign_default = " = \"\"";           // And if it's not external, we set it to a default value.
         } else {
             valid_type = false;                                             // If its not a NUMBER, a TEXT or a collection of these data types
@@ -757,15 +757,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                 if (is_num_expr(parameter, state))
                     types.push_back("ldpl_number");
                 else if(is_txt_expr(parameter, state))
-                    types.push_back("string");
+                    types.push_back("chText");
                 else if(is_num_map(parameter, state))
                     types.push_back("ldpl_vector<ldpl_number>");
                 else if(is_num_list(parameter, state))
                     types.push_back("ldpl_list<ldpl_number>");
                 else if(is_txt_map(parameter, state))
-                    types.push_back("ldpl_vector<string>");
+                    types.push_back("ldpl_vector<chText>");
                 else if(is_txt_list(parameter, state))
-                    types.push_back("ldpl_list<string>");
+                    types.push_back("ldpl_list<chText>");
                 else
                     error("CALL with invalid parameter \"" + parameter + "\" (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             }
@@ -901,7 +901,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("GET LENGTH OF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = str_len(" + get_c_expression(state, tokens[3]) + ");");
+        state.add_code(get_c_variable(state, tokens[5]) + " = ((chText)" + get_c_expression(state, tokens[3]) + ").size();");
         return;
     }
     if(line_like("GET ASCII CHARACTER $num-expr IN $str-var", tokens, state))
@@ -909,7 +909,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("GET ASCII CHARACTER statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = (char)" + get_c_expression(state, tokens[3]) + ";");
+        state.add_code(get_c_variable(state, tokens[5]) + " = (char)(" + get_c_expression(state, tokens[3]) + ");");
         return;
     }
     if(line_like("GET CHARACTER CODE OF $str-expr IN $num-var", tokens, state))
@@ -1065,7 +1065,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("SUBSTRING statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
         state.add_code("joinvar = " + get_c_expression(state, tokens[1]) + ";");
-        state.add_code(get_c_variable(state, tokens[7]) + " = utf8_substr(joinvar, " + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ");");
+        state.add_code(get_c_variable(state, tokens[7]) + " = joinvar.substr(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
     }
     if(line_like("TRIM $str-expr IN $str-var", tokens, state))
@@ -1118,7 +1118,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(variable_type(tokens[3], state)[0] == 1){
             state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_vector<ldpl_number>{});");
         }else{
-            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_vector<string>{});");
+            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_vector<chText>{});");
         }
         return;
     }
@@ -1130,7 +1130,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         vector<unsigned int> type = variable_type(tokens[3], state);
         string textType = "";
         if(type[0] == 1) textType = "ldpl_number";
-        else textType = "string";
+        else textType = "chText";
         for(size_t i = 1; i < type.size() - 1; ++i){
             if(type[i] == 3) textType = "ldpl_list<" + textType + ">";
             else textType = "ldpl_vector<" + textType + ">";
@@ -1202,15 +1202,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                 if (param_count > parameters.size()) break;
                 if (parameters[param_count-1].first == "ldpl_number")
                     model_line += "$num-expr ";
-                else if (parameters[param_count-1].first == "string")
+                else if (parameters[param_count-1].first == "chText")
                     model_line += "$str-expr ";
                 else if (parameters[param_count-1].first == "ldpl_vector<ldpl_number>")
                     model_line += "$num-vec ";
                 else if (parameters[param_count-1].first == "ldpl_list<ldpl_number>")
                     model_line += "$num-list ";
-                else if (parameters[param_count-1].first == "ldpl_vector<string>")
+                else if (parameters[param_count-1].first == "ldpl_vector<chText>")
                     model_line += "$str-vec ";
-                else if (parameters[param_count-1].first == "ldpl_list<string>")
+                else if (parameters[param_count-1].first == "ldpl_list<chText>")
                     model_line += "$str-list ";
             } else if (token.find_first_not_of(valid_keyword_chars) == string::npos) {
                 ++keyword_count;
