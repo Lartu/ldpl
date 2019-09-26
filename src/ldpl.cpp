@@ -458,7 +458,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     //std include
-    if(line_like("INCLUDE $name", tokens, state)) {
+    if(line_like("USING PACKAGE $name", tokens, state)) {
         if(state.section_state != 0)
             error("you can only use the INCLUDE statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else {
