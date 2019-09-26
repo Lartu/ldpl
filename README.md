@@ -146,7 +146,7 @@ There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu),
 
 <img src="images/merch/shirt.jpg" width="150px">  <img src="images/merch/shirt2.jpg" width="150px"> <img src="images/merch/shirt3.jpg" width="150px">  <img src="images/merch/mug2.jpg" width="150px">
 
-<img src="images/merch/mug2.jpg" width="150px"> <img src="images/merch/notebook.jpg" width="150px">  <img src="images/merch/sticker.jpg" width="150px">  <img src="images/merch/case.jpg" width="150px">
+<img src="images/merch/mug3.jpg" width="150px"> <img src="images/merch/notebook.jpg" width="150px">  <img src="images/merch/sticker.jpg" width="150px">  <img src="images/merch/case.jpg" width="150px">
 
 ## 📜 License
 
