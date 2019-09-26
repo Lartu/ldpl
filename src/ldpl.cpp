@@ -1019,7 +1019,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("file_writing_stream.open(" + get_c_expression(state, tokens[4]) + ".str_rep(), ios_base::out);");
+        state.add_code("file_writing_stream.open(((chText)" + get_c_expression(state, tokens[4]) + ").str_rep(), ios_base::out);");
         state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
         return;
@@ -1029,7 +1029,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("file_writing_stream.open(" + get_c_expression(state, tokens[4]) + ".str_rep(), ios_base::app);");
+        state.add_code("file_writing_stream.open(((chText)" + get_c_expression(state, tokens[4]) + ").str_rep(), ios_base::app);");
         state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
         return;
