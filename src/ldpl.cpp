@@ -1818,7 +1818,7 @@ string get_c_expression(compiler_state & state, string & expression)
 string get_c_char_array(compiler_state & state, string & text)
 {
     if(is_txt_var(text, state))
-        return get_c_variable(state, text) + ".c_str()";
+        return get_c_variable(state, text) + ".str_rep().c_str()";
     return text;
 }
 
