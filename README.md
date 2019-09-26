@@ -140,6 +140,14 @@ If you want to talk to the rest of us, you can find the LDPL community at [r/LDP
 
 You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
 
+## 👔 LDPL Merchandise
+
+There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu), due to popular request! We've paired with TeePublic to bring you everything from shirts, to mousepads, to coffee mugs. All money made from selling these goodies goes to funding the language, paying for the server that keeps the LDPL website online, etc.
+
+<img src="images/merch/shirt.jpg" width="150px">  <img src="images/merch/shirt2.jpg" width="150px"> <img src="images/merch/shirt3.jpg" width="150px">  <img src="images/merch/mug2.jpg" width="150px">
+
+<img src="images/merch/mug2.jpg" width="150px"> <img src="images/merch/notebook.jpg" width="150px">  <img src="images/merch/sticker.jpg" width="150px">  <img src="images/merch/case.jpg" width="150px">
+
 ## 📜 License
 
 This LDPL Compiler is distributed under the GNU General Public License 3.0. All LDPL Dinosaur logos where created by [Lartu](https://github.com/Lartu) and are released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
