@@ -14,16 +14,22 @@ VERSIONNAME = '"Diligent Dreadnoughtus"' #LDPL Version Name
 OBJS = ldpl.o
 SOURCE = ldpl.cpp
 OUT = ldpl
-FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"'
+LPMLOCATION = "~/ldpl/lpm/"
+ifneq ($(shell uname -s),Darwin)
+ifeq ($(shell uname -o),Msys)
+LPMLOCATION = "c:/ldpl/lpm/"
+endif
+endif
+FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='$(LPMLOCATION)'
 #Flags for static compilation on Windows and Linux (not Android)
 ifneq ($(shell uname -s),Darwin)
 ifneq ($(shell uname -o),Android)
-	LFLAGS = -static-libgcc -static-libstdc++
+LFLAGS = -static-libgcc -static-libstdc++
 endif
 endif
 #PREFIX is environment variable, but if it is not set, then set default value
 ifeq ($(PREFIX),)
-    PREFIX := /usr/local
+PREFIX := /usr/local
 endif
 
 all: $(OBJS)

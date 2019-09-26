@@ -424,8 +424,37 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
+    //std include
+    if(line_like("INCLUDE $name", tokens, state)) {
+        if(state.section_state != 0)
+            error("you can only use the INCLUDE statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
+        else {
+            #if defined(_WIN32)	
+                //TODO!
+            #else
+                system(((string)"mkdir -p " + LPMLOCATION).c_str());
+            #endif
+            string libFilename = tokens[1];
+            std::for_each(libFilename.begin(), libFilename.end(), [](char & c){
+                c = ::tolower(c);
+            });
+            string file_to_compile = LPMLOCATION + libFilename + ".ldpl";
+            string separators = "/";
+            #if defined(_WIN32)	
+                separators += "\\";	
+            #endif
+            size_t last_sep = current_file.find_last_of(separators);
+            if (last_sep != string::npos)
+                file_to_compile = current_file.substr(0, last_sep) + "/" + file_to_compile;
+            load_and_compile(file_to_compile, state);
+            state.section_state = 0;
+            state.current_file = current_file;
+        }
+        return;
+    }
+
     //extension (INCLUDE but for c++ extensions)
-    if(line_like("EXTENSION $string", tokens, state)) {
+    else if(line_like("EXTENSION $string", tokens, state)) {
         if(state.section_state != 0)
             error("you can only use the EXTENSION statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else {
@@ -443,7 +472,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     //extension flags (for the C++ compiler)
-    if(line_like("FLAG $string", tokens, state)) {
+    else if(line_like("FLAG $string", tokens, state)) {
         if(state.section_state != 0)
             error("you can only use the FLAG statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else {
@@ -454,7 +483,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Sections
-    if(line_like("DATA:", tokens, state))
+    else if(line_like("DATA:", tokens, state))
     {
         if(state.section_state == 1)
             error("Duplicate DATA section declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -463,7 +492,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.section_state = 1;
         return;
     }
-    if(line_like("PROCEDURE:", tokens, state))
+    else if(line_like("PROCEDURE:", tokens, state))
     {
         if(state.section_state == 2)
             error("Duplicate PROCEDURE section declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -472,7 +501,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.section_state = 2;
         return;
     }
-    if(line_like("PARAMETERS:", tokens, state))
+    else if(line_like("PARAMETERS:", tokens, state))
     {
         if(state.current_subprocedure == "")
             error("PARAMETERS section outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -485,7 +514,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.section_state = 4;
         return;
     }
-    if(line_like("LOCAL DATA:", tokens, state))
+    else if(line_like("LOCAL DATA:", tokens, state))
     {
         if(state.current_subprocedure == "")
             error("LOCAL DATA section outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -499,7 +528,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Variable Declaration
-    if(line_like("$name IS $anything", tokens, state))                      // If it's a variable declaration
+    else if(line_like("$name IS $anything", tokens, state))                      // If it's a variable declaration
     {
         string extern_keyword = "";                                         // C++ extern keyword to prepend to the type (empty if not EXTERNAL)
         string type;                                                        // C++ variable type
@@ -557,7 +586,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // SUB-PROCEDURE Declaration
-    if(line_like("SUB-PROCEDURE $name", tokens, state) || line_like("SUB $name", tokens, state))
+    else if(line_like("SUB-PROCEDURE $name", tokens, state) || line_like("SUB $name", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -574,7 +603,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.subprocedures.emplace(tokens[1], vector<pair<string, string>>());
         return;
     }
-    if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state) || line_like("EXTERNAL SUB $external", tokens, state))
+    else if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state) || line_like("EXTERNAL SUB $external", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -590,7 +619,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){");
         return;
     }
-    if(line_like("END SUB-PROCEDURE", tokens, state) || line_like("END SUB", tokens, state))
+    else if(line_like("END SUB-PROCEDURE", tokens, state) || line_like("END SUB", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("END SUB-PROCEDURE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -604,7 +633,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Control Flow Statements
-    if(line_like("STORE $expression IN $var", tokens, state))
+    else if(line_like("STORE $expression IN $var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
         error("STORE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -617,7 +646,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = " + rhand + ";");
         return;
     }
-    if(line_like("IF $condition THEN", tokens, state))
+    else if(line_like("IF $condition THEN", tokens, state))
     {
         string condition = get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1));
         if (condition != "[ERROR]") {
@@ -629,7 +658,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             return;
         }
     }
-    if(line_like("ELSE IF $condition THEN", tokens, state))
+    else if(line_like("ELSE IF $condition THEN", tokens, state))
     {
         string condition = get_c_condition(state, vector<string>(tokens.begin()+2, tokens.end()-1));
         if (condition != "[ERROR]") {
@@ -642,7 +671,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             return;
         }
     }
-    if(line_like("ELSE", tokens, state))
+    else if(line_like("ELSE", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("ELSE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -653,7 +682,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("}else{");
         return;
     }
-    if(line_like("END IF", tokens, state) || line_like("END-IF", tokens, state))
+    else if(line_like("END IF", tokens, state) || line_like("END-IF", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("END IF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -664,7 +693,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("}");
         return;
     }
-    if(line_like("WHILE $condition DO", tokens, state))
+    else if(line_like("WHILE $condition DO", tokens, state))
     {
         string condition = get_c_condition(state, vector<string>(tokens.begin()+1, tokens.end()-1));
         if (condition != "[ERROR]") {
@@ -676,7 +705,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             return;
         }
     }
-    if(line_like("REPEAT", tokens, state))
+    else if(line_like("REPEAT", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("REPEAT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -687,7 +716,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("}");
         return;
     }
-    if(line_like("FOR $num-var FROM $num-expr TO $num-expr STEP $num-expr DO", tokens, state))
+    else if(line_like("FOR $num-var FROM $num-expr TO $num-expr STEP $num-expr DO", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("FOR outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -704,7 +733,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("for (" + init + "; " + condition + "; " + increment + ") {");
         return;
     }
-    if(line_like("FOR EACH $var IN $collection DO", tokens, state))
+    else if(line_like("FOR EACH $var IN $collection DO", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("FOR EACH outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -722,7 +751,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[2]) + " = " + iteration_var + ";");
         return;
     }
-    if(line_like("BREAK", tokens, state))
+    else if(line_like("BREAK", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("BREAK outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -732,7 +761,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("break;");
         return;
     }
-    if(line_like("CONTINUE", tokens, state))
+    else if(line_like("CONTINUE", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("CONTINUE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -742,7 +771,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("continue;");
         return;
     }
-    if(line_like("CALL SUB-PROCEDURE $anything", tokens, state) || line_like("CALL $anything", tokens, state))
+    else if(line_like("CALL SUB-PROCEDURE $anything", tokens, state) || line_like("CALL $anything", tokens, state))
     {
         size_t i = 1;
         if(tokens[i] == "SUB-PROCEDURE") i++;
@@ -782,7 +811,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             return;
         }
     }
-    if(line_like("CALL EXTERNAL $external", tokens, state))
+    else if(line_like("CALL EXTERNAL $external", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("CALL EXTERNAL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -791,7 +820,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_var_code("void "+fix_external_identifier(tokens[2], false)+"();");
         return;
     }
-    if(line_like("RETURN", tokens, state))
+    else if(line_like("RETURN", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("RETURN outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -801,7 +830,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("return;");
         return;
     }
-    if(line_like("EXIT", tokens, state))
+    else if(line_like("EXIT", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXIT outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -809,7 +838,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("exit(0);");
         return;
     }
-    if(line_like("WAIT $num-expr MILLISECONDS", tokens, state))
+    else if(line_like("WAIT $num-expr MILLISECONDS", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("WAIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -821,14 +850,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         #endif
         return;
     }
-    if(line_like("GOTO $label", tokens, state))
+    else if(line_like("GOTO $label", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GOTO outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.add_code("goto label_"+fix_identifier(tokens[1])+";");
         return;
     }
-    if(line_like("LABEL $label", tokens, state))
+    else if(line_like("LABEL $label", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("LABEL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -837,7 +866,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Arithmetic Statements
-    if(line_like("MODULO $num-expr BY $num-expr IN $num-var", tokens, state)) //TODO move this into the standard library
+    else if(line_like("MODULO $num-expr BY $num-expr IN $num-var", tokens, state)) //TODO move this into the standard library
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("MODULO statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -845,7 +874,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
-    if(line_like("GET RANDOM IN $num-var", tokens, state))
+    else if(line_like("GET RANDOM IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("RANDOM outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -853,7 +882,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = get_random();");
         return;
     }
-    if(line_like("FLOOR $num-var", tokens, state))
+    else if(line_like("FLOOR $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("FLOOR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -861,7 +890,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1]) + " = floor(" + get_c_variable(state, tokens[1]) +");");
         return;
     }
-    if(line_like("IN $num-var SOLVE $math", tokens, state))
+    else if(line_like("IN $num-var SOLVE $math", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("IN-SOLVE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -880,7 +909,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // Text Statements
-    if(line_like("JOIN $expression AND $expression IN $str-var", tokens, state))
+    else if(line_like("JOIN $expression AND $expression IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -888,7 +917,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("join(" + get_c_string(state, tokens[1]) + ", " + get_c_string(state, tokens[3]) + ", " + get_c_variable(state, tokens[5]) + ");");
         return;
     }
-    if(line_like("GET CHARACTER AT $num-expr FROM $str-expr IN $str-var", tokens, state))
+    else if(line_like("GET CHARACTER AT $num-expr FROM $str-expr IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET CHARACTER statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -896,7 +925,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = charat(" + get_c_expression(state, tokens[5]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
-    if(line_like("GET LENGTH OF $str-expr IN $num-var", tokens, state))
+    else if(line_like("GET LENGTH OF $str-expr IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET LENGTH OF outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -904,7 +933,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = ((chText)" + get_c_expression(state, tokens[3]) + ").size();");
         return;
     }
-    if(line_like("GET ASCII CHARACTER $num-expr IN $str-var", tokens, state))
+    else if(line_like("GET ASCII CHARACTER $num-expr IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET ASCII CHARACTER statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -912,7 +941,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = (char)(" + get_c_expression(state, tokens[3]) + ");");
         return;
     }
-    if(line_like("GET CHARACTER CODE OF $str-expr IN $num-var", tokens, state))
+    else if(line_like("GET CHARACTER CODE OF $str-expr IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET CHARACTER CODE OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -920,7 +949,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[6]) + " = get_char_num(" + get_c_expression(state, tokens[4]) + ");");
         return;
     }
-    if(line_like("STORE QUOTE IN $str-var", tokens, state))
+    else if(line_like("STORE QUOTE IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("STORE QUOTE IN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -929,9 +958,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = \"\"");
         return;
     }
-    if(line_like("END QUOTE", tokens, state))
+    else if(line_like("END QUOTE", tokens, state))
         error("END QUOTE statement without preceding STORE QUOTE statement (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-    if(line_like("IN $str-var JOIN $display", tokens, state))
+    else if(line_like("IN $str-var JOIN $display", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("IN-JOIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -947,7 +976,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     }
 
     // I/O Statements
-    if(line_like("DISPLAY $display", tokens, state))
+    else if(line_like("DISPLAY $display", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("DISPLAY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -963,7 +992,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         }
         return;
     }
-    if(line_like("ACCEPT $var", tokens, state))
+    else if(line_like("ACCEPT $var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -974,7 +1003,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             state.add_code(get_c_variable(state, tokens[1]) + " = input_string();");
         return;
     }
-    if(line_like("EXECUTE $str-expr", tokens, state))
+    else if(line_like("EXECUTE $str-expr", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -982,7 +1011,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("system(" + get_c_char_array(state, tokens[1]) + ");");
         return;
     }
-    if(line_like("EXECUTE $str-expr AND STORE OUTPUT IN $str-var", tokens, state))
+    else if(line_like("EXECUTE $str-expr AND STORE OUTPUT IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -990,7 +1019,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[6]) + " = exec(" + get_c_char_array(state, tokens[1]) + ");");
         return;
     }
-    if(line_like("EXECUTE $str-expr AND STORE EXIT CODE IN $num-var", tokens, state))
+    else if(line_like("EXECUTE $str-expr AND STORE EXIT CODE IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("EXECUTE outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -998,7 +1027,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = (system(" + get_c_char_array(state, tokens[1]) + ") >> 8) & 0xff;"); //shift wait() val and get lowest 2
         return;
     }
-    if(line_like("ACCEPT $str-var UNTIL EOF", tokens, state))
+    else if(line_like("ACCEPT $str-var UNTIL EOF", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("ACCEPT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1006,7 +1035,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1])+" = input_until_eof();");
         return;
     }
-    if(line_like("LOAD FILE $str-expr IN $str-var", tokens, state))
+    else if(line_like("LOAD FILE $str-expr IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("LOAD FILE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1014,7 +1043,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("load_file(" + get_c_expression(state, tokens[2]) + ", " + get_c_variable(state, tokens[4]) +");");
         return;
     }
-    if(line_like("WRITE $expression TO FILE $str-expr", tokens, state))
+    else if(line_like("WRITE $expression TO FILE $str-expr", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1024,7 +1053,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("file_writing_stream.close();");
         return;
     }
-    if(line_like("APPEND $expression TO FILE $str-expr", tokens, state))
+    else if(line_like("APPEND $expression TO FILE $str-expr", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1035,7 +1064,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
 
-    if(line_like("REPLACE $str-expr FROM $str-expr WITH $str-expr IN $str-var", tokens, state))
+    else if(line_like("REPLACE $str-expr FROM $str-expr WITH $str-expr IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1043,7 +1072,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = str_replace(((chText)" + get_c_expression(state, tokens[3]) + ").str_rep(), ((chText)" + get_c_expression(state, tokens[1]) + ").str_rep(), ((chText)" + get_c_expression(state, tokens[5]) + ").str_rep());");
         return;
     }
-    if(line_like("GET INDEX OF $str-expr FROM $str-expr IN $num-var", tokens, state))
+    else if(line_like("GET INDEX OF $str-expr FROM $str-expr IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET INDEX OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1051,7 +1080,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = utf8GetIndexOf(" + get_c_expression(state, tokens[5]) + ", " + get_c_expression(state, tokens[3]) + ");");
         return;
     }
-    if(line_like("COUNT $str-expr FROM $str-expr IN $num-var", tokens, state))
+    else if(line_like("COUNT $str-expr FROM $str-expr IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1059,7 +1088,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = utf8Count(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[1]) + ");");
         return;
     }
-    if(line_like("SUBSTRING $str-expr FROM $num-expr LENGTH $num-expr IN $str-var", tokens, state))
+    else if(line_like("SUBSTRING $str-expr FROM $num-expr LENGTH $num-expr IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("SUBSTRING statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1068,7 +1097,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[7]) + " = joinvar.substr(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[5]) + ");");
         return;
     }
-    if(line_like("TRIM $str-expr IN $str-var", tokens, state))
+    else if(line_like("TRIM $str-expr IN $str-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("TRIM statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1076,7 +1105,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + " = trimCopy(" + get_c_expression(state, tokens[1]) +  ");");
         return;
     }
-    if(line_like("CLEAR $collection", tokens, state))
+    else if(line_like("CLEAR $collection", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("CLEAR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1084,7 +1113,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1]) + ".inner_collection.clear();");
         return;
     }
-    if(line_like("COPY $collection TO $collection", tokens, state))
+    else if(line_like("COPY $collection TO $collection", tokens, state))
     {
         if(variable_type(tokens[1], state) == variable_type(tokens[3], state)) {
             if(!in_procedure_section(state, line_num, current_file))
@@ -1094,7 +1123,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             return;
         }
     }
-    if(line_like("GET KEY COUNT OF $map IN $num-var", tokens, state))
+    else if(line_like("GET KEY COUNT OF $map IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET KEY COUNT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1102,7 +1131,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[6]) + " = " + get_c_variable(state, tokens[4]) + ".inner_collection.size();");
         return;
     }
-    if(line_like("GET KEYS OF $map IN $str-list", tokens, state))
+    else if(line_like("GET KEYS OF $map IN $str-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET KEYS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1110,7 +1139,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("get_indices(" + get_c_variable(state, tokens[5]) + ", " + get_c_variable(state, tokens[3]) + ");");
         return;
     }
-    if(line_like("PUSH MAP TO $map-list", tokens, state))
+    else if(line_like("PUSH MAP TO $map-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
         error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1122,7 +1151,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         }
         return;
     }
-    if(line_like("PUSH LIST TO $list-list", tokens, state))
+    else if(line_like("PUSH LIST TO $list-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
         error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1138,7 +1167,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(" + textType + "{});");
         return;
     }
-    if(line_like("PUSH $expression TO $scalar-list", tokens, state))
+    else if(line_like("PUSH $expression TO $scalar-list", tokens, state))
     {
         // The type of the pushed element must match the collection type
         if(is_num_expr(tokens[1], state) == is_num_list(tokens[3], state)) {
@@ -1151,7 +1180,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("List - Value type mismatch (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         }
     }
-    if(line_like("GET LENGTH OF $list IN $num-var", tokens, state))
+    else if(line_like("GET LENGTH OF $list IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("GET LENGTH OF (list) statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1159,7 +1188,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_variable(state, tokens[3]) + ".inner_collection.size();");
         return;
     }
-    if(line_like("DELETE LAST ELEMENT OF $list", tokens, state))
+    else if(line_like("DELETE LAST ELEMENT OF $list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("DELETE LAST ELEMENT OF statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1168,7 +1197,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[4]) + ".inner_collection.pop_back();");
         return;
     }
-    if(line_like("SPLIT $str-expr BY $str-expr IN $str-list", tokens, state))
+    else if(line_like("SPLIT $str-expr BY $str-expr IN $str-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("SPLIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
@@ -1177,7 +1206,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         return;
     }
     // Custom Statements
-    if(line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens, state))
+    else if(line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("CREATE STATEMENT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
