@@ -493,14 +493,14 @@ chText to_ldpl_string(double x);
 
 template<typename T>
 struct ldpl_map {
-    unordered_map<chText, T> inner_collection;
+    unordered_map<string, T> inner_collection;
 
     T& operator [] (const chText& i) {
-        return inner_collection[i];
+        return inner_collection[i.str_rep()];
     }
 
     T& operator [] (ldpl_number i) {
-        return inner_collection[to_ldpl_string(i)];
+        return inner_collection[to_ldpl_string(i).str_rep()];
     }
 };
 
