@@ -431,6 +431,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else {
             #if defined(_WIN32)	
                 //TODO!
+                error("LPM packages are not yet supported on Windows.");
             #else
                 system(((string)"mkdir -p " + LPMLOCATION).c_str());
             #endif
@@ -2103,7 +2104,7 @@ void add_call_code(string & subprocedure, vector<string> & parameters, compiler_
         if (is_number(parameters[i]) || is_string(parameters[i])) {
             // C++ doen't allow passing literals in  reference parameters, we create vars for them
             string literal_paramater_var = state.new_literal_parameter_var();
-            state.add_code((is_number(parameters[i]) ? "ldpl_number " : "string ")
+            state.add_code((is_number(parameters[i]) ? "ldpl_number " : "chText ")
                            + literal_paramater_var + " = " + parameters[i] + ";");
             code += literal_paramater_var;
         } else {
