@@ -597,7 +597,10 @@ void join(const chText & a, const chText & b, chText & c){
 }
 
 //https://stackoverflow.com/a/27658515
-string str_replace(string const& s, string const& find, string const& replace){
+chText str_replace(chText & _s, chText & _find, chText & _replace){
+    string s = _s.str_rep();
+    string find = _find.str_rep();
+    string replace = _replace.str_rep();
     string result;
     size_t find_len = find.size();
     size_t pos, from=0;
