@@ -490,6 +490,7 @@ chText VAR_ERRORTEXT = \"\";
 
 //Forward declarations
 chText to_ldpl_string(double x);
+chText trimCopy(chText _line);
 
 template<typename T>
 struct ldpl_map {
@@ -669,10 +670,29 @@ ldpl_number get_random(){
     return r;
 }
 
+string expandHomeDirectory(string filename){
+    #if defined(_WIN32)
+        return filename;	
+    #else
+        string homeDir = exec(\"echo $HOME\").str_rep();
+        homeDir = trimCopy(homeDir).str_rep();
+        string newPath = \"\";
+        for(size_t i = 0; i < filename.length(); ++i){
+            if(filename[i] == '~'){
+                newPath += homeDir;
+            }else{
+                newPath += filename[i];
+            }
+        }
+        //cout << \"newPath:\" << newPath << endl;
+        return newPath;
+    #endif
+}
+
 void load_file(chText filename, chText & destination)
 {
     //Load file
-    ifstream file(filename.str_rep());
+    ifstream file(expandHomeDirectory(filename.str_rep()));
     //Fail if the file couldn't be loaded
     if(!file.is_open()){
         destination = \"\";
@@ -680,7 +700,6 @@ void load_file(chText filename, chText & destination)
         VAR_ERRORCODE = 1;
         return;
     }
-    //TODO: Turn this into a control variable that can be checked from LDPL.
     //Get file contents
     chText text = \"\";
     string line = \"\";

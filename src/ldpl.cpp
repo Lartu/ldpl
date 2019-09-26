@@ -222,8 +222,41 @@ int main(int argc, const char* argv[])
     }
 }
 
+#include <array>
+string exec(const char* cmd) {
+    array<char, 128> buffer;
+    string result;
+    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        throw runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
+string expandHomeDirectory(string & filename){
+    #if defined(_WIN32)
+        return filename;	
+    #else
+        string homeDir = exec("echo $HOME");
+        trim(homeDir);
+        string newPath = "";
+        for(size_t i = 0; i < filename.length(); ++i){
+            if(filename[i] == '~'){
+                newPath += homeDir;
+            }else{
+                newPath += filename[i];
+            }
+        }
+        return newPath;
+    #endif
+}
+
 void load_and_compile(string & filename, compiler_state & state)
 {
+    filename = expandHomeDirectory(filename);
     state.current_file = filename;
     //Accept input from stdin
     ifstream file(filename);
@@ -1049,7 +1082,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("WRITE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("file_writing_stream.open(((chText)" + get_c_expression(state, tokens[4]) + ").str_rep(), ios_base::out);");
+        state.add_code("file_writing_stream.open(expandHomeDirectory(((chText)" + get_c_expression(state, tokens[4]) + ").str_rep()), ios_base::out);");
         state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
         return;
@@ -1059,7 +1092,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("APPEND statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("file_writing_stream.open(((chText)" + get_c_expression(state, tokens[4]) + ").str_rep(), ios_base::app);");
+        state.add_code("file_writing_stream.open(expandHomeDirectory(((chText)" + get_c_expression(state, tokens[4]) + ").str_rep()), ios_base::app);");
         state.add_code("file_writing_stream <<" + get_c_expression(state, tokens[1]) + ";");
         state.add_code("file_writing_stream.close();");
         return;
