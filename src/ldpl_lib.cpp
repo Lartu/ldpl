@@ -495,7 +495,7 @@ template<typename T>
 struct ldpl_map {
     unordered_map<string, T> inner_collection;
 
-    T& operator [] (chText& i) {
+    T& operator [] (chText i) {
         return inner_collection[i.str_rep()];
     }
 
