@@ -439,7 +439,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             std::for_each(libFilename.begin(), libFilename.end(), [](char & c){
                 c = ::tolower(c);
             });
-            string file_to_compile = LPMLOCATION + libFilename + ".ldpl";
+            string file_to_compile = LPMLOCATION + libFilename + "/" + libFilename + ".ldpl";
             string separators = "/";
             #if defined(_WIN32)	
                 separators += "\\";	
