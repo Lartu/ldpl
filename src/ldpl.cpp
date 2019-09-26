@@ -1040,7 +1040,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("REPLACE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code(get_c_variable(state, tokens[7]) + " = str_replace(" + get_c_expression(state, tokens[3]) + ", " + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[5]) + ");");
+        state.add_code(get_c_variable(state, tokens[7]) + " = str_replace(((chText)" + get_c_expression(state, tokens[3]) + ").str_rep(), ((chText)" + get_c_expression(state, tokens[1]) + ").str_rep(), ((chText)" + get_c_expression(state, tokens[5]) + ").str_rep());");
         return;
     }
     if(line_like("GET INDEX OF $str-expr FROM $str-expr IN $num-var", tokens, state))
