@@ -36,7 +36,7 @@ all: $(OBJS)
 	$(CXX) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
 ldpl.o: ldpl.cpp ldpl_lib.cpp
-        awk -f lib-to-string.awk ldpl_lib.cpp > ldpl_included_lib.cpp
+	awk -f lib-to-string.awk ldpl_lib.cpp > ldpl_included_lib.cpp
 	$(CXX) $(FLAGS) $(SOURCE)
 
 
