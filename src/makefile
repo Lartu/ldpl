@@ -35,10 +35,8 @@ endif
 all: $(OBJS)
 	$(CXX) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-ldpl_included_lib.cpp: ldpl_lib.cpp
-	awk -f lib-to-string.awk ldpl_lib.cpp > ldpl_included_lib.cpp
-
-ldpl.o: ldpl.cpp ldpl_included_lib.cpp
+ldpl.o: ldpl.cpp ldpl_lib.cpp
+        awk -f lib-to-string.awk ldpl_lib.cpp > ldpl_included_lib.cpp
 	$(CXX) $(FLAGS) $(SOURCE)
 
 
