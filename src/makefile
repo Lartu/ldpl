@@ -34,6 +34,7 @@ endif
 
 all: $(OBJS)
 	$(CXX) -g $(OBJS) -o $(OUT) $(LFLAGS)
+	./ldpl ../lpm/lpm.ldpl -o=lpm
 
 ldpl.o: ldpl.cpp ldpl_lib.cpp
 	awk -f lib-to-string.awk ldpl_lib.cpp > ldpl_included_lib.cpp
@@ -41,11 +42,13 @@ ldpl.o: ldpl.cpp ldpl_lib.cpp
 
 
 clean:
-	rm -f ldpl.o ldpl ldpl_included_lib.cpp
+	rm -f ldpl.o ldpl ldpl_included_lib.cpp lpm
 
 install: ldpl ../man/ldpl.1
 	install -d $(DESTDIR)$(PREFIX)/bin/
 	install -m 775 ldpl $(DESTDIR)$(PREFIX)/bin/
+	install -d $(DESTDIR)$(PREFIX)/bin/
+	install -m 775 lpm $(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/man/man1/
 	install ../man/ldpl.1 $(DESTDIR)$(PREFIX)/share/man/man1/
 ifneq ($(shell uname -s),Darwin)
@@ -54,6 +57,7 @@ endif
 
 uninstall:
 	rm $(DESTDIR)$(PREFIX)/bin/ldpl
+	rm $(DESTDIR)$(PREFIX)/bin/lpm
 	rm $(DESTDIR)$(PREFIX)/share/man/man1/ldpl.1
 ifneq ($(shell uname -s),Darwin)
 	mandb
