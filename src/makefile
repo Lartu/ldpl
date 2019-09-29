@@ -15,11 +15,11 @@ OBJS = ldpl.o
 SOURCE = ldpl.cpp
 OUT = ldpl
 LPMLOCATION = "~/ldpl/lpm/"
-ifneq ($(shell uname -s),Darwin)
-ifeq ($(shell uname -o),Msys)
-LPMLOCATION = "c:/ldpl/lpm/"
-endif
-endif
+#ifneq ($(shell uname -s),Darwin)
+#ifeq ($(shell uname -o),Msys)
+#LPMLOCATION = "c:/ldpl/lpm/"
+#endif
+#endif
 FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='$(LPMLOCATION)'
 #Flags for static compilation on Windows and Linux (not Android)
 ifneq ($(shell uname -s),Darwin)
