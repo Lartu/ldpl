@@ -119,7 +119,8 @@ For a guide to writing and building C++ extensions, see [LDPL's official documen
 ![LPM Logo](images/lpm-logo.png)
 
 Starting from version 4.3, LDPL includes the **LDPL Package Manager** (LPM). When you install LDPL from source you also install LPM. If you download a pre-compiled binary, LPM is included in the same package. With LPM, downloading and using libraries (we also call them *packages*) is now easier than ever:
- - Run `lpm info <library_name>` to find information about a particular library. Try, for example, `lpm info std-math` and `lpm info ltb`!
+ - Run `lpm info <library_name>` to find information about a particular library.
+   - Try, for example, `lpm info std-math` and `lpm info ltb`!
  - Run `lpm install <library_name>` to install a particular library.
  - Run `lpm uninstall <library_name>` to uninstall a particular library.
  - Run `lpm count` to display the number of installed packages.
