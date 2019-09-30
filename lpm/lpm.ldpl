@@ -72,6 +72,12 @@ else if argv:0 is equal to "count" then
     else
         display "There are " packageCount " LDPL packages installed on this system." crlf
     end if
+else if argv:0 is equal to "list" then
+    if packageCount is equal to 0 then
+        display "There are no LDPL packages installed on this system." crlf
+    else
+        display packageList crlf
+    end if
 else
     in auxText join "unknown option '" argv:0 "'."
     call error with auxText
