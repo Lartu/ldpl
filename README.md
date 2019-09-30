@@ -115,6 +115,9 @@ LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` fi
 For a guide to writing and building C++ extensions, see [LDPL's official documentation](https://docs.ldpl-lang.org/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## 🏛 Libraries
+
+![LPM Logo](images/lpm-logo.png)
+
 Starting from version 4.3, LDPL includes the **LDPL Package Manager** (LPM). When you install LDPL from source you also install LPM. If you download a pre-compiled binary, LPM is included in the same package. With LPM, downloading and using libraries (we also call them *packages*) is now easier than ever:
  - Run `lpm info <library_name>` to find information about a particular library. Try, for example, `lpm info std-math` and `lpm info ltb`!
  - Run `lpm install <library_name>` to install a particular library.
