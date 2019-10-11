@@ -108,7 +108,7 @@ Done! For more info on the compiler run `ldpl -h`.
 
 ### 📦 C++ extensions
 
-LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `-i=` compiler flag. For example `ldpl -i=lib.cpp source.ldpl`.
+LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`.
 
 For a guide to writing and building C++ extensions, see [LDPL's official documentation](https://docs.ldpl-lang.org/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
