@@ -142,7 +142,6 @@ A number of useful statements and subroutines are available in the [**LDPL Stand
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
 - [**The LDPL IRC Bot Library**](https://github.com/Lartu/ldpl-irc-bot): the LDPL IRC Bot Library lets you write LDPL programs that connect to IRC servers, join channels, send messages and more in the simplest
 way possible. Install with: `lpm install ldpl_irc_bot`.
-- [**LDPLNOISE**](https://github.com/dvkt/ldplnoise): LDPL extension with linenoise support. Linenoise is a minimal, zero-config, BSD licensed, readline replacement used in Redis, MongoDB, and Android.
 
 ## 👨🏼‍💻 How can I contribute to LDPL?
 
