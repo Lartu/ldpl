@@ -97,7 +97,7 @@ Done! For more info on the compiler run `ldpl -h`.
 
 ### 🔧 Compiler options
 
- * The `-f` flag can be used to pass extra options to the compiler when building extensions. For example, `-f=-lSDL` could be used to link against SDL.
+ * The `-f` flag can be used to pass extra options to the compiler when building extensions. For example, `-f=-lSDL` could be used to link against SDL. The `flag` statement can also be used as well (`flag "-lSDL"`) and its use is recommended.
  * By using `-r` you can just compile the project and print the C++ representation for that code.
  * You can set the output file for the compiled binary with the `-o` flag. For example, if you want to name your program "dog", you could compile it with `ldpl -o=dog main.ldpl`.
  * On Linux platforms, LDPL builds static binaries by default. If you want to build non-static ones use the `-ns` flag.
@@ -108,7 +108,7 @@ Done! For more info on the compiler run `ldpl -h`.
 
 ### 📦 C++ extensions
 
-LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`.
+LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`. You can also use the `-i` compiler flag, but this is not recommended for ease of distribution.
 
 For a guide to writing and building C++ extensions, see [LDPL's official documentation](https://docs.ldpl-lang.org/extensions/c++-extensions). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
