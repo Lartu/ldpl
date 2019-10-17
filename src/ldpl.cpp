@@ -80,6 +80,7 @@ int main(int argc, const char* argv[])
     bool no_static = false;
 #endif
 
+    string cc = "c++";
     string output_filename = "";
     string final_filename = "";
 
@@ -121,6 +122,9 @@ int main(int argc, const char* argv[])
             }
             else if(arg == "-c"){
                 files_to_compile.push_back(arg);
+            }
+            else if(arg.substr(0, 4) == "-cc="){
+                cc = arg.substr(4);
             }
             else{
                 cout << "Unknown option: " << arg << endl;
@@ -191,7 +195,7 @@ int main(int argc, const char* argv[])
         final_filename += "-bin";
     }
     //Compile the C++ code
-    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
+    string compile_line = cc + " ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
 #ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
