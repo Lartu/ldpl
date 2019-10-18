@@ -138,7 +138,7 @@ int main(int argc, const char* argv[])
                 extension_flags.push_back("-s DISABLE_EXCEPTION_CATCHING=0");
                 extension_flags.push_back("-s ASYNCIFY=1");
                 extension_flags.push_back("-s ASYNCIFY_IMPORTS=[\"webldpl_getline\"]");
-                extension_flags.push_back("-s ASYNCIFY_STACK_SIZE=8192");
+                extension_flags.push_back("-s ASYNCIFY_STACK_SIZE=16384");
                 extension_flags.push_back("-s EXTRA_EXPORTED_RUNTIME_METHODS=[\"setValue\",\"stringToUTF8\"]");
                 extension_flags.push_back("--shell-file '" + web_dir+ + "/base.html'");
                 is_web_build = true;
