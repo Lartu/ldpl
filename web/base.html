@@ -1,0 +1,89 @@
+<!doctype HTML>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <title>LDPL WebApp</title>
+    <link rel="stylesheet" href="lib/xterm/xterm.css" />
+    <script src="lib/xterm/xterm.js"></script>
+  </head>
+  <body>
+    <div id="terminal"></div>
+    <script type='text/javascript'>
+      var term = new Terminal();
+      term.open(document.getElementById('terminal'));
+      const input = {
+        curr_line: '',
+        lines: [],
+        eof: false,
+        on_new_line: () => {}
+      };
+
+      /* Ctrl(key) code of ^<key> (^C, ^D, etc) */
+      const Ctrl = key =>
+        String.fromCharCode(key.charCodeAt() - 64);
+
+      term.onKey(e => {
+          if (input.eof)
+            return;
+
+          const printable = !e.domEvent.altKey && !e.domEvent.altGraphKey
+                         && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
+
+          if (e.domEvent.keyCode === 13) {
+              term.write('\r\n');
+              input.lines.push(input.curr_line);
+              input.curr_line = [];
+              input.on_new_line();
+          } else if (e.domEvent.keyCode === 8) {
+              term.write('\b \b');
+              input.curr_line = input.curr_line.slice(0, -1);
+          } else if (printable) {
+              term.write(e.key);
+              input.curr_line += e.key;
+          } else if (e.key === Ctrl('D')) {
+              input.eof = true;
+          }
+      });
+
+      /* WARNING: Untested */
+      function __read() {
+        if (lines.length > 0) {
+          const char = lines[0].charCodeAt(0) || '\n'.charCodeAt();
+          lines[0] = lines[0].slice(1);
+          if (lines[0] === '')
+            lines.shift();
+          return char;
+        } else
+          return undefined;
+      }
+
+      const output = {
+        curr_line: [],
+      }
+
+      function flush() {
+        term.write(new TextDecoder().decode(new Uint8Array(output.curr_line)));
+        output.curr_line = [];
+      }
+
+      function __write(char) {
+        if (char !== null) {
+          if (char === '\n'.charCodeAt())
+            output.curr_line.push('\r'.charCodeAt());
+          output.curr_line.push(char);
+        }
+        if (char === '\n'.charCodeAt())
+          flush();
+      }
+
+      var Module = {
+        stdin: __read,
+        stdout: __write,
+        stderr: __write
+      };
+    </script>
+
+    {{{ SCRIPT }}}
+    
+  </body>
+</html>
