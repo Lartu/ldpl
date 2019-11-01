@@ -1,0 +1,12 @@
+site_name: LDPL Docs
+nav:
+    - Introduction: index.md
+    - LDPL Code Structure: structure.md
+theme:
+  name: 'material'
+  
+markdown_extensions:
+  - admonition
+  - codehilite:
+      linenums: true
+
