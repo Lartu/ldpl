@@ -80,11 +80,8 @@ int main(int argc, const char* argv[])
     bool no_static = false;
 #endif
 
-    string cc = "c++";
     string output_filename = "";
     string final_filename = "";
-    string web_dir = ".";
-    bool is_web_build = false;
 
     //Check arguments
     if(args.size() >= 1){
@@ -124,24 +121,6 @@ int main(int argc, const char* argv[])
             }
             else if(arg == "-c"){
                 files_to_compile.push_back(arg);
-            }
-            else if(arg.substr(0, 4) == "-cc="){
-                cc = arg.substr(4);
-            }
-            else if(arg.substr(0, 4) == "-web"){
-                cc = "em++";
-                if(arg.size() > 5 && arg[4] == '='){
-                  web_dir = arg.substr(5);
-                }
-                extension_flags.push_back("-s WASM=1");
-                extension_flags.push_back("-s SINGLE_FILE=1");
-                extension_flags.push_back("-s DISABLE_EXCEPTION_CATCHING=0");
-                extension_flags.push_back("-s ASYNCIFY=1");
-                extension_flags.push_back("-s ASYNCIFY_IMPORTS=[\"webldpl_getline\"]");
-                extension_flags.push_back("-s ASYNCIFY_STACK_SIZE=16384");
-                extension_flags.push_back("-s EXTRA_EXPORTED_RUNTIME_METHODS=[\"setValue\",\"stringToUTF8\"]");
-                extension_flags.push_back("--shell-file '" + web_dir+ + "/base.html'");
-                is_web_build = true;
             }
             else{
                 cout << "Unknown option: " << arg << endl;
@@ -211,13 +190,8 @@ int main(int argc, const char* argv[])
         if(final_filename.size() == 0) final_filename = "ldpl-output";
         final_filename += "-bin";
     }
-
-    if(is_web_build){
-      final_filename = web_dir + "/" + final_filename + ".html";
-    }
-
     //Compile the C++ code
-    string compile_line = cc + " ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
+    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
 #ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
