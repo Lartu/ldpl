@@ -12,50 +12,6 @@
 #include <time.h>
 #include <vector>
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#include <emscripten/bind.h>
-#include <stdlib.h>
-
-#define getline(cin, str) webldpl_getline_wrapper(str)
-
-std::string next_line;
-
-EM_JS(bool, webldpl_getline, (char*& lineptr), {
-  return Asyncify.handleSleep(function (wakeUp) {
-    function return_line() {
-      const line = input.lines.shift();
-      const line_length = lengthBytesUTF8(line) + 1;
-      const line_buffer = Module._malloc(line_length);
-      Module.stringToUTF8(line, line_buffer, line_length);
-      Module.setValue(lineptr, line_buffer, 'i8*');
-      input.on_new_line = () => {};
-      wakeUp(1);
-    }
-
-    if (input.lines.length > 0)
-      return_line();
-    else if (input.eof)
-      wakeUp(0);
-    else {
-      input.on_new_line = return_line;
-      flush();
-    }
-  });
-});
-
-bool webldpl_getline_wrapper(std::string& str) {
-  char* line;
-  if (not webldpl_getline(line))
-    return false;
-
-  str = std::move(std::string(line));
-  free(line);
-  return true;
-}
-
-#endif
-
 #define NVM_FLOAT_EPSILON 0.00000001
 #define ldpl_number double
 #define CRLF \"\\n\"
