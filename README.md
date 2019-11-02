@@ -170,4 +170,4 @@ There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu),
 
 ## 📜 License
 
-This LDPL Compiler is distributed under the GNU General Public License 3.0. All LDPL Dinosaur logos where created by [Lartu](https://github.com/Lartu) and are released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+The LDPL Compiler is distributed under the Apache 2.0 License. All LDPL Dinosaur logos where created by [Lartu](https://github.com/Lartu) and are released under a Creative Commons Attribution 4.0 International (CC BY 4.0) license.
