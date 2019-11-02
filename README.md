@@ -9,12 +9,6 @@
   <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master?style=flat-square"></a>
 </p>
 
-![Version](https://img.shields.io/badge/current_release-4.1_'Diligent_Dreadnoughtus'-blue.svg)
-![Version](https://img.shields.io/badge/nightly_version-4.3--dev-purple.svg)
-[![Build Status]()]()
-
-![LDPL]()
-
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux, macOS, ARMv8 Linux, Android Termux and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
 This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler, LPM (the LDPL Package Manager) and other useful goodies.
