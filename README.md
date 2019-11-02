@@ -1,10 +1,19 @@
-# The LDPL Programming Language
+<p align="center">
+  <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
+  <br>
+  <img src="https://img.shields.io/badge/license-apache_2-yellow?style=flat-square">
+  <img src="https://img.shields.io/badge/current_release-4.1-blue.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/dev_version-4.3-purple.svg?style=flat-square">
+  <a href='https://ldpl5.readthedocs.io/en/latest/'><img src="https://img.shields.io/badge/docs-up_to_date-green?style=flat-square"></a>
+  <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange?style=flat-square"></a>
+  <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master?style=flat-square"></a>
+</p>
 
 ![Version](https://img.shields.io/badge/current_release-4.1_'Diligent_Dreadnoughtus'-blue.svg)
 ![Version](https://img.shields.io/badge/nightly_version-4.3--dev-purple.svg)
-[![Build Status](https://travis-ci.org/Lartu/ldpl.svg?branch=master)](https://travis-ci.org/Lartu/ldpl)
+[![Build Status]()]()
 
-![LDPL](https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png)
+![LDPL]()
 
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux, macOS, ARMv8 Linux, Android Termux and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
