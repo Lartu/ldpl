@@ -95,11 +95,9 @@ to this flag; see the Extensions section for more information. The use of the
 
 ## File Extensions
 
-The preferred file extension for LDPL source files is **'.l5'**.
-The **'.ldpl'** file extension should, for the time being, not be used, as it
-may be mistaken for a LDPL4 source file. An LDPL interpreter should, however,
-be able to interpret LDPL source code independently of the extension of the
-file it is written in.
+The preferred file extension for LDPL source files is **'.ldpl'**.
+The extension **'.lsc'** (LDPL Source File) should also be accepted in case
+the preferred extension couldn't be used for any reason.
 
 !!! tip
     File extensions are important: they help editors to recognize what language

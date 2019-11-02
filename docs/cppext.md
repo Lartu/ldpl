@@ -1,32 +1,60 @@
-!!!Warning
-    This section might not be up-to-date. It has yet to be checked.
-
 ## About C++ Extensions
 
-Extensions contain sub-procedures and variables that are written in another language and usable in LDPL through the `call external` statement and `extenal` data type keyword. This allows programmers to extend LDPL with new features or to wrap 3rd party libraries and re-use their functionality. 
+**C++ extensions** are packages of code written in C++ that can interface with LDPL
+code and be added to your LDPL projects.
 
-LDPL supports extensions written in C++. Because LDPL programs compile down to C++, there is no need for a translation layer or bridge: extensions can be included directly into LDPL programs and manipulate, share, and access subprocedures and variables natively. All that's needed is a few naming conventions on the C++ side and the use of the EXTERNAL syntax for variables and subprocedures on the LDPL side.
+Because LDPL programs compile down to C++, there is no need for a translation layer or bridge: extensions can be included directly into LDPL programs and manipulate, share, and access subprocedures and variables natively. All that's needed is a few naming conventions on the C++ side and the use of the `external` syntax for variables and subprocedures on the LDPL side. External variable and sub-procedure naming conventions are explained in detail in the **Naming Schemes** section of this documentation.
+
+Extensions contain sub-procedures and variables that are considered to be _external_.
+This means that they are not part of an LDPL source code and thus must be accessed and called in a different way to what you might be used to. **External sub-procedures** should be called using the the `call external` statement. While it is explained in greater detail in the **Control Flow Statements** section of this documentation, the statement works just like the normal `call` statement with the exception that it doesn't accept parameters.
+
+```c++
+// In C++
+void CPPFUNCTION(){
+    //...
+}
+```
+
+```coffeescript
+# In LDPL
+call external cppFunction
+```
+
+**External variables** (declared in a C++ file) should be **re-declared** again in your LDPL data section with the same type they have in the C++ file, appending to their type the `extenal` keyword. This allows programmers to extend LDPL with new features or to wrap 3rd party libraries and re-use their functionality.
+
+```c++
+// In C++
+ldpl_number MYNUMBER = 9;
+```
+
+```coffeescript
+# In LDPL
+data:
+myNumber is external number
+```
 
 ## Writing C++ Extensions
+    
+If LDPL lacks some feature that C++ might offer, for example graphics or networking,
+you might find yourself in the need of writing a C++ extension (provided an extension
+for what you are looking for has not been already written, of course).
 
-Extensions can create variables and functions that are accessible from LDPL through the [CALL EXTERNAL](../call-external.md) statement and [EXTERNAL](../external-variables.md) data type keyword. Typically all you need is a single `.cpp` file that you give the `ldpl` compiler when building your program, but you can also use `.o` files, `.a` files, or any combination of them all.
-
-Extensions interact with LDPL in two main way: defining functions and declaring variables.
+Extensions can create variables and functions that are accessible from LDPL through the `call external` and `external` data type keyword, as explained in the previous section. Typically all you need is a single `.cpp` file that you include from your LDPL source using the `extension` keyword (explained in the **Code Structure** section of this documentation), but you may also include `.o` files, `.a` files, or any combination of them all.
 
 ### Functions
 
-To create a function in C++ that can be called from an LDPL program, you must follow two rules:
+To create a function in C++ that can be called from an LDPL program, you must follow four rules:
 
-1. The function's type must be `void(void)`, ex: `void MY_FUNC();`
-2. The function's name must conform to LDPL's [Extension Naming Convention](external-identifier-naming-scheme.md).
+1. The function type must be `void(void)`, ex: `void MY_FUNC();`
+2. The function name must conform to LDPL's external identifier naming conventions explained in the **Naming Schemes** section of this documentation.
+3. The function must not take any parameters.
+4. The function must not return any values.
 
-Because LDPL functions don't accept arguments or return values, to be callable from LDPL your C++ functions musn't either.
-
-And because LDPL doesn't "know" the names of your functions and instead allows the programmer to call them using the `EXTERNAL` syntax, all C++ variable and subprocedure names must contain only `A-Z`, `0-9`, and the `_` character. Everything else on the LDPL side will get converted to an underscore \(`_`\) when referencing the C++ side.
+Because LDPL does not _know_ the name of any functions declared in non-LDPL files, it allows the programmer to call any function and variable the `external` syntax, existing or not. If the variable or function you are trying to access does not exist, the C++ linker will throw a nasty error. Also, all C++ variable and function names must contain only `A-Z`, `0-9`, and the `_` character. Every character on the LDPL side will be converted to upper case, and non alpha-numeric characters will be converted to an underscore \(`_`\) when referencing the C++ side (again, as stated in the **Naming Schemes** section of this documentation).
 
 **Example:**
 
-For example, this function:
+For example, this function in a file called **add.cpp**
 
 ```cpp
 void PROMPT_ADD() 
@@ -40,22 +68,28 @@ void PROMPT_ADD()
 }
 ```
 
-Once defined and built into LDPL, can be called using:
+can be accessed from LDPL in the following way
 
-```text
-CALL EXTERNAL prompt-add
+```coffeescript
+external "add.cpp"
+
+procedure:
+    call external prompt_add
 ```
 
 ### Variables
 
-To create or reference a variable in a C++ extension that is shared with an LDPL program, you must follow two rules:
+To create a variable in a C++ extension that can be accessed from LDPL code, you must follow two rules:
 
-1. The variable's name must conform to LDPL's [Extension Naming Convention](external-identifier-naming-scheme.md).
-2. The C++ type of the variable must match LDPL's internal type usage.
+1. The variable's name must conform to the LDPL external identifier naming convention stated in the **Naming Schemes** section of this documentation.
+2. The C++ type of the variable must match the type used by LDPL for the data type represented by that variable.
 
-The first rule should be familiar from the functions section: all C++ variable and subprocedure names must contain only `A-Z`, `0-9`, and the `_` character. Everything else on the LDPL side will get converted to an underscore \(`_`\).
+The first rule should be familiar from the previous section: all C++ variable and function names must contain only `A-Z`, `0-9`, and the `_` character. Everything else on the LDPL side will get converted to an underscore \(`_`\).
 
-For the second, here's the mapping between types:
+!!!Warning
+    Documentation from this message onwards might not be up-to-date. It has yet to be checked.
+
+For the second rule, LDPL provee un archivo .h con todas las declaraciones de los tipos que usa el lenguaje.
 
 | LDPL Data Type | C++ Type |
 | :--- | :--- |

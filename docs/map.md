@@ -15,7 +15,7 @@ CLEAR <MAP>
 
 ## `COPY _ TO _`
 
-The `COPY - TO` statement copies all the elements of a MAP with their respective keys to another MAP **of the same type**. The original MAP is untouched, but the destination MAP is completely overwritten by the contents of the copied MAP and any elements that existed in it prior to the copy are deleted. In other words, the destination MAP is [CLEAR](clear.md)ed before the copy.
+The `COPY - TO` statement copies all the elements of a MAP with their respective keys to another MAP **of the same type**. The original MAP is untouched, but the destination MAP is completely overwritten by the contents of the copied MAP and any elements that existed in it prior to the copy are deleted. In other words, the destination MAP is `CLEAR`ed before the copy.
 
 **Syntax:**
 

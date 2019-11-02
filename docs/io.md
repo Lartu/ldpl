@@ -5,7 +5,7 @@
     
 ## `DISPLAY`
 
-The `DISPLAY` statement outputs the values passed to the output stream. `CRLF` means line break and is a sugar syntax for the `"\n"` [escape sequence](../variables-in-ldpl/escape-sequences.md).
+The `DISPLAY` statement outputs the values passed to the output stream. `CRLF` means line break and is a sugar syntax for the `"\n"` escape sequence.
 
 **Syntax:**
 
@@ -144,7 +144,7 @@ APPEND <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
 APPEND "\nHow are you?" TO FILE "hello.txt"
 ```
 
-in this case, the file `hello.txt`, [created here](write-to-file.md) and modified as stated on that page, will contain the text
+in this case, the file `hello.txt` (created in the example of the `WRITE _ TO FILE _` function and modified as stated there) will contain the text
 
 ```text
 Hello there!
