@@ -108,10 +108,9 @@ file it is written in.
     
 ## License
 
-This LDPL Compiler is distributed under the GNU General Public License 3.0.
+This LDPL Compiler is distributed under the Apache 2.0 License.
 All LDPL Dinosaur logos where created by [Lartu](https://lartu.net) and are
 released under a Creative Commons Attribution 4.0 International (CC BY 4.0)
-license. This documentation is released under the GNU General Public License
-3.0.
+license. This documentation is released under the Apache 2.0 License.
 
 

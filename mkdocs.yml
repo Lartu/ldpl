@@ -1,7 +1,17 @@
 site_name: LDPL Docs
 nav:
     - Introduction: index.md
-    - LDPL Code Structure: structure.md
+    - Code Structure: structure.md
+    - Data Section & Variables: data.md
+    - Procedure Section & Subs: procedure.md
+    - Naming Schemes: naming.md
+    - Control Flow Statements: flow.md
+    - Arithmetic Statements: arithmetic.md
+    - Text Statements: text.md
+    - List Statements: list.md
+    - Map Statements: map.md
+    - I/O Statements: io.md
+    - C++ Extensions: cppext.md
 theme:
   name: 'material'
   
