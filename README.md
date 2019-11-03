@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/license-apache_2-yellow?style=flat-square">
   <img src="https://img.shields.io/badge/current_release-4.1-blue.svg?style=flat-square">
   <img src="https://img.shields.io/badge/dev_version-4.3-purple.svg?style=flat-square">
-  <a href='https://ldpl.readthedocs.io'><img src="https://img.shields.io/badge/docs-80%25_up_to_date-yellow?style=flat-square"></a>
+  <a href='https://docs.ldpl-lang.org/'><img src="https://img.shields.io/badge/docs-80%25_up_to_date-yellow?style=flat-square"></a>
   <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange?style=flat-square"></a>
   <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master?style=flat-square"></a>
 </p>
@@ -85,7 +85,7 @@ You can use any other editor (without syntax highlighting) if you like. If know 
 
 If you want to learn how to code in LDPL, there's a little **tutorial** at https://learnxinyminutes.com/docs/ldpl/.
 
-[The **LDPL documentation** is available here](https://ldpl.readthedocs.io). Check that to learn yourself some LDPL (*for the greater good!*). The documentation is also uploaded to the [docs](docs) folder of this repository and can be read and modified from there.
+[The **LDPL documentation** is available here](https://docs.ldpl-lang.org/). Check that to learn yourself some LDPL (*for the greater good!*). The documentation is also uploaded to the [docs](docs) folder of this repository and can be read and modified from there.
 
 The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install`. The man page is also
 available in the [man](/man) folder of this repository.
@@ -113,7 +113,7 @@ Done! For more info on the compiler run `ldpl -h`.
 
 LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`. You can also use the `-i` compiler flag, but this is not recommended for ease of distribution.
 
-For a guide to writing and building C++ extensions, see [LDPL's official documentation](https://ldpl.readthedocs.io/cppext/). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
+For a guide to writing and building C++ extensions, see [LDPL's official documentation](https://docs.ldpl-lang.org//cppext/). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## 🏛 Libraries
 
