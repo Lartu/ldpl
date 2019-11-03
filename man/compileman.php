@@ -1,15 +1,12 @@
 <?php
     //Load all pages from the gitbook
-    $summary = file_get_contents("SUMMARY.md");
+    $summary = file_get_contents("manList");
     $summary = explode("\n", $summary);
     $manPage = ".ce 1\n.SH -=-=-=-=-=-=-=-=-=- DOCS: LDPL DOCUMENTATION -=-=-=-=-=-=-=-=-=-\n";
     foreach($summary as $line){
         $line = trim($line);
-        if(strlen($line) > 0 && $line[0] == "*"){
-            $posPar = strpos($line, "(");
-            $file = substr($line, $posPar + 1);
-            $file = substr($file, 0, strlen($file)-1);
-            $manPage = $manPage . "\n\n" . file_get_contents($file);
+        if(strlen($line) > 0){
+            $manPage = $manPage . "\n\n" . file_get_contents($line);
         }
         else if(strlen($line) > 0 && trim(substr($line, 0, 2)) == "##"){
             $manPage = $manPage . "\n\n" . ".ce 1\n.SH -=-=-=-=- DOCS: " . trim(strtoupper(substr($line, 2))) . " -=-=-=-=-";

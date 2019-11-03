@@ -40,8 +40,8 @@ int main(int argc, const char* argv[])
         cout << " Complete documentation for LDPL should be found on this system" << endl;
         cout << " using '\033[33;1mman ldpl\033[0m'. If you have access to the internet, the"<< endl;
         cout << " documentation can also be found online at \033[36;1mdocs.ldpl-lang.org\033[0m." << endl << endl;
-        cout << " LDPL may be copied only under the terms of the GNU General" << endl;
-        cout << " Public License 3.0, which may be found in the LDPL repository." << endl <<endl;
+        cout << " LDPL may be copied only under the terms of the Apache License" << endl;
+        cout << " Version 2.0, which may be found in the LDPL repository." << endl <<endl;
         cout << " This binary was compiled on \033[31;1m" << COMPILEDATE << "\033[0m at \033[31;1m" << COMPILEHOUR << "\033[0m." << endl;
         cout << endl;
         return 0;
