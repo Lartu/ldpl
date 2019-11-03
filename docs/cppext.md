@@ -33,6 +33,8 @@ data:
 myNumber is external number
 ```
 
+This will be explained in greater detail in the following sections.
+
 ## Writing C++ Extensions
     
 If LDPL lacks some feature that C++ might offer, for example graphics or networking,
@@ -50,7 +52,7 @@ To create a function in C++ that can be called from an LDPL program, you must fo
 3. The function must not take any parameters.
 4. The function must not return any values.
 
-Because LDPL does not _know_ the name of any functions declared in non-LDPL files, it allows the programmer to call any function and variable the `external` syntax, existing or not. If the variable or function you are trying to access does not exist, the C++ linker will throw a nasty error. Also, all C++ variable and function names must contain only `A-Z`, `0-9`, and the `_` character. Every character on the LDPL side will be converted to upper case, and non alpha-numeric characters will be converted to an underscore \(`_`\) when referencing the C++ side (again, as stated in the **Naming Schemes** section of this documentation).
+Because LDPL does not _know_ the name of any variables or functions declared in non-LDPL files, it allows the programmer to call any function or variable, existing or not, by using the `external` syntax. If the variable or function you are trying to access does not exist, the C++ linker will throw a nasty error. Also, all C++ variable and function names must contain only `A-Z`, `0-9`, and the `_` character. Every character on the LDPL side will be converted to upper case, and non alpha-numeric characters will be converted to an underscore \(`_`\) when referencing the C++ side (again, as stated in the **Naming Schemes** section of this documentation).
 
 **Example:**
 
@@ -86,44 +88,30 @@ To create a variable in a C++ extension that can be accessed from LDPL code, you
 
 The first rule should be familiar from the previous section: all C++ variable and function names must contain only `A-Z`, `0-9`, and the `_` character. Everything else on the LDPL side will get converted to an underscore \(`_`\).
 
-!!!Warning
-    Documentation from this message onwards might not be up-to-date. It has yet to be checked.
-
-For the second rule, LDPL provee un archivo .h con todas las declaraciones de los tipos que usa el lenguaje.
-
-| LDPL Data Type | C++ Type |
-| :--- | :--- |
-| `TEXT` | `std::string` |
-| `NUMBER` | `ldpl_number` |
-| `TEXT MAP` | `ldpl_vector<std::string>` |
-| `NUMBER MAP` | `ldpl_vector<ldpl_number>` |
-| `TEXT LIST` | `ldpl_list<std::string>` |
-| `NUMBER LIST` | `ldpl_list<ldpl_number>` |
-
-The definitions for these data types can be found in the [LDPL C++ Types](../ldpl-c++-types.md) section.
+For the second rule, you may find a file called **ldpl_types.h** in the LDPL repository that contains definitions for all the build-in LDPL data types: `ldpl_number`, `ldpl_text`, `ldpl_list<T>` and `ldpl_map<T>`.
 
 **Example:**
 
-Declaring `TEXT`and `NUMBER` variables is easy on the C++ side:
+Declaring variables is easy on the C++ side:
 
 ```cpp
-std::string NAME;
+ldpl_text NAME;
 ldpl_number AGE;
-std::string STREET_ADDRESS;
+ldpl_text STREET_ADDRESS;
 ```
 
-These will be available to an LDPL program to declare in its `DATA:` section:
+These will be available to an LDPL program when declared as external in its `data:` section:
 
-```text
-DATA:
-name IS EXTERNAL TEXT
-age IS EXTERNAL NUMBER
-street-address IS EXTERNAL TEXT
+```coffeescript
+data:
+    name is external text
+    age is external number
+    street_address is external text
 ```
 
-### Accessing Variables in Functions
+### Accessing Variables in C++ Functions
 
-Since LDPL and C++ are using the same variable when you use the `EXTERNAL` keyword, any changes you make to the variable's content are shared. Just use them like you would use regular C++ variables.
+Since LDPL and C++ are using the same variable when you use the `external` keyword (say, for example, `MY_VAR` in C++ and external `my-var` in LDPL), any changes you make to the content of said variables are shared. Use them just like you would use any regular variable, both in C++ and LDPL.
 
 ```cpp
 ldpl_number A, B, SUM;
@@ -133,98 +121,35 @@ void ADD()
 }
 ```
 
-```text
-DATA:
-A IS EXTERNAL NUMBER
-B IS EXTERNAL NUMBER
-SUM IS EXTERNAL NUMBER
+```coffeescript
+data:
+    a is external number
+    b is external number
+    sum is external number
 
-PROCEDURE:
-STORE 100 IN A
-STORE 250 IN B
-CALL EXTERNAL add
-DISPLAY SUM CRLF
+procedure:
+    store 100 in a
+    store 250 in b
+    call external add
+    display sum lf
 ```
 
 Building and running this program will print `350`.
 
-### LDPL MAPs
-
-The `MAP` types are a bit trickier - they are defined as `ldpl_vector<T>`, so you'll want to declare this prototype in your `.cpp` or `.h` file to use it in your extension:
-
-```cpp
-#ifndef ldpl_vector
-template<typename T>
-struct ldpl_vector {
-    T& operator [] (const std::string& i);
-    T& operator [] (double i);
-};
-#endif
-```
-
-Now you can use MAPs in LDPL:
-
-```text
-DATA:
-Names IS EXTERNAL TEXT MAP
-```
-
-And in C++:
-
-```cpp
-ldpl_vector<std::string> NAMES;
-
-// later...
-NAMES[0] = "Pauline"
-NAMES[1] = "just Paul"
-```
-
-!!!hint
-    The internal datatype for LDPL MAPs is called ldpl\_vector because in LDPL releases prior to LDPL 3.1.0 Diligent Dreadnoughtus, MAPs were called VECTORs.
-
 ## Building C++ Extensions
 
-Extensions are easy to build: when compiling your LDPL program, use the `-i=` flag to pass in `.cpp` files, `.o` files, or `.a` files to the LDPL compiler. They'll get included in your program and be available using the `EXTERNAL` statements.
+Extensions are easy to build: when compiling your LDPL program, use the `extension` keyword (explained in detail in the **Code Structure** section of this documentation) to add `.cpp` files, `.o` files, or `.a` files to your LDPL project. They will be included in your program and become available using the `external` statements.
 
-For example, if your LDPL source file is called `mySource.ldpl` and you want to include `otherFile.cpp` to your project, you just do
+If your C++ extension files require extra flags to be passed to the C++ compiler in order to compile \(for example, `-lSDL` when working with SDL\) you can use the `flag` statement (explained in detail in the **Code Structure** section of this documentation) to pass flags to the C++ compiler.
 
-```text
-$ ldpl -i=otherFile.cpp mySource.ldpl
-```
-
-Starting from LDPL 4.0, you can also use the `EXTENSION` statement to include extensions to your project, just like you'd use the INCLUDE statement to include LDPL source files:
-
-```coffeescript
-EXTENSION "myExtension.cpp"
-
-procedure:
-  call external someFunction
-```
-
-The location where extensions are searched when using the `EXTENSION` statement is relative to the file that includes them.
-
-If your C++ extension files require extra flags to be passed to the C++ compiler in order to compile \(for example, `-lSDL` when working with SDL\) you can use the `-f=` flag to pass those flags to it. Following the SDL example, you could do
-
-```text
-$ ldpl -i=mySDLSource.cpp mySource.ldpl -f=-lSDL
-```
-
-and the C++ compiler will be executed with the `-lSDL` flag.
-
-```text
-$ ldpl -i=<extension file> code.ldpl
-```
-
-Starting from LDPL 4.0, you can also use the `FLAG` statement to pass flags to the C++ compiler:
-
-```coffeescript
-EXTENSION "myExtension.cpp"
-FLAG "-fpermissive" # This is the same as passing -f=-fpermissive to the LDPL compiler.
-FLAG "-lSDL2" # This is the same as passing -f=-lSDL2 to the LDPL compiler.
-
-procedure:
-  call external someFunction
-```
+    :::coffeescript
+    external "otherFile.cpp"
+    flag "-fpermisive"
+    flag "-lSDL2"
+    data:
+        #...
+    procedure:
+        #...
 
 ## "Hello World" C++ Example
 
@@ -237,16 +162,18 @@ void SIMPLE(){
 ```
 
 File **simple.ldpl**:
-```text
-PROCEDURE:
-CALL EXTERNAL simple
+```coffeescript
+extension "simple.cpp"
+
+procedure:
+call external simple
 
 ```
 
 Console:
 
 ```bash
-$ ldpl -i=simple.cpp simple.ldpl
+$ ldpl simple.ldpl
 LDPL: Compiling...
 * File(s) compiled successfully.
 * Saved as simple-bin
@@ -254,19 +181,19 @@ $ ./simple-bin
 Very simple!
 ```
 
-## EXTERNAL SUB-PROCEDUREs
+## External Sub-procedures
 
-Sometimes when writting C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL SUB-PROCEDUREs and calling them from C++.
+Sometimes when writting C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL sub-procedures and calling them from C++.
 
-These C++ calleable SUB-PROCEDUREs are called EXTERNAL SUB-PROCEDUREs, as they can be called from an EXTERNAL medium.
+These C++ calleable sub-procedures are called **external sub-procedures**, as they can be called from an external medium.
 
-In order to declare an EXTERNAL SUB-PROCEDURE you must first declare it in your C++ source code. Say, for example, that you want to declare a SUB-PROCEDURE called `helloWorld`. In your C++ you should write the following line:
+In order to declare an external sub-procedure you must first forward-declare it in your C++ source code. Say, for example, that you want to declare a sub-procedure called `helloWorld`. In your C++ you should write the following line:
 
 ```cpp
 void HELLOWORLD();
 ```
 
-Note that EXTERNAL SUB-PROCEDUREs cannot receive any kind of parameters and must be declared as `void`. You may then call the EXTERNAL SUB-PROCEDURE from C++ code like:
+Note that external sub-procedures **cannot receive any kind of parameters** and must be declared as `void`. You may then call the external sub-procedure from C++ code like this:
 
 ```cpp
 int myCPPFunction(){
@@ -275,37 +202,41 @@ int myCPPFunction(){
 }
 ```
 
-Once that's taken care of, you can declare your EXTERNAL SUB-PROCEDURE as any other SUB-PROCEDURE in LDPL by preppending the identifier EXTERNAL to the SUB-PROCEDURE declaration:
+Once that's taken care of, you can declare your external sub-procedure as any other sub-procedure in LDPL by prepending the identifier `external` to the sub-procedure declaration:
 
 ```coffeescript
-EXTERNAL SUB-PROCEDURE helloWorld #or EXTERNAL SUB
-  #Code here...
-END SUB-PROCEDURE
+external sub-procedure myExternalSub
+    #...
+end sub-procedure
 ```
 
-These SUB-PROCEDUREs can be called from LDPL as any other SUB-PROCEDURE, but their names must follow the naming scheme explained in the **Naming Schemes** section as any other C++ interfacing component.
+or just
+
+```coffeescript
+external sub myExternalSub
+    #...
+end sub
+```
+
+These sub-procedures can be called from LDPL like you would call any other sub-procedure, but their names must follow the external identifier naming scheme detailed in the **Naming Schemes** section of this documentation as any other C++ interfacing identifier.
 
 
-## EXTERNAL Variables
+## External Variables
 
-Variables defined in extensions can be accessed by prefacing their data type declaration with the `EXTERNAL` keyword. This must occur in the DATA section of an LDPL program. Once an external variable is declared, it can be used just like any other LDPL variable.
+Variables defined in extensions can be accessed by prefacing their data type declaration with the `external` keyword. This must occur in the **data** section of your LDPL code. Once an external variable is declared, it can be used just like any other LDPL variable.
 
 **Syntax:**
 
 ```text
-<variable> IS EXTERNAL <data type>
+<variable> is external <data type>
 ```
 
 **Example:**
 
-```text
-DATA:
-RL-PROMPT IS EXTERNAL TEXT
-WINDOW.SIZE IS EXTERNAL NUMBER
+```coffeescript
+data:
+    rl-prompt is external text
+    window.size is external number
 ```
-
-## LDPL Data Types in C++
-
-A .h file containing type definitions for LDPL Data Types can be found [here](https://github.com/Lartu/ldpl-irc-bot/blob/master/ldpl-irc-bot/ldpl-types.h).
 
 
