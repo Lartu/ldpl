@@ -85,7 +85,7 @@ You can use any other editor (without syntax highlighting) if you like. If know 
 
 If you want to learn how to code in LDPL, there's a little **tutorial** at https://learnxinyminutes.com/docs/ldpl/.
 
-[The **LDPL documentation** is available here](https://ldpl.readthedocs.io). Check that to learn yourself some LDPL (*for the greater good!*). The documentation is also uploaded to the [ldpl-docs](https://github.com/lartu/ldpl-docs) GitHub repository and can be read and forked from there.
+[The **LDPL documentation** is available here](https://ldpl.readthedocs.io). Check that to learn yourself some LDPL (*for the greater good!*). The documentation is also uploaded to the [docs](docs) folder of this repository and can be read and modified from there.
 
 The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install`. The man page is also
 available in the [man](/man) folder of this repository.
