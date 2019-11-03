@@ -1,9 +1,9 @@
 <p align="center">
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
-  <img src="https://img.shields.io/badge/license-apache_2-yellow?style=flat-square">
-  <img src="https://img.shields.io/badge/current_release-4.1-blue.svg?style=flat-square">
-  <img src="https://img.shields.io/badge/dev_version-4.3-purple.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/license-apache_2.0-yellow?style=flat-square">
+  <img src="https://img.shields.io/badge/current_release-4.3-blue.svg?style=flat-square">
+  <!--<img src="https://img.shields.io/badge/dev_version-4.3-purple.svg?style=flat-square">-->
   <a href='https://docs.ldpl-lang.org/'><img src="https://img.shields.io/badge/docs-up_to_date-green?style=flat-square"></a>
   <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange?style=flat-square"></a>
   <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master?style=flat-square"></a>
