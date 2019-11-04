@@ -66,7 +66,7 @@ be okay even when times get dark.
 
 You can use the **LDPL Install Wizard** to install LDPL. This is the **recommended install method**, as it sets up everything LDPL needs for you and installs the latest LDPL version available. 
 
-![LDPL Install Wizard Screenshot](https://github.com/Lartu/ldpl/blob/master/images/wizard.png)
+<img src="https://github.com/Lartu/ldpl/blob/master/images/wizard.png" width=500px>
 
 Just `git clone` this repository (or download it from [here](https://github.com/Lartu/ldpl/archive/master.zip) and un-zip it somewhere), open a terminal in it (or `cd` to it), run `sh install.sh` and follow the steps. Done!
 
