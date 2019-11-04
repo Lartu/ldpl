@@ -492,6 +492,8 @@ chText VAR_ERRORTEXT = \"\";
 chText to_ldpl_string(double x);
 chText trimCopy(chText _line);
 
+#ifndef LDPLMAP
+#define LDPLMAP
 template<typename T>
 struct ldpl_map {
     unordered_map<string, T> inner_collection;
@@ -504,7 +506,10 @@ struct ldpl_map {
         return inner_collection[to_ldpl_string(i).str_rep()];
     }
 };
+#endif
 
+#ifndef LDPLLIST
+#define LDPLLIST
 template<typename T>
 struct ldpl_list {
     vector<T> inner_collection;
@@ -519,6 +524,8 @@ struct ldpl_list {
         return inner_collection[i];
     }
 };
+#endif LDPLMAP
+
 
 template<typename T>
 void get_indices(ldpl_list<chText> & dest, ldpl_vector<T> & source){
