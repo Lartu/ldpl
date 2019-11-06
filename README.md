@@ -70,7 +70,7 @@ You can use the **LDPL Install Wizard** to install LDPL. This is the **recommend
 
 Just `git clone` this repository (or download it from [here](https://github.com/Lartu/ldpl/archive/master.zip) and un-zip it somewhere), open a terminal in it (or `cd` to it), run `sh install.sh` and follow the steps. Done!
 
-### By Yourself
+### By Yourself:
 
 You can get yourself a precompiled LDPL binary or compile LDPL from source. Check the following table if you are not sure of what to do.
 
