@@ -16,18 +16,27 @@ This repository contains the source code and [releases](https://github.com/Lartu
 ### 📒 Example LDPL code
 
 ```coffeescript
+# Leap Year Example
+# Asks the user to enter a year and tells them if
+# that's a leap year or not.
 data: 
-  name is text     # Your name goes here! 
-  age is number
+  year is number
+  divBy4 is number
+  divBy100 is number
   
 procedure: 
-  # Simple Hello World
-  display "Hello World" crlf "What's your name? " 
-  accept name 
-  display "你好, " name "! How old are you?" crlf
-  accept age
-  if age is greater than 200 then
-    display "Woah, you are really old!" crlf
+  display "Enter a year: "
+  accept year
+  modulo year by 4 in divBy4
+  modulo year by 100 in divBy100
+  if divBy4 is not equal to 0 then
+    display year " is a common year." lf
+  else if divBy100 is not equal to 0 then
+    display year " is a leap year!" lf
+  else if divBy4 is not equal to 0 or divBy100 is not equal to 0 then
+    display year " is a common year." lf
+  else
+    display year " is a leap year!" lf
   end if
 ```
 
