@@ -88,7 +88,7 @@ To create a variable in a C++ extension that can be accessed from LDPL code, you
 
 The first rule should be familiar from the previous section: all C++ variable and function names must contain only `A-Z`, `0-9`, and the `_` character. Everything else on the LDPL side will get converted to an underscore \(`_`\).
 
-For the second rule, you may find a file called **ldpl_types.h** in the LDPL repository that contains definitions for all the build-in LDPL data types: `ldpl_number`, `ldpl_text`, `ldpl_list<T>` and `ldpl_map<T>`.
+For the second rule, you may find a file called [**ldpl_types.h** in the LDPL repository](https://github.com/Lartu/ldpl/blob/master/extensions/ldpl-types.h) that contains definitions for all the build-in LDPL data types: `ldpl_number`, `ldpl_text`, `ldpl_list<T>` and `ldpl_map<T>`.
 
 **Example:**
 
