@@ -104,10 +104,11 @@ You can use any other editor (without syntax highlighting) if you like. If know 
 
 If you want to learn how to code in LDPL, there's a little **tutorial** at https://learnxinyminutes.com/docs/ldpl/.
 
+Also be sure to check the [examples](./examples)!
+
 [The **LDPL documentation** is available here](https://docs.ldpl-lang.org/). Check that to learn yourself some LDPL (*for the greater good!*). The documentation is also uploaded to the [docs](docs) folder of this repository and can be read and modified from there.
 
-The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install`. The man page is also
-available in the [man](/man) folder of this repository.
+The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install` or the LDPL Install Wizard. The man page is also available in the [man](/man) folder of this repository.
 
 ## 💻 How to use this compiler
 
@@ -116,6 +117,8 @@ To use the compiler, you must have a C++ compiler already installed on your syst
 Once the compiler is set up, go write some LDPL source code, say `source.lsc`.
 Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `source-bin`.
 Done! For more info on the compiler run `ldpl -h`.
+
+For more information, check the [docs](https://docs.ldpl-lang.org/#the-ldpl-compiler).
 
 ### 🔧 Compiler options
 
@@ -127,12 +130,14 @@ Done! For more info on the compiler run `ldpl -h`.
  * You can import extensions to your LDPL compilation by using the `-i=` flag. Extensions can be imported by passing `.o`, `.a`, or `.cpp` files to this flag; see the Extensions section below.
  * `-v` and `--version` print out version info and release details.
  * `-h` and `--help` print this list of options.
+ 
+ For more information, check the [docs](https://docs.ldpl-lang.org/#compiler-switches).
 
 ### 📦 C++ extensions
 
 LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`. You can also use the `-i` compiler flag, but this is not recommended for ease of distribution.
 
-For a guide to writing and building C++ extensions, see [LDPL's official documentation](https://docs.ldpl-lang.org//cppext/). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
+For a guide to writing and building C++ extensions, see the [LDPL official documentation](https://docs.ldpl-lang.org/cppext/). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## 🏛 Libraries
 
@@ -158,7 +163,7 @@ before the `DATA` and `PROCEDURE` sections of your source file!
 
 A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `lpm install` and `INCLUDE` the desired files in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
 
-### 🦕 Some other LDPL Libraries
+### 🦕 Other LDPL Libraries
 
 - [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible.
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
