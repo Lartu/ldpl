@@ -98,7 +98,7 @@ We have highlighting and code formatting extensions available for [Visual Studio
 
 You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
 
-## 📚 Learning LDPL and LDPL Documentation
+## 📚 Learning LDPL and Read the Docs
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
 
