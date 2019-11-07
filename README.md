@@ -40,7 +40,7 @@ procedure:
   end if
 ```
 
-This code greets the user, asks them what their name is and then prints *你好, &lt;name&gt;!! How old are you?* followed by a line-break. Then asks them for their age and, if they enter a number greater than 200, it prints *Woah, you are really old!*, followed by a line-break. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+This code asks the user to enter a year and then tells them if it is a leap year or not. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
 
 ### 🎏 What can I use LDPL for?
 
@@ -154,14 +154,22 @@ Starting from version 4.3, LDPL includes the **LDPL Package Manager** (LPM). Whe
 Once you've installed a library, you can include it to your project by just adding the line
 
 ```coffeescript
-include <library_name> # for example: include std-math
+using package <library_name> # for example: using package std-math
 ```
 
-before the `DATA` and `PROCEDURE` sections of your source file!
+before the `DATA` and `PROCEDURE` sections of your source file.
+
+Libraries not installed using LPM can be included using
+
+```coffeescript
+include "library_name" # for example: include "std-math"
+```
+
+before the `DATA` and `PROCEDURE` sections of your source file.
 
 ### 📖 The LDPL Standard Library
 
-A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `lpm install` and `INCLUDE` the desired files in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
+A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `lpm install` and include with `using package` the desired packages in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
 
 ### 🦕 Other LDPL Libraries
 
