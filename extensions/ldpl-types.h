@@ -409,6 +409,6 @@ struct ldpl_list {
         return inner_collection[i];
     }
 };
-#endif LDPLMAP
+#endif
 
 #endif
