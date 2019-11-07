@@ -154,14 +154,22 @@ Starting from version 4.3, LDPL includes the **LDPL Package Manager** (LPM). Whe
 Once you've installed a library, you can include it to your project by just adding the line
 
 ```coffeescript
-include <library_name> # for example: include std-math
+using package <library_name> # for example: using package std-math
 ```
 
-before the `DATA` and `PROCEDURE` sections of your source file!
+before the `DATA` and `PROCEDURE` sections of your source file.
+
+Libraries not installed using LPM can be included using
+
+```coffeescript
+include "library_name" # for example: include "std-math"
+```
+
+before the `DATA` and `PROCEDURE` sections of your source file.
 
 ### 📖 The LDPL Standard Library
 
-A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `lpm install` and `INCLUDE` the desired files in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
+A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `lpm install` and include with `using package` the desired packages in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
 
 ### 🦕 Other LDPL Libraries
 
