@@ -460,7 +460,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     //std include
     if(line_like("USING PACKAGE $name", tokens, state)) {
         if(state.section_state != 0)
-            error("you can only use the INCLUDE statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
+            error("you can only use the USING PACKAGE statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else {
             #if defined(_WIN32)	
                 //TODO!
@@ -468,7 +468,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             #else
                 system(((string)"mkdir -p " + LPMLOCATION).c_str());
             #endif
-            string libFilename = tokens[1];
+            string libFilename = tokens[2];
             std::for_each(libFilename.begin(), libFilename.end(), [](char & c){
                 c = ::tolower(c);
             });
