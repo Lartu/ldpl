@@ -173,7 +173,8 @@ A number of useful statements and subroutines are available in the [**LDPL Stand
 
 ### 🦕 Other LDPL Libraries
 
-- [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible.
+- [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible. Install with: `lpm install ldpl_net_server`.
+- [**The LDPL Socket Library**](https://github.com/dvkt/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL. Install with: `lpm install ldpl_socket`.
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
 - [**The LDPL IRC Bot Library**](https://github.com/Lartu/ldpl-irc-bot): the LDPL IRC Bot Library lets you write LDPL programs that connect to IRC servers, join channels, send messages and more in the simplest
 way possible. Install with: `lpm install ldpl_irc_bot`.
