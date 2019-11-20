@@ -2160,7 +2160,7 @@ string current_os() {
     return "LINUX";
 #elif defined(__APPLE__)
     return "MACOS";
-#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || 
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
     return "BSD";
 #elif defined(__ANDROID__)
     return "ANDROID";
