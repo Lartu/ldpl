@@ -2157,36 +2157,16 @@ void add_call_code(string & subprocedure, vector<string> & parameters, compiler_
 // https://sourceforge.net/p/predef/wiki/OperatingSystems/
 string current_os() {
 #if defined(__linux__)
-  return "LINUX";
+    return "LINUX";
 #elif defined(__APPLE__)
-  return "MACOS";
-#elif defined(_WIN32)
-  return "WINDOWS";
-#elif defined(_MSC_VER)
-  return "MSVC";
-#elif defined(__FreeBSD__)
-  return "FREEBSD";
-#elif defined(__OpenBSD__)
-  return "OPENBSD";
-#elif defined(__NetBSD__)
-  return "NETBSD";
-#elif defined(__DragonFly__)
-  return "DRAGONFLY"; // ?
+    return "MACOS";
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || 
+    return "BSD";
 #elif defined(__ANDROID__)
-  return "ANDROID";
-#elif defined(__GNU__)
-  return "HURD";
-#elif defined(_sun)
-  return "SOLARIS";
-#elif defined(EPLAN9)
-  return "PLAN9";
-#elif defined(__Fuchsia__)
-  return "FUCHSIA";
-#elif defined(__OS2__)
-  return "OS/2";
+    return "ANDROID";
 #elif defined(__EMSCRIPTEN__)
-  return "EMSCRIPTEN";
+    return "EMSCRIPTEN";
 #else
-  return "UNKNOWN";
+    return "UNKNOWN";
 #endif
 }
