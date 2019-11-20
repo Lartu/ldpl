@@ -183,3 +183,4 @@ bool in_procedure_section(compiler_state & state, unsigned int line_num, string 
 vector<unsigned int> variable_type(string & token, compiler_state & state);
 void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file);
 void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num);
+string current_os();
