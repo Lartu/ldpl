@@ -585,6 +585,50 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         } else if (tokens[i] == "TEXT") {                                   // If we are dealing with a text variable...
             type_number.push_back(2);                                       // The type number is 2
             if (extern_keyword == "") assign_default = " = \"\"";           // And if it's not external, we set it to a default value.
+        } else if ((tokens[i]=="MAP"||tokens[i]=="LIST") && tokens.size() > i && tokens[i+1] == "OF") {
+            // nested 'of' syntax, ex: map of list of number
+            vector<int> types;
+            while (valid_type && i < tokens.size()) {
+                if (i % 2 == 1) {
+                    if (tokens[i] != "OF")
+                        valid_type = false;
+                } else if (i % 2 == 0) {
+                    if (tokens[i] == "MAP") {
+                        types.push_back(4);
+                    } else if (tokens[i] == "LIST") {
+                        types.push_back(3);
+                    } else if (tokens.size()-1 > i) {
+                        // text and number must be the final type listed
+                        valid_type = false;
+                    } else if (tokens[i] == "TEXT") {
+                        types.push_back(2);
+                    } else if (tokens[i]=="NUMBER"||tokens[i]=="NUMBERS") {
+                        types.push_back(1);
+                    } else {
+                        valid_type = false;
+                    }
+                } else {
+                    valid_type = false;
+                }
+                ++i;
+            }
+            // declare types in reverse order, ex:
+            //   list of list of number -> ldpl_vector<ldpl_list<ldpl_number>>>
+            for (int z = types.size()-1; z >= 0; --z) {
+                if(!valid_type) break;
+                type_number.push_back(types[z]);
+                if (types[z] == 4) {
+                    type = "ldpl_vector<" + type + ">";
+                } else if (types[z] == 3) {
+                    type = "ldpl_list<" + type + ">";
+                } else if (types[z] == 2) {
+                    type = "chText";
+                } else if (types[z] == 1) {
+                    type = "ldpl_number";
+                } else {
+                    valid_type = false;
+                }
+            }
         } else {
             valid_type = false;                                             // If its not a NUMBER, a TEXT or a collection of these data types
         }                                                                   // then it's not a valid LDPL data type.
