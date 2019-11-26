@@ -111,7 +111,32 @@ source code, you may do this:
         #...
     procedure:
         #...
-        
+
+Often, different operating systems require different flags. In those cases,
+you can restrict the `flag` statement to a particular OS:
+
+    :::coffeescript
+    flag "-O3"
+    flag linux "-lncursesw"
+    flag macos "-lncurses"
+    flag macos "-D_XOPEN_SOURCE_EXTENDED" # multiple flags per OS are permitted
+    data:
+        #...
+    procedure:
+        #...
+
+!!! tip
+    LDPL officially supports the following operating systems:
+
+    - Linux
+    - MacOS
+    - Android
+
+    And includes experimental support for these fine systems:
+
+    - BSD
+    - Emscripten
+
 The `flag` statement can only be used **before** the **data** section.
 
 ## C++ Extension Including
