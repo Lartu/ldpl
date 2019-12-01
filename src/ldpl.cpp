@@ -558,7 +558,6 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     if(line_like("$name IS $anything", tokens, state))                      // If it's a variable declaration
     {
         string extern_keyword = "";                                         // C++ extern keyword to prepend to the type (empty if not EXTERNAL)
-        string type;                                                        // C++ variable type
         vector<unsigned int> type_number;                                   // All data types in LDPL have a list of numbers that represent its type
         string assign_default;                                              // Default Value to asign to the variable
         size_t i = 2;                                                       // i is used to check all the words after 'IS' and thus starts in 2.
@@ -570,11 +569,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         }
         if (tokens[i] == "NUMBER") {                                        // If it's a number...
             type_number.push_back(1);                                       // Then the type number is 1
-            type = "ldpl_number";                                           // and the used type (for C++) is ldpl_number
             if (extern_keyword == "") assign_default = " = 0";              // if its not an external variable, set a default value for it.
         } else if (tokens[i] == "TEXT") {                                   // If we are dealing with a text variable...
             type_number.push_back(2);                                       // The type number is 2
-            type = "chText";                                                // The C++ data type is just string
             if (extern_keyword == "") assign_default = " = \"\"";           // And if it's not external, we set it to a default value.
         } else {
             valid_type = false;                                             // If its not a NUMBER, a TEXT or a collection of these data types
@@ -584,10 +581,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             assign_default = "";                                            // Collections are not initialized with any default values.
             if (tokens[i] == "MAP" || tokens[i] == "VECTOR") {              // If its a MAP (aka VECTOR)
                 type_number.push_back(4);                                   // We add the MAP type (4) to its type list
-                type = "ldpl_vector<" + type + ">";                         // Set the C++ type
             } else if (tokens[i] == "LIST") {                               // If its a LIST
                 type_number.push_back(3);                                   // We add the LIST type (3) to its type list
-                type = "ldpl_list<" + type + ">";                           // Set the C++ type
             } else {                                                        // If the container is not a VECTOR nor a MAP
                 valid_type = false;                                         // then it's not a valid data type.
             }
@@ -599,15 +594,16 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             if(state.variables[state.current_subprocedure].count(tokens[0]) > 0)
                 error("Duplicate declaration for variable " + tokens[0] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             state.variables[state.current_subprocedure][tokens[0]] = type_number;
-            string identifier = fix_identifier(tokens[0], true, state);
             if (state.section_state == 1) { // DATA or LOCAL DATA
+                string identifier = fix_identifier(tokens[0], true, state);
+                string type = state.get_c_type(type_number);
                 string code = extern_keyword + type + " " + identifier + assign_default + ";";
                 if (state.current_subprocedure == "") // DATA
                     state.add_var_code(code);
                 else
                     state.add_code(code); // LOCAL DATA
             } else // PARAMETERS
-                state.subprocedures[state.current_subprocedure].emplace_back(type, identifier);
+                state.subprocedures[state.current_subprocedure].emplace_back(tokens[0]);
             return;
         }
     }
@@ -627,7 +623,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("Subprocedure declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.section_state = 3;
         state.open_subprocedure(tokens[1]);
-        state.subprocedures.emplace(tokens[1], vector<pair<string, string>>());
+        state.subprocedures.emplace(tokens[1], vector<string>());
         return;
     }
     if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state) || line_like("EXTERNAL SUB $external", tokens, state))
@@ -808,20 +804,14 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             if(!in_procedure_section(state, line_num, current_file))
                 error("CALL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             vector<string> parameters(i != tokens.size()-1 ? tokens.begin() + i + 2 : tokens.end(), tokens.end());
-            vector<string> types;
+            vector<vector<unsigned int>> types;
             for (string & parameter : parameters) {
-                if (is_num_expr(parameter, state))
-                    types.push_back("ldpl_number");
-                else if(is_txt_expr(parameter, state))
-                    types.push_back("chText");
-                else if(is_num_map(parameter, state))
-                    types.push_back("ldpl_vector<ldpl_number>");
-                else if(is_num_list(parameter, state))
-                    types.push_back("ldpl_list<ldpl_number>");
-                else if(is_txt_map(parameter, state))
-                    types.push_back("ldpl_vector<chText>");
-                else if(is_txt_list(parameter, state))
-                    types.push_back("ldpl_list<chText>");
+                if (is_number(parameter))
+                    types.push_back({1});
+                else if(is_string(parameter))
+                    types.push_back({2});
+                else if(variable_exists(parameter, state))
+                    types.push_back(variable_type(parameter, state));
                 else
                     error("CALL with invalid parameter \"" + parameter + "\" (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             }
@@ -870,8 +860,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("WAIT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        #if defined(_WIN32)	
-        state.add_code("_sleep((long int)" + get_c_expression(state, tokens[1]) + ");");	
+        #if defined(_WIN32)
+        state.add_code("_sleep((long int)" + get_c_expression(state, tokens[1]) + ");");
         #else
         state.add_code("std::this_thread::sleep_for(std::chrono::milliseconds((long int)" + get_c_expression(state, tokens[1]) + "));");
         #endif
@@ -1245,7 +1235,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("CREATE STATEMENT statement inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         string model_line = tokens[2].substr(1, tokens[2].size() - 2);
         vector<string> model_tokens;
-        vector<pair<string, string>> parameters = state.subprocedures[tokens[4]];
+        vector<string> parameters = state.subprocedures[tokens[4]];
         trim(model_line);
         tokenize(model_line, 0, model_tokens, state.current_file, true, ' ');
         size_t param_count = 0;
@@ -1256,18 +1246,19 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             if (token == "$") {
                 ++param_count;
                 if (param_count > parameters.size()) break;
-                if (parameters[param_count-1].first == "ldpl_number")
+                vector<unsigned int> type = state.variables[tokens[4]][parameters[param_count-1]];
+                if (type == vector<unsigned int>{1})
                     model_line += "$num-expr ";
-                else if (parameters[param_count-1].first == "chText")
+                else if (type == vector<unsigned int>{2})
                     model_line += "$str-expr ";
-                else if (parameters[param_count-1].first == "ldpl_vector<ldpl_number>")
-                    model_line += "$num-vec ";
-                else if (parameters[param_count-1].first == "ldpl_list<ldpl_number>")
-                    model_line += "$num-list ";
-                else if (parameters[param_count-1].first == "ldpl_vector<chText>")
-                    model_line += "$str-vec ";
-                else if (parameters[param_count-1].first == "ldpl_list<chText>")
-                    model_line += "$str-list ";
+                else {
+                    model_line += "$var-type-";
+                    for (size_t i = 0; i < type.size(); ++i) {
+                        model_line += to_string(type[i]);
+                    }
+                    model_line += " ";
+
+                }
             } else if (token.find_first_not_of(valid_keyword_chars) == string::npos) {
                 ++keyword_count;
                 model_line += token + " ";
@@ -1449,6 +1440,15 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         else if(model_tokens[i] == "$num-expr") //$num-expr is either a NUMBER or a NUMBER variable
         {
             if(!is_num_expr(tokens[j], state)) return false;
+        }
+        else if(model_tokens[i].find("$var-type-") == 0) //variable with a given type number
+        {
+            vector<unsigned int> actual_type = variable_type(tokens[j], state);
+            string expected_type = model_tokens[i].substr(10);
+            if (actual_type.size() != expected_type.length()) return false;
+            for (size_t t = 0; t < actual_type.size(); ++t) {
+                if ((int)actual_type[t] != expected_type[t] - '0') return false;
+            }
         }
         else if(model_tokens[i] == "$natural") //$natural is an integer greater than 0
         {
@@ -1663,7 +1663,7 @@ bool is_num_var(string & token, compiler_state & state)
     vector<string> indexes;
     split_vector(token, var_name, indexes, state);
     // Now that we have the variable name, we get its type.
-    vector<unsigned int> var_types = variable_type(token, state);
+    vector<unsigned int> var_types = variable_type(var_name, state);
     // If the type is NUMBER (1), we are dealing with a scalar variable and
     // we just return true.
     if(var_types == vector<unsigned int>{1}) return true;
@@ -1689,7 +1689,7 @@ bool is_txt_var(string & token, compiler_state & state)
     vector<string> indexes;
     split_vector(token, var_name, indexes, state);
     // Now that we have the variable name, we get its type.
-    vector<unsigned int> var_types = variable_type(token, state);
+    vector<unsigned int> var_types = variable_type(var_name, state);
     // If the type is TEXT (2), we are dealing with a scalar variable and
     // we just return true.
     if(var_types == vector<unsigned int>{2}) return true;
@@ -2108,13 +2108,15 @@ vector<unsigned int> variable_type(string & token, compiler_state & state) {
 // This is called when we know all parameters of a subprocedure
 void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file) {
     string name = state.current_subprocedure;
-    vector<pair<string, string>> & parameters = state.subprocedures[name];
-    vector<string> types;
+    vector<string> & parameters = state.subprocedures[name];
+    vector<vector<unsigned int>> types;
     string code = "void " +fix_identifier(name, false)+ "(";
     for (size_t i = 0; i < parameters.size(); ++i) {
-        code += parameters[i].first + " & " + parameters[i].second;
+        string identifier = fix_identifier(parameters[i], true, state);
+        string type = state.get_c_type(state.variables[name][parameters[i]]);
+        code += type + " & " + identifier;
         if (i < parameters.size() - 1) code += ", ";
-        types.push_back(parameters[i].first);
+        types.push_back(state.variables[name][parameters[i]]);
     }
     if (!state.correct_subprocedure_types(name, types))
         error("SUB-PROCEDURE declaration parameter types doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");

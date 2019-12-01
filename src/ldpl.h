@@ -35,7 +35,7 @@ struct compiler_state{
     map<string, map<string, vector<unsigned int>>> variables; //map<subprocedure (or "" for main), map<variable name, vector<types>>> (variables are stored here)
     map<string, bool> externals; //variables defined in c++ extensions
     //1 number, 2 text, 3 list, 4 map --> <2, 3, 4, 4> means, for example, map of map of list of text
-    map<string, vector<pair<string, string>>> subprocedures; // subprocedure -> list of C++ parameter types and identifiers
+    map<string, vector<string>> subprocedures; // subprocedure -> list of parameter identifiers
     void add_var_code(string code){
         this->variable_code.push_back(code);
     }
@@ -99,13 +99,13 @@ struct compiler_state{
     //Adds a subprocedure that has been called but hasn't been declared.
     //If it hasn't been declared when compilation reaches the end of the source,
     //an error is risen.
-    vector<pair<string, vector<string>>> expected_subprocedures; // subprocedure -> list of C++ parameter types
-    void add_expected_subprocedure(string name, string fixed_name, vector<string> & types){
+    vector<pair<string, vector<vector<unsigned int>>>> expected_subprocedures; // subprocedure -> list of parameter types
+    void add_expected_subprocedure(string name, string fixed_name, vector<vector<unsigned int>> & types){
         for(auto & subprocedure : expected_subprocedures) if (subprocedure.first == name) return;
         expected_subprocedures.emplace_back(name, types);
         string code = "void " + fixed_name + "(";
         for (size_t i = 0; i < types.size(); ++i) {
-            code += types[i] + "&";
+            code += get_c_type(types[i]) + "&";
             if (i < types.size() - 1) code += ", ";
         }
         code += ");";
@@ -119,18 +119,34 @@ struct compiler_state{
             }
         }
     }
-    bool correct_subprocedure_types(string & name, vector<string> & types){
+    bool correct_subprocedure_types(string & name, vector<vector<unsigned int>> & types){
         for(auto & subprocedure : expected_subprocedures) if (subprocedure.first == name)
             return types == subprocedure.second;
         for(auto & subprocedure : subprocedures) if(subprocedure.first == name) {
-            vector<string> actual_types;
-            for (auto & paramter : subprocedure.second) actual_types.push_back(paramter.first);
+            vector<vector<unsigned  int>> actual_types;
+            for (auto & parameter : subprocedure.second) actual_types.push_back(variables[name][parameter]);
             return types == actual_types;
         }
         return true;
     }
     stack<string> working_dir;
     vector<pair<string, string>> custom_statements; // (statement model line, subprocedure name)
+
+    string get_c_type(vector<unsigned int> & type) {
+        string c_type = "";
+        for (auto number_type: type) {
+            if (number_type == 1) {
+                c_type = "ldpl_number";
+            } else if (number_type == 2) {
+                c_type = "chText";
+            } else if (number_type == 3) {
+                c_type = "ldpl_list<" + c_type + ">";
+            } else if (number_type == 4) {
+                c_type = "ldpl_vector<" + c_type + ">";
+            }
+        }
+        return c_type;
+    }
 };
 
 void bullet_msg(const string & msg);
