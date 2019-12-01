@@ -182,13 +182,29 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 
 ## 👨🏼‍💻 How can I contribute to LDPL?
 
-If you want to contribute to LDPL you can add statements to the language (that's in fact really easy!), fix bugs, add issues, write examples, write some software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
+If you want to contribute to LDPL you can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
 
 ![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
 
 Contributors are expected to behave by the [LDPL Code of Conduct](/CODE_OF_CONDUCT.md). Tl;dr: be nice to everyone.
 
 If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
+
+### 🤠 Wanted List
+This is a list of contributions we are actively looking for, so if you don't know where to start contributing, this might give you some inspiration.
+ * **Language**
+   * Expressions involving numbers and variables (maybe enclosed by something like `{}`).
+     * Example: `store {foo + 1} in bar`
+ * **Libraries**
+   * A MySQL library.
+   * A JSON library.
+   * SQLite library.
+   * Requests library.
+ * **Others**
+   * Updated man file from the latest docs.
+   * Updated nano editor highlighting.
+   * Add install instructions for extra files that might be needed to the installer.
+ 
 
 ## 🔎 Where can I get more help, if I need it?
 
