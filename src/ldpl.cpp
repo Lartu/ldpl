@@ -768,18 +768,22 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("for (" + init + "; " + condition + "; " + increment + ") {");
         return;
     }
-    if(line_like("FOR EACH $var IN $collection DO", tokens, state))
+    if(line_like("FOR EACH $anyVar IN $collection DO", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
             error("FOR EACH outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        if(is_num_var(tokens[2], state) != (is_num_map(tokens[4], state) || is_num_list(tokens[4], state)))
+        vector<unsigned int> iteration_type = variable_type(tokens[2], state);
+        vector<unsigned int> collected_type = variable_type(tokens[4], state);
+        unsigned int collection_type = collected_type.back(); // LIST or MAP
+        collected_type.pop_back();
+        if(iteration_type != collected_type)
             error("FOR EACH iteration variable type doesn't match collection type (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.open_loop();
         //C Code
         string range_var = state.new_range_var();
         string collection = get_c_variable(state, tokens[4]) + ".inner_collection";
         string iteration_var = range_var;
-        if (is_scalar_map(tokens[4], state)) {
+        if (collection_type == 4) {
             iteration_var += ".second";
         }
         state.add_code("for (auto& " + range_var + " : " + collection + ") {");
@@ -1372,9 +1376,9 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
         {
             if(!is_scalar_variable(tokens[j], state)) return false;
         }
-        else if(model_tokens[i] == "$anyVar") //$var is either any variable
+        else if(model_tokens[i] == "$anyVar") //$anyVar is any variable
         {
-            if(!is_scalar_variable(tokens[j], state) && !is_scalar_map(tokens[j], state) && !is_scalar_list(tokens[j], state)) return false;
+            if(!variable_exists(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$scalar-map"){ //$scalar-map is TEXT MAP, NUMBER MAP
             if(!is_scalar_map(tokens[j], state)) return false;
