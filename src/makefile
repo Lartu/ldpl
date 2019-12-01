@@ -4,7 +4,7 @@
 # | LDPL Version Details |
 # +----------------------+
 
-VERSION = '"4.3"'  #LDPL Version
+VERSION = '"4.4-dev"'  #LDPL Version
 VERSIONNAME = '"Eloquent Eoraptor"' #LDPL Version Name
 
 # +-----------------+

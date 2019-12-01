@@ -460,7 +460,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     //std include
     if(line_like("USING PACKAGE $name", tokens, state)) {
         if(state.section_state != 0)
-            error("you can only use the INCLUDE statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
+            error("you can only use the USING PACKAGE statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
         else {
             #if defined(_WIN32)	
                 //TODO!
@@ -468,7 +468,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             #else
                 system(((string)"mkdir -p " + LPMLOCATION).c_str());
             #endif
-            string libFilename = tokens[1];
+            string libFilename = tokens[2];
             std::for_each(libFilename.begin(), libFilename.end(), [](char & c){
                 c = ::tolower(c);
             });
@@ -505,6 +505,18 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         else {
             string flag = tokens[1].substr(1, tokens[1].size() - 2);
             extension_flags.push_back(flag);
+        }
+        return;
+    }
+    //os-specific extension flags
+    if(line_like("FLAG $name $string", tokens, state)) {
+        if(state.section_state != 0)
+            error("you can only use the FLAG statement before the DATA and PROCEDURE sections (\033[0m" + current_file + ":" + to_string(line_num)+"\033[1;31m)");
+        else {
+            if (tokens[1] == current_os()) {
+              string flag = tokens[2].substr(1, tokens[2].size() - 2);
+              extension_flags.push_back(flag);
+            }
         }
         return;
     }
@@ -2142,4 +2154,21 @@ void add_call_code(string & subprocedure, vector<string> & parameters, compiler_
     }
     code += ");";
     state.add_code(code);
+}
+
+// https://sourceforge.net/p/predef/wiki/OperatingSystems/
+string current_os() {
+#if defined(__linux__)
+    return "LINUX";
+#elif defined(__APPLE__)
+    return "MACOS";
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+    return "BSD";
+#elif defined(__ANDROID__)
+    return "ANDROID";
+#elif defined(__EMSCRIPTEN__)
+    return "EMSCRIPTEN";
+#else
+    return "UNKNOWN";
+#endif
 }
