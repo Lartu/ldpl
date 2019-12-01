@@ -168,23 +168,14 @@ PROCEDURE:
 
 ## `FOR EACH _ IN _ DO`
 
-The `FOR EACH` statement repeatedly run the code in its body for every element in a given `LIST` or `MAP`. At the start of each iteration an element of the collection is assigned to a scalar variable matching its type.
-As the variable must be a scalar variable, the for each statement doens't support multicontainers.
+The `FOR EACH` statement repeatedly run the code in its body for every element in a given `LIST` or `MAP`. At the start of each iteration an element of the collection is assigned to a variable matching its type. This even works with multicontainers. For example, you can iterate a `NUMBER MAP LIST` using a `NUMBER MAP` as the iteration variable.  
 
 If the collection is a `LIST`, its elements will be iterated increasingly from index `0`, while in the case of a `MAP` all the elements will be iterated in no particular order.
 
 **Syntax:**
 
 ```coffeescript
-FOR EACH <NUMBER-VAR> IN <NUMBER-LIST or NUMBER-MAP> DO
-	#Code goes here
-REPEAT
-```
-
-Or
-
-```coffeescript
-FOR EACH <TEXT-VAR> IN <TEXT-LIST or TEXT-MAP> DO
+FOR EACH <VAR> IN <LIST or MAP> DO
 	#Code goes here
 REPEAT
 ```
