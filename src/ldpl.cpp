@@ -1171,29 +1171,17 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
     if(line_like("PUSH MAP TO $map-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
-        error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        if(variable_type(tokens[3], state)[0] == 1){
-            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_vector<ldpl_number>{});");
-        }else{
-            state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(ldpl_vector<chText>{});");
-        }
+        state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.emplace_back();");
         return;
     }
     if(line_like("PUSH LIST TO $list-list", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
-        error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("PUSH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        vector<unsigned int> type = variable_type(tokens[3], state);
-        string textType = "";
-        if(type[0] == 1) textType = "ldpl_number";
-        else textType = "chText";
-        for(size_t i = 1; i < type.size() - 1; ++i){
-            if(type[i] == 3) textType = "ldpl_list<" + textType + ">";
-            else textType = "ldpl_vector<" + textType + ">";
-        }
-        state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.push_back(" + textType + "{});");
+        state.add_code(get_c_variable(state, tokens[3]) + ".inner_collection.emplace_back();");
         return;
     }
     if(line_like("PUSH $expression TO $scalar-list", tokens, state))
