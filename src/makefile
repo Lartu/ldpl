@@ -5,7 +5,7 @@
 # +----------------------+
 
 VERSION = '"4.4-dev"'  #LDPL Version
-VERSIONNAME = '"Eloquent Eoraptor"' #LDPL Version Name
+VERSIONNAME = '"Friendly Falcarius"' #LDPL Version Name
 
 # +-----------------+
 # | The other stuff |
