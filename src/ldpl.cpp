@@ -592,9 +592,9 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                     if (tokens[i] != "OF")
                         valid_type = false;
                 } else if (i % 2 == 0) {
-                    if (tokens[i] == "MAP") {
+                    if (tokens[i] == "MAP"||(tokens[i] == "MAPS" && i>0)) {
                         type_number.push_back(4);
-                    } else if (tokens[i] == "LIST") {
+                    } else if (tokens[i] == "LIST"||(tokens[i] == "LISTS" && i>0)) {
                         type_number.push_back(3);
                     } else if (tokens.size()-1 > i) {
                         // text and number must be the final type listed
