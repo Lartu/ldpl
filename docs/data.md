@@ -378,6 +378,11 @@ must use the `push list to _` and `push map to _` statements, respectively:
 
 These will be explained in more detail in their respective sections.
 
+!!!Note
+    In LDPL 4.3, multicontainers were introduced with a right-to-left syntax.
+    A `map of list of text` was defined as `text list map`. This syntax is
+    still supported.
+
 ## Default Type Values
 
 In LDPL each variable is initialized with a value by default. This means
