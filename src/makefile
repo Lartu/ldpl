@@ -4,7 +4,7 @@
 # | LDPL Version Details |
 # +----------------------+
 
-VERSION = '"4.4"'  #LDPL Version
+VERSION = '"4.5-dev"'  #LDPL Version
 VERSIONNAME = '"Friendly Falcarius"' #LDPL Version Name
 
 # +-----------------+
