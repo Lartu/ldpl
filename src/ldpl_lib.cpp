@@ -696,6 +696,35 @@ string expandHomeDirectory(string filename){
     #endif
 }
 
+//getLineSafe by https://gist.github.com/josephwb/df09e3a71679461fc104
+std::istream& getlineSafe(std::istream& is, std::string& t) {
+    t.clear();
+    std::istream::sentry se(is, true);
+    std::streambuf* sb = is.rdbuf();
+
+    for (;;) {
+        int c = sb->sbumpc();
+		switch (c) {
+			case '\\n':
+			    t += (char)c;
+				return is;
+			case '\\r':
+			    t += (char)c;
+				if (sb->sgetc() == '\\n') {
+					t += sb->sbumpc();
+				}
+				return is;
+			case EOF:
+				if (t.empty()) {
+					is.setstate(std::ios::eofbit);
+				}
+				return is;
+			default:
+				t += (char)c;
+		}
+    }
+}
+
 void load_file(chText filename, chText & destination)
 {
     //Load file
@@ -708,15 +737,14 @@ void load_file(chText filename, chText & destination)
         return;
     }
     //Get file contents
-    chText text = \"\";
+    destination = \"\";
     string line = \"\";
-    while(getline(file, line))
+    while(getlineSafe(file, line))
     {
-        text += line + \"\\n\";
+        destination += line;
     }
     VAR_ERRORTEXT = \"\";
     VAR_ERRORCODE = 0;
-    destination = text;
     file.close();
 }
 
