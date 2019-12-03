@@ -45,13 +45,13 @@ Variables may be declared, as stated above, using the syntax:
     variable-name is data-type
     
 within the data section. The name of a data type is composed of either a scalar
-data type name (**number** or **text**) or a scalar data type plus one or more
-container type names. For example:
+data type name (**number** or **text**) or a container type plus one or more
+scalar or container type names. For example:
 
     :::coffeescript
     foo is number
     bar is text
-    foobar is text list map
+    foobar is map of list of text
    
 In the case above, **foobar** is a **map of lists of text values**.
 
@@ -338,18 +338,19 @@ can be used to work with maps.
 ## Multicontainers
 
 As stated before, _"The name of a data type is composed of either a scalar
-data type name (**number** or **text**) or a scalar data type plus one or more
-container type names."_ This means that you can declare variables like:
+data type name (**number** or **text**) or a container type plus one or more
+scalar or container type names."_ This means that you can declare variables like:
 
     :::coffeescript
-    myVariable is text list list
-    myOtherVariable is number map list map map list map
-    pleaseStop is text list list map list list map map map list map map list
+    myVariable is list of list of text
+    myOtherVariable is map of list of map of map of list of map of number
+    pleaseStop is list of map of map of list of map of map of map of list of list of map of list of list of text
 
-These variables are called **multicontainers**. Multicontainers should be read
-from right to left in order to understand how are they set up. For example,
-a `text list map` is a **map** that holds **lists** of **text** values. You
-may access a value stored in a `text list map` like:
+These variables are called **multicontainers**. Multicontainers hold other 
+containers, which can hold more containers or scalar values to an arbitrary
+depth.For example, a `map of list of text` is a **map** that holds **lists** 
+of **text** values. You may access a value stored in a `map of list of text` 
+like so:
 
     :::coffeescript
     display foo:"hi":0
@@ -358,24 +359,29 @@ where `hi` is the key used to access a list stored in the map, and `0` the
 index used to access a text value stored in the list that was stored in the
 map.
 
-If you want to push a list to a `list list` or a map to a `map list` you must
-use the `push list to _` and `push map to _` statements, respectively:
+If you want to push a list to a `list of list` or a map to a `list of map` you 
+must use the `push list to _` and `push map to _` statements, respectively:
 
     :::coffeescript
     data:
-        listOfMaps is text map list
-        listOfLists is text list list
+        listOfMaps is list of map of text 
+        listOfLists is list of list of text
     procedure:
         push map to listOfMaps
-        store "Hello!" in toListOfLists:0:"hi!"
+        store "Hello!" in listOfMaps:0:"hi!"
         # Pushes a map to listOfMaps and then stores
         # the value "Hello!" in the key "hi!" of the pushed map
         push list to listOfLists
-        push "Hello!" toListOfLists:0
+        push "Hello!" listOfLists:0
         # Pushes a map to listOfLists and then pushes
         # the value "Hello!" at index 0 of the pushed list
 
 These will be explained in more detail in their respective sections.
+
+!!!Note
+    In LDPL 4.3, multicontainers were introduced with a right-to-left syntax.
+    A `map of list of text` was defined as `text list map`. This syntax is
+    still supported.
 
 ## Default Type Values
 
@@ -389,7 +395,7 @@ until it's changed.
  for **text maps**, where each element it contains is also initialized to `""`.
  * **Lists** are initialized empty by default and trying to access a
  non-existing index will result in an error.
- * Keys of **Maps of Lists** (`list map`) are declared as empty lists of the
+ * Keys of **Maps of Lists** (`map of list`) are declared as empty lists of the
  scalar type of the multicontainer by default.
  
 ## Predeclared Variables
