@@ -16,31 +16,17 @@ This repository contains the source code and [releases](https://github.com/Lartu
 ### 📒 Example LDPL code
 
 ```coffeescript
-# Leap Year Example
-# Asks the user to enter a year and tells them if
-# that's a leap year or not.
+# Hello There Example
 data: 
-  year is number
-  divBy4 is number
-  divBy100 is number
+  name is number
   
 procedure: 
-  display "Enter a year: "
-  accept year
-  modulo year by 4 in divBy4
-  modulo year by 100 in divBy100
-  if divBy4 is not equal to 0 then
-    display year " is a common year." lf
-  else if divBy100 is not equal to 0 then
-    display year " is a leap year!" lf
-  else if divBy4 is not equal to 0 or divBy100 is not equal to 0 then
-    display year " is a common year." lf
-  else
-    display year " is a leap year!" lf
-  end if
+  display "Hello there, what's your name?"
+  accept name
+  display "你好, " name "!" crlf
 ```
 
-This code asks the user to enter a year and then tells them if it is a leap year or not. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+This code greets the user and asks them to enter their name, then it greets them in Chinese. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
 
 ### 🎏 What can I use LDPL for?
 
