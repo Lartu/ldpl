@@ -202,9 +202,9 @@ he LDPL Programming Language is a non-profit project mantained by people like yo
 
 There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu), due to popular request! We've paired with TeePublic to bring you everything from shirts, to mousepads, to coffee mugs. All money made from selling these goodies goes to funding the language, paying for the server that keeps the LDPL website online, etc.
 
-<img src="images/merch/shirt.jpg" width="150px">  <img src="images/merch/shirt2.jpg" width="150px"> <img src="images/merch/shirt3.jpg" width="150px">  <img src="images/merch/mug2.jpg" width="150px">
+<img src="https://ldpl-lang.org/images/merch/shirt.jpg" width="150px">  <img src="https://ldpl-lang.org/images/merch/shirt2.jpg" width="150px"> <img src="https://ldpl-lang.org/images/merch/shirt3.jpg" width="150px">  <img src="https://ldpl-lang.org/images/merch/mug2.jpg" width="150px">
 
-<img src="images/merch/mug3.jpg" width="150px"> <img src="images/merch/notebook.jpg" width="150px">  <img src="images/merch/sticker.jpg" width="150px">  <img src="images/merch/case.jpg" width="150px">
+<img src="https://ldpl-lang.org/images/merch/mug3.jpg" width="150px"> <img src="https://ldpl-lang.org/images/merch/notebook.jpg" width="150px">  <img src="https://ldpl-lang.org/images/merch/sticker.jpg" width="150px">  <img src="https://ldpl-lang.org/images/merch/case.jpg" width="150px">
 
 Visit the LDPL [Donations and Merchandise](https://www.ldpl-lang.org/support.html) page for more information.
 
