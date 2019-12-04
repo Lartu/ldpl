@@ -1392,10 +1392,10 @@ bool line_like(string model_line, vector<string> & tokens, compiler_state & stat
             if(!is_txt_map(tokens[j], state)) return false;
         }
         else if(model_tokens[i] == "$list"){ //$list is a LIST
-            if(variable_type(tokens[j], state).back() == 3) return true;
+            if(!variable_type(tokens[j], state).back() == 3) return false;
         }
         else if(model_tokens[i] == "$map"){ //$map is a MAP
-            if(variable_type(tokens[j], state).back() == 4) return true;
+            if(!variable_type(tokens[j], state).back() == 4) return false;
         }
         else if(model_tokens[i] == "$scalar-list"){ //$scalar-list is a LIST of scalar values
             if(!is_scalar_list(tokens[j], state)) return false;
