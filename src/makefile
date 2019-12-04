@@ -4,8 +4,8 @@
 # | LDPL Version Details |
 # +----------------------+
 
-VERSION = '"4.4-dev"'  #LDPL Version
-VERSIONNAME = '"Eloquent Eoraptor"' #LDPL Version Name
+VERSION = '"4.5-dev"'  #LDPL Version
+VERSIONNAME = '"Friendly Falcarius"' #LDPL Version Name
 
 # +-----------------+
 # | The other stuff |
@@ -15,11 +15,11 @@ OBJS = ldpl.o
 SOURCE = ldpl.cpp
 OUT = ldpl
 LPMLOCATION = "~/ldpl/lpm/"
-#ifneq ($(shell uname -s),Darwin)
-#ifeq ($(shell uname -o),Msys)
-#LPMLOCATION = "c:/ldpl/lpm/"
-#endif
-#endif
+# x86 cross compilation options (make x86=true)
+ifdef x86
+CROSS = -m32
+CROSS = -m32
+endif
 FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='$(LPMLOCATION)'
 #Flags for static compilation on Windows and Linux (not Android)
 ifneq ($(shell uname -s),Darwin)
@@ -33,12 +33,12 @@ PREFIX := /usr/local
 endif
 
 all: $(OBJS)
-	$(CXX) -g $(OBJS) -o $(OUT) $(LFLAGS)
+	$(CXX) -g $(OBJS) -o $(OUT) $(LFLAGS) $(CROSS)
 	./ldpl ../lpm/lpm.ldpl -o=lpm
 
 ldpl.o: ldpl.cpp ldpl_lib.cpp
 	awk -f lib-to-string.awk ldpl_lib.cpp > ldpl_included_lib.cpp
-	$(CXX) $(FLAGS) $(SOURCE)
+	$(CXX) $(FLAGS) $(CROSS) $(SOURCE)
 
 
 clean:

@@ -585,6 +585,33 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         } else if (tokens[i] == "TEXT") {                                   // If we are dealing with a text variable...
             type_number.push_back(2);                                       // The type number is 2
             if (extern_keyword == "") assign_default = " = \"\"";           // And if it's not external, we set it to a default value.
+        } else if ((tokens[i]=="MAP"||tokens[i]=="LIST") && tokens.size() > i && tokens[i+1] == "OF") {
+            // nested 'of' syntax, ex: map of list of number
+            while (valid_type && i < tokens.size()) {
+                if (i % 2 == 1) {
+                    if (tokens[i] != "OF")
+                        valid_type = false;
+                } else if (i % 2 == 0) {
+                    if (tokens[i] == "MAP"||(tokens[i] == "MAPS" && i>0)) {
+                        type_number.push_back(4);
+                    } else if (tokens[i] == "LIST"||(tokens[i] == "LISTS" && i>0)) {
+                        type_number.push_back(3);
+                    } else if (tokens.size()-1 > i) {
+                        // text and number must be the final type listed
+                        valid_type = false;
+                    } else if (tokens[i] == "TEXT") {
+                        type_number.push_back(2);
+                    } else if (tokens[i]=="NUMBER"||tokens[i]=="NUMBERS") {
+                        type_number.push_back(1);
+                    } else {
+                        valid_type = false;
+                    }
+                } else {
+                    valid_type = false;
+                }
+                ++i;
+            }
+            reverse(begin(type_number), end(type_number));
         } else {
             valid_type = false;                                             // If its not a NUMBER, a TEXT or a collection of these data types
         }                                                                   // then it's not a valid LDPL data type.
