@@ -13,6 +13,21 @@
 
 This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler, LPM (the LDPL Package Manager) and other useful goodies.
 
+### Index
+ * [Introduction](https://github.com/Lartu/ldpl#)
+   * [LDPL Code Example](https://github.com/Lartu/ldpl#-example-ldpl-code)
+   * [What can I use LDPL for?](https://github.com/Lartu/ldpl#-what-can-i-use-ldpl-for)
+ * [LDPL Philosophy](https://github.com/Lartu/ldpl#-ldpl-philosophy)
+ * [How to Install LDPL](https://github.com/Lartu/ldpl#-how-to-install-ldpl)
+ * [Learning LDPL & Documentation](https://github.com/Lartu/ldpl#-learning-ldpl-and-read-the-docs)
+ * [How to use the LDPL Compiler](https://github.com/Lartu/ldpl#-how-to-use-this-compiler)
+ * [Libraries](https://github.com/Lartu/ldpl#-libraries)
+ * [LDPL Compatible Editors](https://github.com/Lartu/ldpl#-ldpl-compatible-editors)
+ * [Contributing to the LDPL Project](https://github.com/Lartu/ldpl#-how-can-i-contribute-to-ldpl)
+ * [Supporting the LDPL Project](https://github.com/Lartu/ldpl#-supporting-the-ldpl-project)
+ * [Getting Help](https://github.com/Lartu/ldpl#-getting-help)
+ * [License](https://github.com/Lartu/ldpl#-license)
+
 ### 📒 Example LDPL code
 
 ```coffeescript
@@ -75,14 +90,6 @@ You can get yourself a precompiled LDPL binary or compile LDPL from source. Chec
 | **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
-
-## 📝 LDPL compatible editors
-
-![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
-
-We have highlighting and code formatting extensions available for [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [dvkt](https://github.com/dvkt) and [Lartu](http://github.com/lartu)), [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
-
-You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
 
 ## 📚 Learning LDPL and Read the Docs
 
@@ -161,6 +168,14 @@ A number of useful statements and subroutines are available in the [**LDPL Stand
 way possible. Install with: `lpm install ldpl_irc_bot`.
 - [**The LDPL Ncurses Library**](https://github.com/Lartu/ldpl-ncurses): the LDPL Ncurses Library is a ncurses wrapper for LDPL, designed for creating terminal applications that require more complex text user-interfaces than simple line-feeding. Install with: `lpm install ldpl-ncurses`.
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
+
+## 📝 LDPL Compatible Editors
+
+![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
+
+We have highlighting and code formatting extensions available for [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [dvkt](https://github.com/dvkt) and [Lartu](http://github.com/lartu)), [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
+
+You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
 
 ## 👨🏼‍💻 How can I contribute to LDPL?
 
