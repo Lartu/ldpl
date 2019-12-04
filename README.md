@@ -2,45 +2,31 @@
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
   <img src="https://img.shields.io/badge/license-apache_2.0-yellow?style=flat-square">
-  <img src="https://img.shields.io/badge/current_release-4.3-blue.svg?style=flat-square">
-  <img src="https://img.shields.io/badge/dev_version-4.4-purple.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/current_release-4.4-blue.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/dev_version-4.5--dev-purple.svg?style=flat-square">
   <a href='https://docs.ldpl-lang.org/'><img src="https://img.shields.io/badge/docs-up_to_date-green?style=flat-square"></a>
   <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange?style=flat-square"></a>
   <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master?style=flat-square"></a>
 </p>
 
-[**LDPL**](https://www.ldpl-lang.org/) is a powerful transpiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux, macOS, ARMv8 Linux, Android Termux and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
+[**LDPL**](https://www.ldpl-lang.org/) is a powerful compiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. It's very portable and runs on a plethora of different architectures and operating systems including AMD-64 Linux, macOS, ARMv8 Linux, Android Termux and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
 This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler, LPM (the LDPL Package Manager) and other useful goodies.
 
 ### 📒 Example LDPL code
 
 ```coffeescript
-# Leap Year Example
-# Asks the user to enter a year and tells them if
-# that's a leap year or not.
+# Hello There Example
 data: 
-  year is number
-  divBy4 is number
-  divBy100 is number
+  name is number
   
 procedure: 
-  display "Enter a year: "
-  accept year
-  modulo year by 4 in divBy4
-  modulo year by 100 in divBy100
-  if divBy4 is not equal to 0 then
-    display year " is a common year." lf
-  else if divBy100 is not equal to 0 then
-    display year " is a leap year!" lf
-  else if divBy4 is not equal to 0 or divBy100 is not equal to 0 then
-    display year " is a common year." lf
-  else
-    display year " is a leap year!" lf
-  end if
+  display "Hello there, what's your name?"
+  accept name
+  display "你好, " name "!" crlf
 ```
 
-This code asks the user to enter a year and then tells them if it is a leap year or not. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+This code greets the user and asks them to enter their name, then it greets them in Chinese. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
 
 ### 🎏 What can I use LDPL for?
 
@@ -182,11 +168,11 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 
 ## 👨🏼‍💻 How can I contribute to LDPL?
 
-If you want to contribute to LDPL you can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](/CONTRIBUTING.md) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
+If you want to contribute to LDPL you can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](https://www.ldpl-lang.org/contribute.html) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
 
 ![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
 
-Contributors are expected to behave by the [LDPL Code of Conduct](/CODE_OF_CONDUCT.md). Tl;dr: be nice to everyone.
+Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). Tl;dr: be nice to everyone.
 
 If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
@@ -210,13 +196,17 @@ This is a list of contributions we are actively looking for, so if you don't kno
 
 You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
 
-## 👔 LDPL Merchandise
+## 👔 Supporting the LDPL Project
+
+he LDPL Programming Language is a non-profit project mantained by people like you from all over the world. If you like what we do, please consider [donating](https://www.ldpl-lang.org/support.html) to the LDPL project.
 
 There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu), due to popular request! We've paired with TeePublic to bring you everything from shirts, to mousepads, to coffee mugs. All money made from selling these goodies goes to funding the language, paying for the server that keeps the LDPL website online, etc.
 
 <img src="images/merch/shirt.jpg" width="150px">  <img src="images/merch/shirt2.jpg" width="150px"> <img src="images/merch/shirt3.jpg" width="150px">  <img src="images/merch/mug2.jpg" width="150px">
 
 <img src="images/merch/mug3.jpg" width="150px"> <img src="images/merch/notebook.jpg" width="150px">  <img src="images/merch/sticker.jpg" width="150px">  <img src="images/merch/case.jpg" width="150px">
+
+Visit the LDPL [Donations and Merchandise](https://www.ldpl-lang.org/support.html) page for more information.
 
 ## 📜 License
 
