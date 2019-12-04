@@ -14,7 +14,7 @@
 This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler, LPM (the LDPL Package Manager) and other useful goodies.
 
 ### Index
- * [Introduction](https://github.com/Lartu/ldpl#)
+ * [Introduction](https://github.com/Lartu/ldpl#readme)
    * [LDPL Code Example](https://github.com/Lartu/ldpl#-example-ldpl-code)
    * [What can I use LDPL for?](https://github.com/Lartu/ldpl#-what-can-i-use-ldpl-for)
  * [LDPL Philosophy](https://github.com/Lartu/ldpl#-ldpl-philosophy)
