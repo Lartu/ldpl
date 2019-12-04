@@ -88,23 +88,19 @@ You can use any other editor (without syntax highlighting) if you like. If know 
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
 
-If you want to learn how to code in LDPL, there's a little **tutorial** at https://learnxinyminutes.com/docs/ldpl/.
-
-Also be sure to check the [examples](./examples)!
+If you want to learn how to code in LDPL, there's a little **tutorial** at https://learnxinyminutes.com/docs/ldpl/. Also be sure to check the [examples](./examples)!
 
 [The **LDPL documentation** is available here](https://docs.ldpl-lang.org/). Check that to learn yourself some LDPL (*for the greater good!*). The documentation is also uploaded to the [docs](docs) folder of this repository and can be read and modified from there.
 
-The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install` or the LDPL Install Wizard. The man page is also available in the [man](/man) folder of this repository.
+The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install` or the LDPL Install Wizard. The man page is also available in the [man](/man) folder of this repository. If you download a precompiled LDPL binary, the man documentation is included as `ldpl.1`, but you have to install it yourself.
 
 ## 💻 How to use this compiler
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
 
-Once the compiler is set up, go write some LDPL source code, say `source.lsc`.
-Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `source-bin`.
-Done! For more info on the compiler run `ldpl -h`.
-
-For more information, check the [docs](https://docs.ldpl-lang.org/#the-ldpl-compiler).
+Once the compiler is set up, write some LDPL source code, for example `source.ldpl`.
+Then compile the source code using `ldpl source.ldpl`. The compiled, executable binary file will be saved as `source-bin`.
+Done! For more information on the compiler run `ldpl -h` and check the [docs](https://docs.ldpl-lang.org/#the-ldpl-compiler).
 
 ### 🔧 Compiler options
 
@@ -121,7 +117,7 @@ For more information, check the [docs](https://docs.ldpl-lang.org/#the-ldpl-comp
 
 ### 📦 C++ extensions
 
-LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`. You can also use the `-i` compiler flag, but this is not recommended for ease of distribution.
+LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`.
 
 For a guide to writing and building C++ extensions, see the [LDPL official documentation](https://docs.ldpl-lang.org/cppext/). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
