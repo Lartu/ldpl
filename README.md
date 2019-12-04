@@ -164,17 +164,13 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 
 ## 👨🏼‍💻 How can I contribute to LDPL?
 
-If you want to contribute to LDPL you can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](https://www.ldpl-lang.org/contribute.html) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution.
-
 ![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
+
+There are many ways to contribute to the LDPL project. You can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](https://www.ldpl-lang.org/contribute.html) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution.
 
 Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). TL;DR: be nice to everyone.
 
 If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
-
-## 🔎 Where can I get more help, if I need it?
-
-You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section.
 
 ## 👔 Supporting the LDPL Project
 
@@ -183,6 +179,10 @@ The LDPL Programming Language is a non-profit project mantained by people like y
 There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu), due to popular request! We've paired with TeePublic to bring you everything from shirts, to mousepads, to coffee mugs. All money made from selling these goodies goes to funding the language, paying for the server that keeps the LDPL website online, etc.
 
 Visit the LDPL [Donations and Merchandise](https://www.ldpl-lang.org/support.html) page for more information.
+
+## 🔎 Getting Help
+
+If you have any questions regarding the LDPL project you are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are no dumb questions, just ask away.
 
 ## 📜 License
 
