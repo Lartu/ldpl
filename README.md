@@ -168,37 +168,21 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 
 ## 👨🏼‍💻 How can I contribute to LDPL?
 
-If you want to contribute to LDPL you can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](https://www.ldpl-lang.org/contribute.html) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
+If you want to contribute to LDPL you can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](https://www.ldpl-lang.org/contribute.html) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution.
 
 ![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
 
-Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). Tl;dr: be nice to everyone.
+Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). TL;DR: be nice to everyone.
 
 If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
-### 🤠 Wanted List
-This is a list of contributions we are actively looking for, so if you don't know where to start contributing, this might give you some inspiration.
- * **Language**
-   * Expressions involving numbers and variables (maybe enclosed by something like `{}`).
-     * Example: `store {foo + 1} in bar`
- * **Libraries**
-   * A MySQL library.
-   * A JSON library.
-   * SQLite library.
-   * Requests library.
- * **Others**
-   * Updated man file from the latest docs.
-   * Updated nano editor highlighting.
-   * Add install instructions for extra files that might be needed to the installer.
- 
-
 ## 🔎 Where can I get more help, if I need it?
 
-You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
+You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section.
 
 ## 👔 Supporting the LDPL Project
 
-he LDPL Programming Language is a non-profit project mantained by people like you from all over the world. If you like what we do, please consider [donating](https://www.ldpl-lang.org/support.html) to the LDPL project.
+The LDPL Programming Language is a non-profit project mantained by people like you from all over the world. If you like what we do, please consider [donating](https://www.ldpl-lang.org/support.html) to the LDPL project.
 
 There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu), due to popular request! We've paired with TeePublic to bring you everything from shirts, to mousepads, to coffee mugs. All money made from selling these goodies goes to funding the language, paying for the server that keeps the LDPL website online, etc.
 
