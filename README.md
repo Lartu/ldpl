@@ -13,6 +13,25 @@
 
 This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler, LPM (the LDPL Package Manager) and other useful goodies.
 
+### Index
+ * [Introduction](https://github.com/Lartu/ldpl#readme)
+   * [LDPL Code Example](https://github.com/Lartu/ldpl#-example-ldpl-code)
+   * [What can I use LDPL for?](https://github.com/Lartu/ldpl#-what-can-i-use-ldpl-for)
+ * [LDPL Philosophy](https://github.com/Lartu/ldpl#-ldpl-philosophy)
+ * [How to Install LDPL](https://github.com/Lartu/ldpl#-how-to-install-ldpl)
+ * [Learning LDPL & Documentation](https://github.com/Lartu/ldpl#-learning-ldpl-and-read-the-docs)
+ * [How to use the LDPL Compiler](https://github.com/Lartu/ldpl#-how-to-use-this-compiler)
+   * [Compiler Options](https://github.com/Lartu/ldpl#-compiler-options)
+   * [C++ Extensions](https://github.com/Lartu/ldpl#-c-extensions)
+ * [Libraries](https://github.com/Lartu/ldpl#-libraries)
+   * [The LDPL Standard Library](https://github.com/Lartu/ldpl#-the-ldpl-standard-library)
+   * [Other Libraries](https://github.com/Lartu/ldpl#-other-ldpl-libraries)
+ * [LDPL Compatible Editors](https://github.com/Lartu/ldpl#-ldpl-compatible-editors)
+ * [Contributing to the LDPL Project](https://github.com/Lartu/ldpl#-how-can-i-contribute-to-ldpl)
+ * [Supporting the LDPL Project](https://github.com/Lartu/ldpl#-supporting-the-ldpl-project)
+ * [Getting Help](https://github.com/Lartu/ldpl#-getting-help)
+ * [License](https://github.com/Lartu/ldpl#-license)
+
 ### 📒 Example LDPL code
 
 ```coffeescript
@@ -76,35 +95,23 @@ You can get yourself a precompiled LDPL binary or compile LDPL from source. Chec
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
 
-## 📝 LDPL compatible editors
-
-![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
-
-We have highlighting and code formatting extensions available for [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [dvkt](https://github.com/dvkt) and [Lartu](http://github.com/lartu)), [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
-
-You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
-
 ## 📚 Learning LDPL and Read the Docs
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
 
-If you want to learn how to code in LDPL, there's a little **tutorial** at https://learnxinyminutes.com/docs/ldpl/.
-
-Also be sure to check the [examples](./examples)!
+If you want to learn how to code in LDPL, there's a little **tutorial** at https://learnxinyminutes.com/docs/ldpl/. Also be sure to check the [examples](./examples)!
 
 [The **LDPL documentation** is available here](https://docs.ldpl-lang.org/). Check that to learn yourself some LDPL (*for the greater good!*). The documentation is also uploaded to the [docs](docs) folder of this repository and can be read and modified from there.
 
-The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install` or the LDPL Install Wizard. The man page is also available in the [man](/man) folder of this repository.
+The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL by using `make install` or the LDPL Install Wizard. The man page is also available in the [man](/man) folder of this repository. If you download a precompiled LDPL binary, the man documentation is included as `ldpl.1`, but you have to install it yourself.
 
 ## 💻 How to use this compiler
 
 To use the compiler, you must have a C++ compiler already installed on your system and have mapped it to `c++`, found on your `PATH`. The LDPL Compiler compiles LDPL code to C++ code and thus this is a requirement for it to work.
 
-Once the compiler is set up, go write some LDPL source code, say `source.lsc`.
-Then compile the source code using `ldpl source.lsc`. The compiled, executable binary file will be saved as `source-bin`.
-Done! For more info on the compiler run `ldpl -h`.
-
-For more information, check the [docs](https://docs.ldpl-lang.org/#the-ldpl-compiler).
+Once the compiler is set up, write some LDPL source code, for example `source.ldpl`.
+Then compile the source code using `ldpl source.ldpl`. The compiled, executable binary file will be saved as `source-bin`.
+Done! For more information on the compiler run `ldpl -h` and check the [docs](https://docs.ldpl-lang.org/#the-ldpl-compiler).
 
 ### 🔧 Compiler options
 
@@ -121,7 +128,7 @@ For more information, check the [docs](https://docs.ldpl-lang.org/#the-ldpl-comp
 
 ### 📦 C++ extensions
 
-LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`. You can also use the `-i` compiler flag, but this is not recommended for ease of distribution.
+LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program using the `EXTENSION` statement. For example `extension "myLibrary.cpp"`.
 
 For a guide to writing and building C++ extensions, see the [LDPL official documentation](https://docs.ldpl-lang.org/cppext/). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
@@ -166,47 +173,35 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 - [**The LDPL Ncurses Library**](https://github.com/Lartu/ldpl-ncurses): the LDPL Ncurses Library is a ncurses wrapper for LDPL, designed for creating terminal applications that require more complex text user-interfaces than simple line-feeding. Install with: `lpm install ldpl-ncurses`.
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
 
-## 👨🏼‍💻 How can I contribute to LDPL?
+## 📝 LDPL Compatible Editors
 
-If you want to contribute to LDPL you can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](https://www.ldpl-lang.org/contribute.html) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution!
+![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
+
+We have highlighting and code formatting extensions available for [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [dvkt](https://github.com/dvkt) and [Lartu](http://github.com/lartu)), [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
+
+You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
+
+## 👨🏼‍💻 How can I contribute to LDPL?
 
 ![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
 
-Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). Tl;dr: be nice to everyone.
+There are many ways to contribute to the LDPL project. You can fix bugs, add issues, write examples, write software in LDPL, add statements to the [Standard Library](https://github.com/Lartu/ldpl-std), etc. Check out the [contribution guide](https://www.ldpl-lang.org/contribute.html) for more information. Anything is very welcome! Even telling your friends about LDPL is a very easy and very useful contribution.
+
+Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). TL;DR: be nice to everyone.
 
 If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
-### 🤠 Wanted List
-This is a list of contributions we are actively looking for, so if you don't know where to start contributing, this might give you some inspiration.
- * **Language**
-   * Expressions involving numbers and variables (maybe enclosed by something like `{}`).
-     * Example: `store {foo + 1} in bar`
- * **Libraries**
-   * A MySQL library.
-   * A JSON library.
-   * SQLite library.
-   * Requests library.
- * **Others**
-   * Updated man file from the latest docs.
-   * Updated nano editor highlighting.
-   * Add install instructions for extra files that might be needed to the installer.
- 
-
-## 🔎 Where can I get more help, if I need it?
-
-You are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are a few extra ways to get in touch with us stated on the website.
-
 ## 👔 Supporting the LDPL Project
 
-he LDPL Programming Language is a non-profit project mantained by people like you from all over the world. If you like what we do, please consider [donating](https://www.ldpl-lang.org/support.html) to the LDPL project.
+The LDPL Programming Language is a non-profit project mantained by people like you from all over the world. If you like what we do, please consider [donating](https://www.ldpl-lang.org/support.html) to the LDPL project.
 
 There's also [LDPL merchandise available](https://www.teepublic.com/user/lartu), due to popular request! We've paired with TeePublic to bring you everything from shirts, to mousepads, to coffee mugs. All money made from selling these goodies goes to funding the language, paying for the server that keeps the LDPL website online, etc.
 
-<img src="images/merch/shirt.jpg" width="150px">  <img src="images/merch/shirt2.jpg" width="150px"> <img src="images/merch/shirt3.jpg" width="150px">  <img src="images/merch/mug2.jpg" width="150px">
-
-<img src="images/merch/mug3.jpg" width="150px"> <img src="images/merch/notebook.jpg" width="150px">  <img src="images/merch/sticker.jpg" width="150px">  <img src="images/merch/case.jpg" width="150px">
-
 Visit the LDPL [Donations and Merchandise](https://www.ldpl-lang.org/support.html) page for more information.
+
+## 🔎 Getting Help
+
+If you have any questions regarding the LDPL project you are welcome to submit an issue to this repository, check the [LDPL website](https://www.ldpl-lang.org) or join the community channels stated in the previous section. There are no dumb questions, just ask away.
 
 ## 📜 License
 
