@@ -1685,13 +1685,13 @@ bool is_scalar_list(string & token, compiler_state & state)
 // Checks if token is a NUMBER variable (or an access to a container that results in a NUMBER variable)
 bool is_num_var(string & token, compiler_state & state)
 {
-    return (variable_type(token, state) == vector<unsigned int>{1}):
+    return (variable_type(token, state) == vector<unsigned int>{1});
 }
 
 // Checks if token is a TEXT variable (or an access to a container that results in a TEXT variable)
 bool is_txt_var(string & token, compiler_state & state)
 {
-    return (variable_type(token, state) == vector<unsigned int>{2}):
+    return (variable_type(token, state) == vector<unsigned int>{2});
 }
 
 bool is_scalar_variable(string & token, compiler_state & state)
