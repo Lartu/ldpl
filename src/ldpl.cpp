@@ -1685,53 +1685,13 @@ bool is_scalar_list(string & token, compiler_state & state)
 // Checks if token is a NUMBER variable (or an access to a container that results in a NUMBER variable)
 bool is_num_var(string & token, compiler_state & state)
 {
-    // Our precondition is that the variable we are trying to check exists.
-    // We first want to get the type of the variable. In order to do this,
-    // we have first to call split_vector to split it into var_name and
-    // indexes, just in case we are dealing with a container and not a scalar
-    // variable.
-    string var_name;
-    vector<string> indexes;
-    split_vector(token, var_name, indexes, state);
-    // Now that we have the variable name, we get its type.
-    vector<unsigned int> var_types = variable_type(var_name, state);
-    // If the type is NUMBER (1), we are dealing with a scalar variable and
-    // we just return true.
-    if(var_types == vector<unsigned int>{1}) return true;
-    // If the type is not (1), we might be dealing with a container. We'll
-    // first have to check if the container is a NUMBER container. If it's not,
-    // we just return false.
-    if(var_types[0] != 1) return false;
-    // If we have a NUMBER container, we have to check that the number of
-    // indexes it has matches the number of indexes it expects. If it does,
-    // the container results in a NUMBER variable.
-    return indexes.size() == var_types.size() - 1;
+    return (variable_type(token, state) == vector<unsigned int>{1}):
 }
 
 // Checks if token is a TEXT variable (or an access to a container that results in a TEXT variable)
 bool is_txt_var(string & token, compiler_state & state)
 {
-    // Our precondition is that the variable we are trying to check exists.
-    // We first want to get the type of the variable. In order to do this,
-    // we have first to call split_vector to split it into var_name and
-    // indexes, just in case we are dealing with a container and not a scalar
-    // variable.
-    string var_name;
-    vector<string> indexes;
-    split_vector(token, var_name, indexes, state);
-    // Now that we have the variable name, we get its type.
-    vector<unsigned int> var_types = variable_type(var_name, state);
-    // If the type is TEXT (2), we are dealing with a scalar variable and
-    // we just return true.
-    if(var_types == vector<unsigned int>{2}) return true;
-    // If the type is not (2), we might be dealing with a container. We'll
-    // first have to check if the container is a TEXT container. If it's not,
-    // we just return false.
-    if(var_types[0] != 2) return false;
-    // If we have a TEXT container, we have to check that the number of
-    // indexes it has matches the number of indexes it expects. If it does,
-    // the container results in a TEXT variable.
-    return indexes.size() == var_types.size() - 1;
+    return (variable_type(token, state) == vector<unsigned int>{2}):
 }
 
 bool is_scalar_variable(string & token, compiler_state & state)
