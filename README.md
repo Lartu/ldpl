@@ -52,7 +52,7 @@ This code greets the user and asks them to enter their name, then it greets them
 LDPL can be used to write software just like any other language you know. You can open, edit and save files, do math,
 parse and modify text, etc. Some of these tasks are made easier by the fact that LDPL natively knows how to work with
 UTF-8 strings. By using the [available libraries](https://github.com/Lartu/ldpl#-some-other-ldpl-libraries), LDPL becomes
-a language *specially* well suited for writing **Telegram Bots**, **IRC Bots** and **Simple Network Servers**.
+a language *specially* well suited for writing **Telegram Bots**, **IRC Bots**, **Text UI Applications** and **Simple Network Applications**.
 Code written in LDPL is easy to read, runs fast and can easily interface with C++ code,
 so you can do anything you want, really.
 
