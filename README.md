@@ -175,9 +175,9 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 
 ## 📝 LDPL Compatible Editors
 
-![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
+![Gedit](https://www.ldpl-lang.org/images/gedit.png) ![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
 
-We have highlighting and code formatting extensions available for [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [dvkt](https://github.com/dvkt) and [Lartu](http://github.com/lartu)), [vim](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)), [Atom](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [nano](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)).
+We have highlighting and code formatting extensions available for [**Gedit / Pluma**](https://github.com/Lartu/ldpl/tree/master/highlighting/gedit) (by [Lartu](http://github.com/lartu)), [**Visual Studio Code**](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [dvkt](https://github.com/dvkt) and [Lartu](http://github.com/lartu)), [**nano**](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)), [**Atom**](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [**Vim**](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)).
 
 You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
 
