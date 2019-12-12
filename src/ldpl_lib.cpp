@@ -493,7 +493,7 @@ ldpl_number VAR_ERRORCODE = 0;
 chText VAR_ERRORTEXT = \"\";
 
 //Forward declarations
-chText to_ldpl_string(double x);
+chText to_ldpl_string(ldpl_number x);
 chText trimCopy(chText _line);
 
 #ifndef LDPLMAP
