@@ -1,7 +1,7 @@
 #ifndef LDPLTYPES
 
 #define LDPLTYPES
-#define ldpl_number double
+#define ldpl_number long double
 #define ldpl_vector ldpl_map
 #define ldpl_text chText
 
