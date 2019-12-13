@@ -1,6 +1,7 @@
 # LDPL Docs
 
 ## Introduction
+
 The **LDPL Community** has compiled this document with the desire to teach
 and standardize the **LDPL** programming language. This document contains the
 specification for the **LDPL** programming language, as well as explanations,
@@ -12,7 +13,7 @@ Feedback, corrections and suggestions are welcome, both on the main
 [LDPL repository](https://github.com/Lartu/ldpl)
 or by e-mail to [martin@ldpl-lang.org](mailto:martin@ldpl-lang.org).
 You can join the LDPL community at [r/ldpl](https://reddit.com/r/ldpl)
- or via IRC on irc.freenode.net channel #ldpl.
+or via IRC on irc.freenode.net channel #ldpl.
 
 The source code for this documentation is available in the LDPL repository.
 
