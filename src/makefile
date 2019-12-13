@@ -45,7 +45,7 @@ ldpl.1:
 	cp ../man/ldpl.1 ldpl.1
 
 clean:
-	rm -f ldpl.o ldpl ldpl_included_lib.cpp lpm
+	rm -f ldpl.o ldpl ldpl_included_lib.cpp lpm ldpl.1
 
 install: ldpl ldpl.1
 	install -d $(DESTDIR)$(PREFIX)/bin/
