@@ -19,19 +19,9 @@ r = run_command('src/lib-to-string.sh')
 
 assert(r.returncode()==0, 'lib-to-strin.sh OK')
 
-list_sources = files([
-	'src/ldpl.cpp',
-	])
-
-list_headers = files([
-	'src/ldpl.h',
-	'src/cpptrim.h'
-])
-install_headers(list_headers)
-
 run_man = run_command('man/generateMan.sh')
 assert(run_man.returncode()==0, 'Manpage generate OK')
 install_man('man/ldpl.1')
 
 
-executable('ldpl', sources: list_sources )
+executable('ldpl', sources: 'src/ldpl.cpp' )
