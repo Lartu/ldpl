@@ -13,15 +13,11 @@
 #include <vector>
 
 #define NVM_FLOAT_EPSILON 0.00000001
-#define ldpl_number long double
+#define ldpl_number double
 #define CRLF \"\\n\"
 #define ldpl_vector ldpl_map
 
 using namespace std;
-
-// ----------------- MPREAL ------------------------------
-
-
 
 // -------------------------------------------------------
 
