@@ -64,15 +64,15 @@ This is free software: you are free to change and redistribute it. There is NO W
 .SH -=-=-=-=-=-=-=-=-=- DOCS: LDPL DOCUMENTATION -=-=-=-=-=-=-=-=-=-
 
 
-.SH LDPL DOCS
+# LDPL Docs
 
-.B Introduction
+## Introduction
+
 The LDPL Community has compiled this document with the desire to teach
 and standardize the LDPL programming language. This document contains the
 specification for the LDPL programming language, as well as explanations,
 instructions and examples for every feature included in it.
 
-!LDPL
 
 Feedback, corrections and suggestions are welcome, both on the main
 LDPL repository
@@ -82,7 +82,7 @@ or via IRC on irc.freenode.net channel #ldpl.
 
 The source code for this documentation is available in the LDPL repository.
 
-.B About LDPL
+## About LDPL
 
 LDPL is a powerful compiled programming language designed from the
 ground up to be expressive, readable, fast and easy to learn. It mimics plain
@@ -92,16 +92,15 @@ portable and runs on a plethora of different architectures and operating
 systems including AMD-64, ARMv8 and PowerPC Linux and Mac OS X. It also
 supports UTF-8 out of the box.
 
-:::python
-# LDPL 'Hello World' example
+    # LDPL 'Hello World' example
 
-data:
-name is text # Your name will go here.
+    data:
+    name is text # Your name will go here.
 
-procedure:
-display "Hello World!" lf "What's your name? "
-accept name
-display "你好, " name ", welcome to LDPL!" lf
+    procedure:
+    display "Hello World!" lf "What's your name? "
+    accept name
+    display "你好, " name ", welcome to LDPL!" lf
 
 LDPL also aims to suppress unreadable code and redundancy by only having one
 way of doing anything. What a command does should never overlap with the
@@ -109,7 +108,7 @@ purpose of another command and, as such, every LDPL command does one and only
 one thing. Every line is a step further towards the completion of an algorithm,
 no more, no less.
 
-.B The LDPL Compiler
+## The LDPL Compiler
 
 To use LDPL, you should first download or compile the LDPL compiler.
 For more information on how to do that, read the
@@ -124,13 +123,13 @@ Once the compiler is set up, go write some LDPL source code, say 'source.ldpl'.
 Then compile the source code using 'ldpl source.ldpl'. The compiled, executable
 binary file will be saved as 'source-bin'. Done!
 
-.B Compiler Switches
+### Compiler Switches
 
 To use the LDPL compiler, the syntax is as follows:
 
-ldpl [-i='<included file>']... <source file>|-c
-[-o='<output name>'|-r] [-f='<c++ flag>']... [-n]
-ldpl [-v|-h]
+    ldpl [-i='<included file>']... <source file>|-c
+         [-o='<output name>'|-r] [-f='<c++ flag>']... [-n]
+    ldpl [-v|-h]
 
 The '-f' flag can be used to pass extra options to the 'c++' compiler when. For
 example, '-f=-lSDL' could be used to link against SDL. The 'flag' statement can
@@ -159,18 +158,18 @@ to this flag; see the Extensions section for more information. The use of the
 
 '-h' and '--help' print this list of options.
 
-.B File Extensions
+## File Extensions
 
 The preferred file extension for LDPL source files is '.ldpl'.
 The extension '.lsc' (LDPL Source File) should also be accepted in case
 the preferred extension couldn't be used for any reason.
 
-!!! tip
-File extensions are important: they help editors to recognize what language
-your source code is written in and they tell the LDPL compiler how to treat
-your files.
+~ Tip ~
+    File extensions are important: they help editors to recognize what language
+    your source code is written in and they tell the LDPL compiler how to treat
+    your files.
 
-.B License
+## License
 
 This LDPL Compiler is distributed under the Apache 2.0 License.
 All LDPL Dinosaur logos where created by Lartu and are
@@ -180,9 +179,9 @@ license. This documentation is released under the Apache 2.0 License.
 
 
 
-.SH LDPL SOURCE CODE STRUCTURE
+# LDPL Source Code Structure
 
-.B Case Sensitivity
+## Case Sensitivity
 
 LDPL is a case-insensitive language. This means that variables and statements
 that consist of the same characters are understood to be the same variable
@@ -191,30 +190,28 @@ variables 'foo' and 'FOO' would represent two different variables, but in
 LDPL they are the same one. This same thing happens with statements. For
 LDPL it's the same if you write 'display' or 'dIsPlAy' (but please don't do so).
 
-.B Comments
+## Comments
 Comments in LDPL are denoted with a hash symbol ('#') and can be placed both
 on their own line or at the end of a line that already contains a statement.
 Everything after the hash is considered to be part of the comment and,
 therefore, not executed.
 
-:::coffeescript
-data:
-# This won't be executed
-# This won't be either
-procedure:
-# This line won't be interpreted
+    data:
+        # This won't be executed
+        # This won't be either
+    procedure:
+        # This line won't be interpreted
 
-.B Data and Procedure Sections
+## Data and Procedure Sections
 LDPL was designed to be a rigidly structured programming
 language and, as such, variable declarations and the remaining code procedures
 are separated into two different, mutually exclusive sections within every
 source file: the 'data:' section and the 'procedure:' section.
 
-:::coffeescript
-data:
-# Variables go here
-procedure:
-# The rest of the code goes here
+    data:
+        # Variables go here
+    procedure:
+        # The rest of the code goes here
 
 Variable declarations should be placed within the data section, while the
 rest of the code should be placed inside the procedure section. Further
@@ -226,38 +223,34 @@ The data section may be obviated if no variables are used.
 If your project consists of multiple LDPL source files, each file must have its
 own data and procedure sections.
 
-.B Including More Source Files
+## Including More Source Files
 
 You can import other LDPL source files to your LDPL source by using the
 include statement. For example, say you have two sources:
 
-:::coffeescript
-# This is 'firstSource.ldpl'
-procedure:
-call someSubprocedure
+    # This is 'firstSource.ldpl'
+    procedure:
+        call someSubprocedure
 
 and
 
-:::coffeescript
-# This is 'includedFile.ldpl'
-procedure:
-sub someSubprocedure
-display "Hi there!"
-end sub
+    # This is 'includedFile.ldpl'
+    procedure:
+        sub someSubprocedure
+            display "Hi there!"
+        end sub
 
 You can import the second source into the first one in order to create one
 big source file like this:
 
-:::coffeescript
-# This is 'firstSource.ldpl'
-include "includedFile.ldpl"
-procedure:
-call someSubprocedure
+    # This is 'firstSource.ldpl'
+    include "includedFile.ldpl"
+    procedure:
+        call someSubprocedure
 
 When you run the code above, it will print
 
-:::text
-Hi there!
+    Hi there!
 
 using the sub-procedure 'someSubprocedure' included from the second file.
 
@@ -266,7 +259,7 @@ that includes them. You may include as many files as you like.
 
 The 'include' statement can only be used before the data section.
 
-.B C++ Extensions
+## C++ Extensions
 
 LDPL source code can be extended using C++ Extensions, C++ source files
 that can be compiled along the C++ source code generated by the LDPL compiler.
@@ -274,7 +267,7 @@ While these are explained in greater detail in their respective section of
 this document, two statements are relevant to this part of the documentation:
 the 'flag' and 'extension' statements.
 
-.B C++ Compiler Flags
+## C++ Compiler Flags
 
 When writing C++ code, you may need to pass some flags to the C++ compiler.
 Say, for example, you are writing something using the SDL Library. When
@@ -286,29 +279,51 @@ Following the example above, if you want to pass the flag '-lSDL' to the C++
 compiler that compiles the code generated by the LDPL compiler from your LDPL
 source code, you may do this:
 
-:::coffeescript
-flag "-lSDL"
-flag "-fpermissive" # you can pass as many flags as you want
-data:
-#...
-procedure:
-#...
+    flag "-lSDL"
+    flag "-fpermissive" # you can pass as many flags as you want
+    data:
+        #...
+    procedure:
+        #...
+
+Often, different operating systems require different flags. In those cases,
+you can restrict the 'flag' statement to a particular OS:
+
+    flag "-O3"
+    flag linux "-lncursesw"
+    flag macos "-lncurses"
+    flag macos "-D_XOPEN_SOURCE_EXTENDED" # multiple flags per OS are permitted
+    data:
+        #...
+    procedure:
+        #...
+
+~ Tip ~
+    LDPL officially supports the following operating systems:
+
+    • Linux
+    • MacOS
+    • Android
+
+    And includes experimental support for these fine systems:
+
+    • BSD
+    • Emscripten
 
 The 'flag' statement can only be used before the data section.
 
-.B C++ Extension Including
+## C++ Extension Including
 
 Extensions are C++ source files that you can compile along your LDPL source
 in order to extend the language, as stated above. If you want to include an
 extension, you may use the 'extension' statement. For example:
 
-:::coffeescript
-extension "someDirectory/someFile.cpp"
-flag "-O3"
-data:
-#...
-procedure:
-#...
+    extension "someDirectory/someFile.cpp"
+    flag "-O3"
+    data:
+        #...
+    procedure:
+        #...
 
 The 'extension' statement can only be used before the data section.
 
@@ -320,7 +335,7 @@ The 'extension' statement can only be used before the data section.
 
 
 
-.B The Data Section
+## The Data Section
 
 The data section is where global variables are declared (you can use them
 anywhere in your program). If no variables are declared, the data section can
@@ -329,8 +344,7 @@ be skipped altogether.
 The data section is defined and preceded by the 'data:' keyword.
 An empty data section looks like this:
 
-:::coffeescript
-data:
+    data:
 
 On every line within the data section (that is, on every line after the 'data:'
 keyword and before the 'procedure' keyword) one and only one variable can be
@@ -338,8 +352,7 @@ declared.
 
 The syntax for declaring a variable in LDPL is:
 
-:::coffeescript
-variable-name is data-type
+    variable-name is data-type
 
 Variable naming schemes and data types will be explained later on this
 document.
@@ -347,15 +360,14 @@ document.
 A data section cannot contain anything but variable declarations, comments and
 empty lines. An example data section may end up looking like this:
 
-:::coffeescript
-data: # this is an example data section
-foo is number
-bar is text map
+    data: # this is an example data section
+        foo is number
+        bar is text map
 
-# foobar is my number list
-foobar is number list
+        # foobar is my number list
+        foobar is number list
 
-.B Variable Data Types
+## Variable Data Types
 
 LDPL natively supports the scalar number and text data types. It also
 supports containers of said scalar types: maps and lists, combined in
@@ -363,21 +375,19 @@ any way.
 
 Variables may be declared, as stated above, using the syntax:
 
-:::coffeescript
-variable-name is data-type
+    variable-name is data-type
 
 within the data section. The name of a data type is composed of either a scalar
-data type name (number or text) or a scalar data type plus one or more
-container type names. For example:
+data type name (number or text) or a container type plus one or more
+scalar or container type names. For example:
 
-:::coffeescript
-foo is number
-bar is text
-foobar is text list map
+    foo is number
+    bar is text
+    foobar is map of list of text
 
 In the case above, foobar is a map of lists of text values.
 
-.B The Number Data Type
+### The Number Data Type
 
 The number data type, as its name suggests, depicts numeric values.
 It's recommended that it be represented internally as a binary64
@@ -391,10 +401,9 @@ negative numbers (-5, -567.912). Numbers may not be preceded by a plus sign
 (+5 is not a valid number literal). The literal -0 is implicitly transformed
 into 0.
 
-:::coffeescript
--231897.123 # is an example number
+    -231897.123 # is an example number
 
-.B The Text Data Type
+### The Text Data Type
 
 The text data type, as its name suggests, represents alphanumeric strings.
 In the interest of supporting as many locales as possible, texts should be utf-8
@@ -402,34 +411,32 @@ encoded to be compatible with Unicode. A text maximum length for text values is
 explicitly not defined and it should be limited only by the amount of available
 memory on the system. Strings in LDPL are enclosed between two "quotes".
 
-:::coffeescript
-"This is an example string!"
+    "This is an example string!"
 
 LDPL strings may contain multiple escape sequences / control characters in
 them. Each escape sequence counts as only one character. The available escape
 sequences are:
 
-* '\\a' = alert (bell)
-* '\\b' = backspace
-* '\\t' = horizontal tab
-* '\\n' = newline / line feed
-* '\\v' = vertical tab
-* '\\f' = form feed
-* '\\r' = carriage return
-* '\\e' = non-standard GCC escape
-* '\\0' = null byte
-* '\\\\' = \\ character
-* '\\"' = " character
+    • '\\a' = alert (bell)
+    • '\\b' = backspace
+    • '\\t' = horizontal tab
+    • '\\n' = newline / line feed
+    • '\\v' = vertical tab
+    • '\\f' = form feed
+    • '\\r' = carriage return
+    • '\\e' = non-standard GCC escape
+    • '\\0' = null byte
+    • '\\\\' = \\ character
+    • '\\"' = " character
 
 For example, the string '"hello,\\nworld"' will be displayed as
 
-:::text
-hello,
-world
+    hello,
+    world
 
 when printed to the console.
 
-.B The List Data Type
+### The List Data Type
 
 The list data type is a collection of number or text values, or containers
 of possibly more containers of said types. Values can be pushed to lists and
@@ -441,24 +448,22 @@ Lists, as collections of number or text values (or collections of said types),
 can only have one defined type at any given time: text or number. A single list
 is not capable of storing both numeric and alphanumeric values.
 
-:::coffeescript
-data:
-foo is number list # This is a list
+    data:
+        foo is number list # This is a list
 
-procedure:
-push 10 to foo
-display foo:0 lf
+    procedure:
+        push 10 to foo
+        display foo:0 lf
 
-!!!note
-The 'display' statement prints values to the screen. While it will be
-explained in more detail later, the line
+~ Note ~
+    The 'display' statement prints values to the screen. While it will be
+    explained in more detail later, the line
 
-:::python
-'display foo:0 lf'
+        'display foo:0 lf'
 
-prints
-the value of 'foo:0' (the index '0' of the list 'foo') followed by
-a line break ('lf').
+    prints
+    the value of 'foo:0' (the index '0' of the list 'foo') followed by
+    a line break ('lf').
 
 In most other languages, you may have to declare a list and specify how many
 elements or components it contains. In such languages, the declaration causes a
@@ -493,13 +498,12 @@ To add values to a list, you must first push them to the list. For example,
 if you want to add the numbers '10', '20' and '30' to a 'number list', your
 code should look like this:
 
-:::coffeescript
-data:
-myList is number list
-procedure:
-push 10 to myList # 10 is stored in index 0 of myList
-push 20 to myList # 20 is stored in index 1 of myList
-push 30 to myList # 30 is stored in index 2 of myList
+    data:
+      myList is number list
+    procedure:
+      push 10 to myList # 10 is stored in index 0 of myList
+      push 20 to myList # 20 is stored in index 1 of myList
+      push 30 to myList # 30 is stored in index 2 of myList
 
 
 Values in lists can be stored and accessed just like any other variable
@@ -508,21 +512,20 @@ This operator indicates what index of the list we are writing to or reading
 from. Here we declare a 'number list' and store the values '5' and '-10.2' in
 it, and then replace the number '5' by the number '890':
 
-:::coffeescript
-data:
-myList is number list
-procedure:
-push 5 to myList
-# 5 is stored in index 0 of myList
-push -10.2 to myList
-# -10.2 is stored in index 1 of myList
-store 890 in myList:0
-# We store 890 in index 0 of myList, thus replacing the 5
+    data:
+      myList is number list
+    procedure:
+      push 5 to myList
+      # 5 is stored in index 0 of myList
+      push -10.2 to myList
+      # -10.2 is stored in index 1 of myList
+      store 890 in myList:0
+      # We store 890 in index 0 of myList, thus replacing the 5
 
-!!!note
-The 'push' statement adds a value at the end of a list. Also, the 'store
-- in' statement stores a value in a variable. These two statements will
-be explained in more detail in their respective sections of this document.
+~ Note ~
+    The 'push' statement adds a value at the end of a list. Also, the 'store
+    • in' statement stores a value in a variable. These two statements will
+    be explained in more detail in their respective sections of this document.
 
 Please note that as a list is variable that's a collection of values, a
 single index of a list is a variable in itself. This means that any subindex
@@ -530,30 +533,29 @@ of a list that resolves to a scalar value be used in any position where you
 could use a variable of the same type of that value. So, if you have something
 like this:
 
-1 | store <number-variable or number> in <number-variable>
+    store <number-variable or number> in <number-variable>
 .br
 
-You could use a 'number list' with a defined sub-index (for example, in the
-example above, 'myList:0') where it says number-var, just like in
+You could use a 'number list' with a defined sub-index \(for example, in the
+example above, 'myList:0'\) where it says number-var, just like in
 the 'store - in' examples in the code extracts above.
 
 In the list statements section you'll find a collection of statements that
 can be used to work with lists.
 
-.B The Map Data Type
+### The Map Data Type
 
 The map data type is a collection of number or text values. Maps
 superficially resemble lists but with fundamental differences. The biggest one
 is that any number or string in LDPL may be used as an array index, not just
 consecutive integers. Also, values in maps have no order.
 
-:::python
-data:
-foo is number map # This is a map
+    data:
+        foo is number map # This is a map
 
-procedure:
-store 19 in foo:"hi there!"
-display foo:"hi there!" lf
+    procedure:
+        store 19 in foo:"hi there!"
+        display foo:"hi there!" lf
 
 Maps, as collections of number or text values (or collections of said types),
 can only have one defined type at any given time: text or number. A single map
@@ -578,8 +580,8 @@ you could have a 'number map' with the following contents:
 
 We have shown the pairs in jumbled order because their order is irrelevant.
 One advantage of maps is that new pairs can be added at any time. maps can be
-sparse: they can have missing keys (say for example you have keys 1 and 5, but
-don't have keys 2, 3 and 4). Another consequence of maps is that the keys
+sparse: they can have missing keys \(say for example you have keys 1 and 5, but
+don't have keys 2, 3 and 4\). Another consequence of maps is that the keys
 don't necessarily have to be positive integers. Any number, or even a string,
 can be a key.
 
@@ -589,36 +591,34 @@ This operator indicates what key of the map we are writing to or reading from.
 Here we declare a 'number map' and store the values '5' and '-10.2' in the
 keys '1' and '5', respectively.
 
-:::coffeescript
-data:
-myMap is number map
-procedure:
-store 5 in myMap:1 #Stores 5 in key 1 of myMap
-store -10.2 in myMap:5 #Stores -10.2 in key 5 of myMap
+    data:
+      myMap is number map
+    procedure:
+      store 5 in myMap:1 #Stores 5 in key 1 of myMap
+      store -10.2 in myMap:5 #Stores -10.2 in key 5 of myMap
 
 As stated before, map keys don't always have to be constant numbers.
 They can also be number variables, text and text variables, or even sub-indexes
 of lists or elements from other maps. For example:
 
-:::coffeescript
-data:
-myMap is number map
-myOtherMap is number map
-myVar is number
+    data:
+      myMap is number map
+      myOtherMap is number map
+      myVar is number
 
-procedure:
-store 17 in myVar
-store 1 in myMap:"hello"
-#Stores 1 in key "hello" of myMap
-store 7 in myMap:myVar
-#Stores 7 in a key equal to the current value of myVar
-store 3 in myMap:myOtherMap:4
-#Stores 3 in a key of equal value to the key of myMap with value equal to
-#key 4 of myOtherMap
+    procedure:
+      store 17 in myVar
+      store 1 in myMap:"hello"
+      #Stores 1 in key "hello" of myMap
+      store 7 in myMap:myVar
+      #Stores 7 in a key equal to the current value of myVar
+      store 3 in myMap:myOtherMap:4
+      #Stores 3 in a key of equal value to the key of myMap with value equal to
+      #key 4 of myOtherMap
 
 In fact, when you use a number value as a subindex for a map, it is silently
-casted into a text value. For example, 'myMap:1' will be interpreted (an thus,
-the same) as 'myMap:"1"'.
+casted into a text value. For example, 'myMap:1' will be interpreted \(an thus,
+the same\) as 'myMap:"1"'.
 
 Please note that as a map is variable that's a collection of values,
 a single key of a map is a variable in itself. This means that any key of a
@@ -626,24 +626,24 @@ map that resolves to a scalar value can be used in any position where you could
 use a variable of the same type of that value. So, if you have something like
 this:
 
-1 | store <number-var or number> in <number-var>
+    store <number-var or number> in <number-var>
 .br
 
 You could use a 'number map' with a particular key where it says number-var,
 just like in the 'store - in' examples in the code extracts above
-(for example 'myMap:"hello"').
+\(for example 'myMap:"hello"'\).
 
 As you'll see in the Default Variable Values section, you can access
 undeclared keys of a map just like if they were declared.
 See the following example:
 
-1 | data:
+    data:
 .br
-2 |   myMap is number map
+      myMap is number map
 .br
-3 | procedure:
+    procedure:
 .br
-4 |   display myMap:99
+      display myMap:99
 .br
 
 In the example above, '0' will be printed and no errors displayed during
@@ -661,96 +661,99 @@ overcome this situation.
 In the map statements section you'll find a collection of statements that
 can be used to work with maps.
 
-!!!warning
-In older versions of LDPL, maps were called vectors.
-Starting from LDPL 3.1.0 Diligent Dreadnoughtus, they have been renamed
-to reflect the real data structure they represent. While it might still be
-possible to call them vectors in code, and legacy code that declares maps
-as vectors is and will continue be supported, this nomenclature is
-deprecated and shouldn't be used anymore.
+~ Warning ~
+    In older versions of LDPL, maps were called vectors.
+    Starting from LDPL 3.1.0 Diligent Dreadnoughtus, they have been renamed
+    to reflect the real data structure they represent. While it might still be
+    possible to call them vectors in code, and legacy code that declares maps
+    as vectors is and will continue be supported, this nomenclature is
+    deprecated and shouldn't be used anymore.
 
-.B Multicontainers
+## Multicontainers
 
 As stated before, "The name of a data type is composed of either a scalar
-data type name (number or text) or a scalar data type plus one or more
-container type names." This means that you can declare variables like:
+data type name (number or text) or a container type plus one or more
+scalar or container type names." This means that you can declare variables like:
 
-:::coffeescript
-myVariable is text list list
-myOtherVariable is number map list map map list map
-pleaseStop is text list list map list list map map map list map map list
+    myVariable is list of list of text
+    myOtherVariable is map of list of map of map of list of map of number
+    pleaseStop is list of map of map of list of map of map of map of list of list of map of list of list of text
 
-These variables are called multicontainers. Multicontainers should be read
-from right to left in order to understand how are they set up. For example,
-a 'text list map' is a map that holds lists of text values. You
-may access a value stored in a 'text list map' like:
+These variables are called multicontainers. Multicontainers hold other
+containers, which can hold more containers or scalar values to an arbitrary
+depth.For example, a 'map of list of text' is a map that holds lists
+of text values. You may access a value stored in a 'map of list of text'
+like so:
 
-:::coffeescript
-display foo:"hi":0
+    display foo:"hi":0
 
 where 'hi' is the key used to access a list stored in the map, and '0' the
 index used to access a text value stored in the list that was stored in the
 map.
 
-If you want to push a list to a 'list list' or a map to a 'map list' you must
-use the 'push list to ' and 'push map to ' statements, respectively:
+If you want to push a list to a 'list of list' or a map to a 'list of map' you
+must use the 'push list to ' and 'push map to ' statements, respectively:
 
-:::coffeescript
-data:
-listOfMaps is text map list
-listOfLists is text list list
-procedure:
-push map to listOfMaps
-store "Hello!" in toListOfLists:0:"hi!"
-# Pushes a map to listOfMaps and then stores
-# the value "Hello!" in the key "hi!" of the pushed map
-push list to listOfLists
-push "Hello!" toListOfLists:0
-# Pushes a map to listOfLists and then pushes
-# the value "Hello!" at index 0 of the pushed list
+    data:
+        listOfMaps is list of map of text
+        listOfLists is list of list of text
+    procedure:
+        push map to listOfMaps
+        store "Hello!" in listOfMaps:0:"hi!"
+        # Pushes a map to listOfMaps and then stores
+        # the value "Hello!" in the key "hi!" of the pushed map
+        push list to listOfLists
+        push "Hello!" listOfLists:0
+        # Pushes a map to listOfLists and then pushes
+        # the value "Hello!" at index 0 of the pushed list
 
 These will be explained in more detail in their respective sections.
 
-.B Default Type Values
+~ Note ~
+    In LDPL 4.3, multicontainers were introduced with a right-to-left syntax.
+    A 'map of list of text' was defined as 'text list map'. This syntax is
+    still supported.
+
+## Default Type Values
 
 In LDPL each variable is initialized with a value by default. This means
 that when you declare a variable, it will, by default, hold this value
 until it's changed.
 
-* Number variables are initialized with the value '0'. Each element of
-a number map is a number variable, and thus also initialized to '0'.
-* Text variables are initialized to the empty string '""'. The same goes
-for text maps, where each element it contains is also initialized to '""'.
-* Lists are initialized empty by default and trying to access a
-non-existing index will result in an error.
-* Keys of Maps of Lists ('list map') are declared as empty lists of the
-scalar type of the multicontainer by default.
+    • Number variables are initialized with the value '0'. Each element of
+ a number map is a number variable, and thus also initialized to '0'.
+    • Text variables are initialized to the empty string '""'. The same goes
+ for text maps, where each element it contains is also initialized to '""'.
+    • Lists are initialized empty by default and trying to access a
+ non-existing index will result in an error.
+    • Keys of Maps of Lists ('map of list') are declared as empty lists of the
+ scalar type of the multicontainer by default.
 
-.B Predeclared Variables
+## Predeclared Variables
 
 Some variables in LDPL are already declared for you without you having to
 declare them. These variables are the argv text list, and the errorcode
 and errortext variables.
 
-.B The *argv* list variable
+### The *argv* list variable
 
 Every LDPL program comes with the 'argv' text list variable declared by
 default.
 
-If you pass command line arguments to your LDPL compiled program (running, for
+If you pass command line arguments to your LDPL compiled program \(running, for
 example, something like 'myBinary argument1 argument2)', the values stored
-in the 'argv' list (_argument vector_) will be the values of each argument
-passed (in this case, '"argument1"' will be stored in 'argv:0' and
-'"argument2"' in 'argv:1').
+in the 'argv' list \(_argument vector_\) will be the values of each argument
+passed \(in this case, '"argument1"' will be stored in 'argv:0' and
+'"argument2"' in 'argv:1'\).
 
-!!!hint
-Given that 'argv' is a text list, the values passed as arguments are
-always stored as text, even numbers.
+~ Hint ~
+    Given that 'argv' is a text list, the values passed as arguments are
+    always stored as text, even numbers.
 
 Naturally, if no arguments are passed to the program, the 'argv' list will be
 empty.
 
-.B The *errorcode* and *errortext* text variables
+### The *errorcode* and *errortext* text variables
 
 Some LDPL operations may fail when executed. Maybe you tried loading a file
 that wasn't there or getting the ASCII value of a multi-byte emoji. These
@@ -770,14 +773,14 @@ description of what went wrong.
 The 'errorcode' and 'errortext' variables can be read and written like any other
 LDPL variable.
 
-!!!warning
-When handling error checks, please bear in mind that the content of the
-'errortext' variable may change in future releases of LDPL. The value
-stored in 'errorcode', however, will not change and so that's the value
-that should be used to check whether an operation ran successfully or not.
+~ Warning ~
+    When handling error checks, please bear in mind that the content of the
+    'errortext' variable may change in future releases of LDPL. The value
+    stored in 'errorcode', however, will not change and so that's the value
+    that should be used to check whether an operation ran successfully or not.
 
 
-.B The Procedure Section
+## The Procedure Section
 
 The procedure section is where all the code of a LDPL program that is not a
 variable declaration is written. An LDPL program must contain a procedure
@@ -789,12 +792,11 @@ written on the same line.
 
 An example procedure section may end up looking like this:
 
-:::coffeescript
-procedure:
-store 5 in foo
-store "hi there" in bar:"hi"
-# Note that these are the variables
-# declared in the data section above.
+    procedure:
+        store 5 in foo
+        store "hi there" in bar:"hi"
+        # Note that these are the variables
+        # declared in the data section above.
 
 Code within the procedure section is executed from top to bottom,
 skipping sub-procedure declarations, unless they are explicitly called.
@@ -802,7 +804,7 @@ skipping sub-procedure declarations, unless they are explicitly called.
 Available statements and sub-procedure declarations will be explained further
 in the following sections of this document.
 
-.B Sub-procedures
+## Sub-procedures
 A sub-procedure is a piece of code that can be called and executed from other
 parts of the script. Sub-procedure subsections must be declared within the
 procedure section of the code using a 'sub-procedure <name>' statement and
@@ -822,58 +824,54 @@ files in your program.
 
 The full syntax for declaring sub-procedures is this one:
 
-:::coffeescript
-sub-procedure procedureName
-parameters:
-# parameters go here
-local data:
-# local variable declarations go here
-procedure:
-# code goes here
-end sub-procedure
+    sub-procedure procedureName
+        parameters:
+            # parameters go here
+        local data:
+            # local variable declarations go here
+        procedure:
+            # code goes here
+    end sub-procedure
 
 Or you may, as stated, use the shorter version:
 
-:::coffeescript
-sub procedureName
-parameters:
-# parameters go here
-local data:
-# local variable declarations go here
-procedure:
-# code goes here
-end sub
+    sub procedureName
+        parameters:
+            # parameters go here
+        local data:
+            # local variable declarations go here
+        procedure:
+            # code goes here
+    end sub
 
 In context, the full declaration of a sub-procedure looks like this:
 
-:::coffeescript
-data:
-# ...
-procedure:
-# ...
-sub mySubprocedure
-parameters:
-# ...
-local data:
-# ...
-procedure:
-# ...
-end sub
+    data:
+        # ...
+    procedure:
+        # ...
+        sub mySubprocedure
+            parameters:
+                # ...
+            local data:
+                # ...
+            procedure:
+                # ...
+        end sub
 
 The parameters and local data sub-sections are optional (more on these
 later). If you decide to not include any of those sub-sections, you can skip
 the procedure tag altogether and just go ahead writing your code like this:
 
-:::coffeescript
-sub someOtherSub
-display "Hello there!" lf
-end sub
+    sub someOtherSub
+        display "Hello there!" lf
+    end sub
 
 You cannot have more than one sub-procedure with the same name. Also,
 sub-procedure names must follow the guidelines stated in the Naming Schemes
 section of this document.
 
-.B The Procedure Subsection:
+### The Procedure Subsection:
 
 In the procedure sub-section of the sub-procedure you may write the code
 of your sub-procedure using statements like in the main procedure section.
@@ -881,7 +879,7 @@ In this procedure sub-section, however, you may also use the 'RETURN' statement
 to halt execution of the sub-procedure and return to the point where it was
 called from.
 
-.B The Parameters and Local Data Sub-Sections
+### The Parameters and Local Data Sub-Sections
 
 Within the parameters and data sub-sections of a function you may only
 declare variables just like in the global data section. The variables
@@ -901,35 +899,33 @@ local data section will be initialized with their type default values, and
 each invocation of the function will have its own copy of the local variables.
 This is important if you want to implement recursive sub-procedures:
 
-:::coffeescript
-data:
-execution is number
-procedure:
-sub myRecursiveSub
-local data:
-myLocalVar is number
-procedure:
-in executions solve executions + 1
-if executions is equal to 3 then
-return # We don't want this to run forever!
-end if
-display "[myLocalVar starts at " myLocalVar "!"
-store executions in myLocalVar
-call myRecursiveSub
-display "I'm execution n°" myLocalVar "!]"
-end sub
+    data:
+        execution is number
+    procedure:
+        sub myRecursiveSub
+            local data:
+                myLocalVar is number
+            procedure:
+                in executions solve executions + 1
+                if executions is equal to 3 then
+                    return # We don't want this to run forever!
+                end if
+                display "[myLocalVar starts at " myLocalVar "!"
+                store executions in myLocalVar
+                call myRecursiveSub
+                display "I'm execution n°" myLocalVar "!]"
+        end sub
 
-call myRecursiveSub
+        call myRecursiveSub
 
 That weird recursive function displays the following output:
 
-:::text
-[myLocalVar starts at 0![myLocalVar starts at 0!I'm execution Nº2!]I'm execution Nº1!]
+    [myLocalVar starts at 0![myLocalVar starts at 0!I'm execution Nº2!]I'm execution Nº1!]
 
-!!!hint
-Most of the statements used in this example will be explained later.
-Don't feel bad if you don't yet understand completely what that sub-procedure
-does.
+~ Hint ~
+    Most of the statements used in this example will be explained later.
+    Don't feel bad if you don't yet understand completely what that sub-procedure
+    does.
 
 Variables declared within the parameters sub-section are quite different.
 When calling sub-procedures using the 'call' statement, you may also use the
@@ -939,20 +935,18 @@ following the order they were declared in.
 
 For example, if you declare a sub-procedure like this:
 
-:::coffeescript
-sub addTwoNumbers
-parameters:
-a is number
-b is number
-c is number
-procedure:
-# ...
-end sub
+    sub addTwoNumbers
+        parameters:
+            a is number
+            b is number
+            c is number
+        procedure:
+            # ...
+    end sub
 
 You may then call it like this:
 
-:::coffeescript
-call addTwoNumbers with 5 6 7
+    call addTwoNumbers with 5 6 7
 
 And 'a' will take the value 5, 'b' the value 6 and 'c' the value 7.
 
@@ -962,34 +956,32 @@ pass a variable to a sub-procedure with the 'with' keyword and its value is
 assigned to a parameter variable, if you modify that parameter variable the
 original variable will be modified as well. Let's see an example:
 
-:::coffeescript
-data:
-result is number
+    data:
+        result is number
 
-procedure:
-sub addTwoNumbers
-parameters:
-a is number
-b is number
-c is number
-procedure:
-in c solve a + b
-end sub
+    procedure:
+        sub addTwoNumbers
+            parameters:
+                a is number
+                b is number
+                c is number
+            procedure:
+                in c solve a + b
+        end sub
 
-# the variable result is initialized to 0 by default
-call addTwoNumbers with 4 5 result
-display "The result is: " result "." lf
+        # the variable result is initialized to 0 by default
+        call addTwoNumbers with 4 5 result
+        display "The result is: " result "." lf
 
-!!!hint
-The 'in  solve ' statement is used to solve mathematical expressions.
-If you execute, for example, 'in foo solve 5 + 6 - 8', the result of solving
-5 + 6 - 8 will be stored in the number variable 'foo'.
+~ Hint ~
+    The 'in  solve ' statement is used to solve mathematical expressions.
+    If you execute, for example, 'in foo solve 5 + 6 - 8', the result of solving
+    5 + 6 - 8 will be stored in the number variable 'foo'.
 
 
 That code displays the following text:
 
-:::text
-The result is 9.
+    The result is 9.
 
 This is because, as we called the variable with a variable as a parameter
 ('call addTwoNumbers with 4 5 result', result is the variable here) it was
@@ -1005,55 +997,47 @@ as shown in the example above.
 
 
 
-.B Identifier Naming Schemes
+## Identifier Naming Schemes
 
 Variables and sub-procedure names follow the same naming rules. Their names
-can't be empty and may consist of any character with few exceptions (listed
-below). Like statements, variable and sub-procedure names in LDPL are not case
+can't be empty and may consist of any character with few exceptions \(listed
+below\). Like statements, variable and sub-procedure names in LDPL are not case
 sensitive.
 
-.br
-[*] Variable and sub-procedure names cannot contain the character ':', as it is
+    • Variable and sub-procedure names cannot contain the character ':', as it is
 used for map and list accesses.
-.br
-[*] Variable and sub-procedure names cannot contain the character '"', as it is
+    • Variable and sub-procedure names cannot contain the character '"', as it is
 used to delimit strings.
-.br
-[*] Variable and sub-procedure names cannot contain spaces.
-.br
-[*] Variable and sub-procedure names cannot be valid numbers (they may contain
-numbers, though).
-.br
-[*] Variable and sub-procedure names cannot contain the character '(' nor the
+    • Variable and sub-procedure names cannot contain spaces.
+    • Variable and sub-procedure names cannot be valid numbers \(they may contain
+numbers, though\).
+    • Variable and sub-procedure names cannot contain the character '(' nor the
 character ')' as these characters are used in mathematical expressions.
-.br
-[*] Variables and sub-procedures cannot be called 'CRLF', as it is internally
+    • Variables and sub-procedures cannot be called 'CRLF', as it is internally
 turned into '"\\r\\n"'.
-.br
-[*] Variables and sub-procedures cannot be called 'LF', as it is internally
+    • Variables and sub-procedures cannot be called 'LF', as it is internally
 turned into '"\\r\\n"'.
-.br
-[*] Variables and sub-procedures cannot be called '+' nor '-' nor '*' nor '/' as
+    • Variables and sub-procedures cannot be called '+' nor '-' nor '•' nor '/' as
 these characters are used in mathematical expressions.
 
 
-!!!warning
-External Identifiers follow different naming rules. Please check the
-External Identifier Naming Scheme section for more information.
+~ Warning ~
+    External Identifiers follow different naming rules. Please check the
+    External Identifier Naming Scheme section for more information.
 
-.B Label Naming Schemes
+## Label Naming Schemes
 
 Labels are identifiers used alongside the 'label' statement.
 Labels in LDPL may not be empty strings and may contain any character except spaces and
 '"' (double quotes). Labels cannot be named 'CRLF' nor 'LF' for the same reasons explained in
 the section above.
 
-.B External Identifier Naming Schemes
+## External Identifier Naming Schemes
 
-!!!hint
-This section talks about identifier naming schemes for C++ Extensions. If
-you have not read the section on C++ Extensions yet, ignore this and then come
-back later.
+~ Hint ~
+    This section talks about identifier naming schemes for C++ Extensions. If
+    you have not read the section on C++ Extensions yet, ignore this and then come
+    back later.
 
 All C++ variables and functions accessible to LDPL programs may contain only
 'A-Z', '0-9', and the '_' character in their names. All other characters used
@@ -1079,31 +1063,30 @@ For example:
 .br
 | version\\_number | VERSION\\_NUMBER |
 
-!!!warning
-Note that this conversion scheme may cause collisions.
-All of the following LDPL variables will be converted to 'ONE_TWO:'
+~ Warning ~
+    Note that this conversion scheme may cause collisions.
+    All of the following LDPL variables will be converted to 'ONE_TWO:'
 
-* 'One-Two'
-* 'one.two'
-* 'one/two'
-* 'OnE-TWO'
+    • 'One-Two'
+    • 'one.two'
+    • 'one/two'
+    • 'OnE-TWO'
 
 
-.SH CONTROL FLOW STATEMENTS
+# Control Flow Statements
 
-!!!Note
-While this section is up-to-date and complete, it has to be reformated
-to be easier on the eyes. All UPPERCASE statement names and code should
-be changed to lowercase.
+~ Note ~
+    While this section is up-to-date and complete, it has to be reformated
+    to be easier on the eyes. All UPPERCASE statement names and code should
+    be changed to lowercase.
 
-.B 'STORE  IN '
+## 'STORE  IN '
 
 The 'STORE' statement assigns a value to a variable.
 
 Syntax:
 
-:::coffeescript
-STORE <NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <NUMBER-VAR or TEXT-VAR>
+	STORE <NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <NUMBER-VAR or TEXT-VAR>
 
 
 Type Conversion Notes:
@@ -1111,85 +1094,68 @@ Type Conversion Notes:
 If the value to be stored is NUMBER and it's to be stored in a TEXT variable,
 the value will be converted to text, so '15' will be turned into '"15"'. If the
 value to be stored is a TEXT value two things can happen. If it contains any
-non-numeric characters (for example letters, or more than one minus sign or
-more than one decimal point, for example '"--1.2"' or '"15a"') the conversion
+non-numeric characters \(for example letters, or more than one minus sign or
+more than one decimal point, for example '"--1.2"' or '"15a"'\) the conversion
 will fail and 0 will be stored in the NUMBER variable. If the TEXT contains a
 proper number, though, for example '"-416.419"' or '"89"' it will be converted
 to its number equivalent and stored in the variable. If a string literal depicting
-a number is preceded by leading zeros, these will be trimmed (turning '0005'
-into '5', '-0002.3' into '-2.3' and '00.23' into '0.23').
+a number is preceded by leading zeros, these will be trimmed \(turning '0005'
+into '5', '-0002.3' into '-2.3' and '00.23' into '0.23'\).
 
-.B 'IF  IS  THEN'
+## 'IF  IS  THEN'
 
-The 'IF' statement evaluates if the condition given is positive. If it is, the code in the positive branch is executed. If it is not, the code in the negative branch is executed (if available). Execution then continues normally.
+The 'IF' statement evaluates if the condition given is positive. If it is, the code in the positive branch is executed. If it is not, the code in the negative branch is executed \(if available\). Execution then continues normally.
 
 Syntax:
 
-1 | IF <CONDITION> THEN
+    IF <CONDITION> THEN
 .br
-2 | 	#Code goes here (positive branch)
+    	#Code goes here (positive branch)
 .br
-3 | ELSE
+    ELSE
 .br
-4 | 	#Code goes here (negative branch)
+    	#Code goes here (negative branch)
 .br
-5 | END IF
+    END IF
 .br
 
 or
 
-1 | IF <CONDITION> THEN
+    IF <CONDITION> THEN
 .br
-2 | 	#Code goes here (positive branch)
+    	#Code goes here (positive branch)
 .br
-3 | END IF
+    END IF
 .br
 
 The '<CONDITION>' may be a relational operator between two values with the same type:
 
-.br
-[*] '<NUMBER-VAR or NUMBER> IS <REL-OP-A> <NUMBER-VAR or NUMBER>'
-.br
-[*] '<TEXT-VAR or TEXT> IS <REL-OP-B> <TEXT-VAR or TEXT>'
-.br
-[*] '<NUMBER LIST> IS <REL-OP-B> <NUMBER LIST>'
-.br
-[*] '<TEXT LIST> IS <REL-OP-B> <TEXT LIST>'
-.br
-[*] '<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>'
-.br
-[*] '<TEXT MAP> IS <REL-OP-B> <TEXT MAP>'
+    • '<NUMBER-VAR or NUMBER> IS <REL-OP-A> <NUMBER-VAR or NUMBER>'
+    • '<TEXT-VAR or TEXT> IS <REL-OP-B> <TEXT-VAR or TEXT>'
+    • '<NUMBER LIST> IS <REL-OP-B> <NUMBER LIST>'
+    • '<TEXT LIST> IS <REL-OP-B> <TEXT LIST>'
+    • '<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>'
+    • '<TEXT MAP> IS <REL-OP-B> <TEXT MAP>'
 
 Possible values of 'REL-OP-A':
 
-.br
-[*] 'EQUAL TO'
-.br
-[*] 'NOT EQUAL TO'
-.br
-[*] 'GREATER THAN'
-.br
-[*] 'LESS THAN'
-.br
-[*] 'GREATER THAN OR EQUAL TO'
-.br
-[*] 'LESS THAN OR EQUAL TO'
+    • 'EQUAL TO'
+    • 'NOT EQUAL TO'
+    • 'GREATER THAN'
+    • 'LESS THAN'
+    • 'GREATER THAN OR EQUAL TO'
+    • 'LESS THAN OR EQUAL TO'
 
 Possible values of 'REL-OP-B':
 
-.br
-[*] 'EQUAL TO'
-.br
-[*] 'NOT EQUAL TO'
+    • 'EQUAL TO'
+    • 'NOT EQUAL TO'
 
 You can also write compound conditions using 'AND', 'OR' and parenthesis:
 
-.br
-[*] '<CONDITION> AND <CONDITION>' is positive if both conditions are positive
-.br
-[*] '<CONDITION> OR <CONDITION>' is positive if both conditions are positive
-.br
-[*] '( <CONDITION> )' is positive if the condition is positive, it's used to alter the default precedence
+    • '<CONDITION> AND <CONDITION>' is positive if both conditions are positive
+    • '<CONDITION> OR <CONDITION>' is positive if both conditions are positive
+    • '( <CONDITION> )' is positive if the condition is positive, it's used to alter the default precedence
 
 The 'AND' has higher precedence than 'OR', and the conditions inside parenthesis will be evaluated first. That means that 'C1 AND C2 OR C3' is the same as '( C1 AND C2 ) OR C3', but you can make the 'OR' evaluate first if you write 'C1 AND ( C2 OR C3 )'.
 
@@ -1197,26 +1163,26 @@ Both 'AND' and 'OR' perform short-circuit evaluation: If the first operand of an
 
 For example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	names IS TEXT LIST
+    	names IS TEXT LIST
 .br
-3 | 	length IS NUMBER
+    	length IS NUMBER
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	GET LENGTH OF names IN length
+    	GET LENGTH OF names IN length
 .br
-6 | 	IF length IS GREATER THAN 0 AND ( names:0 IS EQUAL TO "Alice" OR names:0 IS EQUAL TO "Bob" ) THEN
+    	IF length IS GREATER THAN 0 AND ( names:0 IS EQUAL TO "Alice" OR names:0 IS EQUAL TO "Bob" ) THEN
 .br
-7 | 		#Code
+    		#Code
 .br
-8 | 	END IF
+    	END IF
 .br
 
-The 'names' list is empty, so the 'length is greater than 0' condition is negative, and the second one is not evaluated (and the execution continues after the 'END IF'). Thanks to short-circuit evaluation 'names:0' is not evaluated and we don\\'t get an index out of range runtime error!
+The 'names' list is empty, so the 'length is greater than 0' condition is negative, and the second one is not evaluated \(and the execution continues after the 'END IF'\). Thanks to short-circuit evaluation 'names:0' is not evaluated and we don\\'t get an index out of range runtime error!
 
-.B 'ELSE IF  IS  THEN'
+## 'ELSE IF  IS  THEN'
 
 The 'ELSE IF' statement is equivalent to writing an 'IF' statement inside the 'ELSE' statement of another 'IF' statement, but shorter. Must be used after an IF statement and before 'END IF' or 'ELSE'.
 
@@ -1226,227 +1192,217 @@ All the different 'IF' variants of the IF statement apply, just with 'ELSE' adde
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	name IS TEXT
+    	name IS TEXT
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	STORE "Mike" IN name
+    	STORE "Mike" IN name
 .br
-5 | 	IF name IS equal to "John" THEN
+    	IF name IS equal to "John" THEN
 .br
-6 | 		DISPLAY "Hello there, John!" CRLF
+    		DISPLAY "Hello there, John!" CRLF
 .br
-7 | 	ELSE IF name IS equal to "Mike" THEN
+    	ELSE IF name IS equal to "Mike" THEN
 .br
-8 | 		DISPLAY "Hello there, Mike!" CRLF
+    		DISPLAY "Hello there, Mike!" CRLF
 .br
-9 | 	ELSE IF name IS equal to "Robert" THEN
+    	ELSE IF name IS equal to "Robert" THEN
 .br
-10| 		DISPLAY "Hello there, Robert!" CRLF
+    		DISPLAY "Hello there, Robert!" CRLF
 .br
-11| 	ELSE
+    	ELSE
 .br
-12| 		DISPLAY "I don't know you, " name CRLF
+    		DISPLAY "I don't know you, " name CRLF
 .br
-13| 	END IF
+    	END IF
 .br
 
 
 
-.B 'WHILE  IS  DO'
+## 'WHILE  IS  DO'
 
 The 'WHILE' statement evaluates if the condition given is positive. While it is, the code between the 'WHILE' and 'REPEAT' statements is repeatedly ran.
 
 Syntax:
 
-1 | WHILE <CONDITION> DO
+    WHILE <CONDITION> DO
 .br
-2 | 	#Code goes here
+    	#Code goes here
 .br
-3 | REPEAT
+    REPEAT
 .br
 
 The '<CONDITION>' that you can use are the same as the IF statement ones.
 
-.B 'FOR  FROM  TO  STEP  DO'
+## 'FOR  FROM  TO  STEP  DO'
 
 The 'FOR' statement repeatedly run the code in its body a number of times, given a 'counter' variable, the 'start' of the range, its 'end' and a 'step'.
 
-When the loop starts, 'start' is assigned to 'counter' and starts an iteration, evaluating a condition. The condition is 'counter < end' if 'step >= 0' and 'counter > end' if 'step < 0'. If the condition passes, the code in the body of the 'FOR' is executed, otherwise the loop will end. After the code is ran the 'counter' is incremeted by 'step' and a new iteration is started (checking the condition and so on).
+When the loop starts, 'start' is assigned to 'counter' and starts an iteration, evaluating a condition. The condition is 'counter < end' if 'step >= 0' and 'counter > end' if 'step < 0'. If the condition passes, the code in the body of the 'FOR' is executed, otherwise the loop will end. After the code is ran the 'counter' is incremeted by 'step' and a new iteration is started \(checking the condition and so on\).
 
 Syntax:
 
-1 | FOR <NUMBER-VAR> FROM <NUMBER-VAR or NUMBER> TO <NUMBER-VAR or NUMBER> STEP <NUMBER-VAR or NUMBER> DO
+    FOR <NUMBER-VAR> FROM <NUMBER-VAR or NUMBER> TO <NUMBER-VAR or NUMBER> STEP <NUMBER-VAR or NUMBER> DO
 .br
-2 | 	#Code goes here
+    	#Code goes here
 .br
-3 | REPEAT
+    REPEAT
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	i IS NUMBER
+    	i IS NUMBER
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	FOR i FROM 0 TO 10 STEP 2 DO
+    	FOR i FROM 0 TO 10 STEP 2 DO
 .br
-5 | 		DISPLAY i " "
+    		DISPLAY i " "
 .br
-6 | 	REPEAT
+    	REPEAT
 .br
-7 | 	# Will display "0 2 4 6 8 10"
+    	# Will display "0 2 4 6 8 10"
 .br
 
-.B 'FOR EACH  IN  DO'
+## 'FOR EACH  IN  DO'
 
-The 'FOR EACH' statement repeatedly run the code in its body for every element in a given 'LIST' or 'MAP'. At the start of each iteration an element of the collection is assigned to a scalar variable matching its type.
-As the variable must be a scalar variable, the for each statement doens't support multicontainers.
+The 'FOR EACH' statement repeatedly run the code in its body for every element in a given 'LIST' or 'MAP'. At the start of each iteration an element of the collection is assigned to a variable matching its type. This even works with multicontainers. For example, you can iterate a 'NUMBER MAP LIST' using a 'NUMBER MAP' as the iteration variable.
 
 If the collection is a 'LIST', its elements will be iterated increasingly from index '0', while in the case of a 'MAP' all the elements will be iterated in no particular order.
 
 Syntax:
 
-1 | FOR EACH <NUMBER-VAR> IN <NUMBER-LIST or NUMBER-MAP> DO
+    FOR EACH <VAR> IN <LIST or MAP> DO
 .br
-2 | 	#Code goes here
+    	#Code goes here
 .br
-3 | REPEAT
-.br
-
-Or
-
-1 | FOR EACH <TEXT-VAR> IN <TEXT-LIST or TEXT-MAP> DO
-.br
-2 | 	#Code goes here
-.br
-3 | REPEAT
+    REPEAT
 .br
 
 Example 1:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	letter IS TEXT
+    	letter IS TEXT
 .br
-3 | 	letters IS TEXT LIST
+    	letters IS TEXT LIST
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	PUSH "L" TO letters
+    	PUSH "L" TO letters
 .br
-6 | 	PUSH "D" TO letters
+    	PUSH "D" TO letters
 .br
-7 | 	PUSH "P" TO letters
+    	PUSH "P" TO letters
 .br
-8 | 	PUSH "L" TO letters
+    	PUSH "L" TO letters
 .br
-9 | 	FOR EACH letter IN letters DO
+    	FOR EACH letter IN letters DO
 .br
-10| 		DISPLAY letter
+    		DISPLAY letter
 .br
-11| 	REPEAT
+    	REPEAT
 .br
-12| 	# Will display "LDPL"
+    	# Will display "LDPL"
 .br
 
 Example 2:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	number IS NUMBER
+    	number IS NUMBER
 .br
-3 | 	numbers IS NUMBER MAP
+    	numbers IS NUMBER MAP
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	STORE 1 IN numbers:"One"
+    	STORE 1 IN numbers:"One"
 .br
-6 | 	STORE 2 IN numbers:"Two"
+    	STORE 2 IN numbers:"Two"
 .br
-7 | 	STORE 3 IN numbers:"Three"
+    	STORE 3 IN numbers:"Three"
 .br
-8 | 	FOR EACH number IN numbers DO
+    	FOR EACH number IN numbers DO
 .br
-9 | 		DISPLAY number
+    		DISPLAY number
 .br
-10| 	REPEAT
+    	REPEAT
 .br
-11| 	# Will display "312" or any permutation
+    	# Will display "312" or any permutation
 .br
 
-.B 'BREAK'
+## 'BREAK'
 
 The 'BREAK' statement breaks the execution of the innermost 'WHILE', 'FOR' or 'FOR EACH' loop. Will throw a compiler error if used outside one.
 
 Syntax:
 
-1 | BREAK
+    BREAK
 .br
 
-.B 'CONTINUE'
+## 'CONTINUE'
 
 The 'CONTINUE' statement jumps to the next iteration of the innermost 'WHILE' or 'FOR' loop. Will throw a compiler error if used outside one.
 
 Syntax:
 
-1 | CONTINUE
+    CONTINUE
 .br
 
-.B 'CALL SUB-PROCEDURE'
+## 'CALL SUB-PROCEDURE'
 
 The 'CALL SUB-PROCEDURE' statement executes a SUB-PROCEDURE. Once the SUB-PROCEDURE returns, the execution continues from the line following the 'CALL SUB-PROCEDURE'.
 
 Syntax:
 
-1 | CALL SUB-PROCEDURE <sub-procedure name>
+    CALL SUB-PROCEDURE <sub-procedure name>
 .br
-2 | CALL SUB-PROCEDURE <sub-procedure name> WITH <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR, MAP or LIST>
+    CALL SUB-PROCEDURE <sub-procedure name> WITH <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR, MAP or LIST>
 .br
 
 Or
 
-1 | CALL <sub-procedure name>
+    CALL <sub-procedure name>
 .br
-2 | CALL <sub-procedure name> WITH <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR, MAP or LIST>
+    CALL <sub-procedure name> WITH <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR, MAP or LIST>
 .br
 
 Of course, a SUB-PROCEDURE must be declared somewhere in your program for you to call it.
 
 If the SUB-PROCEDURE you call doesn't have any declared parameters, you must call it without the 'WITH' keyword, otherwise you must include it and pass all required parameters after it, in the same order declared in the 'PARAMETERS' section of the SUB-PROCEDURE.
 
-.B 'RETURN'
+## 'RETURN'
 
 The 'RETURN' statement returns from a SUB-PROCEDURE. Will throw a compiler error if used outside one.
 
 Syntax:
 
-1 | RETURN
+    RETURN
 .br
 
-.B 'EXIT'
+## 'EXIT'
 
 The 'EXIT' statement ends execution of the program.
 
 Syntax:
 
-1 | EXIT
+    EXIT
 .br
 
-.B 'WAIT  MILLISECONDS'
+## 'WAIT  MILLISECONDS'
 
 The 'WAIT' statement pauses the execution of a program for the given number of milliseconds.
 
 Syntax:
 
-1 | WAIT <NUMBER or NUMBER-VAR> MILLISECONDS
+    WAIT <NUMBER or NUMBER-VAR> MILLISECONDS
 .br
 
-.B 'GOTO & LABEL'
+## 'GOTO & LABEL'
 
 > "If you want to go somewhere, goto is the best way to get there."
 > -- Ken Thompson
@@ -1455,88 +1411,88 @@ The 'GOTO' statement performs a one-way transfer of control to a line of code ma
 
 While maligned by Edsger W. Dijkstra and his cohorts, 'GOTO' is very useful in many situations. Its reputation is undeserved and mostly perpetuated by people that don't understand the origins of the criticism or how the statement can be used.
 
-You also can't make a COBOL-_esque language without 'GOTO', so (due to popular request) we've added it to the language.
+You also can't make a COBOL-_esque language without 'GOTO', so \(due to popular request\) we've added it to the language.
 
 Syntax:
 
-1 | LABEL <labelName>
+    LABEL <labelName>
 .br
 
-1 | GOTO <labelName>
+    GOTO <labelName>
 .br
 
-!!!hint
-Label names follow the naming rules stated in the Identifier Naming Schemes section of this documentation.
+~ Hint ~
+	Label names follow the naming rules stated in the Identifier Naming Schemes section of this documentation.
 
 
 Example:
 
-1 | PROCEDURE:
+    PROCEDURE:
 .br
-2 | 	GOTO start
+    	GOTO start
 .br
-3 | 
+    
 .br
-4 | 	LABEL start
+    	LABEL start
 .br
-5 | 	display "> starting..." crlf
+    	display "> starting..." crlf
 .br
-6 | 
+    
 .br
-7 | 	GOTO ending
+    	GOTO ending
 .br
-8 | 
+    
 .br
-9 | 	LABEL middle
+    	LABEL middle
 .br
-10| 	display "> entering the middle section..." crlf
+    	display "> entering the middle section..." crlf
 .br
-11| 
+    
 .br
-12| 	sub cool-code
+    	sub cool-code
 .br
-13| 		GOTO cool
+    		GOTO cool
 .br
-14| 		display "hmm... is this cool?" crlf
+    		display "hmm... is this cool?" crlf
 .br
-15| 		LABEL cool
+    		LABEL cool
 .br
-16| 		display "wow, yeah! cool code!" crlf
+    		display "wow, yeah! cool code!" crlf
 .br
-17| 	end sub
+    	end sub
 .br
-18| 
+    
 .br
-19| 	LABEL ending
+    	LABEL ending
 .br
-20| 	CALL cool-code
+    	CALL cool-code
 .br
-21| 	display "> that's the end" crlf
+    	display "> that's the end" crlf
 .br
 
 In the output of this program you can see the 'middle' LABEL and the start of the 'cool-code' SUB-PROCEDURE are skipped:
 
-1 | > starting...
+    > starting...
 .br
-2 | wow, yeah! cool code!
+    wow, yeah! cool code!
 .br
-3 | > that's the end
+    > that's the end
 .br
 
 In order to keep 'GOTO' from turning your source into unmaintainable spaghetti code_, both your 'GOTO' statements and the 'LABEL's they jump to have to be declared together in the same sub-procedure or in the main code body of an LDPL program. You can't 'goto' across sub-procedures or into them, or anything like that.
 
-.SH 'CREATE STATEMENT  EXECUTING '
+# 'CREATE STATEMENT  EXECUTING '
 
 The 'CREATE STATEMENT' statement lets you add custom statements to LDPL that execute SUB-PROCEDUREs.
 
 Syntax:
 
-1 | CREATE STATEMENT <TEXT> EXECUTING <sub-procedure name>
+    CREATE STATEMENT <TEXT> EXECUTING <sub-procedure name>
 .br
 
-The 'TEXT' describes the new statement syntax and must contain tokens separated by whitespace. Each token can be a keyword, which is a word with 'A-Z' characters (preferably in English), or '"$"', a character that marks where parameters are passed. At least one keyword token is required and the number of '"$"' tokens must be the same as the number of parameters of the SUB-PROCEDURE you pass after 'EXECUTING'. For example, a valid 'TEXT' is '"DISPLAY $ $ TIMES"' if the SUB-PROCEDURE has exactly two parameters. The SUB-PROCEDURE must be declared before creating the statement.
+The 'TEXT' describes the new statement syntax and must contain tokens separated by whitespace. Each token can be a keyword, which is a word with 'A-Z' characters \(preferably in English\), or '"$"', a character that marks where parameters are passed. At least one keyword token is required and the number of '"$"' tokens must be the same as the number of parameters of the SUB-PROCEDURE you pass after 'EXECUTING'. For example, a valid 'TEXT' is '"DISPLAY $ $ TIMES"' if the SUB-PROCEDURE has exactly two parameters. The SUB-PROCEDURE must be declared before creating the statement.
 
-After a statement is created you can use it like any other LDPL statement in 'PROCEDURE' sections, just write a line with all the tokens of the 'TEXT' in the same order but placing values instead of '"$"'. The types of the values must be the same as the parameter types of the SUB-PROCEDURE the statement executes following the same order. Using the new statement will produce the same effect as 'CALL'ing the SUB-PROCEDURE (parameters are passed by reference too).
+After a statement is created you can use it like any other LDPL statement in 'PROCEDURE' sections, just write a line with all the tokens of the 'TEXT' in the same order but placing values instead of '"$"'. The types of the values must be the same as the parameter types of the SUB-PROCEDURE the statement executes following the same order. Using the new statement will produce the same effect as 'CALL'ing the SUB-PROCEDURE \(parameters are passed by reference too\).
 
 You can create two different statements with same 'TEXT' and use both if at least one of the parameter types are different in each SUB-PROCEDURE, because the resulting syntaxes will differ from each other. Using this you can create two versions of the same statements dealing with different parameter types, like the first example shows.
 
@@ -1544,147 +1500,147 @@ Bear in mind that a line in your program could match more than one statement: If
 
 Example 1:
 
-1 | PROCEDURE:
+    PROCEDURE:
 .br
-2 | 	SUB-PROCEDURE displayNValueTimes
+    	SUB-PROCEDURE displayNValueTimes
 .br
-3 | 	PARAMETERS:
+    	PARAMETERS:
 .br
-4 | 		value is number
+    		value is number
 .br
-5 | 		times is number
+    		times is number
 .br
-6 | 	LOCAL DATA:
+    	LOCAL DATA:
 .br
-7 | 		i is number
+    		i is number
 .br
-8 | 	PROCEDURE:
+    	PROCEDURE:
 .br
-9 | 		FOR i FROM 0 TO times STEP 1 DO
+    		FOR i FROM 0 TO times STEP 1 DO
 .br
-10| 		DISPLAY value " "
+    		DISPLAY value " "
 .br
-11| 		REPEAT
+    		REPEAT
 .br
-12| 	END SUB-PROCEDURE
+    	END SUB-PROCEDURE
 .br
-13| 	CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayNValueTimes
+    	CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayNValueTimes
 .br
-14| 	# Syntax for this new statement: DISPLAY <NUMBER or NUMBER-VAR> <NUMBER or NUMBER-VAR> TIMES
+    	# Syntax for this new statement: DISPLAY <NUMBER or NUMBER-VAR> <NUMBER or NUMBER-VAR> TIMES
 .br
-15| 
+    
 .br
-16| 	SUB-PROCEDURE displayTValueTimes
+    	SUB-PROCEDURE displayTValueTimes
 .br
-17| 	PARAMETERS:
+    	PARAMETERS:
 .br
-18| 		value is text
+    		value is text
 .br
-19| 		times is number
+    		times is number
 .br
-20| 	LOCAL DATA:
+    	LOCAL DATA:
 .br
-21| 		i is number
+    		i is number
 .br
-22| 	PROCEDURE:
+    	PROCEDURE:
 .br
-23| 		FOR i FROM 0 to times STEP 1 DO
+    		FOR i FROM 0 to times STEP 1 DO
 .br
-24| 		DISPLAY value " "
+    		DISPLAY value " "
 .br
-25| 		REPEAT
+    		REPEAT
 .br
-26| 	END SUB-PROCEDURE
+    	END SUB-PROCEDURE
 .br
-27| 	CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayTValueTimes
+    	CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayTValueTimes
 .br
-28| 	# Syntax for this new statement: DISPLAY <TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
+    	# Syntax for this new statement: DISPLAY <TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
 .br
-29| 
+    
 .br
-30| 	# We can imagine that we have only one new statement:
+    	# We can imagine that we have only one new statement:
 .br
-31| 	# DISPLAY <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
+    	# DISPLAY <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
 .br
-32| 
+    
 .br
-33| 	DISPLAY 100 2 TIMES # This executes: CALL displayNValueTimes with 100 2
+    	DISPLAY 100 2 TIMES # This executes: CALL displayNValueTimes with 100 2
 .br
-34| 	DISPLAY "Hi!" 3 TIMES # This executes: CALL displayTValueTimes with "Hi!" 3
+    	DISPLAY "Hi!" 3 TIMES # This executes: CALL displayTValueTimes with "Hi!" 3
 .br
-35| 
+    
 .br
-36| 	# This program displays "100 100 Hi! Hi! "
+    	# This program displays "100 100 Hi! Hi! "
 .br
 
 Example 2:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	times is number
+    	times is number
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	SUB-PROCEDURE displayTValueTimes
+    	SUB-PROCEDURE displayTValueTimes
 .br
-5 | 	PARAMETERS:
+    	PARAMETERS:
 .br
-6 | 		value is text
+    		value is text
 .br
-7 | 		times is number
+    		times is number
 .br
-8 | 	LOCAL DATA:
+    	LOCAL DATA:
 .br
-9 | 		i is number
+    		i is number
 .br
-10| 	PROCEDURE:
+    	PROCEDURE:
 .br
-11| 		FOR i FROM 0 to times STEP 1 DO
+    		FOR i FROM 0 to times STEP 1 DO
 .br
-12| 			DISPLAY value " "
+    			DISPLAY value " "
 .br
-13| 		REPEAT
+    		REPEAT
 .br
-14| 	END SUB-PROCEDURE
+    	END SUB-PROCEDURE
 .br
-15| 	CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayTValueTimes
+    	CREATE STATEMENT "DISPLAY $ $ TIMES" EXECUTING displayTValueTimes
 .br
-16| 	# Syntax for this new statement: DISPLAY <TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
+    	# Syntax for this new statement: DISPLAY <TEXT or TEXT-VAR> <NUMBER or NUMBER-VAR> TIMES
 .br
-17| 
+    
 .br
-18| 	DISPLAY "Hi!" 3 TIMES # This executes the LDPL DISPLAY statement!
+    	DISPLAY "Hi!" 3 TIMES # This executes the LDPL DISPLAY statement!
 .br
-19| 	# This program displays "Hi!30" because times is equal to 0
+    	# This program displays "Hi!30" because times is equal to 0
 .br
 
-.B 'CALL EXTERNAL '
+## 'CALL EXTERNAL '
 
-!!!hint
-This section talks about external sub-procedure calling for C++ Extensions. If
-you have not read the section on C++ Extensions yet, ignore this and then come
-back later.
+~ Hint ~
+    This section talks about external sub-procedure calling for C++ Extensions. If
+    you have not read the section on C++ Extensions yet, ignore this and then come
+    back later.
 
 
 The 'CALL EXTERNAL' statement executes a SUB-PROCEDURE defined in an extension to LDPL, typically in C++. It otherwise operates the same as 'CALL SUB-PROCEDURE', except that external SUB-PROCEDURES do not receive parameters.
 
 Syntax:
 
-1 | CALL EXTERNAL <external sub-procedure name>
+    CALL EXTERNAL <external sub-procedure name>
 .br
 
 Example:
 
-1 | CALL EXTERNAL http-get
+    CALL EXTERNAL http-get
 .br
 
 
-!!!Note
-While this section is up-to-date and complete, it has to be reformated
-to be easier on the eyes. All UPPERCASE statement names and code should
-be changed to lowercase.
+~ Note ~
+    While this section is up-to-date and complete, it has to be reformated
+    to be easier on the eyes. All UPPERCASE statement names and code should
+    be changed to lowercase.
 
-.B 'IN  SOLVE '
+## 'IN  SOLVE '
 
 The 'IN - SOLVE' statement will solve a simple arithmetic expression and place the result in a NUMBER variable. Only '+', '-', '/', '*' operators, NUMBER values, and TEXT values can be used in a MATH-EXPRESSION. Other LDPL arithmetic functions, like 'floor' and 'modulo', are not supported by this statement and should be used as standalone statements. TEXT values will be implicitly converted to NUMBERs using the same algorithm as the one used in 'store  in '.
 
@@ -1694,125 +1650,125 @@ As in actual arithmetic, '*' and '/' have higher precedence than '+' and '-' , w
 
 Syntax:
 
-1 | IN <NUMBER-VAR> SOLVE <MATH-EXPRESSION>
+    IN <NUMBER-VAR> SOLVE <MATH-EXPRESSION>
 .br
 
 Example:
 
-1 | IN myNumVariable SOLVE 1 + 1
+    IN myNumVariable SOLVE 1 + 1
 .br
 
 Will set the value of 'myNumVariable' to '2'.
 
 Area of Circle:
 
-1 | DATA:
+    DATA:
 .br
-2 | Radius is NUMBER
+    Radius is NUMBER
 .br
-3 | Area is NUMBER
+    Area is NUMBER
 .br
-4 | 
+    
 .br
-5 | PROCEDURE:
+    PROCEDURE:
 .br
-6 | DISPLAY "Enter Radius: "
+    DISPLAY "Enter Radius: "
 .br
-7 | ACCEPT Radius
+    ACCEPT Radius
 .br
-8 | 
+    
 .br
-9 | IN Area SOLVE 3.14159 * (Radius * Radius)
+    IN Area SOLVE 3.14159 * (Radius * Radius)
 .br
-10| DISPLAY "Area is: " Area CRLF
+    DISPLAY "Area is: " Area CRLF
 .br
 
 Outputs:
 
-1 | Enter Radius: 0.5
+    Enter Radius: 0.5
 .br
-2 | Area is: 0.7853975
+    Area is: 0.7853975
 .br
 
-.B 'FLOOR'
+## 'FLOOR'
 
 The 'FLOOR' statement rounds down the value of NUMBER-VAR to the nearest lower integer.
 
 Syntax:
 
-1 | FLOOR <NUMBER-VAR>
+    FLOOR <NUMBER-VAR>
 .br
 
-.B 'MODULO  BY  IN '
+## 'MODULO  BY  IN '
 
 The 'MODULO' statement calculates the remainder of the modulo operation between two NUMBER values and stores the result in a NUMBER variable.
 
 Syntax:
 
-1 |  MODULO <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+     MODULO <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 .br
 
 
-.B 'GET RANDOM IN '
+## 'GET RANDOM IN '
 
-The 'GET RANDOM' statement stores a random value between 0 (inclusive) and 1 (noninclusive) in a NUMBER variable.
+The 'GET RANDOM' statement stores a random value between 0 \(inclusive\) and 1 \(noninclusive\) in a NUMBER variable.
 
 Syntax:
 
-1 | GET RANDOM IN <NUMBER-VAR>
+    GET RANDOM IN <NUMBER-VAR>
 .br
 
 
-!!!Note
-While this section is up-to-date and complete, it has to be reformated
-to be easier on the eyes. All UPPERCASE statement names and code should
-be changed to lowercase.
+~ Note ~
+    While this section is up-to-date and complete, it has to be reformated
+    to be easier on the eyes. All UPPERCASE statement names and code should
+    be changed to lowercase.
 
-.B 'IN  JOIN '
+## 'IN  JOIN '
 
 The 'IN JOIN' statement concatenates two or more values and stores them in a TEXT variable. If any of those values is a number, it is converted to a string before concatenation.
 
 Syntax:
 
-1 | IN <TEXT-VAR> JOIN <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
+    IN <TEXT-VAR> JOIN <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
 .br
 
 Example:
 
-1 | IN myTextVariable JOIN "Hello World!" " " "Welcome to LDPL!" crlf
+    IN myTextVariable JOIN "Hello World!" " " "Welcome to LDPL!" crlf
 .br
 
 will store
 
-1 | "Hello World! Welcome to LDPL!\\n"
+    "Hello World! Welcome to LDPL!\\n"
 .br
 
 in 'myTextVariable'.
 
 
-.B 'REPLACE  FROM  WITH  IN '
+## 'REPLACE  FROM  WITH  IN '
 
 
 The 'REPLACE' statement finds and replaces every occurrence of some TEXT in a TEXT variable or value some other TEXT. The result is then stored in a TEXT variable.
 
 Syntax:
 
-1 | REPLACE <TEXT-VAR or TEXT> FROM <TEXT-VAR or TEXT> WITH <TEXT-VAR or TEXT> IN <TEXT-VAR>
+    REPLACE <TEXT-VAR or TEXT> FROM <TEXT-VAR or TEXT> WITH <TEXT-VAR or TEXT> IN <TEXT-VAR>
 .br
 
 Example:
 
-1 | REPLACE "COBOL" FROM "COBOL is great!" WITH "LDPL" IN sentiment
+    REPLACE "COBOL" FROM "COBOL is great!" WITH "LDPL" IN sentiment
 .br
-2 | DISPLAY sentiment crlf
+    DISPLAY sentiment crlf
 .br
 
 Outputs:
 
-1 | LDPL is great!
+    LDPL is great!
 .br
 
-.B 'SPLIT  BY  IN '
+## 'SPLIT  BY  IN '
 
 
 The 'SPLIT' statement breaks up a single TEXT variable into multiple parts based on another TEXT variable and puts those parts into sub-indexes of a 'TEXT LIST', starting at the NUMBER '0' and incrementing by whole numbers. This allows you to break up a text sentence into multiple parts by splitting on spaces, for example. Or to split a file into lines by splitting on '"\\n"'
@@ -1821,613 +1777,609 @@ To break TEXT into individual characters, split by the empty string of '""'.
 
 Syntax:
 
-1 | SPLIT <TEXT-VAR or TEXT> BY <TEXT-VAR or TEXT> IN <TEXT-LIST>
+    SPLIT <TEXT-VAR or TEXT> BY <TEXT-VAR or TEXT> IN <TEXT-LIST>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	parts IS TEXT LIST
+    	parts IS TEXT LIST
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	SPLIT "Hello there!" BY " " IN parts
+    	SPLIT "Hello there!" BY " " IN parts
 .br
-5 | 	display parts:0 crlf parts:1 crlf
+    	display parts:0 crlf parts:1 crlf
 .br
 
 will output:
 
-1 | Hello
+    Hello
 .br
-2 | there!
+    there!
 .br
 
 Split into characters:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	parts IS TEXT LIST
+    	parts IS TEXT LIST
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	SPLIT "onomatopoeia" BY "" IN parts
+    	SPLIT "onomatopoeia" BY "" IN parts
 .br
-5 | 	DISPLAY parts:3 " is M " crlf
+    	DISPLAY parts:3 " is M " crlf
 .br
 
 will output:
 
-1 | m is M
+    m is M
 .br
 
-.B 'GET CHARACTER AT  FROM  IN '
+## 'GET CHARACTER AT  FROM  IN '
 
 The 'GET CHARACTER AT' statement gets the character at the position indicated by the NUMBER value from the TEXT value and stores it in a TEXT variable.
 
 Syntax:
 
-1 | GET CHARACTER AT <NUMBER-VAR or NUMBER> FROM <TEXT-VAR or TEXT> IN <TEXT-VAR>
+    GET CHARACTER AT <NUMBER-VAR or NUMBER> FROM <TEXT-VAR or TEXT> IN <TEXT-VAR>
 .br
 
-.B 'GET LENGTH OF  IN '
+## 'GET LENGTH OF  IN '
 
 The 'GET LENGTH OF' statement counts the number of characters in the passed TEXT and stores that number in the NUMBER variable.
 
 Syntax:
 
-1 | GET LENGTH OF <TEXT-VAR or TEXT> IN <NUMBER-VAR>
+    GET LENGTH OF <TEXT-VAR or TEXT> IN <NUMBER-VAR>
 .br
 
-.B 'GET ASCII CHARACTER  IN '
+## 'GET ASCII CHARACTER  IN '
 
 The 'GET ASCII CHARACTER' statement stores the character with the ASCII code passed in NUMBER or NUMBER-VAR in TEXT-VAR.
 
 Syntax:
 
-1 | GET ASCII CHARACTER <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
+    GET ASCII CHARACTER <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
 .br
 
-.B 'GET CHARACTER CODE OF  IN '
+## 'GET CHARACTER CODE OF  IN '
 
 The 'GET CHARACTER CODE OF' statement stores the ASCII code of the character passed in TEXT or TEXT-VAR in NUMBER-VAR. Will fail if the length of the string passed in TEXT or TEXT-VAR is not 1.
 
 Syntax:
 
-1 | GET CHARACTER CODE OF <TEXT or TEXT-VAR> IN <NUMBER-VAR>
+    GET CHARACTER CODE OF <TEXT or TEXT-VAR> IN <NUMBER-VAR>
 .br
 
 Error Codes:
 
-Multi-byte characters (like emojis and non-ASCII characters) cannot be parsed by this statement. When trying to do so, the operation will fail and the following values will be returned into the 'ERRORCODE' and 'ERRORTEXT' variables:
+Multi-byte characters \(like emojis and non-ASCII characters\) cannot be parsed by this statement. When trying to do so, the operation will fail and the following values will be returned into the 'ERRORCODE' and 'ERRORTEXT' variables:
 
-.br
-[*] 'ERRORCODE': 1
-.br
-[*] 'ERRORTEXT': "Multibyte character received (probably UTF-8). Can't be parsed into a single number."
+    • 'ERRORCODE': 1
+    • 'ERRORTEXT': "Multibyte character received \(probably UTF-8\). Can't be parsed into a single number."
 
-!!!warning
-Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
+~ Warning ~
+	Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
 
 
-.B 'STORE QUOTE  IN '
+## 'STORE QUOTE  IN '
 
-The 'STORE QUOTE IN' statement allows you to store multiple lines in a single TEXT variable. Between the 'STORE QUOTE IN' and 'END QUOTE' statements whitespace is preserved literally, escape codes like '\\t' and '\\e' work the same as they do in regular text variables (and can themselves be escaped using '\\\\'), and double quotes ('"') don't need to be escaped.
+The 'STORE QUOTE IN' statement allows you to store multiple lines in a single TEXT variable. Between the 'STORE QUOTE IN' and 'END QUOTE' statements whitespace is preserved literally, escape codes like '\\t' and '\\e' work the same as they do in regular text variables \(and can themselves be escaped using '\\\\'\), and double quotes \('"'\) don't need to be escaped.
 
 Syntax:
 
-1 | STORE QUOTE IN <TEXT-VAR>
+    STORE QUOTE IN <TEXT-VAR>
 .br
-2 | 	#Text goes here
+    	#Text goes here
 .br
-3 | END QUOTE
+    END QUOTE
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | template IS TEXT
+    template IS TEXT
 .br
-3 | 
+    
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | STORE QUOTE IN template
+    STORE QUOTE IN template
 .br
-6 | <html>
+    <html>
 .br
-7 | 	<head><title>{{title}}</title></head>
+    	<head><title>{{title}}</title></head>
 .br
-8 | 	<body>{{body}}</body>
+    	<body>{{body}}</body>
 .br
-9 | </html>
+    </html>
 .br
-10| END QUOTE
+    END QUOTE
 .br
-11| 
+    
 .br
-12| # ...code to use the template...
+    # ...code to use the template...
 .br
 
-.B 'GET INDEX OF  FROM  IN '
+## 'GET INDEX OF  FROM  IN '
 
 
-The 'GET INDEX OF - FROM - IN' statement stores in a NUMBER variable the position of the first occurrence of a specified value in a string or TEXT variable. The first position of a string (the first letter) is considered to be the position number '0'. The value '-1' is stored if there are no occurrences.
+The 'GET INDEX OF - FROM - IN' statement stores in a NUMBER variable the position of the first occurrence of a specified value in a string or TEXT variable. The first position of a string \(the first letter\) is considered to be the position number '0'. The value '-1' is stored if there are no occurrences.
 
 Syntax:
 
-1 | GET INDEX OF <TEXT or TEXT-VAR> FROM <TEXT or TEXT-VAR> IN <NUMBER-VAR>
+    GET INDEX OF <TEXT or TEXT-VAR> FROM <TEXT or TEXT-VAR> IN <NUMBER-VAR>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	position IS NUMBER
+    	position IS NUMBER
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	GET INDEX OF "is" FROM "LDPL is nice!" IN position
+    	GET INDEX OF "is" FROM "LDPL is nice!" IN position
 .br
-5 | 	DISPLAY position CRLF
+    	DISPLAY position CRLF
 .br
-6 | 	# Will display 5.
+    	# Will display 5.
 .br
 
-.B 'COUNT  FROM  IN '
+## 'COUNT  FROM  IN '
 
 The 'COUNT - FROM - IN' statement counts all the appearances of a string in another string and stores that value in a NUMBER variable.
 
 Syntax:
 
-1 | COUNT <TEXT or TEXT-VAR> FROM <TEXT or TEXT-VAR> IN <NUMBER-VAR>
+    COUNT <TEXT or TEXT-VAR> FROM <TEXT or TEXT-VAR> IN <NUMBER-VAR>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	count IS NUMBER
+    	count IS NUMBER
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	COUNT "the" FROM "the cat is called theodore" IN count
+    	COUNT "the" FROM "the cat is called theodore" IN count
 .br
-5 | 	DISPLAY count CRLF
+    	DISPLAY count CRLF
 .br
-6 | 	# Will display 2, as the can be found two times in that sentence.
+    	# Will display 2, as the can be found two times in that sentence.
 .br
 
-.B 'SUBSTRING  FROM  LENGTH  IN '
+## 'SUBSTRING  FROM  LENGTH  IN '
 
 The 'SUBSTRING - FROM - LENGTH - IN' statement extracts parts of a string, beginning at the character at the specified position and storing in the destination TEXT variable the specified number of characters.
 
 Syntax:
 
-1 | SUBSTRING <TEXT or TEXT-VAR> FROM <NUMBER or NUMBER-VAR> LENGTH <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
+    SUBSTRING <TEXT or TEXT-VAR> FROM <NUMBER or NUMBER-VAR> LENGTH <NUMBER or NUMBER-VAR> IN <TEXT-VAR>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT
+    	foo IS TEXT
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	SUBSTRING "Hello there!" FROM 1 LENGTH 4 IN foo
+    	SUBSTRING "Hello there!" FROM 1 LENGTH 4 IN foo
 .br
-5 | 	# This will extract 4 characters from position 1
+    	# This will extract 4 characters from position 1
 .br
-6 | 	DISPLAY foo CRLF
+    	DISPLAY foo CRLF
 .br
-7 | 	# Will display "ello"
+    	# Will display "ello"
 .br
 
-.B 'TRIM  IN'
+## 'TRIM  IN'
 
 
 The 'TRIM - IN' statement removes whitespace from both sides of a string and stores the resulting string in a TEXT variable.
 
 Syntax:
 
-1 | TRIM <TEXT or TEXT-VAR> IN <TEXT-VAR>
+    TRIM <TEXT or TEXT-VAR> IN <TEXT-VAR>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT
+    	foo IS TEXT
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	TRIM "    hello there!         " IN foo
+    	TRIM "    hello there!         " IN foo
 .br
-5 | 	DISPLAY foo CRLF
+    	DISPLAY foo CRLF
 .br
-6 | 	# Will display "hello there!"
+    	# Will display "hello there!"
 .br
 
 
 
-!!!Note
-While this section is up-to-date and complete, it has to be reformated
-to be easier on the eyes. All UPPERCASE statement names and code should
-be changed to lowercase.
+~ Note ~
+    While this section is up-to-date and complete, it has to be reformated
+    to be easier on the eyes. All UPPERCASE statement names and code should
+    be changed to lowercase.
 
-.B 'PUSH  TO '
+## 'PUSH  TO '
 
 The 'PUSH - TO' statement is used to add elements to a LIST. When you push an element to a LIST it is appended at the end of the list.
 
 Syntax:
 
-1 | PUSH <NUMBER-VAR or NUMBER> TO <NUMBER-LIST>
+    PUSH <NUMBER-VAR or NUMBER> TO <NUMBER-LIST>
 .br
-2 | PUSH <TEXT-VAR or TEXT> TO <TEXT-LIST>
+    PUSH <TEXT-VAR or TEXT> TO <TEXT-LIST>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT LIST
+    	foo IS TEXT LIST
 .br
-3 | PROCEDURE:
+    PROCEDURE:
 .br
-4 | 	PUSH "First index" TO foo
+    	PUSH "First index" TO foo
 .br
-5 | 	PUSH "Second index" TO foo
+    	PUSH "Second index" TO foo
 .br
 
 In the above example, 'foo' now contains the value '"First index"' at index '0' and the value '"Second index"' at index '1'.
 
-.B 'CLEAR'
+## 'CLEAR'
 
 The 'CLEAR' statement empties a LIST, thus deleting all its contents. The LIST itself is not deleted though, and can still be used and filled with new elements after a 'CLEAR' statement has been executed.
 
 Syntax:
 
-1 | CLEAR <LIST>
+    CLEAR <LIST>
 .br
 
-.B 'COPY  TO '
+## 'COPY  TO '
 
 The 'COPY - TO' statement copies all the elements of a LIST with their respective indices to another LIST of the same type. The original LIST is untouched, but the destination LIST is completely overwritten by the contents of the copied LIST and any elements that existed in it prior to the copy are deleted. In other words, the destination LIST is 'CLEAR'ed before the copy.
 
 Syntax:
 
-1 | COPY <TEXT-LIST> TO <TEXT-LIST>
+    COPY <TEXT-LIST> TO <TEXT-LIST>
 .br
-2 | COPY <NUMBER-LIST> TO <NUMBER-LIST>
+    COPY <NUMBER-LIST> TO <NUMBER-LIST>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT LIST
+    	foo IS TEXT LIST
 .br
-3 | 	bar IS TEXT LIST
+    	bar IS TEXT LIST
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	PUSH "Hello there!" TO foo
+    	PUSH "Hello there!" TO foo
 .br
-6 | 	PUSH "How are you?" TO foo
+    	PUSH "How are you?" TO foo
 .br
-7 | 	COPY foo TO bar
+    	COPY foo TO bar
 .br
-8 | 	DISPLAY bar:0 " " bar:1 CRLF
+    	DISPLAY bar:0 " " bar:1 CRLF
 .br
-9 | 	# Will display "Hello there! How are you?"
+    	# Will display "Hello there! How are you?"
 .br
 
-.B 'GET LENGTH OF  IN '
+## 'GET LENGTH OF  IN '
 
-The 'GET LENGTH OF - IN' statement stores the amount of elements stored in a LIST (or, analogously, the length of the LIST) into a numeric variable.
+The 'GET LENGTH OF - IN' statement stores the amount of elements stored in a LIST \(or, analogously, the length of the LIST\) into a numeric variable.
 
 Syntax:
 
-1 | GET LENGTH OF <LIST> IN <NUMBER-VAR>
+    GET LENGTH OF <LIST> IN <NUMBER-VAR>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT LIST
+    	foo IS TEXT LIST
 .br
-3 | 	count IS NUMBER
+    	count IS NUMBER
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	PUSH "Hello there!" TO foo
+    	PUSH "Hello there!" TO foo
 .br
-6 | 	PUSH "How are you?" TO foo
+    	PUSH "How are you?" TO foo
 .br
-7 | 	STORE LENGTH OF foo IN count
+    	STORE LENGTH OF foo IN count
 .br
-8 | 	DISPLAY count CRLF
+    	DISPLAY count CRLF
 .br
-9 | 	# Will display 2
+    	# Will display 2
 .br
 
-.B 'DELETE LAST ELEMENT OF '
+## 'DELETE LAST ELEMENT OF '
 
 
 The 'DELETE LAST ELEMENT OF' deletes the last element pushed to a LIST. If the LIST was empty, this statement does nothing.
 
 Syntax:
 
-1 | DELETE LAST ELEMENT OF <LIST>
+    DELETE LAST ELEMENT OF <LIST>
 .br
 
 
-!!!Note
-While this section is up-to-date and complete, it has to be reformated
-to be easier on the eyes. All UPPERCASE statement names and code should
-be changed to lowercase.
+~ Note ~
+    While this section is up-to-date and complete, it has to be reformated
+    to be easier on the eyes. All UPPERCASE statement names and code should
+    be changed to lowercase.
 
-.B 'CLEAR'
+## 'CLEAR'
 
 The 'CLEAR' statement empties a MAP, thus deleting all its contents. The MAP itself is not deleted though, and can still be used and filled with new elements after a 'CLEAR' statement has been executed.
 
 Syntax:
 
-1 | CLEAR <MAP>
+    CLEAR <MAP>
 .br
 
-.B 'COPY  TO '
+## 'COPY  TO '
 
 The 'COPY - TO' statement copies all the elements of a MAP with their respective keys to another MAP of the same type. The original MAP is untouched, but the destination MAP is completely overwritten by the contents of the copied MAP and any elements that existed in it prior to the copy are deleted. In other words, the destination MAP is 'CLEAR'ed before the copy.
 
 Syntax:
 
-1 | COPY <TEXT-MAP> TO <TEXT-MAP>
+    COPY <TEXT-MAP> TO <TEXT-MAP>
 .br
-2 | COPY <NUMBER-MAP> TO <NUMBER-MAP>
+    COPY <NUMBER-MAP> TO <NUMBER-MAP>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT MAP
+    	foo IS TEXT MAP
 .br
-3 | 	bar IS TEXT MAP
+    	bar IS TEXT MAP
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	STORE "Hello there!" IN foo:0
+    	STORE "Hello there!" IN foo:0
 .br
-6 | 	STORE "How are you?" IN foo:7
+    	STORE "How are you?" IN foo:7
 .br
-7 | 	COPY foo TO bar
+    	COPY foo TO bar
 .br
-8 | 	DISPLAY bar:0 " " bar:7 CRLF
+    	DISPLAY bar:0 " " bar:7 CRLF
 .br
-9 | 	# Will display "Hello there! How are you?"
+    	# Will display "Hello there! How are you?"
 .br
 
 
-.B 'GET KEY COUNT OF  IN '
+## 'GET KEY COUNT OF  IN '
 
-The 'GET KEY COUNT OF - IN' statement stores the amount of elements (or, analogously, keys) stored in a MAP into a numeric variable.
+The 'GET KEY COUNT OF - IN' statement stores the amount of elements \(or, analogously, keys\) stored in a MAP into a numeric variable.
 
 Syntax:
 
-1 | GET KEY COUNT OF <MAP> IN <NUMBER-VAR>
+    GET KEY COUNT OF <MAP> IN <NUMBER-VAR>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT MAP
+    	foo IS TEXT MAP
 .br
-3 | 	count IS NUMBER
+    	count IS NUMBER
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	STORE "Hello there!" IN foo:0
+    	STORE "Hello there!" IN foo:0
 .br
-6 | 	STORE "How are you?" IN foo:7
+    	STORE "How are you?" IN foo:7
 .br
-7 | 	GET KEY COUNT OF foo IN count
+    	GET KEY COUNT OF foo IN count
 .br
-8 | 	DISPLAY count CRLF
+    	DISPLAY count CRLF
 .br
-9 | 	# Will display 2
+    	# Will display 2
 .br
 
 
-.B 'GET KEYS OF  IN '
+## 'GET KEYS OF  IN '
 
-The 'GET KEYS OF - IN' statement stores all the keys of a MAP into a TEXT LIST. Say you have a MAP with keys '0', '"cat"' and '"dog"'. The elements these keys point to are not important. Using the 'GET KEYS OF' statement, you can copy the keys of this MAP to a LIST. Thus, the resulting LIST will (for example) have the value '0' at index 0, the value '"cat"' at index 1 and the value '"dog"' at index 2. This statement is thus used to find all the keys of a particular MAP.
+The 'GET KEYS OF - IN' statement stores all the keys of a MAP into a TEXT LIST. Say you have a MAP with keys '0', '"cat"' and '"dog"'. The elements these keys point to are not important. Using the 'GET KEYS OF' statement, you can copy the keys of this MAP to a LIST. Thus, the resulting LIST will \(for example\) have the value '0' at index 0, the value '"cat"' at index 1 and the value '"dog"' at index 2. This statement is thus used to find all the keys of a particular MAP.
 
 Syntax:
 
-1 | GET KEYS OF <MAP> IN <TEXT-LIST>
+    GET KEYS OF <MAP> IN <TEXT-LIST>
 .br
 
 Example:
 
-1 | DATA:
+    DATA:
 .br
-2 | 	foo IS TEXT MAP
+    	foo IS TEXT MAP
 .br
-3 | 	bar IS TEXT LIST
+    	bar IS TEXT LIST
 .br
-4 | PROCEDURE:
+    PROCEDURE:
 .br
-5 | 	STORE "Hello there!" IN foo:0
+    	STORE "Hello there!" IN foo:0
 .br
-6 | 	STORE "How are you?" IN foo:7
+    	STORE "How are you?" IN foo:7
 .br
-7 | 	STORE "I like cats" IN foo:"cat"
+    	STORE "I like cats" IN foo:"cat"
 .br
-8 | 	STORE "I love dogs" IN foo:"dog"
+    	STORE "I love dogs" IN foo:"dog"
 .br
-9 | 	STORE "LDPL is nice" IN foo:3
+    	STORE "LDPL is nice" IN foo:3
 .br
-10| 	GET KEYS OF foo IN bar
+    	GET KEYS OF foo IN bar
 .br
 
 At the end of the execution of the previous excerpt of code, the 'TEXT LIST' called 'bar' will contain the values '"0"', '"7"', '"cat"', '"dog"' and '"3"' at indexes that are consecutive integers starting at zero.
 
 
 
-!!!Note
-While this section is up-to-date and complete, it has to be reformated
-to be easier on the eyes. All UPPERCASE statement names and code should
-be changed to lowercase.
+~ Note ~
+    While this section is up-to-date and complete, it has to be reformated
+    to be easier on the eyes. All UPPERCASE statement names and code should
+    be changed to lowercase.
 
-.B 'DISPLAY'
+## 'DISPLAY'
 
 The 'DISPLAY' statement outputs the values passed to the output stream. 'CRLF' means line break and is a sugar syntax for the '"\\n"' escape sequence.
 
 Syntax:
 
-1 | DISPLAY <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
+    DISPLAY <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
 .br
 
 Example:
 
-1 | DISPLAY "Hello, " nameVariable "! This is a number -> " 89.1 " :)" CRLF
+    DISPLAY "Hello, " nameVariable "! This is a number -> " 89.1 " :)" CRLF
 .br
 
-.B 'ACCEPT '
+## 'ACCEPT '
 
-The 'ACCEPT' command is used to gather input from the user. If a TEXT variable is specified, anything the user enters before pressing the 'return' key will be accepted. If a NUMBER variable is specified, the user must enter a number (if any non-numeric key is entered, the error message "Redo from start" will be output and the ACCEPT command rerun).
+The 'ACCEPT' command is used to gather input from the user. If a TEXT variable is specified, anything the user enters before pressing the 'return' key will be accepted. If a NUMBER variable is specified, the user must enter a number \(if any non-numeric key is entered, the error message "Redo from start" will be output and the ACCEPT command rerun\).
 
 Syntax:
 
-1 | ACCEPT <TEXT-VAR or NUMBER-VAR>
+    ACCEPT <TEXT-VAR or NUMBER-VAR>
 .br
 
-.B 'EXECUTE '
+## 'EXECUTE '
 
 The 'EXECUTE' statement executes the specified system command.
 
 Syntax:
 
-1 | EXECUTE <TEXT or TEXT-VAR>
+    EXECUTE <TEXT or TEXT-VAR>
 .br
 
 Example 1:
 
-1 | # Prepare the command to execute
+    # Prepare the command to execute
 .br
-2 | IN myTextVar JOIN "echo " myVariable " >> myFile"
+    IN myTextVar JOIN "echo " myVariable " >> myFile"
 .br
-3 | # Execute it
+    # Execute it
 .br
-4 | EXECUTE myTextVar
+    EXECUTE myTextVar
 .br
 
 Example 2:
 
-1 | # Execute "dir" to list the files in the current directory under Windows
+    # Execute "dir" to list the files in the current directory under Windows
 .br
-2 | EXECUTE "dir"
+    EXECUTE "dir"
 .br
 
-.B 'EXECUTE  AND STORE OUTPUT IN '
+## 'EXECUTE  AND STORE OUTPUT IN '
 
 The 'EXECUTE - AND STORE OUTPUT IN' executes the specified command and stores any resulting text in the passed variable.
 
 Syntax:
 
-1 | EXECUTE <TEXT or TEXT-VAR> AND STORE OUTPUT IN <TEXT-VAR>
+    EXECUTE <TEXT or TEXT-VAR> AND STORE OUTPUT IN <TEXT-VAR>
 .br
 
-.B 'EXECUTE  AND STORE EXIT CODE IN '
+## 'EXECUTE  AND STORE EXIT CODE IN '
 
 The 'EXECUTE - AND STORE EXIT CODE IN' executes the specified command and stores the exit code in the passed variable.
 
 Syntax:
 
-1 | EXECUTE <TEXT or TEXT-VAR> AND STORE EXIT CODE IN <NUM-VAR>
+    EXECUTE <TEXT or TEXT-VAR> AND STORE EXIT CODE IN <NUM-VAR>
 .br
 
-.B 'ACCEPT  UNTIL EOF'
+## 'ACCEPT  UNTIL EOF'
 
 The 'ACCEPT UNTIL EOF' statement accepts input from standard input until an EOF state is reached and stores all data gathered in TEXT-VAR.
 
 Syntax:
 
-1 | ACCEPT <TEXT-VAR> UNTIL EOF
+    ACCEPT <TEXT-VAR> UNTIL EOF
 .br
 
-.B 'LOAD FILE  IN '
+## 'LOAD FILE  IN '
 
 
 The 'LOAD FILE' statement loads the contents of a file into a text variable.
 
 Syntax:
 
-1 | LOAD FILE <TEXT or TEXT-VAR> IN <TEXT-VAR>
+    LOAD FILE <TEXT or TEXT-VAR> IN <TEXT-VAR>
 .br
 
 Example:
 
-1 | LOAD FILE "myFolder/myTextFile.txt" IN myVariable
+    LOAD FILE "myFolder/myTextFile.txt" IN myVariable
 .br
 
 Error Codes:
 
 If the LOAD operation should fail, the following values will be returned into the 'ERRORCODE' and 'ERRORTEXT' variables:
 
-.br
-[*] 'ERRORCODE': 1
-.br
-[*] 'ERRORTEXT': "The file '<filename>' couldn't be opened."
+    • 'ERRORCODE': 1
+    • 'ERRORTEXT': "The file '&lt;filename&gt;' couldn't be opened."
 
-!!!warning
-Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
+~ Warning ~
+	Always use the 'ERRORCODE' variable to check if the operation was successful or not. Do not use 'ERRORTEXT' for anything else than displaying the error found, as its contents may change in future releases of LDPL.
 
-.B 'WRITE  TO FILE '
+## 'WRITE  TO FILE '
 
 The 'WRITE x TO FILE y' statement writes the value of 'x' to the file called 'y'. If the file already exists, everything in it will be overwritten by 'x'.
 
 Syntax:
 
-1 | WRITE <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
+    WRITE <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
 .br
 
 Example:
 
-1 | WRITE "Hello there!" TO FILE "hello.txt"
+    WRITE "Hello there!" TO FILE "hello.txt"
 .br
 
-.B 'APPEND  TO FILE '
+## 'APPEND  TO FILE '
 
 The 'APPEND x TO FILE y' statement appends the value of 'x' to the file called 'y'. If the file already exists, 'x' will be added at the end of its contents.
 
 Syntax:
 
-1 | APPEND <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
+    APPEND <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
 .br
 
 Example:
 
-1 | APPEND "\\nHow are you?" TO FILE "hello.txt"
+    APPEND "\\nHow are you?" TO FILE "hello.txt"
 .br
 
 in this case, the file 'hello.txt' (created in the example of the 'WRITE  TO FILE ' function and modified as stated there) will contain the text
 
-1 | Hello there!
+    Hello there!
 .br
-2 | How are you?
+    How are you?
 .br
 
 
 
 
-.B About C++ Extensions
+## About C++ Extensions
 
 C++ extensions are packages of code written in C++ that can interface with LDPL
 code and be added to your LDPL projects.
@@ -2437,37 +2389,37 @@ Because LDPL programs compile down to C++, there is no need for a translation la
 Extensions contain sub-procedures and variables that are considered to be external_.
 This means that they are not part of an LDPL source code and thus must be accessed and called in a different way to what you might be used to. External sub-procedures should be called using the the 'call external' statement. While it is explained in greater detail in the Control Flow Statements section of this documentation, the statement works just like the normal 'call' statement with the exception that it doesn't accept parameters.
 
-1 | // In C++
+    // In C++
 .br
-2 | void CPPFUNCTION(){
+    void CPPFUNCTION(){
 .br
-3 |     //...
+        //...
 .br
-4 | }
+    }
 .br
 
-1 | # In LDPL
+    # In LDPL
 .br
-2 | call external cppFunction
+    call external cppFunction
 .br
 
 External variables (declared in a C++ file) should be re-declared again in your LDPL data section with the same type they have in the C++ file, appending to their type the 'extenal' keyword. This allows programmers to extend LDPL with new features or to wrap 3rd party libraries and re-use their functionality.
 
-1 | // In C++
+    // In C++
 .br
-2 | ldpl_number MYNUMBER = 9;
+    ldpl_number MYNUMBER = 9;
 .br
 
-1 | # In LDPL
+    # In LDPL
 .br
-2 | data:
+    data:
 .br
-3 | myNumber is external number
+    myNumber is external number
 .br
 
 This will be explained in greater detail in the following sections.
 
-.B Writing C++ Extensions
+## Writing C++ Extensions
 
 If LDPL lacks some feature that C++ might offer, for example graphics or networking,
 you might find yourself in the need of writing a C++ extension (provided an extension
@@ -2475,7 +2427,7 @@ for what you are looking for has not been already written, of course).
 
 Extensions can create variables and functions that are accessible from LDPL through the 'call external' and 'external' data type keyword, as explained in the previous section. Typically all you need is a single '.cpp' file that you include from your LDPL source using the 'extension' keyword (explained in the Code Structure section of this documentation), but you may also include '.o' files, '.a' files, or any combination of them all.
 
-.B Functions
+### Functions
 
 To create a function in C++ that can be called from an LDPL program, you must follow four rules:
 
@@ -2484,50 +2436,50 @@ To create a function in C++ that can be called from an LDPL program, you must fo
 3. The function must not take any parameters.
 4. The function must not return any values.
 
-Because LDPL does not know the name of any variables or functions declared in non-LDPL files, it allows the programmer to call any function or variable, existing or not, by using the 'external' syntax. If the variable or function you are trying to access does not exist, the C++ linker will throw a nasty error. Also, all C++ variable and function names must contain only 'A-Z', '0-9', and the '_' character. Every character on the LDPL side will be converted to upper case, and non alpha-numeric characters will be converted to an underscore ('_') when referencing the C++ side (again, as stated in the Naming Schemes section of this documentation).
+Because LDPL does not know the name of any variables or functions declared in non-LDPL files, it allows the programmer to call any function or variable, existing or not, by using the 'external' syntax. If the variable or function you are trying to access does not exist, the C++ linker will throw a nasty error. Also, all C++ variable and function names must contain only 'A-Z', '0-9', and the '_' character. Every character on the LDPL side will be converted to upper case, and non alpha-numeric characters will be converted to an underscore \('_'\) when referencing the C++ side (again, as stated in the Naming Schemes section of this documentation).
 
 Example:
 
 For example, this function in a file called add.cpp
 
-1 | void PROMPT_ADD()
+    void PROMPT_ADD()
 .br
-2 | {
+    {
 .br
-3 |   int a, b, sum;
+      int a, b, sum;
 .br
-4 |   cout << "1st number: ";
+      cout << "1st number: ";
 .br
-5 |   cin >> a;
+      cin >> a;
 .br
-6 |   cout << "2nd number: ";
+      cout << "2nd number: ";
 .br
-7 |   cin >> b;
+      cin >> b;
 .br
-8 |   cout << "sum: " << sum << end;
+      cout << "sum: " << sum << end;
 .br
-9 | }
+    }
 .br
 
 can be accessed from LDPL in the following way
 
-1 | external "add.cpp"
+    external "add.cpp"
 .br
-2 | 
+    
 .br
-3 | procedure:
+    procedure:
 .br
-4 |     call external prompt_add
+        call external prompt_add
 .br
 
-.B Variables
+### Variables
 
 To create a variable in a C++ extension that can be accessed from LDPL code, you must follow two rules:
 
 1. The variable's name must conform to the LDPL external identifier naming convention stated in the Naming Schemes section of this documentation.
 2. The C++ type of the variable must match the type used by LDPL for the data type represented by that variable.
 
-The first rule should be familiar from the previous section: all C++ variable and function names must contain only 'A-Z', '0-9', and the '_' character. Everything else on the LDPL side will get converted to an underscore ('_').
+The first rule should be familiar from the previous section: all C++ variable and function names must contain only 'A-Z', '0-9', and the '_' character. Everything else on the LDPL side will get converted to an underscore \('_'\).
 
 For the second rule, you may find a file called ldpl_types.h in the LDPL repository that contains definitions for all the build-in LDPL data types: 'ldpl_number', 'ldpl_text', 'ldpl_list<T>' and 'ldpl_map<T>'.
 
@@ -2535,117 +2487,116 @@ Example:
 
 Declaring variables is easy on the C++ side:
 
-1 | ldpl_text NAME;
+    ldpl_text NAME;
 .br
-2 | ldpl_number AGE;
+    ldpl_number AGE;
 .br
-3 | ldpl_text STREET_ADDRESS;
+    ldpl_text STREET_ADDRESS;
 .br
 
 These will be available to an LDPL program when declared as external in its 'data:' section:
 
-1 | data:
+    data:
 .br
-2 |     name is external text
+        name is external text
 .br
-3 |     age is external number
+        age is external number
 .br
-4 |     street_address is external text
+        street_address is external text
 .br
 
-.B Accessing Variables in C++ Functions
+### Accessing Variables in C++ Functions
 
 Since LDPL and C++ are using the same variable when you use the 'external' keyword (say, for example, 'MY_VAR' in C++ and external 'my-var' in LDPL), any changes you make to the content of said variables are shared. Use them just like you would use any regular variable, both in C++ and LDPL.
 
-1 | ldpl_number A, B, SUM;
+    ldpl_number A, B, SUM;
 .br
-2 | void ADD()
+    void ADD()
 .br
-3 | {
+    {
 .br
-4 |     SUM = A + B;
+        SUM = A + B;
 .br
-5 | }
+    }
 .br
 
-1 | data:
+    data:
 .br
-2 |     a is external number
+        a is external number
 .br
-3 |     b is external number
+        b is external number
 .br
-4 |     sum is external number
+        sum is external number
 .br
-5 | 
+    
 .br
-6 | procedure:
+    procedure:
 .br
-7 |     store 100 in a
+        store 100 in a
 .br
-8 |     store 250 in b
+        store 250 in b
 .br
-9 |     call external add
+        call external add
 .br
-10|     display sum lf
+        display sum lf
 .br
 
 Building and running this program will print '350'.
 
-.B Building C++ Extensions
+## Building C++ Extensions
 
 Extensions are easy to build: when compiling your LDPL program, use the 'extension' keyword (explained in detail in the Code Structure section of this documentation) to add '.cpp' files, '.o' files, or '.a' files to your LDPL project. They will be included in your program and become available using the 'external' statements.
 
-If your C++ extension files require extra flags to be passed to the C++ compiler in order to compile (for example, '-lSDL' when working with SDL) you can use the 'flag' statement (explained in detail in the Code Structure section of this documentation) to pass flags to the C++ compiler.
+If your C++ extension files require extra flags to be passed to the C++ compiler in order to compile \(for example, '-lSDL' when working with SDL\) you can use the 'flag' statement (explained in detail in the Code Structure section of this documentation) to pass flags to the C++ compiler.
 
-:::coffeescript
-external "otherFile.cpp"
-flag "-fpermisive"
-flag "-lSDL2"
-data:
-#...
-procedure:
-#...
+    external "otherFile.cpp"
+    flag "-fpermisive"
+    flag "-lSDL2"
+    data:
+        #...
+    procedure:
+        #...
 
-.B "Hello World" C++ Example
+## "Hello World" C++ Example
 
 File simple.cpp:
-1 | #include <iostream>
+    #include <iostream>
 .br
-2 | void SIMPLE(){
+    void SIMPLE(){
 .br
-3 |         std::cout << "Very simple!" << std::endl;
+            std::cout << "Very simple!" << std::endl;
 .br
-4 | }
+    }
 .br
 
 File simple.ldpl:
-1 | extension "simple.cpp"
+    extension "simple.cpp"
 .br
-2 | 
+    
 .br
-3 | procedure:
+    procedure:
 .br
-4 | call external simple
+    call external simple
 .br
-5 | 
+    
 .br
 
 Console:
 
-1 | $ ldpl simple.ldpl
+    $ ldpl simple.ldpl
 .br
-2 | LDPL: Compiling...
+    LDPL: Compiling...
 .br
-3 | * File(s) compiled successfully.
+    * File(s) compiled successfully.
 .br
-4 | * Saved as simple-bin
+    * Saved as simple-bin
 .br
-5 | $ ./simple-bin
+    $ ./simple-bin
 .br
-6 | Very simple!
+    Very simple!
 .br
 
-.B External Sub-procedures
+## External Sub-procedures
 
 Sometimes when writting C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL sub-procedures and calling them from C++.
 
@@ -2653,57 +2604,57 @@ These C++ calleable sub-procedures are called external sub-procedures, as they c
 
 In order to declare an external sub-procedure you must first forward-declare it in your C++ source code. Say, for example, that you want to declare a sub-procedure called 'helloWorld'. In your C++ you should write the following line:
 
-1 | void HELLOWORLD();
+    void HELLOWORLD();
 .br
 
 Note that external sub-procedures cannot receive any kind of parameters and must be declared as 'void'. You may then call the external sub-procedure from C++ code like this:
 
-1 | int myCPPFunction(){
+    int myCPPFunction(){
 .br
-2 |   HELLOWORLD();
+      HELLOWORLD();
 .br
-3 |   return 1;
+      return 1;
 .br
-4 | }
+    }
 .br
 
 Once that's taken care of, you can declare your external sub-procedure as any other sub-procedure in LDPL by prepending the identifier 'external' to the sub-procedure declaration:
 
-1 | external sub-procedure myExternalSub
+    external sub-procedure myExternalSub
 .br
-2 |     #...
+        #...
 .br
-3 | end sub-procedure
+    end sub-procedure
 .br
 
 or just
 
-1 | external sub myExternalSub
+    external sub myExternalSub
 .br
-2 |     #...
+        #...
 .br
-3 | end sub
+    end sub
 .br
 
 These sub-procedures can be called from LDPL like you would call any other sub-procedure, but their names must follow the external identifier naming scheme detailed in the Naming Schemes section of this documentation as any other C++ interfacing identifier.
 
 
-.B External Variables
+## External Variables
 
 Variables defined in extensions can be accessed by prefacing their data type declaration with the 'external' keyword. This must occur in the data section of your LDPL code. Once an external variable is declared, it can be used just like any other LDPL variable.
 
 Syntax:
 
-1 | <variable> is external <data type>
+    <variable> is external <data type>
 .br
 
 Example:
 
-1 | data:
+    data:
 .br
-2 |     rl-prompt is external text
+        rl-prompt is external text
 .br
-3 |     window.size is external number
+        window.size is external number
 .br
 
 
