@@ -172,7 +172,7 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 - [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible. Install with: `lpm install ldpl_net_server`.
 - [**The LDPL Socket Library**](https://github.com/dvkt/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL. Install with: `lpm install ldpl_socket`.
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
-- [**TThe LDPL URL Resolver Library**](https://github.com/Lartu/ldpl-url-resolver): a super easy to use library for LDPL that helps you resolve URLs into their respective IP addresses. Install with: `lpm install ldpl-url-resolver`.
+- [**The LDPL URL Resolver Library**](https://github.com/Lartu/ldpl-url-resolver): a super easy to use library for LDPL that helps you resolve URLs into their respective IP addresses. Install with: `lpm install ldpl-url-resolver`.
 
 ## 📝 LDPL Compatible Editors
 
