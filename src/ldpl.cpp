@@ -159,6 +159,14 @@ int main(int argc, const char* argv[])
         if(state.section_state < 2) error("PROCEDURE section not found" + (filename == "-c" ? "." : " in file '" + filename + "'."));
     }
     state.add_code("return 0; \n}");
+    
+    //Add include for extensions
+    if(!extensions.empty()){
+        for(string & extension : extensions){
+            bullet_msg("Including C++ extension " + extension);
+            state.add_code("#include \"" + extension + "\"");
+        }
+    }
 
     //If an expected subprocedure was not declared, raise an error
     if(state.expected_subprocedures.size() > 0)
@@ -195,12 +203,6 @@ int main(int argc, const char* argv[])
 #ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
-    if(!extensions.empty()){
-        for(string & extension : extensions){
-            bullet_msg("Including C++ extension " + extension);
-            compile_line += " " + extension;
-        }
-    }
     if(!extension_flags.empty()){
         for(string & flag : extension_flags){
             bullet_msg("using C++ switch " + flag);
