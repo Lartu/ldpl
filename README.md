@@ -2,7 +2,7 @@
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
   <img src="https://img.shields.io/badge/license-apache_2.0-yellow?style=flat-square">
-  <img src="https://img.shields.io/badge/current_release-4.4-blue.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/current_release-4.4.1-blue.svg?style=flat-square">
   <img src="https://img.shields.io/badge/dev_version-4.5--dev-purple.svg?style=flat-square">
   <a href='https://docs.ldpl-lang.org/'><img src="https://img.shields.io/badge/docs-up_to_date-green?style=flat-square"></a>
   <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange?style=flat-square"></a>
@@ -166,12 +166,13 @@ A number of useful statements and subroutines are available in the [**LDPL Stand
 
 ### 🦕 Other LDPL Libraries
 
-- [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible. Install with: `lpm install ldpl_net_server`.
-- [**The LDPL Socket Library**](https://github.com/dvkt/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL. Install with: `lpm install ldpl_socket`.
 - [**The LDPL IRC Bot Library**](https://github.com/Lartu/ldpl-irc-bot): the LDPL IRC Bot Library lets you write LDPL programs that connect to IRC servers, join channels, send messages and more in the simplest
 way possible. Install with: `lpm install ldpl_irc_bot`.
-- [**The LDPL Ncurses Library**](https://github.com/Lartu/ldpl-ncurses): the LDPL Ncurses Library is a ncurses wrapper for LDPL, designed for creating terminal applications that require more complex text user-interfaces than simple line-feeding. Install with: `lpm install ldpl-ncurses`.
+- [**The LDPL Ncurses Library**](https://github.com/Lartu/ldpl-ncurses): an ncurses wrapper for LDPL designed for creating terminal applications that require more complex text user-interfaces than simple line-feeding. Install with: `lpm install ldpl-ncurses`.
+- [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible. Install with: `lpm install ldpl_net_server`.
+- [**The LDPL Socket Library**](https://github.com/dvkt/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL. Install with: `lpm install ldpl_socket`.
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
+- [**The LDPL URL Resolver Library**](https://github.com/Lartu/ldpl-url-resolver): a super easy to use library for LDPL that helps you resolve URLs into their respective IP addresses. Install with: `lpm install ldpl-url-resolver`.
 
 ## 📝 LDPL Compatible Editors
 
