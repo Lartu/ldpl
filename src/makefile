@@ -4,6 +4,9 @@
 # | LDPL Version Details |
 # +----------------------+
 
+# Usage:
+# make [x86=true] [version='"<version>"']
+
 VERSION = '"4.5-dev"'  #LDPL Version
 VERSIONNAME = '"Friendly Falcarius"' #LDPL Version Name
 
@@ -15,10 +18,14 @@ OBJS = ldpl.o
 SOURCE = ldpl.cpp
 OUT = ldpl
 LPMLOCATION = "~/ldpl/lpm/"
+# Alternative version name (make version="<version>")
+ifdef version
+VERSION = '"$(version)"'
+endif
 # x86 cross compilation options (make x86=true)
 ifdef x86
 CROSS = -m32
-CROSS = -m32
+VERSION = '"$(version) (i386)"'
 endif
 FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='$(LPMLOCATION)'
 #Flags for static compilation on Windows and Linux (not Android)
