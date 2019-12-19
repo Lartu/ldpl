@@ -88,7 +88,7 @@ To create a variable in a C++ extension that can be accessed from LDPL code, you
 
 The first rule should be familiar from the previous section: all C++ variable and function names must contain only `A-Z`, `0-9`, and the `_` character. Everything else on the LDPL side will get converted to an underscore \(`_`\).
 
-For the second rule, you may find a file called [**ldpl_types.h** in the LDPL repository](https://github.com/Lartu/ldpl/blob/master/extensions/ldpl-types.h) that contains definitions for all the build-in LDPL data types: `ldpl_number`, `ldpl_text`, `ldpl_list<T>` and `ldpl_map<T>`.
+For the second rule, the LDPL compiler provides the data types `ldpl_number`, `ldpl_text`, `ldpl_list<T>` and `ldpl_map<T>`. These will be explained in greater detail in the next section.
 
 **Example:**
 
@@ -108,6 +108,19 @@ data:
     age is external number
     street_address is external text
 ```
+
+### The LDPL Data Types
+
+The LDPL compiler provides the data types `ldpl_number`, `ldpl_text`, `ldpl_list<T>` and `ldpl_map<T>`. To use
+them, just use them as if they were declared and the LDPL compiler will add the declarations and definitions for you
+once the extension is compiled.
+
+ * The `ldpl_number` data type is just a rename for `double`.
+ * The `ldpl_text` data type is a special UTF-8 string class used just like the regular C++ `std::string` class, with the exception that if you want to get an `std::string` from an `ldpl_text` you can call the `ldpl_text` method `ldpl_text::str_rep()` to get the `std::string` representation of an `ldpl_text`. Just like you would use `std::string::c_str()` to get the C `char*` representation of an `std::string`.
+ * The `ldpl_list<T>` data type represents an `std::vector` with a special `[]` operator overload. 
+ * The `ldpl_map<T>` data type represents an `std::unordered_map` with special `[]` operator overloadings.
+ 
+You can read the definition of these data types on the [ldpl_lib.cpp](https://github.com/Lartu/ldpl/blob/master/src/ldpl_lib.cpp) file of the LDPL source repository.
 
 ### Accessing Variables in C++ Functions
 
