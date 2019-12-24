@@ -630,7 +630,9 @@ int str_cmp(chText a, chText b) {
 }
 
 ldpl_number modulo(ldpl_number a, ldpl_number b){
-    return (int) floor(a) % (int) floor(b);
+    long f_a = floor(a);
+    long f_b = floor(b);
+    return ( f_a % f_b + f_b ) % f_b;
 }
 
 void join(const chText & a, const chText & b, chText & c){
