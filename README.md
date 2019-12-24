@@ -76,7 +76,7 @@ be okay even when times get dark.
 
 ## 💾 How to install LDPL
 
-### Using Snappy
+### Using Snappy:
 
 If your system supports the Snappy Package Manager (for example, Ubuntu) you can install the latest LDPL release by running the command `snap install ldpl`. That's it!
 
