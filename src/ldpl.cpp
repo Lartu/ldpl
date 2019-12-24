@@ -2077,10 +2077,9 @@ vector<unsigned int> variable_type(string & token, compiler_state & state) {
     // containers and not the one we are trying to get the types of.
     size_t tokensToSkip = 0;
     for(size_t i = 1; i < tokens.size(); ++i){
-        // If the current token is a number or a string, we can pop or skip it safely.
+        // If the current token is a scalar literal, we can skip it safely.
         if(is_number(tokens[i]) || is_string(tokens[i])){
             if(tokensToSkip > 0) tokensToSkip--;
-            else types.pop_back();
         }
         // If it's not, then it must be a variable name.
         else{
@@ -2088,12 +2087,20 @@ vector<unsigned int> variable_type(string & token, compiler_state & state) {
             if(state.variables[state.current_subprocedure].count(tokens[i]) == 0 && state.variables[""].count(tokens[i]) == 0){
                 error("The variable " + tokens[i] + " used in " + token + " doesn't exist.");
             }
-            // If the variable exists, then we skip as many tokens as that variable takes.
             vector<unsigned int> cvar_types = variable_type(tokens[i], state);
-            if(tokensToSkip == 0) types.pop_back();
-            tokensToSkip += cvar_types.size() - 1;
+            if (cvar_types.size() > 1) {
+                // If the variable exists and is a container, then we skip as many tokens as that variable takes.
+                tokensToSkip += cvar_types.size() - 1;
+            } else {
+                // If the variable exists and is a scalar, we can skip it
+                if(tokensToSkip > 0) tokensToSkip--;
+            }
         }
+        if (tokensToSkip == 0) types.pop_back();
     }
+    // We return {0} if there is an incomplete container access
+    // that must be complete to resolve as a scalar index
+    if (tokensToSkip > 0) return {0};
     // Now we have the types and can return them.
     return types;
 }
