@@ -783,22 +783,30 @@ void load_file(chText filename, chText & destination)
     file.close();
 }
 
-void append_to_file(chText filename, chText content){
-    file_writing_stream.open(expandHomeDirectory(filename.str_rep()), ios_base::app);
+// Used by append_ and write_.
+void stream_to_file(chText filename, chText content, ios_base::openmode mode){
+    file_writing_stream.open(expandHomeDirectory(filename.str_rep()), mode);
     if(!file_writing_stream.is_open()){
-        VAR_ERRORTEXT = \"Could not append to \" + filename;
+        VAR_ERRORTEXT = \"Could not write to \" + filename;
         VAR_ERRORCODE = 1;
         return;
     }
     file_writing_stream << content;
     if(file_writing_stream.bad()){
-        VAR_ERRORTEXT = \"Could not append to \" + filename;
+        VAR_ERRORTEXT = \"Could not write to \" + filename;
         VAR_ERRORCODE = 2;
         return;
     }
     VAR_ERRORTEXT = \"\";
     VAR_ERRORCODE = 0;
     file_writing_stream.close();
+}
+
+void append_to_file(chText filename, chText content){
+    stream_to_file(filename, content, ios_base::app);
+}
+void write_file(chText filename, chText content){
+    stream_to_file(filename, content, ios_base::out);
 }
 
 ldpl_number utf8GetIndexOf(chText haystack, chText needle){
