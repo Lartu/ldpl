@@ -783,6 +783,24 @@ void load_file(chText filename, chText & destination)
     file.close();
 }
 
+void append_to_file(chText filename, chText content){
+    file_writing_stream.open(expandHomeDirectory(filename.str_rep()), ios_base::app);
+    if(!file_writing_stream.is_open()){
+        VAR_ERRORTEXT = \"Could not append to \" + filename;
+        VAR_ERRORCODE = 1;
+        return;
+    }
+    file_writing_stream << content;
+    if(file_writing_stream.bad()){
+        VAR_ERRORTEXT = \"Could not append to \" + filename;
+        VAR_ERRORCODE = 2;
+        return;
+    }
+    VAR_ERRORTEXT = \"\";
+    VAR_ERRORCODE = 0;
+    file_writing_stream.close();
+}
+
 ldpl_number utf8GetIndexOf(chText haystack, chText needle){
     int lenHaystack = haystack.size();
     int lenNeedle = needle.size();
