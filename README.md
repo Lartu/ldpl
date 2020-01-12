@@ -176,7 +176,7 @@ A number of useful statements and subroutines are available in the [**LDPL Stand
 way possible. Install with: `lpm install ldpl_irc_bot`.
 - [**The LDPL Ncurses Library**](https://github.com/Lartu/ldpl-ncurses): an ncurses wrapper for LDPL designed for creating terminal applications that require more complex text user-interfaces than simple line-feeding. Install with: `lpm install ldpl-ncurses`.
 - [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible. Install with: `lpm install ldpl_net_server`.
-- [**The LDPL Socket Library**](https://github.com/dvkt/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL. Install with: `lpm install ldpl_socket`.
+- [**The LDPL Socket Library**](https://github.com/xvxx/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL. Install with: `lpm install ldpl_socket`.
 - [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
 - [**The LDPL URL Resolver Library**](https://github.com/Lartu/ldpl-url-resolver): a super easy to use library for LDPL that helps you resolve URLs into their respective IP addresses. Install with: `lpm install ldpl-url-resolver`.
 
@@ -184,7 +184,7 @@ way possible. Install with: `lpm install ldpl_irc_bot`.
 
 ![Gedit](https://www.ldpl-lang.org/images/gedit.png) ![VSC](https://www.ldpl-lang.org/images/vsc.png?v=1) ![VIM](https://www.ldpl-lang.org/images/vim.png) ![ATOM](https://www.ldpl-lang.org/images/atom.png) ![nano](https://www.ldpl-lang.org/images/nanologo.png)
 
-We have highlighting and code formatting extensions available for [**Gedit / Pluma**](https://github.com/Lartu/ldpl/tree/master/highlighting/gedit) (by [Lartu](http://github.com/lartu)), [**Visual Studio Code**](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [dvkt](https://github.com/dvkt) and [Lartu](http://github.com/lartu)), [**nano**](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)), [**Atom**](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [**Vim**](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)).
+We have highlighting and code formatting extensions available for [**Gedit / Pluma**](https://github.com/Lartu/ldpl/tree/master/highlighting/gedit) (by [Lartu](http://github.com/lartu)), [**Visual Studio Code**](https://marketplace.visualstudio.com/items?itemName=Lartu.ldpl-vsc-extension) (thanks to [xvxx](https://github.com/xvxx) and [Lartu](http://github.com/lartu)), [**nano**](https://github.com/Lartu/ldpl/tree/master/highlighting/nano) (by [Lartu](http://github.com/lartu)), [**Atom**](https://atom.io/packages/language-ldpl) (thanks to [Damián Garro](https://github.com/dgarroDC)) and [**Vim**](https://github.com/araml/ldpl.vim) (thanks to [Araml](https://github.com/araml)).
 
 You can use any other editor (without syntax highlighting) if you like. If know how to write syntax packages for other editors and would like to contribute to the LDPL project, a highlighting extension would be a very welcome contribution.
 
