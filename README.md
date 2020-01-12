@@ -76,15 +76,9 @@ be okay even when times get dark.
 
 ## 💾 How to install LDPL
 
-### Using Snappy:
-
-~If your system supports the Snappy Package Manager (for example, Ubuntu) you can install the latest LDPL release by running the command `snap install ldpl`. That's it!~
-
-⚠️ **The snap release of LDPL is not working at the moment, it will be fixed in the coming days, but for now please refrain from using it!** (2019-12-28)
-
 ### Using the LDPL Install Wizard:
 
-You can also use the **LDPL Install Wizard** to make and install LDPL. This method sets up everything LDPL needs for you and installs the latest LDPL version available. This method requires *whiptail* to be installed on your system (it probably is).
+You can  use the **LDPL Install Wizard** to make and install LDPL. This method sets up everything LDPL needs for you and installs the latest LDPL version available. This method requires *whiptail* to be installed on your system (it probably is).
 
 <img src="https://github.com/Lartu/ldpl/blob/master/images/wizard.png" width=500px>
 
