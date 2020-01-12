@@ -128,6 +128,15 @@ WRITE <NUMBER or NUMBER-VAR or TEXT or TEXT-VAR> TO FILE <TEXT or TEXT-VAR>
 WRITE "Hello there!" TO FILE "hello.txt"
 ```
 
+**Error Codes:**
+
+If the WRITE operation should fail, the `ERRORCODE` and `ERRORTEXT` variables will be set to the following values:
+
+* `ERRORCODE`: 1
+* `ERRORTEXT`: "Could not open '&lt;filename&gt;'"
+* `ERRORCODE`: 2
+* `ERRORTEXT`: "Could not write to '&lt;filename&gt;'"
+
 ## `APPEND _ TO FILE _`
 
 The `APPEND x TO FILE y` statement appends the value of `x` to the file called `y`. If the file already exists, `x` will be added at the end of its contents.
@@ -151,4 +160,11 @@ Hello there!
 How are you?
 ```
 
+**Error Codes:**
 
+If the APPEND operation should fail, the `ERRORCODE` and `ERRORTEXT` variables will be set to the following values:
+
+* `ERRORCODE`: 1
+* `ERRORTEXT`: "Could not open '&lt;filename&gt;'"
+* `ERRORCODE`: 2
+* `ERRORTEXT`: "Could not write to '&lt;filename&gt;'"
