@@ -16,6 +16,7 @@
 #endif
 
 using namespace std;
+string & escape_c_quotes(string & str);
 
 #if !defined(__APPLE__) && !defined(__ANDROID__)
 #define STATIC_BUILDS 1
@@ -39,11 +40,13 @@ struct compiler_state{
     void add_var_code(string code){
         this->variable_code.push_back(code);
     }
-    void add_code(string code){
-        if(current_subprocedure == "")
-            this->output_code.push_back(code);
-        else
-            this->subroutine_code.push_back(code);
+    void add_code(string code, unsigned int line_num = 0){
+	auto& output = current_subprocedure == ""
+                       ? this->output_code
+                       : this->subroutine_code;
+	if (line_num)
+            output.push_back("#line " + to_string(line_num) + " \"" + escape_c_quotes(current_file) + "\"");
+        output.push_back(code);
     }
     bool open_quote = false;
     string current_subprocedure = "";
