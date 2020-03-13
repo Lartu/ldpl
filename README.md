@@ -37,7 +37,7 @@ This repository contains the source code and [releases](https://github.com/Lartu
 ```coffeescript
 # Hello There Example
 data: 
-  name is number
+  name is text
   
 procedure: 
   display "Hello there, what's your name?"
