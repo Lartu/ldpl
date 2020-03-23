@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
+#include "../../src/ldpl.h"
 
-std::string MY_NAME;
+ldpl_text MY_NAME;
 
 void HELLO()
 {
