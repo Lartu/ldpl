@@ -285,7 +285,7 @@ The `WAIT` statement pauses the execution of a program for the given number of m
 WAIT <NUMBER or NUMBER-VAR> MILLISECONDS
 ```
 
-## `GOTO & LABEL`
+## `GOTO and LABEL`
 
 > "If you want to go somewhere, goto is the best way to get there."	
 > -- Ken Thompson
