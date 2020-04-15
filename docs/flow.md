@@ -453,7 +453,7 @@ CALL EXTERNAL http-get
 
 ## `IN _ CALL PARALLEL _`
 
-The `CALL PARALLEL` statement executes a SUB-PROCEDURE on a parallel thread to the main thread of your program. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
+The `CALL PARALLEL` statement executes a SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
 
 **Syntax:**
 
@@ -464,3 +464,23 @@ IN <NUMBER-VAR> CALL PARALLEL <parallelizable sub-procedure name>
 For a SUB-PROCEDURE to be usable with the `CALL PARALLEL` statement, the SUB-PROCEDURE must have NO parameters.
 
 Of course, a SUB-PROCEDURE must be declared **somewhere** in your program for you to call it.
+
+## `WAIT FOR PARALLEL _`
+
+The `WAIT FOR PARALLEL` statement halts execution of the current thread until the parallel thread referenced by the passed NUMBER variable has finished running.
+
+**Syntax:**
+
+```coffeescript
+WAIT FOR PARALLEL <NUMBER-VAR>
+```
+
+## `STOP PARALLEL _`
+
+The `STOP PARALLEL` statement halts execution of the parallel thread referenced by the passed NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+STOP PARALLEL <NUMBER-VAR>
+```
