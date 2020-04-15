@@ -346,7 +346,7 @@ wow, yeah! cool code!
 
 In order to keep `GOTO` from turning your source into _unmaintainable spaghetti code_, both your `GOTO` statements and the `LABEL`s they jump to have to be declared together in the same sub-procedure or in the main code body of an LDPL program. You can't `goto` across sub-procedures or into them, or anything like that.
 
-# `CREATE STATEMENT _ EXECUTING _`
+## `CREATE STATEMENT _ EXECUTING _`
 
 The `CREATE STATEMENT` statement lets you add custom statements to LDPL that execute SUB-PROCEDUREs.
 
