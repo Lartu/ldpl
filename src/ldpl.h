@@ -44,8 +44,9 @@ struct compiler_state{
 	auto& output = current_subprocedure == ""
                        ? this->output_code
                        : this->subroutine_code;
-	if (line_num)
-            output.push_back("#line " + to_string(line_num) + " \"" + escape_c_quotes(current_file) + "\"");
+        // TODO add a debug flag for this
+        //if (line_num)
+        //    output.push_back("#line " + to_string(line_num) + " \"" + escape_c_quotes(current_file) + "\"");
         output.push_back(code);
     }
     bool open_quote = false;
@@ -202,4 +203,7 @@ bool in_procedure_section(compiler_state & state, unsigned int line_num, string 
 vector<unsigned int> variable_type(string & token, compiler_state & state);
 void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file);
 void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num);
+void add_call_parallel_code(string & subprocedure, string & var_name, vector<string> & parameters, compiler_state & state, unsigned int line_num);
 string current_os();
+void add_stop_parallel_code(string & var_name, compiler_state & state, unsigned int line_num);
+void add_wait_parallel_code(string & var_name, compiler_state & state, unsigned int line_num);

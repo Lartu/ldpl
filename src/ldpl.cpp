@@ -32,7 +32,7 @@ int main(int argc, const char* argv[])
     if(contains_any(args, {"-v", "--version"})){
         cout << endl;
         cout << " This is \033[32;1mLDPL version " << VERSION << "\033[0m '\033[32;1m" << VERSIONNAME << "\033[0m'." << endl << endl;
-        cout << " Copyright 2018-2019, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
+        cout << " Copyright 2018-2020, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
         cout << " Built with amazing contributions from \033[35;1mChris West\033[0m, \033[35;1mDamián Garro\033[0m," << endl;
         cout << " \033[35;1mfireasembler\033[0m, \033[35;1miglosiggio\033[0m and other wonderful contributors." << endl << endl;
         cout << " The LDPL Home Page can be found at \033[36;1mwww.ldpl-lang.org\033[0m." << endl;
@@ -199,7 +199,7 @@ int main(int argc, const char* argv[])
         final_filename += "-bin";
     }
     //Compile the C++ code
-    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -w -o " + final_filename;
+    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -lpthread -w -o " + final_filename;
 #ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
@@ -690,7 +690,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!state.closing_subprocedure())
             error("END SUB-PROCEDURE without SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("}", line_num);
+        state.add_code("return NULL;}", line_num);
         //Cierro la subrutina
         state.close_subprocedure();
         return;
@@ -863,11 +863,11 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             bool correct_types = state.correct_subprocedure_types(subprocedure, types);
             if(!is_subprocedure(subprocedure, state)) {
                 if(!correct_types)
-                    error("CALL parameter types doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                    error("CALL parameter types don't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
                 state.add_expected_subprocedure(subprocedure, fix_identifier(subprocedure, false), types);
             } else {
                 if(!correct_types)
-                    error("CALL parameter types doesn't match SUB-PROCEDURE declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                    error("CALL parameter types don't match SUB-PROCEDURE declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             }
             add_call_code(subprocedure, parameters, state, line_num);
             return;
@@ -882,6 +882,34 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_var_code("void "+fix_external_identifier(tokens[2], false)+"();");
         return;
     }
+    if(line_like("IN $num-var CALL PARALLEL $name", tokens, state))
+    {
+        size_t i = 4;
+        string subprocedure = tokens[i];
+        // Valid options: No WITH or WITH with at least one paramter
+        if(!in_procedure_section(state, line_num, current_file))
+            error("CALL PARALLEL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        vector<string> parameters(tokens.end(), tokens.end());
+        vector<vector<unsigned int>> types;
+        // By precondition, parameters.size is always 0
+        bool correct_types = state.correct_subprocedure_types(subprocedure, types);
+        if(!is_subprocedure(subprocedure, state)) {
+            error("CALL PARALLEL parameter type doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        } else {
+            if(!correct_types)
+                error("CALL PARALLEL parameter type doesn't match SUB-PROCEDURE declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        }
+        add_call_parallel_code(subprocedure, tokens[1], parameters, state, line_num);
+        return;
+    }
+    if(line_like("STOP PARALLEL $num-var", tokens, state)){
+        add_stop_parallel_code(tokens[2], state, line_num);
+        return;
+    }
+    if(line_like("WAIT FOR PARALLEL $num-var", tokens, state)){
+        add_wait_parallel_code(tokens[3], state, line_num);
+        return;
+    }
     if(line_like("RETURN", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
@@ -889,7 +917,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.current_subprocedure == "")
             error("RETURN found outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("return;", line_num);
+        state.add_code("return NULL;", line_num);
         return;
     }
     if(line_like("EXIT", tokens, state))
@@ -2106,7 +2134,8 @@ void open_subprocedure_code(compiler_state & state, unsigned int line_num, strin
     string name = state.current_subprocedure;
     vector<string> & parameters = state.subprocedures[name];
     vector<vector<unsigned int>> types;
-    string code = "void " +fix_identifier(name, false)+ "(";
+    string code = "void * " +fix_identifier(name, false)+ "(void * thr_par";
+    if (!parameters.empty()) code += ", ";
     for (size_t i = 0; i < parameters.size(); ++i) {
         string identifier = fix_identifier(parameters[i], true, state);
         string type = state.get_c_type(state.variables[name][parameters[i]]);
@@ -2123,7 +2152,8 @@ void open_subprocedure_code(compiler_state & state, unsigned int line_num, strin
 
 void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num) {
     string current_file = state.current_file;
-    string code = fix_identifier(subprocedure, false) + "(";
+    string code = fix_identifier(subprocedure, false) + "(NULL";
+    if (!parameters.empty()) code += ", ";
     for (size_t i = 0; i < parameters.size(); ++i) {
         if (is_number(parameters[i]) || is_string(parameters[i])) {
             // C++ doen't allow passing literals in  reference parameters, we create vars for them
@@ -2137,6 +2167,38 @@ void add_call_code(string & subprocedure, vector<string> & parameters, compiler_
         if (i < parameters.size() - 1) code += ", ";
     }
     code += ");";
+    state.add_code(code, line_num);
+}
+
+void add_call_parallel_code(string & subprocedure, string & var_name, vector<string> & parameters, compiler_state & state, unsigned int line_num)
+{
+    string current_file = state.current_file;
+    string code = "";
+    code = "ldpl_pthread_count++;\n";
+    code += "pthread_create(&ldpl_thread_num, NULL, ";
+    code += fix_identifier(subprocedure, false) + ", ";
+    code += "NULL);\n";
+    state.add_code(code, line_num);
+    code += get_c_variable(state, var_name) + " = ldpl_pthread_count;\n";
+    code += "ldpl_thread_numbers[ldpl_pthread_count] = ldpl_thread_num;\n";
+    state.add_code(code, line_num);
+}
+
+void add_stop_parallel_code(string & var_name, compiler_state & state, unsigned int line_num)
+{
+    string code = "if(ldpl_thread_numbers.find(" + get_c_variable(state, var_name) + ") != ldpl_thread_numbers.end()){\n";
+    code += "pthread_cancel(ldpl_thread_numbers[" + get_c_variable(state, var_name) + "]);\n";
+    code += "ldpl_thread_numbers.erase(" + get_c_variable(state, var_name) + ");\n";
+    code += "}";
+    state.add_code(code, line_num);
+}
+
+void add_wait_parallel_code(string & var_name, compiler_state & state, unsigned int line_num)
+{
+    string code = "if(ldpl_thread_numbers.find(" + get_c_variable(state, var_name) + ") != ldpl_thread_numbers.end()){\n";
+    code += "pthread_join(ldpl_thread_numbers[" + get_c_variable(state, var_name) + "], NULL);\n";
+    code += "ldpl_thread_numbers.erase(" + get_c_variable(state, var_name) + ");\n";
+    code += "}";
     state.add_code(code, line_num);
 }
 

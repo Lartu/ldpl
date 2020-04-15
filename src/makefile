@@ -8,7 +8,7 @@
 # make [x86=true] [version='"<version>"']
 
 VERSION = '"4.5-dev"'  #LDPL Version
-VERSIONNAME = '"Friendly Falcarius"' #LDPL Version Name
+VERSIONNAME = '"Groovy Gualicho"' #LDPL Version Name
 
 # +-----------------+
 # | The other stuff |

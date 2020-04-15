@@ -11,6 +11,7 @@
 #include <thread>
 #include <time.h>
 #include <vector>
+#include <pthread.h> 
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define CRLF \"\\n\"
@@ -898,3 +899,7 @@ ldpl_list<chText> utf8_split_list(chText haystack, chText needle){
     }
     return result;
 }
+
+ldpl_number ldpl_pthread_count = 0;
+unordered_map<ldpl_number, pthread_t> ldpl_thread_numbers;
+pthread_t ldpl_thread_num;

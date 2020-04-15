@@ -235,7 +235,7 @@ CONTINUE
 
 ## `CALL SUB-PROCEDURE`
 
-The `CALL SUB-PROCEDURE` statement executes a SUB-PROCEDURE. Once the SUB-PROCEDURE returns, the execution continues from the line following the `CALL SUB-PROCEDURE`.
+The `CALL SUB-PROCEDURE` statement executes a SUB-PROCEDURE. Once the SUB-PROCEDURE returns, execution continues from the line following the `CALL SUB-PROCEDURE`.
 
 **Syntax:**
 
@@ -450,3 +450,17 @@ CALL EXTERNAL <external sub-procedure name>
 ```text
 CALL EXTERNAL http-get
 ```
+
+## `IN _ CALL PARALLEL _`
+
+The `CALL PARALLEL` statement executes a SUB-PROCEDURE on a parallel thread to the main thread of your program. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
+
+**Syntax:**
+
+```coffeescript
+IN <NUMBER-VAR> CALL PARALLEL <parallelizable sub-procedure name>
+```
+
+For a SUB-PROCEDURE to be usable with the `CALL PARALLEL` statement, the SUB-PROCEDURE must have NO parameters.
+
+Of course, a SUB-PROCEDURE must be declared **somewhere** in your program for you to call it.
