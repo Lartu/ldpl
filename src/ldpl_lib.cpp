@@ -40,9 +40,9 @@ private:
     void createFromString(const string & cstr);
     void createFromChar(const char * cstr);
 public:
-    size_t size();
-    bool empty();
-    size_t length();
+    size_t size() const;
+    bool empty() const;
+    size_t length() const;
     string str_rep();
     chText();
     chText (const string& x);
@@ -81,8 +81,8 @@ public:
     chText substr(size_t from, size_t count);
     chText & erase(size_t from, size_t count);
     chText substr(size_t from);
-    int compare(size_t from, size_t count, chText other);
-    int compare(chText other);
+    int compare(size_t from, size_t count, const chText &other);
+    int compare(const chText &other);
 };
 
 ostream & operator << (ostream &out, const chText &c);
@@ -183,13 +183,13 @@ void chText::createFromChar(const char * cstr){
         chPos++;
     }
 }
-size_t chText::size(){
+size_t chText::size() const {
     return buffer.size();
 }
-bool chText::empty(){
+bool chText::empty() const {
     return buffer.empty();
 }
-size_t chText::length(){
+size_t chText::length() const {
     return size();
 }
 string chText::str_rep(){
@@ -276,25 +276,19 @@ bool chText::loadFile(const string &fileName){
 }
 // += operator
 chText & chText::operator += (const chText & txt){
-    for(const string & s : txt.buffer){
-        buffer.push_back(s);
-    }
+    buffer.insert(buffer.end(), txt.buffer.begin(), txt.buffer.end());
     return *this;
 }
 // += operator
 chText & chText::operator += (const string & txt){
     chText c2 = txt;
-    for(const string & s : c2.buffer){
-        buffer.push_back(s);
-    }
+    buffer.insert(buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return *this;
 }
 // += operator
 chText & chText::operator += (const char * txt){
     chText c2 = txt;
-    for(const string & s : c2.buffer){
-        buffer.push_back(s);
-    }
+    buffer.insert(buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return *this;
 }
 
@@ -362,41 +356,37 @@ double chText::getNumber(){
 }
 
 chText chText::substr(size_t from, size_t count){
+    count = from + count > buffer.size() ? buffer.size() - from : count;
     chText newText;
-    for(size_t i = from; i < from + count; ++i){
-        if(i >= buffer.size()) break;
-        newText.buffer.push_back(buffer[i]);
-    }
+    newText.buffer.insert(newText.buffer.begin(), buffer.begin() + from, buffer.begin() + from + count);
     return newText;
 }
 
 chText & chText::erase(size_t from, size_t count){
-    for(size_t i = 0; i < count; ++i)
-        buffer.erase(buffer.begin() + from);
+    buffer.erase(buffer.begin() + from, buffer.begin() + from + count);
     return *this;
 }
 
 chText chText::substr(size_t from){
     chText newText;
-    for(size_t i = from; i < from + buffer.size(); ++i){
-        if(i >= buffer.size()) break;
-        newText.buffer.push_back(buffer[i]);
-    }
+    newText.buffer.insert(newText.buffer.begin(), buffer.begin() + from, buffer.end());
     return newText;
 }
 
-int chText::compare(size_t from, size_t count, chText other){
-    chText newText;
-    for(size_t i = from; i < from + count; ++i){
-        if(i >= buffer.size()) break;
-        newText.buffer.push_back(buffer[i]);
-    }
-    if (newText == other) return 0;
-    if (newText.size() < other.size()) return -1;
-    else return 1;
+// NOTE: returns 0 on equality, -1 if the string is shorter, and 1 in any other case.
+int chText::compare(size_t from, size_t count, const chText &other){
+    // Fix count to respect the actual end of the buffer.
+    count = from + count > buffer.size() ? buffer.size() - from : count;
+    // Compare sizes before anything else for efficiency.
+    if (count < other.buffer.size()) return -1;
+    if (count > other.buffer.size()) return 1;
+    for(size_t i = from, j = 0; j < count; ++i, ++j)
+        if (buffer[i] != other.buffer[j])
+            return 1; // We already know it's not shorter, see above.
+    return 0;
 }
 
-int chText::compare(chText other){
+int chText::compare(const chText &other){
     if (*this == other) return 0;
     if (this->size() < other.size()) return -1;
     else return 1;
@@ -411,43 +401,33 @@ ostream & operator << (ostream &out, const chText &c){
 
 chText operator+(const chText &c1, const chText &c2){
     chText res = c1;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const string &c1, const chText &c2){
     chText res = c1;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const chText &c1, const string &str){
     chText res = c1;
     chText c2 = str;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const char * c1, const chText &c2){
     chText res = c1;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const chText &c1, const char * str){
     chText res = c1;
     chText c2 = str;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
@@ -486,7 +466,7 @@ bool operator==(const chText& ch1, const char c2){
 }
 
 bool operator<(const chText &c1, const chText &c2){
-	size_t max = c1.buffer.size() > c2.buffer.size() ? c2.buffer.size() : c1.buffer.size();
+    size_t max = c1.buffer.size() > c2.buffer.size() ? c2.buffer.size() : c1.buffer.size();
     for(size_t i = 0; i < max; ++i){
         if(c1.buffer[i] < c2.buffer[i]) return true;
         else if (c1.buffer[i] > c2.buffer[i]) return false;
@@ -495,7 +475,7 @@ bool operator<(const chText &c1, const chText &c2){
 }
 
 bool operator>(const chText &c1, const chText &c2){
-	size_t max = c1.buffer.size() > c2.buffer.size() ? c2.buffer.size() : c1.buffer.size();
+    size_t max = c1.buffer.size() > c2.buffer.size() ? c2.buffer.size() : c1.buffer.size();
     for(size_t i = 0; i < max; ++i){
         if(c1.buffer[i] > c2.buffer[i]) return true;
         else if (c1.buffer[i] < c2.buffer[i]) return false;
@@ -589,12 +569,8 @@ ldpl_number to_number(chText & textNumber){
     string a = textNumber.str_rep();
     try {
         //This is used to disallow the use of hexadecimal and binary literals.
-        for(char i : a){
-            if(i != '0' && i != '1' && i != '2' &&
-               i != '3' && i != '4' && i != '5' &&
-               i != '6' && i != '7' && i != '8' &&
-               i != '9' && i != '-' && i != '.') return 0;
-        }
+        for(char i : a)
+            if((i < '0' || i > '9') && i != '-' && i != '.') return 0;
         ldpl_number num = stod(a);
         return num;
     }
