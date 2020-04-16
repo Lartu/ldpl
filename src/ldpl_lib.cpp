@@ -276,25 +276,19 @@ bool chText::loadFile(const string &fileName){
 }
 // += operator
 chText & chText::operator += (const chText & txt){
-    for(const string & s : txt.buffer){
-        buffer.push_back(s);
-    }
+    buffer.insert(buffer.end(), txt.buffer.begin(), txt.buffer.end());
     return *this;
 }
 // += operator
 chText & chText::operator += (const string & txt){
     chText c2 = txt;
-    for(const string & s : c2.buffer){
-        buffer.push_back(s);
-    }
+    buffer.insert(buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return *this;
 }
 // += operator
 chText & chText::operator += (const char * txt){
     chText c2 = txt;
-    for(const string & s : c2.buffer){
-        buffer.push_back(s);
-    }
+    buffer.insert(buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return *this;
 }
 
@@ -362,26 +356,20 @@ double chText::getNumber(){
 }
 
 chText chText::substr(size_t from, size_t count){
+    count = from + count > buffer.size() ? buffer.size() - from : count;
     chText newText;
-    for(size_t i = from; i < from + count; ++i){
-        if(i >= buffer.size()) break;
-        newText.buffer.push_back(buffer[i]);
-    }
+    newText.buffer.insert(newText.buffer.begin(), buffer.begin() + from, buffer.begin() + from + count);
     return newText;
 }
 
 chText & chText::erase(size_t from, size_t count){
-    for(size_t i = 0; i < count; ++i)
-        buffer.erase(buffer.begin() + from);
+    buffer.erase(buffer.begin() + from, buffer.begin() + from + count);
     return *this;
 }
 
 chText chText::substr(size_t from){
     chText newText;
-    for(size_t i = from; i < from + buffer.size(); ++i){
-        if(i >= buffer.size()) break;
-        newText.buffer.push_back(buffer[i]);
-    }
+    newText.buffer.insert(newText.buffer.begin(), buffer.begin() + from, buffer.end());
     return newText;
 }
 
