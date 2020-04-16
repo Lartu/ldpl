@@ -31,7 +31,11 @@ using namespace std;
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <fcntl.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
 class chText {
 private:
     vector<string> buffer;
@@ -39,6 +43,7 @@ private:
     size_t chText_get_str_utf8length(const string cstr);
     void createFromString(const string & cstr);
     void createFromChar(const char * cstr);
+    void createFromMem(const char * mem, size_t len);
 public:
     size_t size() const;
     bool empty() const;
@@ -125,38 +130,16 @@ size_t chText::chText_get_str_utf8length(const string cstr){
 }
 // Fills buffer with utf8-encoded c++ string
 void chText::createFromString(const string & cstr){
-    buffer.clear();
-    size_t cstrlen = cstr.size();
-    size_t chPos = 0;
-    for(size_t i = 0; i < cstrlen; ++i){
-        string ch = \"\";
-        char c = cstr[i];
-        if (c >= 0 && c <= 127){
-            ch += c;
-        }
-        else if ((c & 0xE0) == 0xC0){
-            ch += c;
-            ch += cstr[++i];
-        }
-        else if ((c & 0xF0) == 0xE0){
-            ch += c;
-            ch += cstr[++i];
-            ch += cstr[++i];
-        }
-        else if ((c & 0xF8) == 0xF0){
-            ch += c;
-            ch += cstr[++i];
-            ch += cstr[++i];
-            ch += cstr[++i];
-        }
-        buffer.push_back(ch);
-        chPos++;
-    }
+    createFromMem(cstr.c_str(), cstr.size());
 }
 // Fills buffer with utf8-encoded c++ string
 void chText::createFromChar(const char * cstr){
+    // If we copy the implementation we can do without the `strlen` call.
+    createFromMem(cstr, strlen(cstr));
+}
+// Fills buffer with utf8-encoded c++ string
+void chText::createFromMem(const char * cstr, size_t cstrlen){
     buffer.clear();
-    size_t cstrlen = strlen(cstr);
     size_t chPos = 0;
     for(size_t i = 0; i < cstrlen; ++i){
         string ch = \"\";
@@ -230,15 +213,11 @@ chText& chText::operator= (const char * x) {
 }
 // conversion from char (constructor):
 chText::chText (char x) {
-    string a = \"\";
-    a += x;
-    createFromString(a);
+    createFromMem(&x, 1);
 }
 // conversion from char (assignment):
 chText& chText::operator= (char x) {
-    string a = \"\";
-    a += x;
-    createFromString(a);
+    createFromMem(&x, 1);
     return *this;
 }
 // [] for reading
@@ -259,19 +238,23 @@ string & chText::operator [](int i) {
     return buffer[i];
 }
 bool chText::loadFile(const string &fileName){
-    string line;
-    string fileContents = \"\";
-    ifstream myfile (fileName);
-    if (myfile.is_open())
-    {
-        while ( getline (myfile,line) )
-        {
-            fileContents += line + \"\\n\";
-        }
-        myfile.close();
+    int fd = open(fileName.c_str(), O_RDONLY);
+    if (fd == -1)
+        return false;
+    struct stat buf;
+    if (fstat(fd, &buf) == -1) {
+        close(fd);
+        return false;
     }
-    else return false; 
-    createFromString(fileContents);
+    size_t flen = buf.st_size;
+    void *fmmap = mmap(NULL, flen, PROT_READ, MAP_SHARED, fd, 0);
+    if (fmmap == MAP_FAILED) {
+        close(fd);
+        return false;
+    }
+    createFromMem((const char *)fmmap, flen);
+    munmap(fmmap, flen);
+    close(fd);
     return true;
 }
 // += operator
