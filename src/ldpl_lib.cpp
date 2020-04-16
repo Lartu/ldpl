@@ -579,12 +579,8 @@ ldpl_number to_number(chText & textNumber){
     string a = textNumber.str_rep();
     try {
         //This is used to disallow the use of hexadecimal and binary literals.
-        for(char i : a){
-            if(i != '0' && i != '1' && i != '2' &&
-               i != '3' && i != '4' && i != '5' &&
-               i != '6' && i != '7' && i != '8' &&
-               i != '9' && i != '-' && i != '.') return 0;
-        }
+        for(char i : a)
+            if((i < '0' || i > '9') && i != '-' && i != '.') return 0;
         ldpl_number num = stod(a);
         return num;
     }
