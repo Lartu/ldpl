@@ -81,8 +81,8 @@ public:
     chText substr(size_t from, size_t count);
     chText & erase(size_t from, size_t count);
     chText substr(size_t from);
-    int compare(size_t from, size_t count, chText other);
-    int compare(chText other);
+    int compare(size_t from, size_t count, const chText &other);
+    int compare(const chText &other);
 };
 
 ostream & operator << (ostream &out, const chText &c);
@@ -385,7 +385,7 @@ chText chText::substr(size_t from){
     return newText;
 }
 
-int chText::compare(size_t from, size_t count, chText other){
+int chText::compare(size_t from, size_t count, const chText &other){
     chText newText;
     for(size_t i = from; i < from + count; ++i){
         if(i >= buffer.size()) break;
@@ -396,7 +396,7 @@ int chText::compare(size_t from, size_t count, chText other){
     else return 1;
 }
 
-int chText::compare(chText other){
+int chText::compare(const chText &other){
     if (*this == other) return 0;
     if (this->size() < other.size()) return -1;
     else return 1;
