@@ -373,15 +373,17 @@ chText chText::substr(size_t from){
     return newText;
 }
 
+// NOTE: returns 0 on equality, -1 if the string is shorter, and 1 in any other case.
 int chText::compare(size_t from, size_t count, const chText &other){
-    chText newText;
-    for(size_t i = from; i < from + count; ++i){
-        if(i >= buffer.size()) break;
-        newText.buffer.push_back(buffer[i]);
-    }
-    if (newText == other) return 0;
-    if (newText.size() < other.size()) return -1;
-    else return 1;
+    // Fix count to respect the actual end of the buffer.
+    count = from + count > buffer.size() ? buffer.size() - from : count;
+    // Compare sizes before anything else for efficiency.
+    if (count < other.buffer.size()) return -1;
+    if (count > other.buffer.size()) return 1;
+    for(size_t i = from, j = 0; j < count; ++i, ++j)
+        if (buffer[i] != other.buffer[j])
+            return 1; // We already know it's not shorter, see above.
+    return 0;
 }
 
 int chText::compare(const chText &other){
