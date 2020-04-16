@@ -40,9 +40,9 @@ private:
     void createFromString(const string & cstr);
     void createFromChar(const char * cstr);
 public:
-    size_t size();
-    bool empty();
-    size_t length();
+    size_t size() const;
+    bool empty() const;
+    size_t length() const;
     string str_rep();
     chText();
     chText (const string& x);
@@ -183,13 +183,13 @@ void chText::createFromChar(const char * cstr){
         chPos++;
     }
 }
-size_t chText::size(){
+size_t chText::size() const {
     return buffer.size();
 }
-bool chText::empty(){
+bool chText::empty() const {
     return buffer.empty();
 }
-size_t chText::length(){
+size_t chText::length() const {
     return size();
 }
 string chText::str_rep(){
