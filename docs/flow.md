@@ -453,6 +453,9 @@ CALL EXTERNAL http-get
 
 ## `IN _ CALL PARALLEL _`
 
+!!! info
+    `IN _ CALL PARALLEL _` is currently only available in LDPL 4.5-dev.
+
 The `CALL PARALLEL` statement executes a SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
 
 **Syntax:**
@@ -467,6 +470,9 @@ Of course, a SUB-PROCEDURE must be declared **somewhere** in your program for yo
 
 ## `WAIT FOR PARALLEL _`
 
+!!! info
+    `WAIT FOR PARALLEL _` is currently only available in LDPL 4.5-dev.
+
 The `WAIT FOR PARALLEL` statement halts execution of the current thread until the parallel thread referenced by the passed NUMBER variable has finished running.
 
 **Syntax:**
@@ -476,6 +482,9 @@ WAIT FOR PARALLEL <NUMBER-VAR>
 ```
 
 ## `STOP PARALLEL _`
+
+!!! info
+    `STOP PARALLEL _` is currently only available in LDPL 4.5-dev.
 
 The `STOP PARALLEL` statement halts execution of the parallel thread referenced by the passed NUMBER variable.
 
