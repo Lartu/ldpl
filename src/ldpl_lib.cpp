@@ -411,43 +411,33 @@ ostream & operator << (ostream &out, const chText &c){
 
 chText operator+(const chText &c1, const chText &c2){
     chText res = c1;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const string &c1, const chText &c2){
     chText res = c1;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const chText &c1, const string &str){
     chText res = c1;
     chText c2 = str;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const char * c1, const chText &c2){
     chText res = c1;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
 chText operator+(const chText &c1, const char * str){
     chText res = c1;
     chText c2 = str;
-	for(const string & s : c2.buffer){
-        res.buffer.push_back(s);
-    }
+    res.buffer.insert(res.buffer.end(), c2.buffer.begin(), c2.buffer.end());
     return res;
 }
 
