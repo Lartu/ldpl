@@ -78,7 +78,7 @@ be okay even when times get dark.
 
 ### Using the LDPL Install Wizard:
 
-You can  use the **LDPL Install Wizard** to make and install LDPL. This method sets up everything LDPL needs for you and installs the latest LDPL version available. This method requires *whiptail* to be installed on your system (it probably is).
+You can  use the **LDPL Install Wizard** to make and install LDPL. This method sets up everything LDPL needs for you and installs the latest LDPL version available.
 
 <img src="https://github.com/Lartu/ldpl/blob/master/images/wizard.png" width=500px>
 
