@@ -22,12 +22,12 @@ The source code for this documentation is available in the LDPL repository.
 **LDPL** is a powerful compiled programming language designed from the
 ground up to be expressive, readable, fast and easy to learn. It mimics plain
 English, in the likeness of the good parts of older programming languages like
-COBOL, with the desire that it can be understood by anybody. It's highly
-portable and runs on a plethora of different architectures and operating
-systems including AMD-64, ARMv8 and PowerPC Linux and Mac OS X. It also
-supports UTF-8 out of the box.
+COBOL, with the desire that it can be understood by anybody. LDPL was designed
+to run on Unix systems, including AMD-64 Linux, macOS, ARMv8 Linux, Android
+Termux and both Intel and PowerPC OS X (tested from Tiger 10.4 onwards).
+It even supports UTF-8 out of the box.
     
-    :::python
+    :::coffeescript
     # LDPL 'Hello World' example
     
     data:
