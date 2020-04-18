@@ -233,9 +233,9 @@ program.
 
     :::coffeescript
     procedure:
-        parallel sub myParallelSub
-            #...
-        end sub
+    parallel sub myParallelSub
+        #...
+    end sub
 
 Parallel sub-procedures differ from traditional sub-procedures in that they cannot
 have a `parameters:` section (and, thus, they cannot receive parameters). Instead,
@@ -271,6 +271,6 @@ Check the **Control Flow Statements** section of this document for more informat
                 repeat
         end sub
 
-    in printNumbers_id call parallel printNumbers
-    wait 5000 milliseconds
-    stop parallel printNumbers_id
+        in printNumbers_id call parallel printNumbers
+        wait 5000 milliseconds
+        stop parallel printNumbers_id
