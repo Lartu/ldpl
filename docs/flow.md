@@ -59,6 +59,20 @@ The `<CONDITION>` may be a relational operator between two values with the same 
 * `<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>`
 * `<TEXT MAP> IS <REL-OP-B> <TEXT MAP>`
 
+**Possible values of `REL-OP-A`:**
+
+* `EQUAL TO`
+* `NOT EQUAL TO`
+* `GREATER THAN`
+* `LESS THAN`
+* `GREATER THAN OR EQUAL TO`
+* `LESS THAN OR EQUAL TO`
+
+**Possible values of `REL-OP-B`:**
+
+* `EQUAL TO`
+* `NOT EQUAL TO`
+
 !!! info
     Multicontainer comparison is only available in LDPL 4.5-dev *Groovy Gualicho*.
 
@@ -80,21 +94,7 @@ value is contained within the keys of that map.
 The first value must always be a scalar value, you **cannot** check if, for example, a
 `map of numbers` is contained within a `list of maps of numbers`.
 
-**Possible values of `REL-OP-A`:**
-
-* `EQUAL TO`
-* `NOT EQUAL TO`
-* `GREATER THAN`
-* `LESS THAN`
-* `GREATER THAN OR EQUAL TO`
-* `LESS THAN OR EQUAL TO`
-
-**Possible values of `REL-OP-B`:**
-
-* `EQUAL TO`
-* `NOT EQUAL TO`
-
-You can also write compound conditions using `AND`, `OR` and parenthesis:
+You can also write **compound conditions** using `AND`, `OR` and parenthesis:
 
 * `<CONDITION> AND <CONDITION>` is positive if both conditions are positive
 * `<CONDITION> OR <CONDITION>` is positive if any of the conditions is positive
