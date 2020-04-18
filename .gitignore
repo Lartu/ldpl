@@ -5,3 +5,6 @@ ldpl.exe
 ldpl_included_lib.cpp
 lpm
 src/ldpl.1
+testing/*
+testing
+.gitignore

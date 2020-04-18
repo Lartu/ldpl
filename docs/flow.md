@@ -456,24 +456,25 @@ CALL EXTERNAL http-get
 !!! info
     `IN _ CALL PARALLEL _` is currently only available in LDPL 4.5-dev.
 
-The `CALL PARALLEL` statement executes a SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
+The `CALL PARALLEL` statement executes a PARALLEL SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
+
+The value stored in the NUMBER variable will be the same as the value stored in the
+`parallel_id` variable within the parallel sub-procedure.
 
 **Syntax:**
 
 ```coffeescript
-IN <NUMBER-VAR> CALL PARALLEL <parallelizable sub-procedure name>
+IN <NUMBER-VAR> CALL PARALLEL <parallel sub-procedure name>
 ```
 
-For a SUB-PROCEDURE to be usable with the `CALL PARALLEL` statement, the SUB-PROCEDURE must have NO parameters.
-
-Of course, a SUB-PROCEDURE must be declared **somewhere** in your program for you to call it.
+Of course, a PARALLEL SUB-PROCEDURE must be declared **somewhere** in your program for you to call it.
 
 ## `WAIT FOR PARALLEL _`
 
 !!! info
     `WAIT FOR PARALLEL _` is currently only available in LDPL 4.5-dev.
 
-The `WAIT FOR PARALLEL` statement halts execution of the current thread until the parallel thread referenced by the passed NUMBER variable has finished running.
+The `WAIT FOR PARALLEL` statement halts execution of the current thread until the parallel sub-procedure referenced by the passed NUMBER variable has finished running.
 
 **Syntax:**
 
@@ -486,7 +487,7 @@ WAIT FOR PARALLEL <NUMBER-VAR>
 !!! info
     `STOP PARALLEL _` is currently only available in LDPL 4.5-dev.
 
-The `STOP PARALLEL` statement halts execution of the parallel thread referenced by the passed NUMBER variable.
+The `STOP PARALLEL` statement halts execution of the parallel sub-procedure referenced by the passed NUMBER variable.
 
 **Syntax:**
 

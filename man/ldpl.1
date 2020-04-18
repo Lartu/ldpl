@@ -991,11 +991,58 @@ solved 'a + b' in 'c', we stored the result of 'a + b' in 'result'.
 Passing variables by reference lets you return results from your sub-procedure,
 as shown in the example above.
 
+## Parallel Sub-procedures
 
+!!! info
+    Parallel sub-procedures are currently only available in LDPL 4.5-dev.
 
+Starting from release 4.5 *Groovy Gualicho*, LDPL supports Parallel Sub-procedures.
+Parallel sub-procedures are procedures that you can -as the name suggests- run in
+parallel to your main 'procedure:' section code. Technically speaking, parallel
+sub-procedures are sub-procedures that run on a different thread to the main one of your
+program.
 
+    procedure:
+        parallel sub myParallelSub
+            #...
+        end sub
 
+Parallel sub-procedures differ from traditional sub-procedures in that they cannot
+have a 'parameters:' section (and, thus, they cannot receive parameters). Instead,
+the number variable 'parameter_id' is declared by default inside each parallel
+sub-procedure. The 'parameter_id' variable holds a numberic value that identifies
+the running parallel sub-procedure. Every time a parallel sub-procedure is called,
+a different 'parameter_id' is assigned to each call. If you call the same parallel
+sub-procedure three times, you will end up with three instances of the parallel
+sub-procedure running at the same time, each with a different 'parameter_id' value.
 
+Parallel sub-procedures can only be called using the 'in  call parallel ' statement.
+Check the Control Flow Statements section of this document for more information.
+
+If you want your current procedure to stop and wait until a parallel sub-procedure has
+finished executing, use the 'wait for parallel ' statement. Check the Control Flow
+Statements section of this document for more information.
+
+If you want to stop a running parallel sub-procedure, use the 'stop parallel ' statement.
+Check the Control Flow Statements section of this document for more information.
+
+    data:
+        printNumbers_id is number
+
+    procedure:
+        parallel sub printNumbers
+            local data:
+                n is number
+            procedure:
+                while 1 is equal to 1 do
+                    in n solve n + 1
+                    display n crlf
+                repeat
+        end sub
+
+    in printNumbers_id call parallel printNumbers
+    wait 5000 milliseconds
+    stop parallel printNumbers_id
 
 ## Identifier Naming Schemes
 
@@ -1402,7 +1449,7 @@ Syntax:
     WAIT <NUMBER or NUMBER-VAR> MILLISECONDS
 .br
 
-## 'GOTO & LABEL'
+## 'GOTO and LABEL'
 
 > "If you want to go somewhere, goto is the best way to get there."
 > -- Ken Thompson
@@ -1481,7 +1528,7 @@ In the output of this program you can see the 'middle' LABEL and the start of th
 
 In order to keep 'GOTO' from turning your source into unmaintainable spaghetti code_, both your 'GOTO' statements and the 'LABEL's they jump to have to be declared together in the same sub-procedure or in the main code body of an LDPL program. You can't 'goto' across sub-procedures or into them, or anything like that.
 
-# 'CREATE STATEMENT  EXECUTING '
+## 'CREATE STATEMENT  EXECUTING '
 
 The 'CREATE STATEMENT' statement lets you add custom statements to LDPL that execute SUB-PROCEDUREs.
 
@@ -1636,16 +1683,45 @@ Example:
 
 ## 'IN  CALL PARALLEL '
 
-The 'CALL PARALLEL' statement executes a SUB-PROCEDURE on a parallel thread to the main thread of your program. Once the parallel thread is running, execution continues from the line following the 'CALL PARALLEL'.
+!!! info
+    'IN  CALL PARALLEL ' is currently only available in LDPL 4.5-dev.
+
+The 'CALL PARALLEL' statement executes a PARALLEL SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the 'CALL PARALLEL'.
+
+The value stored in the NUMBER variable will be the same as the value stored in the
+'parallel_id' variable within the parallel sub-procedure.
 
 Syntax:
 
-    IN <NUMBER-VAR> CALL PARALLEL <parallelizable sub-procedure name>
+    IN <NUMBER-VAR> CALL PARALLEL <parallel sub-procedure name>
 .br
 
-For a SUB-PROCEDURE to be usable with the 'CALL PARALLEL' statement, the SUB-PROCEDURE must have NO parameters.
+Of course, a PARALLEL SUB-PROCEDURE must be declared somewhere in your program for you to call it.
 
-Of course, a SUB-PROCEDURE must be declared somewhere in your program for you to call it.
+## 'WAIT FOR PARALLEL '
+
+!!! info
+    'WAIT FOR PARALLEL ' is currently only available in LDPL 4.5-dev.
+
+The 'WAIT FOR PARALLEL' statement halts execution of the current thread until the parallel thread referenced by the passed NUMBER variable has finished running.
+
+Syntax:
+
+    WAIT FOR PARALLEL <NUMBER-VAR>
+.br
+
+## 'STOP PARALLEL '
+
+!!! info
+    'STOP PARALLEL ' is currently only available in LDPL 4.5-dev.
+
+The 'STOP PARALLEL' statement halts execution of the parallel thread referenced by the passed NUMBER variable.
+
+Syntax:
+
+    STOP PARALLEL <NUMBER-VAR>
+.br
+
 
 ~ Note ~
     While this section is up-to-date and complete, it has to be reformated

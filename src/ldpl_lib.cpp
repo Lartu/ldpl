@@ -859,6 +859,6 @@ ldpl_list<chText> utf8_split_list(chText haystack, chText needle){
     return result;
 }
 
-ldpl_number ldpl_pthread_count = 0;
+long long int ldpl_pthread_count = 0;
 unordered_map<ldpl_number, pthread_t> ldpl_thread_numbers;
 pthread_t ldpl_thread_num;

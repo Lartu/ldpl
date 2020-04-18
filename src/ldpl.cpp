@@ -34,7 +34,7 @@ int main(int argc, const char* argv[])
         cout << " This is \033[32;1mLDPL version " << VERSION << "\033[0m '\033[32;1m" << VERSIONNAME << "\033[0m'." << endl << endl;
         cout << " Copyright 2018-2020, \033[35;1mMartín del Río\033[0m (www.lartu.net)." << endl;
         cout << " Built with amazing contributions from \033[35;1mChris West\033[0m, \033[35;1mDamián Garro\033[0m," << endl;
-        cout << " \033[35;1mfireasembler\033[0m, \033[35;1miglosiggio\033[0m and other wonderful contributors." << endl << endl;
+        cout << " \033[35;1mIgnacio Losiggio\033[0m, \033[35;1mFireasembler\033[0m and other wonderful contributors." << endl << endl;
         cout << " The LDPL Home Page can be found at \033[36;1mwww.ldpl-lang.org\033[0m." << endl;
         cout << " The LDPL source code is available at \033[36;1mwww.github.com/lartu/ldpl\033[0m." << endl << endl;
         cout << " Complete documentation for LDPL should be found on this system" << endl;
@@ -552,6 +552,8 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             error("PARAMETERS section declaration within LOCAL DATA section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.section_state == 2)
             error("PARAMETERS section declaration within PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.declaring_parallel)
+            error("PARALLEL SUB-PROCEDURES cannot receive parameters (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.section_state = 4;
         return;
     }
@@ -655,16 +657,17 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(is_subprocedure(tokens[1], state))
-            error("Duplicate declaration for subprocedure " + tokens[1] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("Duplicate declaration for SUB-PROCEDURE " + tokens[1] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.closing_subprocedure())
-            error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("SUB-PROCEDURE declaration inside SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else if(state.closing_if())
-            error("Subprocedure declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("SUB-PROCEDURE declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else if(state.closing_loop())
-            error("Subprocedure declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("SUB-PROCEDURE declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.section_state = 3;
         state.open_subprocedure(tokens[1]);
         state.subprocedures.emplace(tokens[1], vector<string>());
+        state.parallels.emplace(tokens[1], false);
         return;
     }
     if(line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state) || line_like("EXTERNAL SUB $external", tokens, state))
@@ -672,15 +675,37 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!in_procedure_section(state, line_num, current_file))
             error("EXTERNAL SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         if(state.closing_subprocedure())
-            error("Subprocedure declaration inside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("SUB-PROCEDURE declaration inside SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else if(state.closing_if())
-            error("Subprocedure declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("SUB-PROCEDURE declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else if(state.closing_loop())
-            error("Subprocedure declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            error("SUB-PROCEDURE declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         else
             state.open_subprocedure(tokens[2]);
         //C++ Code
         state.add_code("void "+fix_external_identifier(tokens[2], false)+"(){", line_num);
+        return;
+    }
+    // PARALLEL Declaration
+    if(line_like("PARALLEL SUB-PROCEDURE $name", tokens, state) || line_like("PARALLEL SUB $name", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("SUB-PROCEDURE declaration outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(is_subprocedure(tokens[2], state))
+            error("Duplicate declaration for SUB-PROCEDURE " + tokens[2] + " (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if(state.closing_subprocedure())
+            error("SUB-PROCEDURE declaration inside SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_if())
+            error("SUB-PROCEDURE declaration inside IF (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if(state.closing_loop())
+            error("SUB-PROCEDURE declaration inside WHILE or FOR (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.section_state = 3;
+        state.open_parallel(tokens[2]);
+        state.subprocedures.emplace(tokens[2], vector<string>());
+        string id_var_name = "PARALLEL_ID";
+        state.subprocedures[tokens[2]].emplace_back(id_var_name);
+        state.variables[state.current_subprocedure][id_var_name] = {1};
+        state.parallels.emplace(tokens[2], true);
         return;
     }
     if(line_like("END SUB-PROCEDURE", tokens, state) || line_like("END SUB", tokens, state))
@@ -690,7 +715,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(!state.closing_subprocedure())
             error("END SUB-PROCEDURE without SUB-PROCEDURE (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("return NULL;}", line_num);
+        if(state.declaring_parallel)
+            state.add_code("return NULL;}", line_num);
+        else
+            state.add_code("return;}", line_num);
         //Cierro la subrutina
         state.close_subprocedure();
         return;
@@ -839,6 +867,15 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code("continue;", line_num);
         return;
     }
+    if(line_like("CALL EXTERNAL $external", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("CALL EXTERNAL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        state.add_code(fix_external_identifier(tokens[2], false) + "();", line_num);
+        //prototype of function defined in extension
+        state.add_var_code("void "+fix_external_identifier(tokens[2], false)+"();");
+        return;
+    }
     if(line_like("CALL SUB-PROCEDURE $anything", tokens, state) || line_like("CALL $anything", tokens, state))
     {
         size_t i = 1;
@@ -868,36 +905,26 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
             } else {
                 if(!correct_types)
                     error("CALL parameter types don't match SUB-PROCEDURE declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+                if(is_parallel(subprocedure, state))
+                    error("A PARALLEL SUB-PROCEDURE cannot be invoked using CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
             }
             add_call_code(subprocedure, parameters, state, line_num);
             return;
         }
     }
-    if(line_like("CALL EXTERNAL $external", tokens, state))
-    {
-        if(!in_procedure_section(state, line_num, current_file))
-            error("CALL EXTERNAL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        state.add_code(fix_external_identifier(tokens[2], false) + "();", line_num);
-        //prototype of function defined in extension
-        state.add_var_code("void "+fix_external_identifier(tokens[2], false)+"();");
-        return;
-    }
     if(line_like("IN $num-var CALL PARALLEL $name", tokens, state))
     {
-        size_t i = 4;
-        string subprocedure = tokens[i];
-        // Valid options: No WITH or WITH with at least one paramter
         if(!in_procedure_section(state, line_num, current_file))
             error("CALL PARALLEL outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-        vector<string> parameters(tokens.end(), tokens.end());
-        vector<vector<unsigned int>> types;
+        string subprocedure = tokens[4];
         // By precondition, parameters.size is always 0
-        bool correct_types = state.correct_subprocedure_types(subprocedure, types);
+        vector<string> parameters;
+        vector<vector<unsigned int>> types;
         if(!is_subprocedure(subprocedure, state)) {
-            error("CALL PARALLEL parameter type doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            state.add_expected_subprocedure(subprocedure, fix_identifier(subprocedure, false), types);
         } else {
-            if(!correct_types)
-                error("CALL PARALLEL parameter type doesn't match SUB-PROCEDURE declaration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+            if(!is_parallel(subprocedure, state))
+                error("CALL PARALLEL cannot invoke non-PARALLEL SUB-PROCEDUREs (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         }
         add_call_parallel_code(subprocedure, tokens[1], parameters, state, line_num);
         return;
@@ -917,7 +944,10 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         if(state.current_subprocedure == "")
             error("RETURN found outside subprocedure (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         //C++ Code
-        state.add_code("return NULL;", line_num);
+        if(state.declaring_parallel)
+            state.add_code("return NULL;", line_num);
+        else
+            state.add_code("return;", line_num);
         return;
     }
     if(line_like("EXIT", tokens, state))
@@ -1851,6 +1881,15 @@ bool is_subprocedure(string & token, compiler_state & state)
     return false;
 }
 
+bool is_parallel(string & token, compiler_state & state)
+{
+    //Precondition: the token passed is the name of an existing sub-procedure
+    //              so that is_subprocedure(token, state) == true
+    for(auto & subprocedure : state.parallels)
+        if(subprocedure.first == token) return subprocedure.second;
+    return false;
+}
+
 // Given a full variable (with accesses and everything, like foo:0:'hi there' or bar) returns
 // the C++ representation of said variable in order to be accessed.
 string get_c_variable(compiler_state & state, string & variable)
@@ -2134,26 +2173,34 @@ void open_subprocedure_code(compiler_state & state, unsigned int line_num, strin
     string name = state.current_subprocedure;
     vector<string> & parameters = state.subprocedures[name];
     vector<vector<unsigned int>> types;
-    string code = "void * " +fix_identifier(name, false)+ "(void * thr_par";
-    if (!parameters.empty()) code += ", ";
-    for (size_t i = 0; i < parameters.size(); ++i) {
-        string identifier = fix_identifier(parameters[i], true, state);
-        string type = state.get_c_type(state.variables[name][parameters[i]]);
-        code += type + " & " + identifier;
-        if (i < parameters.size() - 1) code += ", ";
-        types.push_back(state.variables[name][parameters[i]]);
+    string code;
+    if(is_parallel(name, state)){
+        code = "void * " +fix_identifier(name, false)+ "(void * thread_id){";
+        state.add_code(code, line_num);
+        string id_var_name = "PARALLEL_ID";
+        id_var_name = fix_identifier(id_var_name, true, state);
+        code = "ldpl_number " + id_var_name + "= (long long int) thread_id;";
+        state.add_code(code, line_num);
+    }else{
+        code = "void " +fix_identifier(name, false)+ "(";
+        for (size_t i = 0; i < parameters.size(); ++i) {
+            string identifier = fix_identifier(parameters[i], true, state);
+            string type = state.get_c_type(state.variables[name][parameters[i]]);
+            code += type + " & " + identifier;
+            if (i < parameters.size() - 1) code += ", ";
+            types.push_back(state.variables[name][parameters[i]]);
+        }
+        if (!state.correct_subprocedure_types(name, types))
+            error("SUB-PROCEDURE declaration parameter types doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        code += "){";
+        state.add_code(code, line_num);
     }
-    if (!state.correct_subprocedure_types(name, types))
-        error("SUB-PROCEDURE declaration parameter types doesn't match previous CALL (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
-    code += "){";
-    state.add_code(code, line_num);
     state.remove_expected_subprocedure(name);
 }
 
 void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num) {
     string current_file = state.current_file;
-    string code = fix_identifier(subprocedure, false) + "(NULL";
-    if (!parameters.empty()) code += ", ";
+    string code = fix_identifier(subprocedure, false) + "(";
     for (size_t i = 0; i < parameters.size(); ++i) {
         if (is_number(parameters[i]) || is_string(parameters[i])) {
             // C++ doen't allow passing literals in  reference parameters, we create vars for them
@@ -2173,13 +2220,12 @@ void add_call_code(string & subprocedure, vector<string> & parameters, compiler_
 void add_call_parallel_code(string & subprocedure, string & var_name, vector<string> & parameters, compiler_state & state, unsigned int line_num)
 {
     string current_file = state.current_file;
-    string code = "";
-    code = "ldpl_pthread_count++;\n";
-    code += "pthread_create(&ldpl_thread_num, NULL, ";
+    string code;
+    code = "pthread_create(&ldpl_thread_num, NULL, ";
     code += fix_identifier(subprocedure, false) + ", ";
-    code += "NULL);\n";
+    code += "(void *) ++ldpl_pthread_count);\n";
     state.add_code(code, line_num);
-    code += get_c_variable(state, var_name) + " = ldpl_pthread_count;\n";
+    code = get_c_variable(state, var_name) + " = ldpl_pthread_count;\n";
     code += "ldpl_thread_numbers[ldpl_pthread_count] = ldpl_thread_num;\n";
     state.add_code(code, line_num);
 }
