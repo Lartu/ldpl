@@ -69,6 +69,7 @@ a `list of lists of numbers` with a `list of lists of lists of numbers`.
     The membership operator is only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The `<CONDITION>` may also be a membership operator:
+
 * `<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <LIST>`
 * `<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <MAP>`
 
