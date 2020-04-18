@@ -96,10 +96,11 @@ The first value must always be a scalar value, you **cannot** check if, for exam
 You can also write compound conditions using `AND`, `OR` and parenthesis:
 
 * `<CONDITION> AND <CONDITION>` is positive if both conditions are positive
-* `<CONDITION> OR <CONDITION>` is positive if both conditions are positive
-* `( <CONDITION> )` is positive if the condition is positive, it's used to alter the default precedence
+* `<CONDITION> OR <CONDITION>` is positive if any of the conditions is positive
+* `( <CONDITION> )` is positive if the condition is positive and it's used to alter the default precedence
 
-The `AND` has higher precedence than `OR`, and the conditions inside parenthesis will be evaluated first. That means that `C1 AND C2 OR C3` is the same as `( C1 AND C2 ) OR C3`, but you can make the `OR` evaluate first if you write `C1 AND ( C2 OR C3 )`.
+The `AND` has higher precedence than `OR`, and the conditions inside parenthesis will be evaluated first. That means that `C1 AND C2 OR C3` is the same as `( C1 AND C2 ) OR C3`, but you can make the `OR` evaluate first if you write `C1 AND ( C2 OR C3 )`. Mind the spaces surrounding the parenthesis: `(<CONDITION>)` is **not** a
+valid condition, while `( <CONDITION> )` is.
 
 Both `AND` and `OR` perform short-circuit evaluation: If the first operand of an AND is negative the second will not be evaluated and the `AND` condition is determined as negative. If the first operand of an OR is positive the second will not be evaluated and the `OR` condition is determined as positive.
 
