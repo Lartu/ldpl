@@ -7,6 +7,7 @@ nav:
     - Naming Schemes: naming.md
     - Control Flow Statements: flow.md
     - Arithmetic Statements: arithmetic.md
+    - Time Statements: time.md
     - Text Statements: text.md
     - List Statements: list.md
     - Map Statements: map.md
