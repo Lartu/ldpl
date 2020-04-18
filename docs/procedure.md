@@ -223,7 +223,7 @@ as shown in the example above.
 ## Parallel Sub-procedures
 
 !!! info
-    Parallel sub-procedures are currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 Starting from release 4.5 *Groovy Gualicho*, LDPL supports **Parallel Sub-procedures**.
 Parallel sub-procedures are procedures that you can -as the name suggests- run in
@@ -231,7 +231,7 @@ parallel to your main `procedure:` section code. Technically speaking, parallel
 sub-procedures are sub-procedures that run on a different thread to the main one of your
 program.
 
-:::coffeescript
+    :::coffeescript
     procedure:
         parallel sub myParallelSub
             #...
@@ -256,7 +256,7 @@ Statements** section of this document for more information.
 If you want to stop a running parallel sub-procedure, use the `stop parallel _` statement.
 Check the **Control Flow Statements** section of this document for more information.
 
-:::coffeescript
+    :::coffeescript
     data:
         printNumbers_id is number
 

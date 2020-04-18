@@ -77,3 +77,68 @@ The `GET RANDOM` statement stores a random value between 0 \(inclusive\) and 1 \
 ```coffeescript
 GET RANDOM IN <NUMBER-VAR>
 ```
+
+## `RAISE _ TO THE _ IN _`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `RAISE <a> TO THE <b> IN <c>` statement calculates `a^b` and stores the result in `c`.
+
+**Syntax:**
+
+```coffeescript
+RAISE <NUMBER-VAR or NUMBER> TO THE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
+## `LOG _ IN _`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `LOG _ IN _` statement calculates the natural logarithm of a NUMBER and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+LOG <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
+## `SIN _ IN _`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `SIN _ IN _` statement calculates the sine of a NUMBER and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+SIN <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
+## `COS _ IN _`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `COS _ IN _` statement calculates the cosine of a NUMBER and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+COS <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
+## `TAN _ IN _`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `TAN _ IN _` statement calculates the tangent of a NUMBER and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+TAN <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```

@@ -454,7 +454,7 @@ CALL EXTERNAL http-get
 ## `IN _ CALL PARALLEL _`
 
 !!! info
-    `IN _ CALL PARALLEL _` is currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The `CALL PARALLEL` statement executes a PARALLEL SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
 
@@ -472,7 +472,7 @@ Of course, a PARALLEL SUB-PROCEDURE must be declared **somewhere** in your progr
 ## `WAIT FOR PARALLEL _`
 
 !!! info
-    `WAIT FOR PARALLEL _` is currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The `WAIT FOR PARALLEL` statement halts execution of the current thread until the parallel sub-procedure referenced by the passed NUMBER variable has finished running.
 
@@ -485,7 +485,7 @@ WAIT FOR PARALLEL <NUMBER-VAR>
 ## `STOP PARALLEL _`
 
 !!! info
-    `STOP PARALLEL _` is currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The `STOP PARALLEL` statement halts execution of the parallel sub-procedure referenced by the passed NUMBER variable.
 

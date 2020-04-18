@@ -994,6 +994,46 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");", line_num);
         return;
     }
+    if(line_like("RAISE $num-expr TO THE $num-expr IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("RAISE statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[6]) + " = pow(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[4]) + ");", line_num);
+        return;
+    }
+    if(line_like("LOG $num-expr IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("LOG statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = log(" + get_c_expression(state, tokens[1]) + ");", line_num);
+        return;
+    }
+    if(line_like("SIN $num-expr IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("SIN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = sin(" + get_c_expression(state, tokens[1]) + ");", line_num);
+        return;
+    }
+    if(line_like("COS $num-expr IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("COS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = cos(" + get_c_expression(state, tokens[1]) + ");", line_num);
+        return;
+    }
+    if(line_like("TAN $num-expr IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("TAN statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = tan(" + get_c_expression(state, tokens[1]) + ");", line_num);
+        return;
+    }
     if(line_like("GET RANDOM IN $num-var", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))
