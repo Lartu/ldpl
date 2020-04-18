@@ -1184,6 +1184,20 @@ The '<CONDITION>' may be a relational operator between two values with the same 
     • '<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>'
     • '<TEXT MAP> IS <REL-OP-B> <TEXT MAP>'
 
+For multicontainers, both values must have the same type. You cannot compare, for example,
+a 'list of list of numbers' with a 'list of list of list of numbers'.
+
+The '<CONDITION>' may also be a membership operator:
+    • '<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <LIST>'
+    • '<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <MAP>'
+
+When using a membership operator, if the second value is a list, it checks if the first value
+is contained within that list. If the second value is a map, however, it checks if the first
+value is contained within the keys of that map.
+
+The first value must always be a scalar value, you cannot check if, for example, a
+'map of number'
+
 Possible values of 'REL-OP-A':
 
     • 'EQUAL TO'
@@ -1903,6 +1917,72 @@ Syntax:
 
     TAN <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 .br
+
+## 'get year in '
+
+The 'get year in ' stores the current year number in the passed number variable.
+
+Syntax:
+
+    get year in <number-var>
+.br
+
+## 'get month in '
+
+The 'get month in ' stores the current month number (1 - 12) in the passed number variable.
+
+Syntax:
+
+    get month in <number-var>
+.br
+
+## 'get day in '
+
+The 'get day in ' stores the current day of the month (1 - 31) in the passed number variable.
+
+Syntax:
+
+    get day in <number-var>
+.br
+
+## 'get hour in '
+
+The 'get hour in ' stores the current hour in the passed number variable.
+
+Syntax:
+
+    get hour in <number-var>
+.br
+
+## 'get minutes in '
+
+The 'get minutes in ' stores the current minutes in the passed number variable.
+
+Syntax:
+
+    get minutes in <number-var>
+.br
+
+## 'get seconds in '
+
+The 'get seconds in ' stores the current seconds in the passed number variable.
+
+Syntax:
+
+    get seconds in <number-var>
+.br
+
+## 'get epoch in '
+
+The 'get epoch in ' stores the current Unix time (the number of seconds that
+have elapsed since the Unix epoch, that is the time 00:00:00 UTC on 1 January
+1970) in the passed number variable.
+
+Syntax:
+
+    get epoch in <number-var>
+.br
+
 
 ~ Note ~
     While this section is up-to-date and complete, it has to be reformated

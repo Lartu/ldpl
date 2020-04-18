@@ -59,6 +59,26 @@ The `<CONDITION>` may be a relational operator between two values with the same 
 * `<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>`
 * `<TEXT MAP> IS <REL-OP-B> <TEXT MAP>`
 
+!!! info
+    Multicontainer comparison is only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+For multicontainers, both values must have the same type. You **cannot** compare, for example,
+a `list of lists of numbers` with a `list of lists of lists of numbers`.
+
+!!! info
+    The membership operator is only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `<CONDITION>` may also be a membership operator:
+* `<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <LIST>`
+* `<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <MAP>`
+
+When using a membership operator, if the second value is a list, it checks if the first value
+is contained within that list. If the second value is a map, however, it checks if the first
+value is contained within the keys of that map.
+
+The first value must always be a scalar value, you **cannot** check if, for example, a
+`map of numbers` is contained within a `list of maps of numbers`.
+
 **Possible values of `REL-OP-A`:**
 
 * `EQUAL TO`

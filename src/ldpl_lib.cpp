@@ -12,6 +12,7 @@
 #include <time.h>
 #include <vector>
 #include <pthread.h> 
+#include <algorithm>
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define CRLF \"\\n\"
@@ -496,8 +497,14 @@ struct ldpl_map {
     unordered_map<string, T> inner_collection;
     T& operator [] (chText i);
     T& operator [] (ldpl_number i);
+    bool operator== (const ldpl_map<T> & map2) const;
 };
 #endif
+
+template<typename T>
+bool ldpl_map<T>::operator== (const ldpl_map<T> & map2) const {
+    return this->inner_collection == map2.inner_collection;
+}
 
 template<typename T>
 T& ldpl_map<T>::operator [] (chText i) {
@@ -515,8 +522,14 @@ template<typename T>
 struct ldpl_list {
     vector<T> inner_collection;
     T& operator [] (ldpl_number i);
+    bool operator== (const ldpl_list<T> & list2) const;
 };
 #endif LDPLMAP
+
+template<typename T>
+bool ldpl_list<T>::operator== (const ldpl_list<T> & list2) const {
+    return this->inner_collection == list2.inner_collection;
+}
 
 template<typename T>
 T& ldpl_list<T>::operator [] (ldpl_number i) {
@@ -553,7 +566,7 @@ ldpl_number input_number(){
     }
 }
 
-ldpl_number to_number(chText & textNumber){
+ldpl_number to_number(chText textNumber){
     string a = textNumber.str_rep();
     try {
         //This is used to disallow the use of hexadecimal and binary literals.

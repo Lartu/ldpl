@@ -51,7 +51,7 @@ scalar or container type names. For example:
     :::coffeescript
     foo is number
     bar is text
-    foobar is map of list of text
+    foobar is map of lists of text
    
 In the case above, **foobar** is a **map of lists of text values**.
 
@@ -342,14 +342,14 @@ data type name (**number** or **text**) or a container type plus one or more
 scalar or container type names."_ This means that you can declare variables like:
 
     :::coffeescript
-    myVariable is list of list of text
-    myOtherVariable is map of list of map of map of list of map of number
-    pleaseStop is list of map of map of list of map of map of map of list of list of map of list of list of text
+    myVariable is list of lists of text
+    myOtherVariable is map of lists of maps of maps of lists of maps of numbers
+    pleaseStop is list of maps of maps of lists of maps of maps of maps of lists of lists of maps of lists of lists of text
 
 These variables are called **multicontainers**. Multicontainers hold other 
 containers, which can hold more containers or scalar values to an arbitrary
-depth.For example, a `map of list of text` is a **map** that holds **lists** 
-of **text** values. You may access a value stored in a `map of list of text` 
+depth.For example, a `map of lists of text` is a **map** that holds **lists** 
+of **text** values. You may access a value stored in a `map of lists of text` 
 like so:
 
     :::coffeescript
@@ -359,7 +359,7 @@ where `hi` is the key used to access a list stored in the map, and `0` the
 index used to access a text value stored in the list that was stored in the
 map.
 
-If you want to push a list to a `list of list` or a map to a `list of map` you 
+If you want to push a list to a `list of lists` or a map to a `list of maps` you 
 must use the `push list to _` and `push map to _` statements, respectively:
 
     :::coffeescript
@@ -377,6 +377,11 @@ must use the `push list to _` and `push map to _` statements, respectively:
         # the value "Hello!" at index 0 of the pushed list
 
 These will be explained in more detail in their respective sections.
+
+The LDPL compiler supports plural data-type names, as shown above. One can
+use `numbers` instead of `number`, `texts` instead of `text`, 
+`lists` instead of `lists` and `maps`
+instead of `map`. A `list of list of number` is the same as a `list of lists of numbers`.
 
 !!!Note
     In LDPL 4.3, multicontainers were introduced with a right-to-left syntax.

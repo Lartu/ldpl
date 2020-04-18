@@ -603,7 +603,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                     } else if (tokens.size()-1 > i) {
                         // text and number must be the final type listed
                         valid_type = false;
-                    } else if (tokens[i] == "TEXT") {
+                    } else if (tokens[i] == "TEXT"||(tokens[i] == "TEXTS") {
                         type_number.push_back(2);
                     } else if (tokens[i]=="NUMBER"||tokens[i]=="NUMBERS") {
                         type_number.push_back(1);
@@ -1859,6 +1859,12 @@ bool is_map_map(string & token, compiler_state & state)
     return false;
 }
 
+// Returns true if the variable is a MAP, regardless of a map of what (multicontainer or not)
+bool is_map(string & token, compiler_state & state){
+    vector<unsigned int> type = variable_type(token, state);
+    return type.back() == 4;
+}
+
 // Returns if the variable is a NUMBER LIST or an access to a multicontainer that results in a NUMBER LIST
 // or if the variable is a TEXT LIST or an access to a multicontainer that results in a TEXT LIST
 bool is_scalar_list(string & token, compiler_state & state)
@@ -2089,6 +2095,7 @@ string get_c_condition(compiler_state & state, vector<string> tokens) {
 #define MATCH(x) \
     if (ct < tokens.size() && tokens[ct] == x) ct++; \
     else return "[ERROR]";
+
 string get_c_condition(compiler_state & state, vector<string> tokens, unsigned int & ct) {
     if (ct >= tokens.size()) return "[ERROR]";
     string condition;
@@ -2100,99 +2107,173 @@ string get_c_condition(compiler_state & state, vector<string> tokens, unsigned i
         condition =  "(" + condition + ")";
     } else {
         string first_value = tokens[ct];
-        ct++; // We validate the token after we get the second value
-        MATCH("IS");
-
+        string second_value;
         string rel_op;
-        if (tokens[ct] == "EQUAL") {
-            MATCH("EQUAL"); MATCH("TO");
-            rel_op = "EQUAL TO";
-        } else if (tokens[ct] == "NOT") {
-            MATCH("NOT"); MATCH("EQUAL"); MATCH("TO");
-            rel_op = "NOT EQUAL TO";
-        } else if (tokens[ct] == "GREATER") {
-            MATCH("GREATER"); MATCH("THAN");
-            if (ct+1 < tokens.size() && tokens[ct+1] == "EQUAL") {
-                // We check the next token instead of the curent one
-                // because "OR" could be a variable after "GREATER THAN"
-                MATCH("OR"); MATCH("EQUAL"); MATCH("TO");
-                rel_op = "GREATER THAN OR EQUAL TO";
+        ct++; // We validate the token after we get the second value
+        if(tokens[ct] == "IS"){
+            MATCH("IS");
+            if (tokens[ct] == "EQUAL") {
+                MATCH("EQUAL"); MATCH("TO");
+                rel_op = "EQUAL TO";
+            } else if (tokens[ct] == "NOT") {
+                MATCH("NOT"); MATCH("EQUAL"); MATCH("TO");
+                rel_op = "NOT EQUAL TO";
+            } else if (tokens[ct] == "GREATER") {
+                MATCH("GREATER"); MATCH("THAN");
+                if (ct+1 < tokens.size() && tokens[ct+1] == "EQUAL") {
+                    // We check the next token instead of the curent one
+                    // because "OR" could be a variable after "GREATER THAN"
+                    MATCH("OR"); MATCH("EQUAL"); MATCH("TO");
+                    rel_op = "GREATER THAN OR EQUAL TO";
+                } else {
+                    rel_op = "GREATER THAN";
+                }
+            } else if (tokens[ct] == "LESS") {
+                MATCH("LESS"); MATCH("THAN");
+                if (ct+1 < tokens.size() && tokens[ct+1] == "EQUAL") {
+                    // We check the next token instead of the curent one
+                    // because "OR" could be a variable after "LESS THAN"
+                    MATCH("OR"); MATCH("EQUAL"); MATCH("TO");
+                    rel_op = "LESS THAN OR EQUAL TO";
+                } else {
+                    rel_op = "LESS THAN";
+                }
             } else {
-                rel_op = "GREATER THAN";
+                return "[ERROR]";
             }
-        } else if (tokens[ct] == "LESS") {
-            MATCH("LESS"); MATCH("THAN");
-            if (ct+1 < tokens.size() && tokens[ct+1] == "EQUAL") {
-                // We check the next token instead of the curent one
-                // because "OR" could be a variable after "LESS THAN"
-                MATCH("OR"); MATCH("EQUAL"); MATCH("TO");
-                rel_op = "LESS THAN OR EQUAL TO";
-            } else {
-                rel_op = "LESS THAN";
-            }
-        } else {
-            return "[ERROR]";
-        }
 
-        string second_value = tokens[ct];
-        ++ct;
+            second_value = tokens[ct];
+            ++ct;
 
-        string type;
-        if(is_num_expr(first_value, state) && is_num_expr(second_value, state))
-            type = "NUMBER";
-        else if(is_txt_expr(first_value, state) && is_txt_expr(second_value, state))
-            type = "TEXT";
-        else if(is_num_map(first_value, state) && is_num_map(second_value, state))
-            type = "NUMBER MAP";
-        else if(is_txt_map(first_value, state) && is_txt_map(second_value, state))
-            type = "TEXT MAP";
-        else if(is_num_list(first_value, state) && is_num_list(second_value, state))
-            type = "NUMBER LIST";
-        else if(is_txt_list(first_value, state) && is_txt_list(second_value, state))
-            type = "TEXT LIST";
-        else
-            return "[ERROR]";
-
-        first_value = get_c_expression(state, first_value);
-        second_value = get_c_expression(state, second_value);
-        if (type == "NUMBER") {
-            if (rel_op == "EQUAL TO")
-                condition = "num_equal(" + first_value + ", " + second_value + ")";
-            else if (rel_op == "NOT EQUAL TO")
-                condition = "!num_equal(" + first_value + ", " + second_value + ")";
-            else if (rel_op == "GREATER THAN")
-                condition = first_value + " > " + second_value;
-            else if(rel_op == "LESS THAN")
-                condition = first_value + " < " + second_value;
-            else if (rel_op == "GREATER THAN OR EQUAL TO")
-                condition = "(" + first_value + " > " + second_value
-                + " || num_equal(" + first_value + ", " + second_value + "))";
-            else
-                condition = "(" + first_value + " < " + second_value
-                + " || num_equal(" + first_value + ", " + second_value + "))";
-        } else if (type == "TEXT") {
-            if (rel_op == "EQUAL TO")
-                condition = "str_cmp(" + first_value + ", " + second_value + ") == 0";
-            else if (rel_op == "NOT EQUAL TO")
-                condition = "str_cmp(" + first_value + ", " + second_value + ") != 0";
-            else if (rel_op == "GREATER THAN")
-                condition = "str_cmp(" + first_value + ", " + second_value + ") > 0";
-            else if (rel_op == "LESS THAN")
-                condition = "str_cmp(" + first_value + ", " + second_value + ") < 0";
-            else if (rel_op == "GREATER THAN OR EQUAL TO")
-                condition = "str_cmp(" + first_value + ", " + second_value + ") >= 0";
-            else if (rel_op == "LESS THAN OR EQUAL TO")
-                condition = "str_cmp(" + first_value + ", " + second_value + ") <= 0";
+            string type;
+            if(is_num_expr(first_value, state) && is_num_expr(second_value, state))
+                type = "NUMBER";
+            else if(is_txt_expr(first_value, state) && is_txt_expr(second_value, state))
+                type = "TEXT";
+            else if(is_num_map(first_value, state) && is_num_map(second_value, state))
+                type = "NUMBER MAP";
+            else if(is_txt_map(first_value, state) && is_txt_map(second_value, state))
+                type = "TEXT MAP";
+            else if(is_num_list(first_value, state) && is_num_list(second_value, state))
+                type = "NUMBER LIST";
+            else if(is_txt_list(first_value, state) && is_txt_list(second_value, state))
+                type = "TEXT LIST";
+            else if(is_list_list(first_value, state) && is_list_list(second_value, state) && variable_type(first_value, state) == variable_type(second_value, state))
+                type = "LIST LIST";
+            else if(is_map_map(first_value, state) && is_map_map(second_value, state) && variable_type(first_value, state) == variable_type(second_value, state))
+                type = "MAP MAP";
             else
                 return "[ERROR]";
-        } else {
-            first_value += ".inner_collection";
-            second_value += ".inner_collection";
-            if( rel_op == "EQUAL TO")
-                condition =  first_value + " == " + second_value;
-            else if (rel_op == "NOT EQUAL TO")
-                condition = first_value + " != " + second_value;
-            else // >, >, <= and >= are only valid in NUMBER and TEXT
+
+            first_value = get_c_expression(state, first_value);
+            second_value = get_c_expression(state, second_value);
+            if (type == "NUMBER") {
+                if (rel_op == "EQUAL TO")
+                    condition = "num_equal(" + first_value + ", " + second_value + ")";
+                else if (rel_op == "NOT EQUAL TO")
+                    condition = "!num_equal(" + first_value + ", " + second_value + ")";
+                else if (rel_op == "GREATER THAN")
+                    condition = first_value + " > " + second_value;
+                else if(rel_op == "LESS THAN")
+                    condition = first_value + " < " + second_value;
+                else if (rel_op == "GREATER THAN OR EQUAL TO")
+                    condition = "(" + first_value + " > " + second_value
+                    + " || num_equal(" + first_value + ", " + second_value + "))";
+                else
+                    condition = "(" + first_value + " < " + second_value
+                    + " || num_equal(" + first_value + ", " + second_value + "))";
+            } else if (type == "TEXT") {
+                if (rel_op == "EQUAL TO")
+                    condition = "str_cmp(" + first_value + ", " + second_value + ") == 0";
+                else if (rel_op == "NOT EQUAL TO")
+                    condition = "str_cmp(" + first_value + ", " + second_value + ") != 0";
+                else if (rel_op == "GREATER THAN")
+                    condition = "str_cmp(" + first_value + ", " + second_value + ") > 0";
+                else if (rel_op == "LESS THAN")
+                    condition = "str_cmp(" + first_value + ", " + second_value + ") < 0";
+                else if (rel_op == "GREATER THAN OR EQUAL TO")
+                    condition = "str_cmp(" + first_value + ", " + second_value + ") >= 0";
+                else if (rel_op == "LESS THAN OR EQUAL TO")
+                    condition = "str_cmp(" + first_value + ", " + second_value + ") <= 0";
+                else
+                    return "[ERROR]";
+            } else {
+                first_value += ".inner_collection";
+                second_value += ".inner_collection";
+                if( rel_op == "EQUAL TO")
+                    condition =  first_value + " == " + second_value;
+                else if (rel_op == "NOT EQUAL TO")
+                    condition = first_value + " != " + second_value;
+                else // >, >, <= and >= are only valid in NUMBER and TEXT
+                    return "[ERROR]";
+            }
+        }else{
+            if (tokens[ct] == "IN") {
+                MATCH("IN");
+                rel_op = "IN";
+            } else if (tokens[ct] == "NOT") {
+                MATCH("NOT"); MATCH("IN");
+                rel_op = "NOT IN";
+            }
+
+            second_value = tokens[ct];
+            ++ct;
+            string type;
+            if(is_num_expr(first_value, state) && is_num_list(second_value, state))
+                type = "NUM-IN-NUM-LIST";
+            else if(is_num_expr(first_value, state) && is_txt_list(second_value, state))
+                type = "NUM-IN-TEXT-LIST";
+            else if(is_txt_expr(first_value, state) && is_num_list(second_value, state))
+                type = "TEXT-IN-NUM-LIST";
+            else if(is_txt_expr(first_value, state) && is_txt_list(second_value, state))
+                type = "TEXT-IN-TEXT-LIST";
+            else if(is_num_expr(first_value, state) && is_map(second_value, state))
+                type = "NUM-IN-MAP";
+            else if(is_string(first_value) && is_map(second_value, state))
+                type = "STR-IN-MAP";
+            else if(is_txt_var(first_value, state) && is_map(second_value, state))
+                type = "TEXTVAR-IN-MAP";
+            else
+                return "[ERROR]";
+
+            first_value = get_c_expression(state, first_value);
+            second_value = get_c_expression(state, second_value);
+            if (type == "NUM-IN-NUM-LIST") {
+                if (rel_op == "IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), (ldpl_number) " + first_value + ") != " + second_value + ".inner_collection.end()";
+                else if (rel_op == "NOT IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), (ldpl_number) " + first_value + ") == " + second_value + ".inner_collection.end()";
+            } else if (type == "TEXT-IN-NUM-LIST") {
+                if (rel_op == "IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), to_number(" + first_value + ")) != " + second_value + ".inner_collection.end()";
+                else if (rel_op == "NOT IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), to_number(" + first_value + ")) == " + second_value + ".inner_collection.end()";
+            } else if (type == "NUM-IN-TEXT-LIST") {
+                if (rel_op == "IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), to_ldpl_string(" + first_value + ")) != " + second_value + ".inner_collection.end()";
+                else if (rel_op == "NOT IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), to_ldpl_string(" + first_value + ")) == " + second_value + ".inner_collection.end()";
+            } else if (type == "TEXT-IN-TEXT-LIST") {
+                if (rel_op == "IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), " + first_value + ") != " + second_value + ".inner_collection.end()";
+                else if (rel_op == "NOT IN")
+                    condition = "find(" + second_value + ".inner_collection.begin(), " + second_value + ".inner_collection.end(), " + first_value + ") == " + second_value + ".inner_collection.end()";
+            } else if (type == "NUM-IN-MAP") {
+                if (rel_op == "IN")
+                    condition = second_value + ".inner_collection.find(to_ldpl_string(" + first_value + ").str_rep()) != " + second_value + ".inner_collection.end()";
+                else if (rel_op == "NOT IN")
+                    condition = second_value + ".inner_collection.find(to_ldpl_string(" + first_value + ").str_rep()) == " + second_value + ".inner_collection.end()";
+            } else if (type == "STR-IN-MAP") {
+                if (rel_op == "IN")
+                    condition = second_value + ".inner_collection.find(" + first_value + ") != " + second_value + ".inner_collection.end()";
+                else if (rel_op == "NOT IN")
+                    condition = second_value + ".inner_collection.find(" + first_value + ") == " + second_value + ".inner_collection.end()";
+            } else if (type == "TEXTVAR-IN-MAP") {
+                if (rel_op == "IN")
+                    condition = second_value + ".inner_collection.find(" + first_value + ".str_rep()) != " + second_value + ".inner_collection.end()";
+                else if (rel_op == "NOT IN")
+                    condition = second_value + ".inner_collection.find(" + first_value + ".str_rep()) == " + second_value + ".inner_collection.end()";
+            } else
                 return "[ERROR]";
         }
 
