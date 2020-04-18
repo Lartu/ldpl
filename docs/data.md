@@ -364,8 +364,8 @@ must use the `push list to _` and `push map to _` statements, respectively:
 
     :::coffeescript
     data:
-        listOfMaps is list of map of text 
-        listOfLists is list of list of text
+        listOfMaps is list of maps of texts
+        listOfLists is list of lists of texts
     procedure:
         push map to listOfMaps
         store "Hello!" in listOfMaps:0:"hi!"
