@@ -1050,6 +1050,30 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[1]) + " = floor(" + get_c_variable(state, tokens[1]) +");", line_num);
         return;
     }
+    if(line_like("CEIL $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("CEIL statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = ceil(" + get_c_variable(state, tokens[1]) +");", line_num);
+        return;
+    }
+    if(line_like("FLOOR $num-var IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("FLOOR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = floor(" + get_c_variable(state, tokens[1]) +");", line_num);
+        return;
+    }
+    if(line_like("CEIL $num-var IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("CEIL statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = ceil(" + get_c_variable(state, tokens[1]) +");", line_num);
+        return;
+    }
     if(line_like("IN $num-var SOLVE $math", tokens, state))
     {
         if(!in_procedure_section(state, line_num, current_file))

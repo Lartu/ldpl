@@ -57,6 +57,47 @@ The `FLOOR` statement rounds down the value of NUMBER-VAR to the nearest lower i
 FLOOR <NUMBER-VAR>
 ```
 
+## `CEIL`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `CEIL` statement rounds up the value of NUMBER-VAR to the nearest higher integer.
+
+**Syntax:**
+
+```coffeescript
+CEIL <NUMBER-VAR>
+```
+
+## `FLOOR _ IN _`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `FLOOR _ IN _` statement rounds down the value of NUMBER-VAR to the nearest lower integer
+and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+FLOOR <NUMBER-VAR> IN <NUMBER-VAR>
+```
+
+## `CEIL _ IN _`
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The `CEIL _ IN _` statement rounds up the value of NUMBER-VAR to the nearest higher integer
+and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+CEIL <NUMBER-VAR> IN <NUMBER-VAR>
+```
+
 ## `MODULO _ BY _ IN _`
 
 The `MODULO` statement calculates the remainder of the modulo operation between two NUMBER values and stores the result in a NUMBER variable.

@@ -994,7 +994,7 @@ as shown in the example above.
 ## Parallel Sub-procedures
 
 !!! info
-    Parallel sub-procedures are currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 Starting from release 4.5 *Groovy Gualicho*, LDPL supports Parallel Sub-procedures.
 Parallel sub-procedures are procedures that you can -as the name suggests- run in
@@ -1684,7 +1684,7 @@ Example:
 ## 'IN  CALL PARALLEL '
 
 !!! info
-    'IN  CALL PARALLEL ' is currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The 'CALL PARALLEL' statement executes a PARALLEL SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the 'CALL PARALLEL'.
 
@@ -1701,7 +1701,7 @@ Of course, a PARALLEL SUB-PROCEDURE must be declared somewhere in your program f
 ## 'WAIT FOR PARALLEL '
 
 !!! info
-    'WAIT FOR PARALLEL ' is currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The 'WAIT FOR PARALLEL' statement halts execution of the current thread until the parallel sub-procedure referenced by the passed NUMBER variable has finished running.
 
@@ -1713,7 +1713,7 @@ Syntax:
 ## 'STOP PARALLEL '
 
 !!! info
-    'STOP PARALLEL ' is currently only available in LDPL 4.5-dev.
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The 'STOP PARALLEL' statement halts execution of the parallel sub-procedure referenced by the passed NUMBER variable.
 
@@ -1787,6 +1787,44 @@ Syntax:
     FLOOR <NUMBER-VAR>
 .br
 
+## 'CEIL'
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'CEIL' statement rounds up the value of NUMBER-VAR to the nearest higher integer.
+
+Syntax:
+
+    CEIL <NUMBER-VAR>
+.br
+
+## 'FLOOR  IN '
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'FLOOR  IN ' statement rounds down the value of NUMBER-VAR to the nearest lower integer
+and stores the result in a NUMBER variable.
+
+Syntax:
+
+    FLOOR <NUMBER-VAR> IN <NUMBER-VAR>
+.br
+
+## 'CEIL  IN '
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'CEIL  IN ' statement rounds up the value of NUMBER-VAR to the nearest higher integer
+and stores the result in a NUMBER variable.
+
+Syntax:
+
+    CEIL <NUMBER-VAR> IN <NUMBER-VAR>
+.br
+
 ## 'MODULO  BY  IN '
 
 The 'MODULO' statement calculates the remainder of the modulo operation between two NUMBER values and stores the result in a NUMBER variable.
@@ -1806,6 +1844,65 @@ Syntax:
     GET RANDOM IN <NUMBER-VAR>
 .br
 
+## 'RAISE  TO THE  IN '
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'RAISE <a> TO THE <b> IN <c>' statement calculates 'a^b' and stores the result in 'c'.
+
+Syntax:
+
+    RAISE <NUMBER-VAR or NUMBER> TO THE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+## 'LOG  IN '
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'LOG  IN ' statement calculates the natural logarithm of a NUMBER and stores the result in a NUMBER variable.
+
+Syntax:
+
+    LOG <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+## 'SIN  IN '
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'SIN  IN ' statement calculates the sine of a NUMBER and stores the result in a NUMBER variable.
+
+Syntax:
+
+    SIN <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+## 'COS  IN '
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'COS  IN ' statement calculates the cosine of a NUMBER and stores the result in a NUMBER variable.
+
+Syntax:
+
+    COS <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+## 'TAN  IN '
+
+!!! info
+    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+
+The 'TAN  IN ' statement calculates the tangent of a NUMBER and stores the result in a NUMBER variable.
+
+Syntax:
+
+    TAN <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
 
 ~ Note ~
     While this section is up-to-date and complete, it has to be reformated
