@@ -53,7 +53,7 @@ END IF
 The `<CONDITION>` may be a relational operator between two values with the same type:
 
 * `<NUMBER-VAR or NUMBER> IS <REL-OP-A> <NUMBER-VAR or NUMBER>`
-* `<TEXT-VAR or TEXT> IS <REL-OP-B> <TEXT-VAR or TEXT>`
+* `<TEXT-VAR or TEXT> IS <REL-OP-A> <TEXT-VAR or TEXT>`
 * `<NUMBER LIST> IS <REL-OP-B> <NUMBER LIST>`
 * `<TEXT LIST> IS <REL-OP-B> <TEXT LIST>`
 * `<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>`

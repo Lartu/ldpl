@@ -604,7 +604,9 @@ bool num_equal(ldpl_number a, ldpl_number b){
 }
 
 int str_cmp(chText a, chText b) {
-  return a.compare(b);
+    if (a == b) return 0;
+    if (a.str_rep() < b.str_rep()) return -1;
+    else return 1;
 }
 
 ldpl_number modulo(ldpl_number a, ldpl_number b){

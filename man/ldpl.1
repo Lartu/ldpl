@@ -1183,17 +1183,32 @@ or
 The '<CONDITION>' may be a relational operator between two values with the same type:
 
     • '<NUMBER-VAR or NUMBER> IS <REL-OP-A> <NUMBER-VAR or NUMBER>'
-    • '<TEXT-VAR or TEXT> IS <REL-OP-B> <TEXT-VAR or TEXT>'
+    • '<TEXT-VAR or TEXT> IS <REL-OP-A> <TEXT-VAR or TEXT>'
     • '<NUMBER LIST> IS <REL-OP-B> <NUMBER LIST>'
     • '<TEXT LIST> IS <REL-OP-B> <TEXT LIST>'
     • '<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>'
     • '<TEXT MAP> IS <REL-OP-B> <TEXT MAP>'
 
+Possible values of 'REL-OP-A':
+
+    • 'EQUAL TO'
+    • 'NOT EQUAL TO'
+    • 'GREATER THAN'
+    • 'LESS THAN'
+    • 'GREATER THAN OR EQUAL TO'
+    • 'LESS THAN OR EQUAL TO'
+
+Possible values of 'REL-OP-B':
+
+    • 'EQUAL TO'
+    • 'NOT EQUAL TO'
+
 !!! info
     Multicontainer comparison is only available in LDPL 4.5-dev *Groovy Gualicho*.
 
-For multicontainers, both values must have the same type. You cannot compare, for example,
-a 'list of lists of numbers' with a 'list of lists of lists of numbers'.
+For containers, both values must have the same type. You cannot compare, for example,
+a 'list of lists of numbers' with a 'list of lists of lists of numbers' or a 'number map'
+with a 'text map'.
 
 !!! info
     The membership operator is only available in LDPL 4.5-dev *Groovy Gualicho*.
@@ -1209,20 +1224,6 @@ value is contained within the keys of that map.
 
 The first value must always be a scalar value, you cannot check if, for example, a
 'map of numbers' is contained within a 'list of maps of numbers'.
-
-Possible values of 'REL-OP-A':
-
-    • 'EQUAL TO'
-    • 'NOT EQUAL TO'
-    • 'GREATER THAN'
-    • 'LESS THAN'
-    • 'GREATER THAN OR EQUAL TO'
-    • 'LESS THAN OR EQUAL TO'
-
-Possible values of 'REL-OP-B':
-
-    • 'EQUAL TO'
-    • 'NOT EQUAL TO'
 
 You can also write compound conditions using 'AND', 'OR' and parenthesis:
 
