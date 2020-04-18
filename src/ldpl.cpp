@@ -603,7 +603,7 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
                     } else if (tokens.size()-1 > i) {
                         // text and number must be the final type listed
                         valid_type = false;
-                    } else if (tokens[i] == "TEXT"||(tokens[i] == "TEXTS") {
+                    } else if (tokens[i] == "TEXT"||tokens[i] == "TEXTS") {
                         type_number.push_back(2);
                     } else if (tokens[i]=="NUMBER"||tokens[i]=="NUMBERS") {
                         type_number.push_back(1);

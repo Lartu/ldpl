@@ -383,7 +383,7 @@ scalar or container type names. For example:
 
     foo is number
     bar is text
-    foobar is map of list of text
+    foobar is map of lists of text
 
 In the case above, foobar is a map of lists of text values.
 
@@ -675,14 +675,14 @@ As stated before, "The name of a data type is composed of either a scalar
 data type name (number or text) or a container type plus one or more
 scalar or container type names." This means that you can declare variables like:
 
-    myVariable is list of list of text
-    myOtherVariable is map of list of map of map of list of map of number
-    pleaseStop is list of map of map of list of map of map of map of list of list of map of list of list of text
+    myVariable is list of lists of text
+    myOtherVariable is map of lists of maps of maps of lists of maps of numbers
+    pleaseStop is list of maps of maps of lists of maps of maps of maps of lists of lists of maps of lists of lists of text
 
 These variables are called multicontainers. Multicontainers hold other
 containers, which can hold more containers or scalar values to an arbitrary
-depth.For example, a 'map of list of text' is a map that holds lists
-of text values. You may access a value stored in a 'map of list of text'
+depth.For example, a 'map of lists of text' is a map that holds lists
+of text values. You may access a value stored in a 'map of lists of text'
 like so:
 
     display foo:"hi":0
@@ -691,12 +691,12 @@ where 'hi' is the key used to access a list stored in the map, and '0' the
 index used to access a text value stored in the list that was stored in the
 map.
 
-If you want to push a list to a 'list of list' or a map to a 'list of map' you
+If you want to push a list to a 'list of lists' or a map to a 'list of maps' you
 must use the 'push list to ' and 'push map to ' statements, respectively:
 
     data:
-        listOfMaps is list of map of text
-        listOfLists is list of list of text
+        listOfMaps is list of maps of texts
+        listOfLists is list of lists of texts
     procedure:
         push map to listOfMaps
         store "Hello!" in listOfMaps:0:"hi!"
@@ -708,6 +708,11 @@ must use the 'push list to ' and 'push map to ' statements, respectively:
         # the value "Hello!" at index 0 of the pushed list
 
 These will be explained in more detail in their respective sections.
+
+The LDPL compiler supports plural data-type names, as shown above. One can
+use 'numbers' instead of 'number', 'texts' instead of 'text',
+'lists' instead of 'lists' and 'maps'
+instead of 'map'. A 'list of list of number' is the same as a 'list of lists of numbers'.
 
 ~ Note ~
     In LDPL 4.3, multicontainers were introduced with a right-to-left syntax.
@@ -1184,10 +1189,17 @@ The '<CONDITION>' may be a relational operator between two values with the same 
     • '<NUMBER MAP> IS <REL-OP-B> <NUMBER MAP>'
     • '<TEXT MAP> IS <REL-OP-B> <TEXT MAP>'
 
+!!! info
+    Multicontainer comparison is only available in LDPL 4.5-dev *Groovy Gualicho*.
+
 For multicontainers, both values must have the same type. You cannot compare, for example,
-a 'list of list of numbers' with a 'list of list of list of numbers'.
+a 'list of lists of numbers' with a 'list of lists of lists of numbers'.
+
+!!! info
+    The membership operator is only available in LDPL 4.5-dev *Groovy Gualicho*.
 
 The '<CONDITION>' may also be a membership operator:
+
     • '<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <LIST>'
     • '<NUMBER-VAR or NUMBER or TEXT-VAR or TEXT> IN <MAP>'
 
@@ -1196,7 +1208,7 @@ is contained within that list. If the second value is a map, however, it checks 
 value is contained within the keys of that map.
 
 The first value must always be a scalar value, you cannot check if, for example, a
-'map of number'
+'map of numbers' is contained within a 'list of maps of numbers'.
 
 Possible values of 'REL-OP-A':
 
@@ -1215,10 +1227,11 @@ Possible values of 'REL-OP-B':
 You can also write compound conditions using 'AND', 'OR' and parenthesis:
 
     • '<CONDITION> AND <CONDITION>' is positive if both conditions are positive
-    • '<CONDITION> OR <CONDITION>' is positive if both conditions are positive
-    • '( <CONDITION> )' is positive if the condition is positive, it's used to alter the default precedence
+    • '<CONDITION> OR <CONDITION>' is positive if any of the conditions is positive
+    • '( <CONDITION> )' is positive if the condition is positive and it's used to alter the default precedence
 
-The 'AND' has higher precedence than 'OR', and the conditions inside parenthesis will be evaluated first. That means that 'C1 AND C2 OR C3' is the same as '( C1 AND C2 ) OR C3', but you can make the 'OR' evaluate first if you write 'C1 AND ( C2 OR C3 )'.
+The 'AND' has higher precedence than 'OR', and the conditions inside parenthesis will be evaluated first. That means that 'C1 AND C2 OR C3' is the same as '( C1 AND C2 ) OR C3', but you can make the 'OR' evaluate first if you write 'C1 AND ( C2 OR C3 )'. Mind the spaces surrounding the parenthesis: '(<CONDITION>)' is not a
+valid condition, while '( <CONDITION> )' is.
 
 Both 'AND' and 'OR' perform short-circuit evaluation: If the first operand of an AND is negative the second will not be evaluated and the 'AND' condition is determined as negative. If the first operand of an OR is positive the second will not be evaluated and the 'OR' condition is determined as positive.
 
