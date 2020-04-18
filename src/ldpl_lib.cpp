@@ -55,6 +55,7 @@ public:
     chText& operator= (const string& x);
     chText (const char * x);
     chText& operator= (const char * x);
+    chText (const char * x, size_t len);
     chText (char x);
     chText& operator= (char x);
     chText operator [](size_t i) const;
@@ -210,6 +211,10 @@ chText::chText (const char * x) {
 chText& chText::operator= (const char * x) {
     createFromChar(x);
     return *this;
+}
+// conversion from char * and size (constructor):
+chText::chText (const char * x, size_t len) {
+    createFromMem(x, len);
 }
 // conversion from char (constructor):
 chText::chText (char x) {
@@ -722,25 +727,36 @@ std::istream& getlineSafe(std::istream& is, std::string& t) {
 
 void load_file(chText filename, chText & destination)
 {
-    //Load file
-    ifstream file(expandHomeDirectory(filename.str_rep()));
-    //Fail if the file couldn't be loaded
-    if(!file.is_open()){
-        destination = \"\";
-        VAR_ERRORTEXT = \"The file '\" + filename + \"' couldn't be opened.\";
-        VAR_ERRORCODE = 1;
-        return;
-    }
-    //Get file contents
+    // Default to fail values.
+    int fd = -1;
+    void *fmap = MAP_FAILED;
+    size_t flen = 0;
+    struct stat buf;
+
     destination = \"\";
-    string line = \"\";
-    while(getlineSafe(file, line))
-    {
-        destination += line;
-    }
+    VAR_ERRORTEXT = \"The file '\" + filename + \"' couldn't be opened.\";
+    VAR_ERRORCODE = 1;
+
+    string fileName = filename.str_rep();
+    fd = open(expandHomeDirectory(fileName).c_str(), O_RDONLY);
+    if (fd == -1)
+        goto bail;
+    if (fstat(fd, &buf) == -1)
+        goto bail;
+    flen = buf.st_size;
+    fmap = mmap(NULL, flen, PROT_READ, MAP_SHARED, fd, 0);
+    if (fmap == MAP_FAILED)
+        goto bail;
+    destination = chText((const char *)fmap, flen);
     VAR_ERRORTEXT = \"\";
     VAR_ERRORCODE = 0;
-    file.close();
+
+bail:
+    // If we mapped it, we unmap it.
+    if (fmap != MAP_FAILED)
+        munmap(fmap, flen);
+    if (fd != -1)
+        close(fd);
 }
 
 // Used by append_ and write_.
