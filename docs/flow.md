@@ -76,8 +76,9 @@ The `<CONDITION>` may be a relational operator between two values with the same 
 !!! info
     Multicontainer comparison is only available in LDPL 4.5-dev *Groovy Gualicho*.
 
-For multicontainers, both values must have the same type. You **cannot** compare, for example,
-a `list of lists of numbers` with a `list of lists of lists of numbers`.
+For containers, both values must have the same type. You **cannot** compare, for example,
+a `list of lists of numbers` with a `list of lists of lists of numbers` or a `number map`
+with a `text map`.
 
 !!! info
     The membership operator is only available in LDPL 4.5-dev *Groovy Gualicho*.
