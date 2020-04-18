@@ -878,3 +878,4 @@ ldpl_list<chText> utf8_split_list(chText haystack, chText needle){
 long long int ldpl_pthread_count = 0;
 unordered_map<ldpl_number, pthread_t> ldpl_thread_numbers;
 pthread_t ldpl_thread_num;
+time_t ldpl_time = time(NULL);

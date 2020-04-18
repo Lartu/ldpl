@@ -1373,6 +1373,70 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         state.add_code(get_c_variable(state, tokens[5]) + " = utf8_split_list(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");", line_num);
         return;
     }
+    if(line_like("GET HOUR IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET HOUT statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_hour;", line_num);
+        return;
+    }
+    if(line_like("GET MINUTES IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET MINUTES statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_min;", line_num);
+        return;
+    }
+    if(line_like("GET SECONDS IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET SECONDS statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_sec;", line_num);
+        return;
+    }
+    if(line_like("GET YEAR IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET YEAR statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_year + 1900;", line_num);
+        return;
+    }
+    if(line_like("GET DAY IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET DAY statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_mday;", line_num);
+        return;
+    }
+    if(line_like("GET MONTH IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET MONTH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_mon + 1;", line_num);
+        return;
+    }
+    if(line_like("GET MONTH IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET MONTH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_mon + 1;", line_num);
+        return;
+    }
+    if(line_like("GET EPOCH IN $num-var", tokens, state))
+    {
+        if(!in_procedure_section(state, line_num, current_file))
+            error("GET EPOCH statement outside PROCEDURE section (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        //C++ Code
+        state.add_code(get_c_variable(state, tokens[3]) + " = ldpl_time;", line_num);
+        return;
+    }
     // Custom Statements
     if(line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens, state))
     {
