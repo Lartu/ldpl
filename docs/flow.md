@@ -196,7 +196,7 @@ The `FOR EACH` statement repeatedly run the code in its body for every element i
 If the collection is a `LIST`, its elements will be iterated increasingly from index `0`, while in the case of a `MAP` all the elements will be iterated in no particular order.
 
 !!! info
-    In LDPL 4.5-dev *Groovy Gualicho* the keys of `MAP`s are iterated instead of its elements, and the type of the iteration variable must be `TEXT`.
+    Starting from LDPL 4.5-dev *Groovy Gualicho*, `FOR EACH` iterates over the may keys, instead of its elements. The iteration variable type must thus be `TEXT`.
 
 **Syntax:**
 
