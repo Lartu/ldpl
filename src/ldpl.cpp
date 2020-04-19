@@ -142,7 +142,7 @@ int main(int argc, const char* argv[])
     state.add_code(fix_identifier("ARGV", true) + ".inner_collection.push_back(argv[i]);");
 
     //Fail if file was not passed
-    if(files_to_compile.size() == 0) error("filename expected.");
+    if(files_to_compile.size() == 0) error("no source file specified.");
 
     //For each file, compile each file into one big code
     for(string & filename : files_to_compile)
