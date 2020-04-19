@@ -22,13 +22,17 @@ string & escape_c_quotes(string & str);
 #define STATIC_BUILDS 1
 #endif
 
+struct code_location {
+    string current_file;
+    int current_line;
+};
+
 //TODO: Change vectors to maps
 struct compiler_state{
     unsigned int section_state = 0;
     //0 no section, 1 data or local, 2 procedure, 3 sub-procedure start, 4 parameters
-    unsigned int current_line = 0;
-    string current_file = "";
     //Code to output (plain C code)
+    code_location where = { "", 0 };
     vector<string> variable_code;
     vector<string> output_code;
     vector<string> subroutine_code; //code outside main()
@@ -42,11 +46,15 @@ struct compiler_state{
     void add_var_code(string code){
         this->variable_code.push_back(code);
     }
-    void add_code(string code, unsigned int line_num = 0){
-	    auto& output = current_subprocedure == "" ? this->output_code : this->subroutine_code;
+    void add_code(string code) {
+        auto& output = current_subprocedure == "" ? this->output_code : this->subroutine_code;
+        output.push_back(code);
+    }
+    void add_code(string code, code_location where) {
+        auto& output = current_subprocedure == "" ? this->output_code : this->subroutine_code;
         // TODO add a debug flag for this
         //if (line_num)
-        //    output.push_back("#line " + to_string(line_num) + " \"" + escape_c_quotes(current_file) + "\"");
+        //    output.push_back("#line " + to_string(where.current_line) + " \"" + escape_c_quotes(where.current_file) + "\"");
         output.push_back(code);
     }
     bool open_quote = false;
@@ -162,9 +170,9 @@ void bullet_msg(const string & msg);
 void warning(const string & msg);
 void error(const string & msg);
 void compile(vector<string> & lines, compiler_state & state);
-void tokenize(string & line, unsigned int line_num, vector<string> & tokens, string & current_file, bool uppercase, char splitChar);
+void tokenize(string & line, vector<string> & tokens, code_location & where, bool uppercase, char splitChar);
 void split_vector(string & token, string & var_name, vector<string> & indexes, compiler_state & state);
-void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state & state);
+void compile_line(vector<string> & tokens, compiler_state & state);
 bool line_like(string model_line, vector<string> & tokens, compiler_state & state); //Important to pass tokens by copy
 bool is_number(string & number);
 bool is_natural(string number);
@@ -204,12 +212,12 @@ string fix_external_identifier(string identifier, bool isVariable);
 string fix_identifier(string id, bool isv, compiler_state & s);
 string fix_identifier(string identifier, bool isVariable);
 string fix_identifier(string identifier);
-bool in_procedure_section(compiler_state & state, unsigned int line_num, string & current_file);
+bool in_procedure_section(compiler_state & state);
 vector<unsigned int> variable_type(string & token, compiler_state & state);
-void open_subprocedure_code(compiler_state & state, unsigned int line_num, string & current_file);
-void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state, unsigned int line_num);
-void add_call_parallel_code(string & subprocedure, string & var_name, vector<string> & parameters, compiler_state & state, unsigned int line_num);
+void open_subprocedure_code(compiler_state & state);
+void add_call_code(string & subprocedure, vector<string> & parameters, compiler_state & state);
+void add_call_parallel_code(string & subprocedure, string & var_name, vector<string> & parameters, compiler_state & state);
 string current_os();
-void add_stop_parallel_code(string & var_name, compiler_state & state, unsigned int line_num);
-void add_wait_parallel_code(string & var_name, compiler_state & state, unsigned int line_num);
+void add_stop_parallel_code(string & var_name, compiler_state & state);
+void add_wait_parallel_code(string & var_name, compiler_state & state);
 bool is_parallel(string & token, compiler_state & state);
