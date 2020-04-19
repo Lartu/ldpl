@@ -833,15 +833,17 @@ void compile_line(vector<string> & tokens, unsigned int line_num, compiler_state
         vector<unsigned int> collected_type = variable_type(tokens[4], state);
         unsigned int collection_type = collected_type.back(); // LIST or MAP
         collected_type.pop_back();
-        if(iteration_type != collected_type)
-            error("FOR EACH iteration variable type doesn't match collection type (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        if (collection_type == 3 && iteration_type != collected_type)
+            error("FOR EACH iteration variable type doesn't match LIST type (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
+        else if (collection_type == 4 && iteration_type != vector<unsigned int>{2})
+            error("FOR EACH iteration variable type must be TEXT on MAP iteration (\033[0m" + current_file + ":"+ to_string(line_num)+"\033[1;31m)");
         state.open_loop();
         //C Code
         string range_var = state.new_range_var();
         string collection = get_c_variable(state, tokens[4]) + ".inner_collection";
         string iteration_var = range_var;
         if (collection_type == 4) {
-            iteration_var += ".second";
+            iteration_var += ".first";
         }
         state.add_code("for (auto& " + range_var + " : " + collection + ") {", line_num);
         state.add_code(get_c_variable(state, tokens[2]) + " = " + iteration_var + ";", line_num);
