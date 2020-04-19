@@ -43,7 +43,7 @@ all: $(OBJS) ldpl.1
 	$(CXX) -g $(OBJS) -o $(OUT) $(LFLAGS) $(CROSS)
 	./ldpl ../lpm/lpm.ldpl -o=lpm
 
-ldpl.o: ldpl.cpp ldpl_lib.cpp
+ldpl.o: ldpl.cpp ldpl_lib.cpp ldpl.h
 	awk -f lib-to-string.awk ldpl_lib.cpp > ldpl_included_lib.cpp
 	$(CXX) $(FLAGS) $(CROSS) $(SOURCE)
 
