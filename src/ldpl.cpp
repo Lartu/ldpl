@@ -86,7 +86,7 @@ int main(int argc, const char* argv[])
     //Check arguments
     if(args.size() >= 1){
         for(string & arg : args){
-            if(arg.size() > 1 && arg[0] != '-'){
+            if(arg.size() >= 1 && arg[0] != '-'){
                 if(output_filename == "") output_filename = arg;
                 if(files_to_compile.size() > 0){
                     warning("passing multiple LDPL source files to the\ncompiler is deprecated and may be removed in the future.\nPlease use the IMPORT statement instead.");
