@@ -873,7 +873,8 @@ ldpl_list<chText> utf8_split_list(chText haystack, chText needle){
         int last_start = 0;
         while (i + lenNeedle <= lenHaystack) {
             if (haystack.substr(i, lenNeedle) == needle) {
-                result.inner_collection.push_back(haystack.substr(last_start, i - last_start));
+                if(last_start != i - last_start)
+                    result.inner_collection.push_back(haystack.substr(last_start, i - last_start));
                 i += lenNeedle;
                 last_start = i;
             } else {
@@ -881,7 +882,8 @@ ldpl_list<chText> utf8_split_list(chText haystack, chText needle){
             }
         }
         // Grab everything after the last needle
-        result.inner_collection.push_back(haystack.substr(last_start, lenHaystack - last_start));
+        if(last_start != lenHaystack - last_start)
+            result.inner_collection.push_back(haystack.substr(last_start, lenHaystack - last_start));
     } else {
         // Split into individual characters
         for (int i = 0; i < lenHaystack; i++)

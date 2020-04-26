@@ -1349,6 +1349,9 @@ The 'FOR EACH' statement repeatedly run the code in its body for every element i
 
 If the collection is a 'LIST', its elements will be iterated increasingly from index '0', while in the case of a 'MAP' all the elements will be iterated in no particular order.
 
+!!! info
+    Starting from LDPL 4.5-dev *Groovy Gualicho*, 'FOR EACH' iterates over the may keys, instead of its elements. The iteration variable type must thus be 'TEXT'.
+
 Syntax:
 
     FOR EACH <VAR> IN <LIST or MAP> DO
@@ -1358,7 +1361,7 @@ Syntax:
     REPEAT
 .br
 
-Example 1:
+Example:
 
     DATA:
 .br
@@ -1383,31 +1386,6 @@ Example 1:
     	REPEAT
 .br
     	# Will display "LDPL"
-.br
-
-Example 2:
-
-    DATA:
-.br
-    	number IS NUMBER
-.br
-    	numbers IS NUMBER MAP
-.br
-    PROCEDURE:
-.br
-    	STORE 1 IN numbers:"One"
-.br
-    	STORE 2 IN numbers:"Two"
-.br
-    	STORE 3 IN numbers:"Three"
-.br
-    	FOR EACH number IN numbers DO
-.br
-    		DISPLAY number
-.br
-    	REPEAT
-.br
-    	# Will display "312" or any permutation
 .br
 
 ## 'BREAK'
