@@ -199,7 +199,7 @@ int main(int argc, const char* argv[])
         final_filename += "-bin";
     }
     //Compile the C++ code
-    string compile_line = "c++ ldpl-temp.cpp -std=gnu++11 -lpthread -w -o " + final_filename;
+    string compile_line = "/usr/bin//c++ ldpl-temp.cpp -std=gnu++11 -lpthread -w -o " + final_filename;
 #ifdef STATIC_BUILDS
     if(!no_static) compile_line+=" -static-libgcc -static-libstdc++ ";
 #endif
