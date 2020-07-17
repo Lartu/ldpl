@@ -628,12 +628,12 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[5]) + " = modulo(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");", state.where);
         return;
     }
-    if (line_like("RAISE $num-expr TO THE $num-expr IN $num-var", tokens, state))
+    if (line_like("RAISE $num-expr TO $num-expr IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("RAISE statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[6]) + " = pow(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[4]) + ");", state.where);
+        state.add_code(get_c_variable(state, tokens[5]) + " = pow(" + get_c_expression(state, tokens[1]) + ", " + get_c_expression(state, tokens[3]) + ");", state.where);
         return;
     }
     if (line_like("LOG $num-expr IN $num-var", tokens, state))
@@ -666,6 +666,38 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             badcode("TAN statement outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[3]) + " = tan(" + get_c_expression(state, tokens[1]) + ");", state.where);
+        return;
+    }
+    if(line_like("ADD $num-expr AND $num-expr IN $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("ADD statement outside PROCEDURE section", state.where);
+        //C Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[1]) + " + " + get_c_expression(state, tokens[3]) + ";", state.where);
+        return;
+    }
+    if(line_like("SUBTRACT $num-expr FROM $num-expr IN $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("SUBTRACT statement outside PROCEDURE section", state.where);
+        //C Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[3]) + " - " + get_c_expression(state, tokens[1]) + ";", state.where);
+        return;
+    }
+    if(line_like("MULTIPLY $num-expr BY $num-expr IN $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("MULTIPLY statement outside PROCEDURE section", state.where);
+        //C Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[1]) + " * " + get_c_expression(state, tokens[3]) + ";", state.where);
+        return;
+    }
+    if(line_like("DIVIDE $num-expr BY $num-expr IN $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("DIVIDE statement outside PROCEDURE section", state.where);
+        //C Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_expression(state, tokens[1]) + " / " + get_c_expression(state, tokens[3]) + ";", state.where);
         return;
     }
     if (line_like("GET RANDOM IN $num-var", tokens, state))

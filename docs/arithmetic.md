@@ -119,17 +119,17 @@ The `GET RANDOM` statement stores a random value between 0 \(inclusive\) and 1 \
 GET RANDOM IN <NUMBER-VAR>
 ```
 
-## `RAISE _ TO THE _ IN _`
+## `RAISE _ TO _ IN _`
 
 !!! info
     This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
 
-The `RAISE <a> TO THE <b> IN <c>` statement calculates `a^b` and stores the result in `c`.
+The `RAISE <a> TO <b> IN <c>` statement calculates `a^b` and stores the result in `c`.
 
 **Syntax:**
 
 ```coffeescript
-RAISE <NUMBER-VAR or NUMBER> TO THE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+RAISE <NUMBER-VAR or NUMBER> TO <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 ```
 
 ## `LOG _ IN _`
