@@ -11,7 +11,7 @@
 
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful compiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. LDPL was designed to run on Unix systems, including AMD-64 Linux, macOS, ARMv8 Linux, Android Termux and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
 
-This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler, LPM (the LDPL Package Manager) and other useful goodies.
+This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler and other useful goodies.
 
 ### Index
  * [Introduction](https://github.com/Lartu/ldpl#readme)
@@ -133,26 +133,7 @@ LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` fi
 For a guide to writing and building C++ extensions, see the [LDPL official documentation](https://docs.ldpl-lang.org/cppext/). For a simple example, see the [examples/cpp-extension](./examples/cpp-extension) directory.
 
 ## 🏛 Libraries
-
-![LPM Logo](images/lpm-logo.png)
-
-Starting from version 4.3, LDPL includes the **LDPL Package Manager** (LPM). When you install LDPL from source you also install LPM. If you download a pre-compiled binary, LPM is included in the same package. With LPM, downloading and using libraries (we also call them *packages*) is now easier than ever:
- - Run `lpm info <library_name>` to find information about a particular library.
-   - Try, for example, `lpm info std-math` and `lpm info ltb`!
- - Run `lpm install <library_name>` to install a particular library.
- - Run `lpm uninstall <library_name>` to uninstall a particular library.
- - Run `lpm count` to display the number of installed packages.
- - Run `lpm list` to list all installed packages.
- 
-Once you've installed a library, you can include it to your project by just adding the line
-
-```coffeescript
-using package <library_name> # for example: using package std-math
-```
-
-before the `DATA` and `PROCEDURE` sections of your source file.
-
-Libraries not installed using LPM can be included using
+Libraries can be included using
 
 ```coffeescript
 include "library_name" # for example: include "std-math"
@@ -162,17 +143,17 @@ before the `DATA` and `PROCEDURE` sections of your source file.
 
 ### 📖 The LDPL Standard Library
 
-A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std). Just `lpm install` and include with `using package` the desired packages in your sourcecode and you are ready to go. For more information check the LDPL Standard Library repository.
+A number of useful statements and subroutines are available in the [**LDPL Standard Library**](https://github.com/Lartu/ldpl-std).
 
 ### 🦕 Other LDPL Libraries
 
 - [**The LDPL IRC Bot Library**](https://github.com/Lartu/ldpl-irc-bot): the LDPL IRC Bot Library lets you write LDPL programs that connect to IRC servers, join channels, send messages and more in the simplest
-way possible. Install with: `lpm install ldpl_irc_bot`.
-- [**The LDPL Ncurses Library**](https://github.com/Lartu/ldpl-ncurses): an ncurses wrapper for LDPL designed for creating terminal applications that require more complex text user-interfaces than simple line-feeding. Install with: `lpm install ldpl-ncurses`.
-- [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible. Install with: `lpm install ldpl_net_server`.
-- [**The LDPL Socket Library**](https://github.com/xvxx/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL. Install with: `lpm install ldpl_socket`.
-- [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages. Install with: `lpm install ltb`.
-- [**The LDPL URL Resolver Library**](https://github.com/Lartu/ldpl-url-resolver): a super easy to use library for LDPL that helps you resolve URLs into their respective IP addresses. Install with: `lpm install ldpl-url-resolver`.
+way possible.
+- [**The LDPL Ncurses Library**](https://github.com/Lartu/ldpl-ncurses): an ncurses wrapper for LDPL designed for creating terminal applications that require more complex text user-interfaces than simple line-feeding.
+- [**The LDPL Network Server Library**](https://github.com/Lartu/ldpl-net-server/): the LDPL Network Server Library is an library for creating socket based servers in LDPL. It aims to make it very easy to develop, test and deploy network servers, with as little work as possible.
+- [**The LDPL Socket Library**](https://github.com/xvxx/ldpl-socket): the LDPL socket Library allows you to open, close, write to, and read from network sockets in LDPL.
+- [**The LDPL Telegram Bot Library**](https://github.com/dgarroDC/ltb): this simple LDPL library lets you create a Telegram bot that can receive and send text messages.
+- [**The LDPL URL Resolver Library**](https://github.com/Lartu/ldpl-url-resolver): a super easy to use library for LDPL that helps you resolve URLs into their respective IP addresses.
 
 ## 📝 LDPL Compatible Editors
 
