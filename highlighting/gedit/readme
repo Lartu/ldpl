@@ -1,0 +1,15 @@
++---------------------------------------------------+
+| LDPL Syntax Highlighting for Gedit / Pluma / Etc. |
++---------------------------------------------------+
+
+[Installing]
+To install LDPL syntax highlighting for the gedit / pluma / etc editors just
+run the install.sh file found in the same folder as this README.
+
+[Installing (by hand)]
+1. Copy the file ldpl.lang to /usr/share/gtksourceview-3.0/language-specs/
+2. Restart Gedit / Pluma / Etc.
+
+[Uninstalling]
+Delete /usr/share/gtksourceview-3.0/language-specs/ldpl.lang
+

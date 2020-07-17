@@ -1,0 +1,12 @@
++-----------------------------------+
+| LDPL Syntax Highlighting for nano |
+| by Martín del Río                 |
++-----------------------------------+
+
+[Installing]
+To install LDPL syntax highlighting for the nano editor just
+run the install.sh file found in the same folder as this README.
+
+[Uninstalling]
+Remove LDPL releated lines from ~/.nanorc
+Delete ~/.nano/ldpl.nanorc
