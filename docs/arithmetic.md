@@ -98,6 +98,46 @@ and stores the result in a NUMBER variable.
 CEIL <NUMBER-VAR> IN <NUMBER-VAR>
 ```
 
+## `ADD _ AND _ IN _`
+
+The `ADD` statement adds two NUMBER values and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+ ADD <NUMBER-VAR or NUMBER> AND <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
+## `SUBTRACT _ FROM _ IN _`
+
+The `SUBTRACT` statement subtracts two NUMBER values and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+ SUBTRACT <NUMBER-VAR or NUMBER> FROM <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
+## `MULTIPLY _ BY _ IN _`
+
+The `MULTIPLY` statement multiplies two NUMBER values and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+ MULTIPLY <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
+## `DIVIDE _ BY _ IN _`
+
+The `DIVIDE` statement divides two NUMBER values and stores the result in a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+ DIVIDE <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+```
+
 ## `MODULO _ BY _ IN _`
 
 The `MODULO` statement calculates the remainder of the modulo operation between two NUMBER values and stores the result in a NUMBER variable.
