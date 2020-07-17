@@ -74,14 +74,14 @@ The `<CONDITION>` may be a relational operator between two values with the same 
 * `NOT EQUAL TO`
 
 !!! info
-    Multicontainer comparison is only available in LDPL 4.5-dev *Groovy Gualicho*.
+    Multicontainer comparison is only available in LDPL 4.5 *Groovy Gualicho*.
 
 For containers, both values must have the same type. You **cannot** compare, for example,
 a `list of lists of numbers` with a `list of lists of lists of numbers` or a `number map`
 with a `text map`.
 
 !!! info
-    The membership operator is only available in LDPL 4.5-dev *Groovy Gualicho*.
+    The membership operator is only available in LDPL 4.5 *Groovy Gualicho*.
 
 The `<CONDITION>` may also be a membership operator:
 
@@ -196,7 +196,7 @@ The `FOR EACH` statement repeatedly run the code in its body for every element i
 If the collection is a `LIST`, its elements will be iterated increasingly from index `0`, while in the case of a `MAP` all the elements will be iterated in no particular order.
 
 !!! info
-    Starting from LDPL 4.5-dev *Groovy Gualicho*, `FOR EACH` iterates over the may keys, instead of its elements. The iteration variable type must thus be `TEXT`.
+    Starting from LDPL 4.5 *Groovy Gualicho*, `FOR EACH` iterates over the may keys, instead of its elements. The iteration variable type must thus be `TEXT`.
 
 **Syntax:**
 
@@ -464,7 +464,7 @@ CALL EXTERNAL http-get
 ## `IN _ CALL PARALLEL _`
 
 !!! info
-    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The `CALL PARALLEL` statement executes a PARALLEL SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the `CALL PARALLEL`.
 
@@ -482,7 +482,7 @@ Of course, a PARALLEL SUB-PROCEDURE must be declared **somewhere** in your progr
 ## `WAIT FOR PARALLEL _`
 
 !!! info
-    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The `WAIT FOR PARALLEL` statement halts execution of the current thread until the parallel sub-procedure referenced by the passed NUMBER variable has finished running.
 
@@ -495,7 +495,7 @@ WAIT FOR PARALLEL <NUMBER-VAR>
 ## `STOP PARALLEL _`
 
 !!! info
-    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+    This feature is currently only available in LDPL >= 4.5 *Groovy Gualicho*.
 
 The `STOP PARALLEL` statement halts execution of the parallel sub-procedure referenced by the passed NUMBER variable.
 
@@ -503,4 +503,31 @@ The `STOP PARALLEL` statement halts execution of the parallel sub-procedure refe
 
 ```coffeescript
 STOP PARALLEL <NUMBER-VAR>
+```
+
+## `LOCK MUTEX _`
+
+!!! info
+    This feature is currently only available in LDPL >= 4.5 *Groovy Gualicho*.
+
+The `LOCK MUTEX` statement tries to lock the mutex identified by the passed TEXT value. If it's not able to lock the mutex immediately,
+the thread waits until the mutex can be locked.
+
+**Syntax:**
+
+```coffeescript
+LOCK MUTEX <TEXT or TEXT-VAR>
+```
+
+## `UNLOCK MUTEX _`
+
+!!! info
+    This feature is currently only available in LDPL >= 4.5 *Groovy Gualicho*.
+
+The `UNLOCK MUTEX` statement unlocks the mutex identified by the passed TEXT value.
+
+**Syntax:**
+
+```coffeescript
+UNLOCK MUTEX <TEXT or TEXT-VAR>
 ```

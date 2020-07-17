@@ -1,0 +1,18 @@
+data:
+result is number
+
+procedure:
+add 10 and 5 in result
+display result lf
+multiply result by -2 in result
+display result lf
+divide result by -4.5 in result
+display result lf
+subtract 1 from result in result
+display result lf
+floor result
+display result lf
+modulo result by 3 in result
+display result lf
+raise result to 10 in result
+display result lf

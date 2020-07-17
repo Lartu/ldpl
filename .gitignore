@@ -7,3 +7,6 @@ lpm
 src/ldpl.1
 testing/*
 testing
+build
+.vscode
+*-bin
