@@ -76,22 +76,12 @@ be okay even when times get dark.
 
 ## 💾 How to install LDPL
 
-### Using the LDPL Install Wizard:
-
-You can  use the **LDPL Install Wizard** to make and install LDPL. This method sets up everything LDPL needs for you and installs the latest LDPL version available.
-
-<img src="https://github.com/Lartu/ldpl/blob/master/images/wizard.png" width=500px>
-
-Just `git clone` this repository (or download it from [here](https://github.com/Lartu/ldpl/archive/master.zip) and un-zip it somewhere), open a terminal in it (or `cd` to it), run `sh install.sh` and follow the steps. Done!
-
-### By Yourself:
-
 You can get yourself a precompiled LDPL binary or compile LDPL from source. Check the following table if you are not sure of what to do.
 
 | **If you want to download a compiled binary** | **If you want to build LDPL yourself** |
 | ---                                           | --- |
 | Compiled binaries contain the latest stable release. Might not be up to date with the newest, bleeding edge features, but will work fine on most systems and are already compiled for you. | Building LDPL yourself gives you access to the latest features of the language. Development LDPL code tends to be stable, compile and work fine, but hidden bugs may still lurk in there! |
-| **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install` LDPL in the `src` folder. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
+| **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install`. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
 
