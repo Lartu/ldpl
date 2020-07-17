@@ -9,3 +9,4 @@ testing/*
 testing
 build
 .vscode
+*-bin

@@ -79,3 +79,4 @@ install: build/ldpl man/ldpl.1
 uninstall:
 	rm $(DESTDIR)$(PREFIX)/bin/ldpl
 	rm $(DESTDIR)$(PREFIX)/share/man/man1/ldpl.1
+	rm -rf $(LDPLLIBLOCATION)

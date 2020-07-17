@@ -239,12 +239,12 @@ program.
 
 Parallel sub-procedures differ from traditional sub-procedures in that they cannot
 have a `parameters:` section (and, thus, they cannot receive parameters). Instead,
-the **number** variable `parameter_id` is declared by default inside each parallel
-sub-procedure. The `parameter_id` variable holds a numberic value that identifies
+the **number** variable `parallel_id` is declared by default inside each parallel
+sub-procedure. The `parallel_id` variable holds a numberic value that identifies
 the running parallel sub-procedure. Every time a parallel sub-procedure is called,
-a different `parameter_id` is assigned to each call. If you call the same parallel
+a different `parallel_id` is assigned to each call. If you call the same parallel
 sub-procedure three times, you will end up with three instances of the parallel
-sub-procedure running at the same time, each with a different `parameter_id` value.
+sub-procedure running at the same time, each with a different `parallel_id` value.
 
 Parallel sub-procedures can only be called using the `in _ call parallel _` statement.
 Check the **Control Flow Statements** section of this document for more information.

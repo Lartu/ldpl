@@ -1,0 +1,30 @@
+# Threading example for LDPL
+# by Lartu
+
+data:
+counter is number
+parallel_number is number
+parallelCount is number
+
+procedure:
+parallel sub parallelCounter
+    local data:
+        mutexName is text
+    procedure:
+    store "counterMutex" in mutexName
+    display "Hi there! Thread " parallel_id " up and running!" lf
+    while 1 is equal to 1 do
+        lock mutex mutexName
+        display parallel_id ")" counter lf
+        in counter solve counter + 1
+        display parallel_id ") +1 -> " counter lf
+        unlock mutex "counterMutex"
+    repeat
+end sub
+
+for parallelCount from 0 to 10 step 1 do
+    in parallel_number call parallel parallelCounter
+repeat
+
+wait 5000 milliseconds
+exit
