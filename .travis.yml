@@ -10,5 +10,5 @@ install:
   - git clone https://github.com/Lartu/ldpltest
 
 script:
-  - cd src && make clean && make
+  - make clean && make
   - cd ../ldpltest && ./compileAndRunTester.sh | grep "ALL TESTS PASSED SUCCESSFULLY"
