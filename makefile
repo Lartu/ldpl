@@ -17,7 +17,7 @@
 # make [x86=true] [version='"<version>"']
 
 # --- Version Information ---
-VERSION = '"4.5-dev"'  #LDPL Version
+VERSION = '"4.5"'  #LDPL Version
 VERSIONNAME = '"Groovy Gualicho"' #LDPL Version Name
 
 # --- Options ---

@@ -223,7 +223,7 @@ as shown in the example above.
 ## Parallel Sub-procedures
 
 !!! info
-    This feature is currently only available in LDPL 4.5-dev *Groovy Gualicho*.
+    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 Starting from release 4.5 *Groovy Gualicho*, LDPL supports **Parallel Sub-procedures**.
 Parallel sub-procedures are procedures that you can -as the name suggests- run in
