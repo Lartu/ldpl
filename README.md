@@ -76,12 +76,7 @@ be okay even when times get dark.
 
 ## 💾 How to install LDPL
 
-You can get yourself a precompiled LDPL binary or compile LDPL from source. Check the following table if you are not sure of what to do.
-
-| **If you want to download a compiled binary** | **If you want to build LDPL yourself** |
-| ---                                           | --- |
-| Compiled binaries contain the latest stable release. Might not be up to date with the newest, bleeding edge features, but will work fine on most systems and are already compiled for you. | Building LDPL yourself gives you access to the latest features of the language. Development LDPL code tends to be stable, compile and work fine, but hidden bugs may still lurk in there! |
-| **How to:** [download the latest stable release available](https://github.com/Lartu/ldpl/releases). You should then move the binary to a folder on your PATH. | **How to:** first, clone this repository. Then `make` and `make install`. This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. |
+First, clone this repository. Then `make` and `make install`. You can also optionally `make man` to re-build the documentation (PHP is required for this). This will install LDPL and the LDPL documentation (`man ldpl`) on your system. LDPL requires only C++11 to compile. LDPL will install some libraries to `/usr/local/lib/ldpl`. If you want to install them in another location, modify the `LDPLLIBLOCATION` variable of the (makefile)[makefile].
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
 
