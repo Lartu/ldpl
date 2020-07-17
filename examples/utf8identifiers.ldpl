@@ -1,0 +1,10 @@
+data:
+המבורגר is number
+バーガー is number
+
+procedure:
+store 20 in המבורגר
+store 30 in バーガー
+display המבורגר " + " バーガー " = " 
+add バーガー and המבורגר in המבורגר
+display המבורגר "!" lf
