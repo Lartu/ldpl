@@ -9,6 +9,14 @@ variables `foo` and `FOO` would represent two different variables, but in
 LDPL they are **the same one**. This same thing happens with statements. For
 LDPL it's the same if you write `display` or `dIsPlAy` (but please don't do so).
 
+!!! warning
+    LDPL is case-insensitive only for A-z characters. Accented characters and
+    non ASCII letters will be matched in a case-insensitive manner. Depending
+    on the LDPL implementation, `ááá` and `ÁÁÁ` may not represent the same
+    identifier. It is good practice to write your code in a single case and
+    always call your variables and functions by the exact name used when
+    declaring them.
+
 ## Comments
 Comments in LDPL are denoted with a hash symbol ('#') and can be placed both
 on their own line or at the end of a line that already contains a statement.
