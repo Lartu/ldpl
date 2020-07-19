@@ -45,28 +45,23 @@ bool line_like(string model_line, vector<string> &tokens, compiler_state &state)
         }
         else if (model_tokens[i] == "$num-var") // $num-var is NUMBER variable
         {
-            if (!is_num_var(tokens[j], state))
-                return false;
+            return is_num_var(tokens[j], state);
         }
         else if (model_tokens[i] == "$str-var") // $str-var is TEXT variable
         {
-            if (!is_txt_var(tokens[j], state))
-                return false;
+            return is_txt_var(tokens[j], state);
         }
         else if (model_tokens[i] == "$var") // $var is either a NUMBER variable or a TEXT variable
         {
-            if (!is_scalar_variable(tokens[j], state))
-                return false;
+            return is_scalar_variable(tokens[j], state);
         }
         else if (model_tokens[i] == "$anyVar") // $anyVar is any variable
         {
-            if (!variable_exists(tokens[j], state))
-                return false;
+            return variable_exists(tokens[j], state);
         }
         else if (model_tokens[i] == "$scalar-map")
         { // $scalar-map is TEXT MAP, NUMBER MAP
-            if (!is_scalar_map(tokens[j], state))
-                return false;
+            return is_scalar_map(tokens[j], state);
         }
         else if (model_tokens[i] == "$num-vec") // $num-vec is NUMBER vector
         {
@@ -107,7 +102,7 @@ bool line_like(string model_line, vector<string> &tokens, compiler_state &state)
         else if (model_tokens[i] == "$collection") // $collection is either a MAP or a LIST
         {
             // if(!is_scalar_map(tokens[j], state) && !is_scalar_list(tokens[j], state) && (variable_type(tokens[j], state).size() < 2)) return false;
-            return variable_type(tokens[j], state).size() >= 2
+            return variable_type(tokens[j], state).size() >= 2;
         }
         else if (model_tokens[i] == "$literal") // $literal is either a NUMBER or a TEXT
         {
