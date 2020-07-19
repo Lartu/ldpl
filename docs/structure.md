@@ -10,8 +10,8 @@ LDPL they are **the same one**. This same thing happens with statements. For
 LDPL it's the same if you write `display` or `dIsPlAy` (but please don't do so).
 
 !!! warning
-    LDPL is case-insensitive only for A-z characters. Accented characters and
-    non ASCII letters will be matched in a case-insensitive manner. Depending
+    LDPL is case-insensitive only for latin A-z characters. Accented characters and
+    non-ASCII letters will be matched in a case-insensitive manner. Depending
     on the LDPL implementation, `ááá` and `ÁÁÁ` may not represent the same
     identifier. It is good practice to write your code in a single case and
     always call your variables and functions by the exact name used when
