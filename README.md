@@ -80,6 +80,10 @@ First, clone this repository. Then `make` and `make install`. You can also optio
 
 Once you have LDPL installed on your system, check the LDPL reference to learn how to use the language. Information on how to compile LDPL scripts and a list of LDPL compatible editors is provided in the sections below.
 
+### 🍺 Homebrew
+
+If you prefer [Homebrew](https://brew.sh), you can install LDPL by running `brew install ldpl`.
+
 ## 📚 Learning LDPL and Read the Docs
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
