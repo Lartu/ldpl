@@ -45,7 +45,7 @@ endif
 SOURCE = ldpl.cpp
 OUT = ldpl
 LPMLOCATION = "~/ldpl/lpm/"
-LDPLLIBLOCATION = "/usr/local/lib/ldpl"
+LDPLLIBLOCATION = "$(PREFIX)/lib/ldpl"
 
 # --- Compilation Flags ---
 FLAGS = -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='$(LPMLOCATION)' -DLDPLLIBLOCATION='$(LDPLLIBLOCATION)'
