@@ -34,15 +34,18 @@ This repository contains the source code and [releases](https://github.com/Lartu
 
 ### 📒 Example LDPL code
 
-```coffeescript
+```ruby
 # Hello There Example
 data: 
   name is text
+  i is number
   
 procedure: 
   display "Hello there, what's your name?"
   accept name
-  display "你好, " name "!" crlf
+  for i from 0 to 10 step 1 do
+    display "你好, " name "!" crlf
+  repeat
 ```
 
 This code greets the user and asks them to enter their name, then it greets them in Chinese. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
