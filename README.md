@@ -48,7 +48,7 @@ procedure:
   repeat
 ```
 
-This code greets the user and asks them to enter their name, then it greets them in Chinese. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
+This code greets the user and asks them to enter their name, then it greets them in Chinese, ten times. Easy as pie and super legible. Check the [official website](https://www.ldpl-lang.org/) and the [examples](/examples) subfolder for more examples, including a Brainf*ck interpreter and Bellman-Ford's Algorithm!
 
 ### 🎏 What can I use LDPL for?
 
