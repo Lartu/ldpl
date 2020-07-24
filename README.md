@@ -1,12 +1,12 @@
 <p align="center">
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
-  <img src="https://img.shields.io/badge/stable_release-4.4.3-blue.svg?style=flat-square">
-  <img src="https://img.shields.io/badge/dev_version-4.5.0-purple.svg?style=flat-square">
-  <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master?style=flat-square"></a>
-  <img src="https://img.shields.io/badge/license-apache_2.0-yellow?style=flat-square">
-  <a href='https://www.freelists.org/list/ldpl'><img src="https://img.shields.io/badge/Mailing List-ldpl-lightgray.svg?style=flat-square"></a>
-  <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange?style=flat-square"></a>
+  <img src="https://img.shields.io/badge/stable_release-v4.4.3-blue.svg">
+  <img src="https://img.shields.io/badge/in_development-v4.5.0-purple.svg">
+  <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master"></a>
+  <img src="https://img.shields.io/badge/license-apache_2.0-yellow">
+  <a href='https://www.freelists.org/list/ldpl'><img src="https://img.shields.io/badge/Mailing List-ldpl-lightgray.svg"></a>
+  <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange"></a>
 </p>
 
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful compiled programming language designed from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn. It mimics plain English, in the likeness of the good parts of older programming languages like COBOL, with the desire that it can be understood by anybody. LDPL was designed to run on Unix systems, including AMD-64 Linux, macOS, ARMv8 Linux, Android Termux and both Intel and PowerPC OS X (*tested from Tiger 10.4 onwards*). It even supports UTF-8 out of the box.
