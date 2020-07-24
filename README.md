@@ -1,8 +1,8 @@
 <p align="center">
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
-  <img src="https://img.shields.io/badge/current_release-4.4.3-blue.svg?style=flat-square">
-  <img src="https://img.shields.io/badge/dev_version-4.5-purple.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/stable_release-4.4.3-blue.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/dev_version-4.5.0-purple.svg?style=flat-square">
   <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master?style=flat-square"></a>
   <br><img src="https://img.shields.io/badge/license-apache_2.0-yellow?style=flat-square">
   <a href='https://www.freelists.org/list/ldpl'><img src="https://img.shields.io/badge/Mailing List-ldpl-lightgray.svg?style=flat-square"></a>
@@ -160,7 +160,9 @@ There are many ways to contribute to the LDPL project. You can fix bugs, add iss
 
 Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). TL;DR: be nice to everyone.
 
-If you want to talk to the rest of us, you can find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL) and via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*. Also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
+### 🦕🦕🦕 Community
+
+If you want to talk to the rest of us, join the [LDPL Mailing List](https://www.freelists.org/list/ldpl)! You can also find the LDPL community at [r/LDPL](https://reddit.com/r/LDPL), via IRC on [irc.freenode.net](http://irc.freenode.net/), channel *\#ldpl*, and also on Telegram via the [ldpllang](https://t.me/ldpllang) group. The IRC and Telegram channels are bridged. You are welcome to open new LDPL channels anywhere else if you like.
 
 ## 👔 Supporting the LDPL Project
 
