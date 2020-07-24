@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/in_development-v4.5.0-purple.svg">
   <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master"></a>
   <img src="https://img.shields.io/badge/license-apache_2.0-yellow">
-  <a href='https://www.freelists.org/list/ldpl'><img src="https://img.shields.io/badge/Mailing List-ldpl-lightgray.svg"></a>
+  <a href='https://www.freelists.org/list/ldpl'><img src="https://img.shields.io/badge/mailing_list-ldpl-lightgray.svg"></a>
   <a href="https://www.freenode.net"><img src="https://img.shields.io/badge/irc-%23ldpl-orange"></a>
 </p>
 
