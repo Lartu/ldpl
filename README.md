@@ -87,6 +87,12 @@ Once you have LDPL installed on your system, check the LDPL reference to learn h
 
 If you prefer [Homebrew](https://brew.sh), you can install LDPL by running `brew install ldpl`.
 
+
+### ![Snap Logo](https://assets.ubuntu.com/v1/7f93bb62-snapcraft-logo--web-white-text.svg) Snap
+
+If you prefer [Snap](https://snapcraft.io/), you cant install LDPL by running `snap install ldpl-lang`.
+
+
 ## 📚 Learning LDPL and Read the Docs
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
