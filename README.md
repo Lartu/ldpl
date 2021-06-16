@@ -90,7 +90,7 @@ If you prefer [Homebrew](https://brew.sh), you can install LDPL by running `brew
 
 ### ![Snap Logo](https://assets.ubuntu.com/v1/7f93bb62-snapcraft-logo--web-white-text.svg) Snap
 
-If you prefer [Snap](https://snapcraft.io/), you cant install LDPL by running `snap install ldpl-lang`.
+If you prefer [Snap](https://snapcraft.io/), you can install LDPL by running `snap install ldpl-lang`.
 
 
 ## 📚 Learning LDPL and Read the Docs
