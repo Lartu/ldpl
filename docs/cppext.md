@@ -6,7 +6,7 @@ code and be added to your LDPL projects.
 Because LDPL programs compile down to C++, there is no need for a translation layer or bridge: extensions can be included directly into LDPL programs and manipulate, share, and access subprocedures and variables natively. All that's needed is a few naming conventions on the C++ side and the use of the `external` syntax for variables and subprocedures on the LDPL side. External variable and sub-procedure naming conventions are explained in detail in the **Naming Schemes** section of this documentation.
 
 Extensions contain sub-procedures and variables that are considered to be _external_.
-This means that they are not part of an LDPL source code and thus must be accessed and called in a different way to what you might be used to. **External sub-procedures** should be called using the the `call external` statement. While it is explained in greater detail in the **Control Flow Statements** section of this documentation, the statement works just like the normal `call` statement with the exception that it doesn't accept parameters.
+This means that they are not part of an LDPL source code and thus must be accessed and called in a different way to what you might be used to. **External sub-procedures** should be called using the `call external` statement. While it is explained in greater detail in the **Control Flow Statements** section of this documentation, the statement works just like the normal `call` statement with the exception that it doesn't accept parameters.
 
 ```c++
 // In C++
@@ -41,7 +41,7 @@ If LDPL lacks some feature that C++ might offer, for example graphics or network
 you might find yourself in the need of writing a C++ extension (provided an extension
 for what you are looking for has not been already written, of course).
 
-Extensions can create variables and functions that are accessible from LDPL through the `call external` and `external` data type keyword, as explained in the previous section. Typically all you need is a single `.cpp` file that you include from your LDPL source using the `extension` keyword (explained in the **Code Structure** section of this documentation), but you may also include `.o` files, `.a` files, or any combination of them all.
+Extensions can create variables and functions that are accessible from LDPL through the `call external` and `external` data type keyword, as explained in the previous section. Typically, all you need is a single `.cpp` file that you include from your LDPL source using the `extension` keyword (explained in the **Code Structure** section of this documentation), but you may also include `.o` files, `.a` files, or any combination of them all.
 
 ### Functions
 
@@ -196,11 +196,11 @@ Very simple!
 
 ## External Sub-procedures
 
-Sometimes when writting C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL sub-procedures and calling them from C++.
+Sometimes when writing C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL sub-procedures and calling them from C++.
 
-These C++ calleable sub-procedures are called **external sub-procedures**, as they can be called from an external medium.
+These C++ callable sub-procedures are called **external sub-procedures**, as they can be called from an external medium.
 
-In order to declare an external sub-procedure you must first forward-declare it in your C++ source code. Say, for example, that you want to declare a sub-procedure called `helloWorld`. In your C++ you should write the following line:
+In order to declare an external sub-procedure, you must first forward-declare it in your C++ source code. Say, for example, that you want to declare a sub-procedure called `helloWorld`. In your C++ you should write the following line:
 
 ```cpp
 void HELLOWORLD();
