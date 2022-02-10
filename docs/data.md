@@ -210,7 +210,7 @@ You could use a `number list` with a defined sub-index \(for example, in the
 example above, `myList:0`\) where it says number-var, just like in
 the `store - in` examples in the code extracts above.
 
-In the **list statements** section you'll find a collection of statements that
+In the **list statements** section, you'll find a collection of statements that
 can be used to work with lists.
         
 ### The Map Data Type
@@ -302,7 +302,7 @@ just like in the `store - in` examples in the code extracts above
 \(for example `myMap:"hello"`\).
 
 As you'll see in the **Default Variable Values** section, you can access
-undeclared keys of a map just like if they were declared.
+undeclared keys of a map, just like if they were declared.
 See the following example:
 
 ```coffeescript
@@ -324,7 +324,7 @@ exists in a map without initializing it if it wasn't there before. Statements
 like **store key count of** and **store keys of** are provided as means to
 overcome this situation.
 
-In the **map statements** section you'll find a collection of statements that
+In the **map statements** section, you'll find a collection of statements that
 can be used to work with maps.
 
 !!!warning
@@ -332,7 +332,7 @@ can be used to work with maps.
     Starting from LDPL 3.1.0 Diligent Dreadnoughtus, they have been renamed
     to reflect the real data structure they represent. While it might still be
     possible to call them vectors in code, and legacy code that declares maps
-    as vectors is and will continue be supported, this nomenclature is
+    as vectors is and will continue to be supported, this nomenclature is
     **deprecated** and shouldn't be used anymore.
     
 ## Multicontainers
@@ -348,7 +348,7 @@ scalar or container type names."_ This means that you can declare variables like
 
 These variables are called **multicontainers**. Multicontainers hold other 
 containers, which can hold more containers or scalar values to an arbitrary
-depth.For example, a `map of lists of text` is a **map** that holds **lists** 
+depth. For example, a `map of lists of text` is a **map** that holds **lists** 
 of **text** values. You may access a value stored in a `map of lists of text` 
 like so:
 
@@ -390,7 +390,7 @@ instead of `map`. A `list of list of number` is the same as a `list of lists of 
 
 ## Default Type Values
 
-In LDPL each variable is initialized with a value by default. This means
+In LDPL, each variable is initialized with a value by default. This means
 that when you declare a variable, it will, by default, hold this value
 until it's changed.
 
@@ -438,7 +438,7 @@ The `errorcode` and `errortext` variables come declared by default.
 Some statements may modify their values to express their results.
 
 The `errorcode` variable is a **number** variable. It will hold the value 0
-if the statement ran successfully and any other number if it did not.
+if the statement ran successfully, and any other number if it did not.
 
 The `errortext` variable is a **text** variable that will be empty if the
 statement ran successfully. If it did not, it will store a human readable
