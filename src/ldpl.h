@@ -5,6 +5,7 @@
 #include <iostream>
 #include <locale>
 #include <map>
+#include <memory>
 #include <queue>
 #include <sstream>
 #include <stack>
