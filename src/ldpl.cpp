@@ -24,6 +24,7 @@
 #include "aux/aux_state.cpp" // Contains auxiliary functions that check the current compilation state
 #include "aux/aux_tokenizer.cpp" // Contains functions used to tokenize an LDPL source file
 #include "aux/aux_typecheck.cpp" // Contains auxiliary functions to check data type compliance
+#include <memory>
 
 // +----------------------------+
 // | --- Main Aux Functions --- |
