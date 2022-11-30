@@ -30,32 +30,6 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         return;
     }
 
-    // std include
-    if (line_like("USING PACKAGE $name", tokens, state))
-    {
-        if (state.section_state != 0)
-            badcode("you can only use the USING PACKAGE statement before the DATA and PROCEDURE sections", state.where);
-        else
-        {
-#if defined(_WIN32)
-            // TODO!
-            error("LPM packages are not yet supported on Windows.");
-#else
-            system(((string) "mkdir -p " + LPMLOCATION).c_str());
-#endif
-            string libFilename = tokens[2];
-            std::for_each(libFilename.begin(), libFilename.end(), [](char &c) {
-                c = ::tolower(c);
-            });
-            string file_to_compile = LPMLOCATION + libFilename + "/" + libFilename + ".ldpl";
-            code_location old_location = state.where;
-            load_and_compile(file_to_compile, state);
-            state.section_state = 0;
-            state.where = old_location;
-        }
-        return;
-    }
-
     // extension (INCLUDE but for c++ extensions)
     if (line_like("EXTENSION $string", tokens, state))
     {
