@@ -8,12 +8,9 @@
 #include <unordered_map>
 #include <stdlib.h>
 #include <chrono>
-#include <thread>
 #include <time.h>
 #include <vector>
-#include <pthread.h>
 #include <algorithm>
-#include <thread>
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define CRLF "\n"

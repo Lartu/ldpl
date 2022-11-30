@@ -1023,22 +1023,6 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[3]) + " = ldpl_time;", state.where);
         return;
     }
-    if (line_like("LOCK MUTEX $str-expr", tokens, state))
-    {
-        if (!in_procedure_section(state))
-            badcode("LOCK MUTEX statement outside PROCEDURE section", state.where);
-        // C++ Code
-        state.add_code("ldpl_lock_mutex(" + get_c_expression(state, tokens[2]) + ");", state.where);
-        return;
-    }
-    if (line_like("UNLOCK MUTEX $str-expr", tokens, state))
-    {
-        if (!in_procedure_section(state))
-            badcode("UNLOCK MUTEX statement outside PROCEDURE section", state.where);
-        // C++ Code
-        state.add_code("ldpl_unlock_mutex(" + get_c_expression(state, tokens[2]) + ");", state.where);
-        return;
-    }
     // Custom Statements
     if (line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens, state))
     {
