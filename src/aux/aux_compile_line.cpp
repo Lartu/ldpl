@@ -133,8 +133,6 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             badcode("PARAMETERS section declaration within LOCAL DATA section", state.where);
         if (state.section_state == 2)
             badcode("PARAMETERS section declaration within PROCEDURE section", state.where);
-        if (state.declaring_parallel)
-            badcode("PARALLEL SUB-PROCEDURES cannot receive parameters", state.where);
         state.section_state = 4;
         return;
     }
@@ -284,7 +282,6 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.section_state = 3;
         state.open_subprocedure(tokens[1]);
         state.subprocedures.emplace(tokens[1], vector<string>());
-        state.parallels.emplace(tokens[1], false);
         return;
     }
     if (line_like("EXTERNAL SUB-PROCEDURE $external", tokens, state) || line_like("EXTERNAL SUB $external", tokens, state))
@@ -303,28 +300,6 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code("void " + fix_external_identifier(tokens[2], false) + "(){", state.where);
         return;
     }
-    // PARALLEL Declaration
-    if (line_like("PARALLEL SUB-PROCEDURE $name", tokens, state) || line_like("PARALLEL SUB $name", tokens, state))
-    {
-        if (!in_procedure_section(state))
-            badcode("SUB-PROCEDURE declaration outside PROCEDURE section", state.where);
-        if (is_subprocedure(tokens[2], state))
-            badcode("Duplicate declaration for SUB-PROCEDURE \"" + tokens[2] + "\"", state.where);
-        if (state.closing_subprocedure())
-            badcode("SUB-PROCEDURE declaration inside SUB-PROCEDURE", state.where);
-        else if (state.closing_if())
-            badcode("SUB-PROCEDURE declaration inside IF", state.where);
-        else if (state.closing_loop())
-            badcode("SUB-PROCEDURE declaration inside WHILE or FOR", state.where);
-        state.section_state = 3;
-        state.open_parallel(tokens[2]);
-        state.subprocedures.emplace(tokens[2], vector<string>());
-        string id_var_name = "PARALLEL_ID";
-        state.subprocedures[tokens[2]].emplace_back(id_var_name);
-        state.variables[state.current_subprocedure][id_var_name] = {1};
-        state.parallels.emplace(tokens[2], true);
-        return;
-    }
     if (line_like("END SUB-PROCEDURE", tokens, state) || line_like("END SUB", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -332,10 +307,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!state.closing_subprocedure())
             badcode("END SUB-PROCEDURE without SUB-PROCEDURE", state.where);
         // C++ Code
-        if (state.declaring_parallel)
-            state.add_code("return NULL;}", state.where);
-        else
-            state.add_code("return;}", state.where);
+        state.add_code("return;}", state.where);
         // Cierro la subrutina
         state.close_subprocedure();
         return;
@@ -534,42 +506,10 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             {
                 if (!correct_types)
                     badcode("CALL parameter types don't match SUB-PROCEDURE declaration", state.where);
-                if (is_parallel(subprocedure, state))
-                    badcode("A PARALLEL SUB-PROCEDURE cannot be invoked using CALL", state.where);
             }
             add_call_code(subprocedure, parameters, state);
             return;
         }
-    }
-    if (line_like("IN $num-var CALL PARALLEL $name", tokens, state))
-    {
-        if (!in_procedure_section(state))
-            badcode("CALL PARALLEL outside PROCEDURE section", state.where);
-        string subprocedure = tokens[4];
-        // By precondition, parameters.size is always 0
-        vector<string> parameters;
-        vector<vector<unsigned int>> types;
-        if (!is_subprocedure(subprocedure, state))
-        {
-            state.add_expected_subprocedure(subprocedure, fix_identifier(subprocedure, false), types);
-        }
-        else
-        {
-            if (!is_parallel(subprocedure, state))
-                badcode("CALL PARALLEL cannot invoke non-PARALLEL SUB-PROCEDUREs", state.where);
-        }
-        add_call_parallel_code(subprocedure, tokens[1], parameters, state);
-        return;
-    }
-    if (line_like("STOP PARALLEL $num-var", tokens, state))
-    {
-        add_stop_parallel_code(tokens[2], state);
-        return;
-    }
-    if (line_like("WAIT FOR PARALLEL $num-var", tokens, state))
-    {
-        add_wait_parallel_code(tokens[3], state);
-        return;
     }
     if (line_like("RETURN", tokens, state))
     {
@@ -578,10 +518,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (state.current_subprocedure == "")
             badcode("RETURN found outside subprocedure", state.where);
         // C++ Code
-        if (state.declaring_parallel)
-            state.add_code("return NULL;", state.where);
-        else
-            state.add_code("return;", state.where);
+        state.add_code("return;", state.where);
         return;
     }
     if (line_like("EXIT", tokens, state))

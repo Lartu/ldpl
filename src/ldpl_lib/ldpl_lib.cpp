@@ -1068,33 +1068,3 @@ ldpl_list<chText> utf8_split_list(chText haystack, chText needle)
     }
     return result;
 }
-
-long long int ldpl_pthread_count = 0;
-unordered_map<ldpl_number, pthread_t> ldpl_thread_numbers;
-pthread_t ldpl_thread_num;
-time_t ldpl_time = time(NULL);
-unordered_map<string, pthread_mutex_t> ldpl_mutex_map;
-
-void ldpl_lock_mutex(chText mutexNameCH)
-{
-    string mutexName = mutexNameCH.str_rep();
-    if (ldpl_mutex_map.find(mutexName) == ldpl_mutex_map.end())
-    {
-        if(pthread_mutex_init(&ldpl_mutex_map[mutexName], NULL) != 0)
-        {
-            cerr << "Runtime Error: Mutex " << mutexName << " initialization failed." << endl;
-            exit(1);
-        }
-    }
-    pthread_mutex_lock(&ldpl_mutex_map[mutexName]);
-}
-
-void ldpl_unlock_mutex(chText mutexNameCH)
-{
-    string mutexName = mutexNameCH.str_rep();
-    if (ldpl_mutex_map.find(mutexName) == ldpl_mutex_map.end())
-    {
-        return;
-    }
-    pthread_mutex_unlock(&ldpl_mutex_map[mutexName]);
-}

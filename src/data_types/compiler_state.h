@@ -7,13 +7,11 @@ struct compiler_state{
     vector<string> variable_code;
     vector<string> output_code;
     vector<string> subroutine_code; //code outside main()
-    bool declaring_parallel = false;
     //variables
     map<string, map<string, vector<unsigned int>>> variables; //map<subprocedure (or "" for main), map<variable name, vector<types>>> (variables are stored here)
     map<string, bool> externals; //variables defined in c++ extensions
     //1 number, 2 text, 3 list, 4 map --> <2, 3, 4, 4> means, for example, map of map of list of text
     map<string, vector<string>> subprocedures; // subprocedure -> list of parameter identifiers
-    map<string, bool> parallels; // subprocedure -> is parallel
     void add_var_code(string code){
         this->variable_code.push_back(code);
     }
@@ -36,12 +34,7 @@ struct compiler_state{
         current_subprocedure = subprocedure;
         block_stack.push(0);
     }
-    void open_parallel(string & subprocedure){
-        declaring_parallel = true;
-        open_subprocedure(subprocedure);
-    }
     void close_subprocedure(){
-        declaring_parallel = false;
         current_subprocedure = "";
         block_stack.pop();
     }
