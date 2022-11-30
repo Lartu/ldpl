@@ -1,8 +1,0 @@
-# Loop Counter Example
-# Counts from 1 to 1.000.000
-data:
-  n is number
-procedure:
-  for n from 0 to 1000000 step 1 do
-    display n lf
-  repeat
