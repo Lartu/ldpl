@@ -59,9 +59,6 @@ FLOOR <NUMBER-VAR>
 
 ## `CEIL`
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The `CEIL` statement rounds up the value of NUMBER-VAR to the nearest higher integer.
 
 **Syntax:**
@@ -71,9 +68,6 @@ CEIL <NUMBER-VAR>
 ```
 
 ## `FLOOR _ IN _`
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The `FLOOR _ IN _` statement rounds down the value of NUMBER-VAR to the nearest lower integer
 and stores the result in a NUMBER variable.
@@ -86,9 +80,6 @@ FLOOR <NUMBER-VAR> IN <NUMBER-VAR>
 
 ## `CEIL _ IN _`
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The `CEIL _ IN _` statement rounds up the value of NUMBER-VAR to the nearest higher integer
 and stores the result in a NUMBER variable.
 
@@ -100,9 +91,6 @@ CEIL <NUMBER-VAR> IN <NUMBER-VAR>
 
 ## `ADD _ AND _ IN _`
 
-!!! info
-    This feature is currently only available in LDPL >= 4.5 *Groovy Gualicho* and LDPL <= 3.0.5 *Creative Carnotaurus*.
-
 The `ADD` statement adds two NUMBER values and stores the result in a NUMBER variable.
 
 **Syntax:**
@@ -112,9 +100,6 @@ The `ADD` statement adds two NUMBER values and stores the result in a NUMBER var
 ```
 
 ## `SUBTRACT _ FROM _ IN _`
-
-!!! info
-    This feature is currently only available in LDPL >= 4.5 *Groovy Gualicho* and LDPL <= 3.0.5 *Creative Carnotaurus*.
 
 The `SUBTRACT` statement subtracts two NUMBER values and stores the result in a NUMBER variable.
 
@@ -126,9 +111,6 @@ The `SUBTRACT` statement subtracts two NUMBER values and stores the result in a 
 
 ## `MULTIPLY _ BY _ IN _`
 
-!!! info
-    This feature is currently only available in LDPL >= 4.5 *Groovy Gualicho* and LDPL <= 3.0.5 *Creative Carnotaurus*.
-
 The `MULTIPLY` statement multiplies two NUMBER values and stores the result in a NUMBER variable.
 
 **Syntax:**
@@ -139,9 +121,6 @@ The `MULTIPLY` statement multiplies two NUMBER values and stores the result in a
 
 
 ## `DIVIDE _ BY _ IN _`
-
-!!! info
-    This feature is currently only available in LDPL >= 4.5 *Groovy Gualicho* and LDPL <= 3.0.5 *Creative Carnotaurus*.
 
 The `DIVIDE` statement divides two NUMBER values and stores the result in a NUMBER variable.
 
@@ -174,9 +153,6 @@ GET RANDOM IN <NUMBER-VAR>
 
 ## `RAISE _ TO _ IN _`
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The `RAISE <a> TO <b> IN <c>` statement calculates `a^b` and stores the result in `c`.
 
 **Syntax:**
@@ -186,9 +162,6 @@ RAISE <NUMBER-VAR or NUMBER> TO <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 ```
 
 ## `LOG _ IN _`
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The `LOG _ IN _` statement calculates the natural logarithm of a NUMBER and stores the result in a NUMBER variable.
 
@@ -200,9 +173,6 @@ LOG <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 
 ## `SIN _ IN _`
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The `SIN _ IN _` statement calculates the sine of a NUMBER and stores the result in a NUMBER variable.
 
 **Syntax:**
@@ -213,9 +183,6 @@ SIN <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 
 ## `COS _ IN _`
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The `COS _ IN _` statement calculates the cosine of a NUMBER and stores the result in a NUMBER variable.
 
 **Syntax:**
@@ -225,9 +192,6 @@ COS <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 ```
 
 ## `TAN _ IN _`
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The `TAN _ IN _` statement calculates the tangent of a NUMBER and stores the result in a NUMBER variable.
 

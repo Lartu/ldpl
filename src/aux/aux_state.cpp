@@ -142,17 +142,6 @@ bool is_subprocedure(string &token, compiler_state &state)
     return false;
 }
 
-bool is_parallel(string &token, compiler_state &state)
-{
-    // -- Returns if an identifier maps to a valid, existing parallel sub-procedure --
-    // Precondition: the token passed is the name of an existing sub-procedure
-    // so that is_subprocedure(token, state) == true
-    for (auto &subprocedure : state.parallels)
-        if (subprocedure.first == token)
-            return subprocedure.second;
-    return false;
-}
-
 bool in_procedure_section(compiler_state &state)
 {
     // -- Returns if the compiler is currently compiling a procedure section or not --
