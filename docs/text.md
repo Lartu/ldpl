@@ -265,3 +265,44 @@ PROCEDURE:
 	# Will display "hello there!"
 ```
 
+## `CONVERT _ TO UPPERCASE IN _`
+
+The `CONVERT - TO UPPERCASE IN` statement converts all the characters in a string to uppercase and stores the resulting string in a TEXT variable.
+
+**Syntax:**
+
+```coffeescript
+CONVERT <TEXT or TEXT-VAR> TO UPPERCASE IN <TEXT-VAR>
+```
+
+**Example:**
+
+```coffeescript
+DATA:
+	greeting IS TEXT
+PROCEDURE:
+	CONVERT "hello there!" TO UPPERCASE IN greeting
+	DISPLAY greeting CRLF
+	# Will display "HELLO THERE!"
+```
+
+## `CONVERT _ TO LOWERCASE IN _`
+
+The `CONVERT - TO LOWERCASE IN` statement converts all the characters in a string to lowercase and stores the resulting string in a TEXT variable.
+
+**Syntax:**
+
+```coffeescript
+CONVERT <TEXT or TEXT-VAR> TO LOWERCASE IN <TEXT-VAR>
+```
+
+**Example:**
+
+```coffeescript
+DATA:
+	greeting IS TEXT
+PROCEDURE:
+	CONVERT "HELLO THERE!" TO LOWERCASE IN greeting
+	DISPLAY greeting CRLF
+	# Will display "hello there!"
+```

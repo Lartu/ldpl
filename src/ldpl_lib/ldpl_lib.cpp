@@ -977,6 +977,22 @@ ldpl_number utf8Count(chText haystack, chText needle)
     return count;
 }
 
+//Converts string to uppercase
+chText toUpperCopy(chText str)
+{
+    string out = str.str_rep();
+    std::transform(out.begin(), out.end(), out.begin(), ::toupper);
+    return out;
+}
+
+//Converts string to lowercase
+chText toLowerCopy(chText str)
+{
+    string out = str.str_rep();
+    std::transform(out.begin(), out.end(), out.begin(), ::tolower);
+    return out;
+}
+
 //Removes all trailing and ending whitespace from a string
 chText trimCopy(chText _line)
 {
