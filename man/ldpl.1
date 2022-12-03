@@ -190,6 +190,14 @@ variables 'foo' and 'FOO' would represent two different variables, but in
 LDPL they are the same one. This same thing happens with statements. For
 LDPL it's the same if you write 'display' or 'dIsPlAy' (but please don't do so).
 
+~ Warning ~
+    LDPL is case-insensitive only for latin A-z characters. Accented characters and
+    non-ASCII letters will be matched in a case-insensitive manner. Depending
+    on the LDPL implementation, 'ááá' and 'ÁÁÁ' may not represent the same
+    identifier. It is good practice to write your code in a single case and
+    always call your variables and functions by the exact name used when
+    declaring them.
+
 ## Comments
 Comments in LDPL are denoted with a hash symbol ('#') and can be placed both
 on their own line or at the end of a line that already contains a statement.
@@ -540,7 +548,7 @@ You could use a 'number list' with a defined sub-index \(for example, in the
 example above, 'myList:0'\) where it says number-var, just like in
 the 'store - in' examples in the code extracts above.
 
-In the list statements section you'll find a collection of statements that
+In the list statements section, you'll find a collection of statements that
 can be used to work with lists.
 
 ### The Map Data Type
@@ -634,7 +642,7 @@ just like in the 'store - in' examples in the code extracts above
 \(for example 'myMap:"hello"'\).
 
 As you'll see in the Default Variable Values section, you can access
-undeclared keys of a map just like if they were declared.
+undeclared keys of a map, just like if they were declared.
 See the following example:
 
     data:
@@ -658,7 +666,7 @@ exists in a map without initializing it if it wasn't there before. Statements
 like store key count of and store keys of are provided as means to
 overcome this situation.
 
-In the map statements section you'll find a collection of statements that
+In the map statements section, you'll find a collection of statements that
 can be used to work with maps.
 
 ~ Warning ~
@@ -666,7 +674,7 @@ can be used to work with maps.
     Starting from LDPL 3.1.0 Diligent Dreadnoughtus, they have been renamed
     to reflect the real data structure they represent. While it might still be
     possible to call them vectors in code, and legacy code that declares maps
-    as vectors is and will continue be supported, this nomenclature is
+    as vectors is and will continue to be supported, this nomenclature is
     deprecated and shouldn't be used anymore.
 
 ## Multicontainers
@@ -681,7 +689,7 @@ scalar or container type names." This means that you can declare variables like:
 
 These variables are called multicontainers. Multicontainers hold other
 containers, which can hold more containers or scalar values to an arbitrary
-depth.For example, a 'map of lists of text' is a map that holds lists
+depth. For example, a 'map of lists of text' is a map that holds lists
 of text values. You may access a value stored in a 'map of lists of text'
 like so:
 
@@ -721,7 +729,7 @@ instead of 'map'. A 'list of list of number' is the same as a 'list of lists of 
 
 ## Default Type Values
 
-In LDPL each variable is initialized with a value by default. This means
+In LDPL, each variable is initialized with a value by default. This means
 that when you declare a variable, it will, by default, hold this value
 until it's changed.
 
@@ -769,7 +777,7 @@ The 'errorcode' and 'errortext' variables come declared by default.
 Some statements may modify their values to express their results.
 
 The 'errorcode' variable is a number variable. It will hold the value 0
-if the statement ran successfully and any other number if it did not.
+if the statement ran successfully, and any other number if it did not.
 
 The 'errortext' variable is a text variable that will be empty if the
 statement ran successfully. If it did not, it will store a human readable
@@ -996,59 +1004,6 @@ solved 'a + b' in 'c', we stored the result of 'a + b' in 'result'.
 Passing variables by reference lets you return results from your sub-procedure,
 as shown in the example above.
 
-## Parallel Sub-procedures
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
-Starting from release 4.5 *Groovy Gualicho*, LDPL supports Parallel Sub-procedures.
-Parallel sub-procedures are procedures that you can -as the name suggests- run in
-parallel to your main 'procedure:' section code. Technically speaking, parallel
-sub-procedures are sub-procedures that run on a different thread to the main one of your
-program.
-
-    procedure:
-    parallel sub myParallelSub
-        #...
-    end sub
-
-Parallel sub-procedures differ from traditional sub-procedures in that they cannot
-have a 'parameters:' section (and, thus, they cannot receive parameters). Instead,
-the number variable 'parallel_id' is declared by default inside each parallel
-sub-procedure. The 'parallel_id' variable holds a numberic value that identifies
-the running parallel sub-procedure. Every time a parallel sub-procedure is called,
-a different 'parallel_id' is assigned to each call. If you call the same parallel
-sub-procedure three times, you will end up with three instances of the parallel
-sub-procedure running at the same time, each with a different 'parallel_id' value.
-
-Parallel sub-procedures can only be called using the 'in  call parallel ' statement.
-Check the Control Flow Statements section of this document for more information.
-
-If you want your current procedure to stop and wait until a parallel sub-procedure has
-finished executing, use the 'wait for parallel ' statement. Check the Control Flow
-Statements section of this document for more information.
-
-If you want to stop a running parallel sub-procedure, use the 'stop parallel ' statement.
-Check the Control Flow Statements section of this document for more information.
-
-    data:
-        printNumbers_id is number
-
-    procedure:
-        parallel sub printNumbers
-            local data:
-                n is number
-            procedure:
-                while 1 is equal to 1 do
-                    in n solve n + 1
-                    display n crlf
-                repeat
-        end sub
-
-        in printNumbers_id call parallel printNumbers
-        wait 5000 milliseconds
-        stop parallel printNumbers_id
-
 ## Identifier Naming Schemes
 
 Variables and sub-procedure names follow the same naming rules. Their names
@@ -1203,15 +1158,9 @@ Possible values of 'REL-OP-B':
     • 'EQUAL TO'
     • 'NOT EQUAL TO'
 
-!!! info
-    Multicontainer comparison is only available in LDPL 4.5 *Groovy Gualicho*.
-
 For containers, both values must have the same type. You cannot compare, for example,
 a 'list of lists of numbers' with a 'list of lists of lists of numbers' or a 'number map'
 with a 'text map'.
-
-!!! info
-    The membership operator is only available in LDPL 4.5 *Groovy Gualicho*.
 
 The '<CONDITION>' may also be a membership operator:
 
@@ -1687,48 +1636,6 @@ Example:
     CALL EXTERNAL http-get
 .br
 
-## 'IN  CALL PARALLEL '
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
-The 'CALL PARALLEL' statement executes a PARALLEL SUB-PROCEDURE on a parallel thread to the main thread of your program and stores a reference number to it in the passed NUMBER variable. Once the parallel thread is running, execution continues from the line following the 'CALL PARALLEL'.
-
-The value stored in the NUMBER variable will be the same as the value stored in the
-'parallel_id' variable within the parallel sub-procedure.
-
-Syntax:
-
-    IN <NUMBER-VAR> CALL PARALLEL <parallel sub-procedure name>
-.br
-
-Of course, a PARALLEL SUB-PROCEDURE must be declared somewhere in your program for you to call it.
-
-## 'WAIT FOR PARALLEL '
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
-The 'WAIT FOR PARALLEL' statement halts execution of the current thread until the parallel sub-procedure referenced by the passed NUMBER variable has finished running.
-
-Syntax:
-
-    WAIT FOR PARALLEL <NUMBER-VAR>
-.br
-
-## 'STOP PARALLEL '
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
-The 'STOP PARALLEL' statement halts execution of the parallel sub-procedure referenced by the passed NUMBER variable.
-
-Syntax:
-
-    STOP PARALLEL <NUMBER-VAR>
-.br
-
-
 ~ Note ~
     While this section is up-to-date and complete, it has to be reformated
     to be easier on the eyes. All UPPERCASE statement names and code should
@@ -1795,9 +1702,6 @@ Syntax:
 
 ## 'CEIL'
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The 'CEIL' statement rounds up the value of NUMBER-VAR to the nearest higher integer.
 
 Syntax:
@@ -1806,9 +1710,6 @@ Syntax:
 .br
 
 ## 'FLOOR  IN '
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The 'FLOOR  IN ' statement rounds down the value of NUMBER-VAR to the nearest lower integer
 and stores the result in a NUMBER variable.
@@ -1820,15 +1721,49 @@ Syntax:
 
 ## 'CEIL  IN '
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The 'CEIL  IN ' statement rounds up the value of NUMBER-VAR to the nearest higher integer
 and stores the result in a NUMBER variable.
 
 Syntax:
 
     CEIL <NUMBER-VAR> IN <NUMBER-VAR>
+.br
+
+## 'ADD  AND  IN '
+
+The 'ADD' statement adds two NUMBER values and stores the result in a NUMBER variable.
+
+Syntax:
+
+     ADD <NUMBER-VAR or NUMBER> AND <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+## 'SUBTRACT  FROM  IN '
+
+The 'SUBTRACT' statement subtracts two NUMBER values and stores the result in a NUMBER variable.
+
+Syntax:
+
+     SUBTRACT <NUMBER-VAR or NUMBER> FROM <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+## 'MULTIPLY  BY  IN '
+
+The 'MULTIPLY' statement multiplies two NUMBER values and stores the result in a NUMBER variable.
+
+Syntax:
+
+     MULTIPLY <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+.br
+
+
+## 'DIVIDE  BY  IN '
+
+The 'DIVIDE' statement divides two NUMBER values and stores the result in a NUMBER variable.
+
+Syntax:
+
+     DIVIDE <NUMBER-VAR or NUMBER> BY <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 .br
 
 ## 'MODULO  BY  IN '
@@ -1850,22 +1785,16 @@ Syntax:
     GET RANDOM IN <NUMBER-VAR>
 .br
 
-## 'RAISE  TO THE  IN '
+## 'RAISE  TO  IN '
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
-The 'RAISE <a> TO THE <b> IN <c>' statement calculates 'a^b' and stores the result in 'c'.
+The 'RAISE <a> TO <b> IN <c>' statement calculates 'a^b' and stores the result in 'c'.
 
 Syntax:
 
-    RAISE <NUMBER-VAR or NUMBER> TO THE <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
+    RAISE <NUMBER-VAR or NUMBER> TO <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 .br
 
 ## 'LOG  IN '
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The 'LOG  IN ' statement calculates the natural logarithm of a NUMBER and stores the result in a NUMBER variable.
 
@@ -1876,9 +1805,6 @@ Syntax:
 
 ## 'SIN  IN '
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The 'SIN  IN ' statement calculates the sine of a NUMBER and stores the result in a NUMBER variable.
 
 Syntax:
@@ -1888,9 +1814,6 @@ Syntax:
 
 ## 'COS  IN '
 
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
-
 The 'COS  IN ' statement calculates the cosine of a NUMBER and stores the result in a NUMBER variable.
 
 Syntax:
@@ -1899,9 +1822,6 @@ Syntax:
 .br
 
 ## 'TAN  IN '
-
-!!! info
-    This feature is currently only available in LDPL 4.5 *Groovy Gualicho*.
 
 The 'TAN  IN ' statement calculates the tangent of a NUMBER and stores the result in a NUMBER variable.
 
@@ -2660,7 +2580,7 @@ code and be added to your LDPL projects.
 Because LDPL programs compile down to C++, there is no need for a translation layer or bridge: extensions can be included directly into LDPL programs and manipulate, share, and access subprocedures and variables natively. All that's needed is a few naming conventions on the C++ side and the use of the 'external' syntax for variables and subprocedures on the LDPL side. External variable and sub-procedure naming conventions are explained in detail in the Naming Schemes section of this documentation.
 
 Extensions contain sub-procedures and variables that are considered to be external_.
-This means that they are not part of an LDPL source code and thus must be accessed and called in a different way to what you might be used to. External sub-procedures should be called using the the 'call external' statement. While it is explained in greater detail in the Control Flow Statements section of this documentation, the statement works just like the normal 'call' statement with the exception that it doesn't accept parameters.
+This means that they are not part of an LDPL source code and thus must be accessed and called in a different way to what you might be used to. External sub-procedures should be called using the 'call external' statement. While it is explained in greater detail in the Control Flow Statements section of this documentation, the statement works just like the normal 'call' statement with the exception that it doesn't accept parameters.
 
     // In C++
 .br
@@ -2698,7 +2618,7 @@ If LDPL lacks some feature that C++ might offer, for example graphics or network
 you might find yourself in the need of writing a C++ extension (provided an extension
 for what you are looking for has not been already written, of course).
 
-Extensions can create variables and functions that are accessible from LDPL through the 'call external' and 'external' data type keyword, as explained in the previous section. Typically all you need is a single '.cpp' file that you include from your LDPL source using the 'extension' keyword (explained in the Code Structure section of this documentation), but you may also include '.o' files, '.a' files, or any combination of them all.
+Extensions can create variables and functions that are accessible from LDPL through the 'call external' and 'external' data type keyword, as explained in the previous section. Typically, all you need is a single '.cpp' file that you include from your LDPL source using the 'extension' keyword (explained in the Code Structure section of this documentation), but you may also include '.o' files, '.a' files, or any combination of them all.
 
 ### Functions
 
@@ -2884,11 +2804,11 @@ Console:
 
 ## External Sub-procedures
 
-Sometimes when writting C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL sub-procedures and calling them from C++.
+Sometimes when writing C++ Extensions you'll find yourself in the need of declaring a function in C++ but coding it in LDPL. This is the opposite of writing C++ functions and calling them from LDPL, it's writing LDPL sub-procedures and calling them from C++.
 
-These C++ calleable sub-procedures are called external sub-procedures, as they can be called from an external medium.
+These C++ callable sub-procedures are called external sub-procedures, as they can be called from an external medium.
 
-In order to declare an external sub-procedure you must first forward-declare it in your C++ source code. Say, for example, that you want to declare a sub-procedure called 'helloWorld'. In your C++ you should write the following line:
+In order to declare an external sub-procedure, you must first forward-declare it in your C++ source code. Say, for example, that you want to declare a sub-procedure called 'helloWorld'. In your C++ you should write the following line:
 
     void HELLOWORLD();
 .br
