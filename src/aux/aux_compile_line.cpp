@@ -826,6 +826,15 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         return;
     }
 
+    if (line_like("REPLACE $str-expr WITH $str-expr FROM $str-expr IN $str-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("REPLACE statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[7]) + " = str_replace(((chText)" + get_c_expression(state, tokens[5]) + ").str_rep(), ((chText)" + get_c_expression(state, tokens[1]) + ").str_rep(), ((chText)" + get_c_expression(state, tokens[3]) + ").str_rep());", state.where);
+        return;
+    }
+    //deprecated
     if (line_like("REPLACE $str-expr FROM $str-expr WITH $str-expr IN $str-var", tokens, state))
     {
         if (!in_procedure_section(state))

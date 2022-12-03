@@ -28,7 +28,7 @@ will store
 in `myTextVariable`.
 
 
-## `REPLACE _ FROM _ WITH _ IN _`
+## `REPLACE _ WITH _ FROM _ IN _`
 
 
 The `REPLACE` statement finds and replaces every occurrence of some TEXT in a TEXT variable or value some other TEXT. The result is then stored in a TEXT variable.
@@ -36,7 +36,7 @@ The `REPLACE` statement finds and replaces every occurrence of some TEXT in a TE
 **Syntax:**
 
 ```coffeescript
-REPLACE <TEXT-VAR or TEXT> FROM <TEXT-VAR or TEXT> WITH <TEXT-VAR or TEXT> IN <TEXT-VAR>
+REPLACE <TEXT-VAR or TEXT> WITH <TEXT-VAR or TEXT> FROM <TEXT-VAR or TEXT> IN <TEXT-VAR>
 ```
 
 **Example:**
