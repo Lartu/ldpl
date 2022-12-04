@@ -867,6 +867,22 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[3]) + " = trimCopy(" + get_c_expression(state, tokens[1]) + ");", state.where);
         return;
     }
+    if (line_like("CONVERT $str-expr TO UPPERCASE IN $str-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("CONVERT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = toUpperCopy(" + get_c_expression(state, tokens[1]) + ");", state.where);
+        return;
+    }
+    if (line_like("CONVERT $str-expr TO LOWERCASE IN $str-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("CONVERT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[5]) + " = toLowerCopy(" + get_c_expression(state, tokens[1]) + ");", state.where);
+        return;
+    }
     if (line_like("CLEAR $collection", tokens, state))
     {
         if (!in_procedure_section(state))
