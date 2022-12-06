@@ -967,6 +967,15 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[4]) + ".inner_collection.pop_back();", state.where);
         return;
     }
+    if (line_like("REMOVE ELEMENT AT $num-expr FROM $list", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("REMOVE ELEMENT AT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("if(" + get_c_variable(state, tokens[5]) + ".inner_collection.size() > " + get_c_expression(state, tokens[3]) + ")", state.where);
+        state.add_code(get_c_variable(state, tokens[5]) + ".inner_collection.erase(" + get_c_variable(state, tokens[5]) + ".inner_collection.begin() + " + get_c_expression(state, tokens[3]) + ");", state.where);
+        return;
+    }
     if (line_like("SPLIT $str-expr BY $str-expr IN $str-list", tokens, state))
     {
         if (!in_procedure_section(state))
