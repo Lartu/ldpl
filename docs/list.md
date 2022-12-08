@@ -95,3 +95,26 @@ The `DELETE LAST ELEMENT OF` deletes the last element pushed to a LIST. If the L
 ```coffeescript
 DELETE LAST ELEMENT OF <LIST>
 ```
+
+## `REMOVE ELEMENT AT _ FROM _`
+
+The `REMOVE ELEMENT AT - FROM` statement deletes the element at the specified index from a LIST. If the index is out of bounds, this statement does nothing.
+
+**Syntax:**
+
+```coffeescript
+REMOVE ELEMENT AT <NUMBER-VAR or NUMBER> FROM <LIST>
+```
+
+**Example:**
+
+```coffeescript
+DATA:
+	foo IS TEXT LIST
+PROCEDURE:
+	PUSH "Hello there!" TO foo
+	PUSH "How are you?" TO foo
+	REMOVE ELEMENT AT 0 FROM foo
+	DISPLAY foo:0 CRLF
+	# Will display "How are you?"
+```
