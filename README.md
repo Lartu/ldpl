@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
-  <img src="https://img.shields.io/badge/stable_release-v4.4-blue.svg">
+  <img src="https://img.shields.io/badge/stable_release-v5-blue.svg">
   <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master"></a>
   <img src="https://img.shields.io/badge/license-apache_2.0-yellow">
 </p>
@@ -10,6 +10,9 @@
 from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn.
 It mimics plain English, in the likeness of the good parts of older programming languages like COBOL.
 It even supports UTF-8 out of the box.
+
+LDPL 5 is now considered **complete** and in [minimal evolution](https://tratt.net/laurie/blog/2023/how_big_should_a_programming_language_be.html) mode.
+This means that language is supported, but its specification will intentionally be kept as unchanged as possible.
 
 This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler.
 
