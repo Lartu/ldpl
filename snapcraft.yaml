@@ -1,6 +1,6 @@
 name: ldpl-lang 
-base: core18 
-version: '4.4' 
+base: core22 
+version: '5.0-rc1' 
 summary: Compiled programming language for Unix systems, inspired by COBOL 
 description: |
         The LDPL project produces the LDPL Programming Language, a free, powerful, compiled, open-source programming language designed from the ground up to be excessively expressive, readable, fast and easy to learn. LDPL was designed to run on Unix systems, including AMD-64 Linux, macOS, ARMv8 Linux, Android Termux and both Intel and PowerPC OS X (tested from Tiger 10.4 onwards). It even supports UTF-8 out of the box.
@@ -16,7 +16,7 @@ parts:
   ldpl:
     plugin: autotools
     source: https://github.com/Lartu/ldpl.git
-    source-tag: '4.4'
+    source-tag: '5.0-rc1'
     build-packages:
             - g++
             - build-essential
@@ -24,7 +24,6 @@ parts:
             - man-db
             - libc6-dev
     override-build: |
-            cd src/ 
             make 
             make install
     organize:
