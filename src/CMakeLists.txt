@@ -54,3 +54,5 @@ if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin|Android")
 	target_link_libraries(ldpl -static-libgcc -static-libstdc++)
 endif ()
 
+install(TARGETS ldpl)
+
