@@ -1,5 +1,5 @@
 #!/bin/bash
-command=`find . -regex ".*\.\(cpp\|h\)" -exec clang-format -Werror -style=Google -n {} \; 2> /tmp/ldpl-find`
+command=`find src -regex ".*\.\(cpp\|h\)" -exec clang-format -Werror -style=Google -n {} \; 2> /tmp/ldpl-find`
 count=`cat /tmp/ldpl-find | wc -c`
 GREEN='\033[0;32m'
 RED='\033[0;31m'
