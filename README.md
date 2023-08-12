@@ -1,4 +1,4 @@
-![clang-format](https://github.com/cavazquez/ldpl/actions/workflows/clang-format-check.yml/badge.svg)
+![clang-format](https://github.com/Lartu/ldpl/actions/workflows/clang-format-check.yml/badge.svg)
 <p align="center">
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
