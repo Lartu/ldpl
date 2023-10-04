@@ -1,10 +1,10 @@
-![clang-format](https://github.com/Lartu/ldpl/actions/workflows/clang-format-check.yml/badge.svg)
+
 <p align="center">
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
   <img src="https://img.shields.io/badge/stable_release-v5-blue.svg">
-  <a href="https://travis-ci.org/Lartu/ldpl"><img src="https://img.shields.io/travis/Lartu/ldpl/master"></a>  
-  <img src="https://img.shields.io/badge/license-apache_2.0-yellow">  
+  <img src="https://img.shields.io/badge/license-apache_2.0-yellow">
+  <img src="https://github.com/Lartu/ldpl/actions/workflows/clang-format-check.yml/badge.svg">
 </p>
 
 [**LDPL**](https://www.ldpl-lang.org/) is a powerful, general-purpose compiled programming language designed
