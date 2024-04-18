@@ -458,7 +458,7 @@ bool operator<(const chText &c1, const chText &c2) {
     else if (c1.buffer[i] > c2.buffer[i])
       return false;
   }
-  return false;
+    return c1.buffer.size() < c2.buffer.size();
 }
 
 bool operator>(const chText &c1, const chText &c2) {
@@ -470,7 +470,7 @@ bool operator>(const chText &c1, const chText &c2) {
     else if (c1.buffer[i] < c2.buffer[i])
       return false;
   }
-  return false;
+    return c1.buffer.size() > c2.buffer.size();
 }
 
 bool operator!=(const chText &ch1, const chText &ch2) {
