@@ -117,8 +117,8 @@ Contributors are expected to behave by the [LDPL Code of Conduct](https://www.ld
 
 ### Community
 
-If you want to talk to the rest of us, join the LDPL community at [r/LDPL](https://reddit.com/r/LDPL)
-or on Telegram via the [ldpllang](https://t.me/ldpllang) group.
+If you want to talk to the rest of us, join the LDPL community in the [LDPL Programming Language **Telegram** Group](https://t.me/ldpllang)!
+There's also [r/LDPL](https://reddit.com/r/LDPL) on **Reddit**.
 You are also welcome to open new LDPL channels anywhere else.
 
 ## Supporting the LDPL Project
