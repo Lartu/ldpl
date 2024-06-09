@@ -11,7 +11,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     // include
     if (line_like("INCLUDE $string", tokens, state))
     {
-        if (state.section_state != 0)
+        if (false && state.section_state != 0)
             badcode(
                 "you can only use the INCLUDE statement before the DATA and "
                 "PROCEDURE sections",
@@ -38,7 +38,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     // extension (INCLUDE but for c++ extensions)
     if (line_like("EXTENSION $string", tokens, state))
     {
-        if (state.section_state != 0)
+        if (false && state.section_state != 0)
             badcode(
                 "you can only use the EXTENSION statement before the DATA and "
                 "PROCEDURE sections",
@@ -62,7 +62,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     // extension flags (for the C++ compiler)
     if (line_like("FLAG $string", tokens, state))
     {
-        if (state.section_state != 0)
+        if (false && state.section_state != 0)
             badcode(
                 "you can only use the FLAG statement before the DATA and PROCEDURE "
                 "sections",
@@ -77,7 +77,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     // os-specific extension flags
     if (line_like("FLAG $name $string", tokens, state))
     {
-        if (state.section_state != 0)
+        if (false && state.section_state != 0)
             badcode(
                 "you can only use the FLAG statement before the DATA and PROCEDURE "
                 "sections",
@@ -253,16 +253,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         }
         if (valid_type && i >= tokens.size() - 1)
         {
-            if (state.section_state != 1 && state.section_state != 4)
+            /*if (state.section_state != 1 && state.section_state != 4)
                 badcode(
                     "Variable declaration outside DATA, PARAMETERS or LOCAL DATA "
                     "section",
-                    state.where);
+                    state.where);*/
             if (state.variables[state.current_subprocedure].count(tokens[0]) > 0)
                 badcode("Duplicate declaration for variable \"" + tokens[0] + "\"",
                         state.where);
             state.variables[state.current_subprocedure][tokens[0]] = type_number;
-            if (state.section_state == 1)
+            if (state.section_state != 4)
             { // DATA or LOCAL DATA
                 string identifier = fix_identifier(tokens[0], true, state);
                 string type = state.get_c_type(type_number);

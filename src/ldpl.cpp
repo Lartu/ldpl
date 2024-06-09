@@ -280,9 +280,9 @@ int main(int argc, const char *argv[])
             accept_and_compile(state);
         }
         // Fail if no procedure section was found
-        if (state.section_state < 2)
+        /*if (state.section_state < 2)
             error("PROCEDURE section not found" +
-                  (filename == "-c" ? "." : " in file '" + filename + "'."));
+                  (filename == "-c" ? "." : " in file '" + filename + "'."));*/
     }
 
     // Add return code to the generated main function

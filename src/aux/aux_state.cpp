@@ -146,7 +146,8 @@ bool in_procedure_section(compiler_state &state) {
     state.section_state = 2;
     open_subprocedure_code(state);
   }
-  return state.section_state == 2;
+  //return state.section_state == 2;
+  return true;
 }
 
 vector<unsigned int> variable_type(string &token, compiler_state &state) {
