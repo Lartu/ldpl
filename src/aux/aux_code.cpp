@@ -36,7 +36,7 @@ void add_call_code(string &subprocedure, vector<string> &parameters,
       // C++ doen't allow passing literals in  reference parameters, we create
       // vars for them
       string literal_paramater_var = state.new_literal_parameter_var();
-      state.add_code((is_number(parameters[i]) ? "ldpl_number " : "string ") +
+      state.add_code((is_number(parameters[i]) ? "ldpl_number " : "chText ") +
                          literal_paramater_var + " = " + parameters[i] + ";",
                      state.where);
       code += literal_paramater_var;

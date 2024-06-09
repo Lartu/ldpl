@@ -11,5 +11,3 @@ build
 .vscode
 *-bin
 Icon
-test/*
-test

@@ -252,7 +252,7 @@ int main(int argc, const char *argv[])
 
     // Add default variable declaration code to the generated code
     state.variables[""]["ARGV"] = {2, 3}; // List of text
-    state.add_var_code("ldpl_list<string> " + fix_identifier("ARGV", true) + ";");
+    state.add_var_code("ldpl_list<chText> " + fix_identifier("ARGV", true) + ";");
     state.variables[""]["ERRORCODE"] = {1}; // Declared in ldpl_lib.cpp
     state.variables[""]["ERRORTEXT"] = {2}; // Declared in ldpl_lib.cpp
     state.add_code("for(int i = 1; i < argc; ++i)");
@@ -306,8 +306,8 @@ int main(int argc, const char *argv[])
     // If only to print the generated code (IR) was required
     if (show_ir)
     {
-        cout << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\"" << endl; // Add LDPL library
-        // TODO delete this and make the library turn into an included string at compile-time
+        cout << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\""
+             << endl; // Add LDPL library
         for (string line : state.variable_code)
             cout << line << endl;
         for (string line : state.subroutine_code)
@@ -320,7 +320,8 @@ int main(int argc, const char *argv[])
     // Otherwise, save the generated code
     ofstream myfile;
     myfile.open("ldpl-temp.cpp");
-    myfile << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\"" << endl; // Add LDPL library
+    myfile << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\""
+           << endl; // Add LDPL library
     for (string line : state.variable_code)
         myfile << line << endl;
     for (string line : state.subroutine_code)
