@@ -42,7 +42,6 @@ class graphemedText
 private:
     bool graphemeIndexDirty = true;
     vector<size_t> graphemeIndexMap;
-    vector<size_t> graphemeSizeMap;
     string stringRep;
     void createFromString(const string &cstr);
     void createFromChar(const char *cstr);
@@ -122,7 +121,6 @@ void graphemedText::regenerateGraphemeIndex()
         graphemeIndexDirty = false;
 
         graphemeIndexMap.clear();
-        graphemeSizeMap.clear();
         size_t i = 0;
         size_t currentGraphemeSize = 0;
 
@@ -178,7 +176,6 @@ void graphemedText::regenerateGraphemeIndex()
                 if (currentGraphemeSize > 0)
                 {
                     graphemeIndexMap.push_back(i);
-                    graphemeSizeMap.push_back(currentGraphemeSize);
                 }
                 currentGraphemeSize = 0;
             }
@@ -193,8 +190,10 @@ void graphemedText::regenerateGraphemeIndex()
         if (currentGraphemeSize > 0)
         {
             graphemeIndexMap.push_back(i);
-            graphemeSizeMap.push_back(currentGraphemeSize);
         }
+
+        // '\0'
+        graphemeIndexMap.push_back(stringRep.length());
     }
 }
 
@@ -221,7 +220,7 @@ size_t graphemedText::size()
     if (stringRep.length() <= 1)
         return stringRep.length();
     regenerateGraphemeIndex();
-    return graphemeIndexMap.size();
+    return graphemeIndexMap.size() - 1;
 }
 bool graphemedText::empty() const
 {
@@ -291,12 +290,12 @@ graphemedText &graphemedText::operator=(char x)
 string graphemedText::operator[](size_t i)
 {
     regenerateGraphemeIndex();
-    if (i >= graphemeIndexMap.size())
+    if (i >= size())
     {
         cout << "Out-of-bounds index access." << endl;
         exit(1);
     }
-    return stringRep.substr(graphemeIndexMap[i], graphemeSizeMap[i]);
+    return stringRep.substr(graphemeIndexMap[i], graphemeIndexMap[i+1] - graphemeIndexMap[i]);
 }
 // [] for setting
 /*string graphemedText::operator[](int i)
@@ -426,7 +425,7 @@ double graphemedText::getNumber() const
 graphemedText graphemedText::substr(size_t from, size_t count)
 {
     regenerateGraphemeIndex();
-    count = from + count > graphemeIndexMap.size() ? graphemeIndexMap.size() - from : count;
+    count = from + count > size() ? size() - from : count;
     return stringRep.substr(graphemeIndexMap[from], graphemeIndexMap[from + count] - graphemeIndexMap[from]);
 }
 
@@ -445,7 +444,7 @@ graphemedText graphemedText::substr(size_t from)
 {
     regenerateGraphemeIndex();
     string new_text = "";
-    for (size_t i = from; i < graphemeIndexMap.size(); ++i)
+    for (size_t i = from; i < size(); ++i)
     {
         new_text += graphemeIndexMap[i];
     }
