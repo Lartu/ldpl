@@ -1,4 +1,6 @@
 /* --- STD Includes --- */
+#ifndef LDPL
+#define LDPL
 #include <algorithm>
 #include <array>
 #include <fstream>
@@ -10,6 +12,10 @@
 #include <stack>
 #include <string>
 #include <vector>
+
+#ifndef LDPLLIBLOCATION
+#define LDPLLIBLOCATION ""
+#endif
 
 /* --- Namespace Usage --- */
 using namespace std;
@@ -33,7 +39,7 @@ using namespace std;
 /* --- Global Variables --- */
 bool show_ir = false; // Show internal representation?
 string &escape_c_quotes(string &str);
-vector<string> extensions; // C++ extensions to add to the file
+vector<string> extensions;      // C++ extensions to add to the file
 vector<string> extension_flags; // Flags to pass to the C++ Compiler
 
 /* --- Custom Data Types --- */
@@ -98,3 +104,4 @@ void add_call_code(string &subprocedure, vector<string> &parameters, compiler_st
 string current_os();
 bool is_map(string &token, compiler_state &state);
 void badcode(const string &msg, const code_location where);
+#endif

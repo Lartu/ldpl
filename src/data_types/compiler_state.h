@@ -119,7 +119,7 @@ struct compiler_state {
       if (number_type == 1) {
         c_type = "ldpl_number";
       } else if (number_type == 2) {
-        c_type = "chText";
+        c_type = "string";
       } else if (number_type == 3) {
         c_type = "ldpl_list<" + c_type + ">";
       } else if (number_type == 4) {
