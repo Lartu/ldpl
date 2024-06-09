@@ -31,10 +31,10 @@ using namespace std;
 #endif
 
 /* --- Global Variables --- */
-bool show_ir = false;  // Show internal representation?
+bool show_ir = false; // Show internal representation?
 string &escape_c_quotes(string &str);
-vector<string> extensions;       // C++ extensions to add to the file
-vector<string> extension_flags;  // Flags to pass to the C++ Compiler
+vector<string> extensions; // C++ extensions to add to the file
+vector<string> extension_flags; // Flags to pass to the C++ Compiler
 
 /* --- Custom Data Types --- */
 #include "data_types/code_location.h"
@@ -49,13 +49,10 @@ void bullet_msg(const string &msg);
 void warning(const string &msg);
 void error(const string &msg);
 void compile(vector<string> &lines, compiler_state &state);
-void tokenize(string &line, vector<string> &tokens, code_location &where,
-              bool uppercase, char splitChar);
-void split_vector(string &token, string &var_name, vector<string> &indexes,
-                  compiler_state &state);
+void tokenize(string &line, vector<string> &tokens, code_location &where, bool uppercase, char splitChar);
+void split_vector(string &token, string &var_name, vector<string> &indexes, compiler_state &state);
 void compile_line(vector<string> &tokens, compiler_state &state);
-bool line_like(string model_line, vector<string> &tokens,
-               compiler_state &state);  // Important to pass tokens by copy
+bool line_like(string model_line, vector<string> &tokens, compiler_state &state); // Important to pass tokens by copy
 bool is_number(string &number);
 bool is_natural(string number);
 bool is_label(string &token);
@@ -85,8 +82,7 @@ string get_c_char_array(compiler_state &state, string &text);
 string get_c_string(compiler_state &state, string &expression);
 string get_c_number(compiler_state &state, string &expression);
 string get_c_condition(compiler_state &state, vector<string> tokens);
-string get_c_condition(compiler_state &state, vector<string> tokens,
-                       unsigned int &ct);
+string get_c_condition(compiler_state &state, vector<string> tokens, unsigned int &ct);
 string &escape_c_quotes(string &str);
 void load_and_compile(string &filename, compiler_state &state);
 void accept_and_compile(compiler_state &state);
@@ -98,8 +94,7 @@ string fix_identifier(string identifier);
 bool in_procedure_section(compiler_state &state);
 vector<unsigned int> variable_type(string &token, compiler_state &state);
 void open_subprocedure_code(compiler_state &state);
-void add_call_code(string &subprocedure, vector<string> &parameters,
-                   compiler_state &state);
+void add_call_code(string &subprocedure, vector<string> &parameters, compiler_state &state);
 string current_os();
 bool is_map(string &token, compiler_state &state);
 void badcode(const string &msg, const code_location where);
