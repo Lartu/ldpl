@@ -252,7 +252,7 @@ int main(int argc, const char *argv[])
 
     // Add default variable declaration code to the generated code
     state.variables[""]["ARGV"] = {2, 3}; // List of text
-    state.add_var_code("ldpl_list<chText> " + fix_identifier("ARGV", true) + ";");
+    state.add_var_code("ldpl_list<graphemedText> " + fix_identifier("ARGV", true) + ";");
     state.variables[""]["ERRORCODE"] = {1}; // Declared in ldpl_lib.cpp
     state.variables[""]["ERRORTEXT"] = {2}; // Declared in ldpl_lib.cpp
     state.add_code("for(int i = 1; i < argc; ++i)");
