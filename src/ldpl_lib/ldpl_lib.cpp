@@ -41,7 +41,8 @@ class graphemedText
 {
 private:
     bool graphemeIndexDirty = true;
-    vector<string> graphemeIndexMap;
+    vector<size_t> graphemeIndexMap;
+    vector<size_t> graphemeSizeMap;
     string stringRep;
     void createFromString(const string &cstr);
     void createFromChar(const char *cstr);
@@ -89,7 +90,6 @@ public:
     bool isNumber() const;
     double getNumber() const;
     graphemedText substr(size_t from, size_t count);
-    bool substr_comp(size_t from, size_t count, graphemedText &value);
     graphemedText &erase(size_t from, size_t count);
     graphemedText substr(size_t from);
     int compare(size_t from, size_t count, const graphemedText &other);
@@ -122,8 +122,9 @@ void graphemedText::regenerateGraphemeIndex()
         graphemeIndexDirty = false;
 
         graphemeIndexMap.clear();
+        graphemeSizeMap.clear();
         size_t i = 0;
-        string currentGrapheme;
+        size_t currentGraphemeSize = 0;
 
         while (i < stringRep.length())
         {
@@ -147,7 +148,7 @@ void graphemedText::regenerateGraphemeIndex()
                 charLen = 4;
             }
 
-            string character = stringRep.substr(i, charLen);
+            currentGraphemeSize += charLen;
 
             // Check for combining characters (this is a simplified check)
             bool isCombiningCharacter = false;
@@ -174,23 +175,25 @@ void graphemedText::regenerateGraphemeIndex()
 
             if (!isCombiningCharacter)
             {
-                if (!currentGrapheme.empty())
+                if (currentGraphemeSize > 0)
                 {
-                    graphemeIndexMap.push_back(currentGrapheme);
+                    graphemeIndexMap.push_back(i);
+                    graphemeSizeMap.push_back(currentGraphemeSize);
                 }
-                currentGrapheme = character;
+                currentGraphemeSize = 0;
             }
             else
             {
-                currentGrapheme += character;
+                currentGraphemeSize += charLen;
             }
 
             i += charLen;
         }
 
-        if (!currentGrapheme.empty())
+        if (currentGraphemeSize > 0)
         {
-            graphemeIndexMap.push_back(currentGrapheme);
+            graphemeIndexMap.push_back(i);
+            graphemeSizeMap.push_back(currentGraphemeSize);
         }
     }
 }
@@ -215,7 +218,8 @@ void graphemedText::createFromMem(const char *cstr, size_t cstrlen)
 }
 size_t graphemedText::size()
 {
-    if(stringRep.length() <= 1) return stringRep.length();
+    if (stringRep.length() <= 1)
+        return stringRep.length();
     regenerateGraphemeIndex();
     return graphemeIndexMap.size();
 }
@@ -292,7 +296,7 @@ string graphemedText::operator[](size_t i)
         cout << "Out-of-bounds index access." << endl;
         exit(1);
     }
-    return graphemeIndexMap[i];
+    return stringRep.substr(graphemeIndexMap[i], graphemeSizeMap[i]);
 }
 // [] for setting
 /*string graphemedText::operator[](int i)
@@ -352,24 +356,18 @@ graphemedText &graphemedText::operator+=(const char *txt)
 
 bool graphemedText::isAlphanumeric()
 {
-    regenerateGraphemeIndex();
-    for (const string &s : graphemeIndexMap)
-    {
-        for (const char &c : s)
-            if (!isalnum(c))
-                return false;
-    }
+    for (const char &c : stringRep)
+        if (!isalnum(c))
+            return false;
     return true;
 }
 
 bool graphemedText::isAlphanumeric(size_t from)
 {
-    regenerateGraphemeIndex();
-    for (size_t i = from; i < size(); ++i)
+    for (size_t i = from; i < stringRep.length(); ++i)
     {
-        for (const char &c : graphemeIndexMap[i])
-            if (!isalnum(c))
-                return false;
+        if (!isalnum(stringRep[i]))
+            return false;
     }
     return true;
 }
@@ -429,26 +427,7 @@ graphemedText graphemedText::substr(size_t from, size_t count)
 {
     regenerateGraphemeIndex();
     count = from + count > graphemeIndexMap.size() ? graphemeIndexMap.size() - from : count;
-    string new_text = "";
-    for (size_t i = from; i < from + count; ++i)
-    {
-        new_text += graphemeIndexMap[i];
-    }
-    return new_text;
-}
-
-bool graphemedText::substr_comp(size_t from, size_t count, graphemedText &value)
-{
-    value.regenerateGraphemeIndex();
-    count = from + count > graphemeIndexMap.size() ? graphemeIndexMap.size() - from : count;
-    for (size_t i = from; i < from + count; ++i)
-    {
-        if (graphemeIndexMap[i] != value.graphemeIndexMap[i - from])
-        {
-            return false;
-        }
-    }
-    return true;
+    return stringRep.substr(graphemeIndexMap[from], graphemeIndexMap[from + count] - graphemeIndexMap[from]);
 }
 
 graphemedText &graphemedText::erase(size_t from, size_t count)
@@ -1055,16 +1034,27 @@ graphemedText trimCopy(graphemedText _line)
 void utf8_split_list(ldpl_list<graphemedText> &result, graphemedText haystack, graphemedText needle)
 {
     result.inner_collection.clear();
-    int lenHaystack = haystack.size();
-    int lenNeedle = needle.size();
+    const int lenHaystack = haystack.size();
+    const int lenNeedle = needle.size();
     if (lenNeedle > 0)
     {
         int i = 0;
         int last_start = 0;
+        bool success = false;
         while (i + lenNeedle <= lenHaystack)
         {
-            if (haystack.substr_comp(i, lenNeedle, needle))
+            success = true;
+            for (size_t x = 0; x < lenNeedle; ++x)
             {
+                if (haystack[i + x] != needle[x])
+                {
+                    success = false;
+                    break;
+                }
+            }
+            if (success)
+            {
+
                 graphemedText token = haystack.substr(last_start, i - last_start);
                 if (token.length() > 0)
                 {
