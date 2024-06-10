@@ -59,6 +59,11 @@ public:
         integerValue = v;
         isInteger = true;
     }
+    LdplNumber(size_t v)
+    {
+        integerValue = v;
+        isInteger = true;
+    }
     LdplNumber(long long v)
     {
         integerValue = v;
@@ -465,7 +470,7 @@ public:
         }
         else if (!isInteger && !other.isInteger)
         {
-            return floatingValue > other.floatingValue;
+            return floatingValue < other.floatingValue;
         }
         else
         {
@@ -487,27 +492,56 @@ public:
 
     bool operator<=(const LdplNumber &other) const
     {
-        return (*this < other || *this == other);
+        return *this < other || *this == other;
     }
 
     bool operator>=(const LdplNumber &other) const
     {
-        return (*this > other || *this == other);
+        return *this > other || *this == other;
+    }
+
+    friend bool operator<(int lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) < rhs;
+    }
+
+    friend bool operator>(int lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) > rhs;
+    }
+
+    friend bool operator<=(int lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) <= rhs;
+    }
+
+    friend bool operator>=(int lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) >= rhs;
+    }
+
+    friend bool operator<(double lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) < rhs;
+    }
+
+    friend bool operator>(double lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) > rhs;
+    }
+
+    friend bool operator<=(double lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) <= rhs;
+    }
+
+    friend bool operator>=(double lhs, const LdplNumber &rhs)
+    {
+        return LdplNumber(lhs) >= rhs;
     }
 
     // Stream insertion operator
-    friend std::ostream &operator<<(std::ostream &os, const LdplNumber &num)
-    {
-        if (num.isInteger)
-        {
-            os << num.integerValue;
-        }
-        else
-        {
-            os << num.floatingValue;
-        }
-        return os;
-    }
+    friend std::ostream &operator<<(std::ostream &os, const LdplNumber &num);
 
     // Stream extraction operator
     friend std::istream &operator>>(std::istream &is, LdplNumber &num)
@@ -589,6 +623,46 @@ public:
     {
         return floatingValue;
     }
+
+    friend LdplNumber operator*(int lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) * rhs;
+    }
+
+    friend LdplNumber operator+(int lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) + rhs;
+    }
+
+    friend LdplNumber operator-(int lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) - rhs;
+    }
+
+    friend LdplNumber operator/(int lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) / rhs;
+    }
+
+    friend LdplNumber operator%(int lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) % rhs;
+    }
+
+    friend LdplNumber operator*(double lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) * rhs;
+    }
+
+    friend LdplNumber operator+(double lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) + rhs;
+    }
+
+    friend LdplNumber operator-(double lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) - rhs;
+    }
+
+    friend LdplNumber operator/(double lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) / rhs;
+    }
+
+    friend LdplNumber operator%(double lhs, const LdplNumber &rhs) {
+        return LdplNumber(lhs) % rhs;
+    }
 };
 
 LdplNumber floor(LdplNumber a)
@@ -636,12 +710,12 @@ public:
     string str_rep() const;
     graphemedText();
     graphemedText(const string &x);
-    graphemedText(const double &f);
+    explicit graphemedText(const double &f);
     graphemedText &operator=(const string &x);
     graphemedText(const char *x);
     graphemedText &operator=(const char *x);
     graphemedText(const char *x, size_t len);
-    graphemedText(char x);
+    explicit graphemedText(char x);
     graphemedText &operator=(char x);
     string operator[](size_t i);
     // string operator[](int i);
@@ -692,7 +766,7 @@ bool operator==(const graphemedText &ch1, const char c2);
 bool operator<(const graphemedText &c1, const graphemedText &c2);
 bool operator>(const graphemedText &c1, const graphemedText &c2);
 bool operator!=(const graphemedText &ch1, const graphemedText &ch2);
-graphemedText to_ldpl_string(double x);
+graphemedText to_ldpl_string(ldpl_number x);
 #endif
 
 void graphemedText::regenerateGraphemeIndex()
@@ -1148,11 +1222,10 @@ ifstream file_loading_stream;
 ofstream file_writing_stream;
 string file_loading_line;
 ldpl_number VAR_ERRORCODE = 0;
-graphemedText VAR_ERRORTEXT = "";
+graphemedText VAR_ERRORTEXT = (string) "";
 ldpl_text joinvar; // Generic temporary use text variable (used by join but can be
 
 // Forward declarations
-graphemedText to_ldpl_string(ldpl_number x);
 graphemedText trimCopy(graphemedText _line);
 
 #ifndef LDPLMAP
@@ -1163,6 +1236,7 @@ struct ldpl_map
     unordered_map<string, T> inner_collection;
     T &operator[](graphemedText i);
     T &operator[](ldpl_number i);
+    T &operator[](int i);
     bool operator==(const ldpl_map<T> &map2) const;
 };
 #endif
@@ -1177,6 +1251,12 @@ template <typename T>
 T &ldpl_map<T>::operator[](graphemedText i)
 {
     return inner_collection[i.str_rep()];
+}
+
+template <typename T>
+T &ldpl_map<T>::operator[](int i)
+{
+    return inner_collection[to_ldpl_string(i).str_rep()];
 }
 
 template <typename T>
@@ -1212,7 +1292,7 @@ T &ldpl_list<T>::operator[](ldpl_number i)
              << inner_collection.size() << ")" << endl;
         exit(1);
     }
-    return inner_collection[i];
+    return inner_collection[i.to_size_t()];
 }
 
 template <typename T>
@@ -1343,10 +1423,10 @@ ldpl_number get_char_num(graphemedText chr)
 graphemedText getAsciiChar(ldpl_number value)
 {
     if (value < 0)
-        return "?";
+        return (string) "?";
     if (value > 127)
-        return "?";
-    return (char)value;
+        return (string) "?";
+    return graphemedText((char)(value.to_int()));
 }
 
 void join(const graphemedText &a, const graphemedText &b, graphemedText &c)
@@ -1365,13 +1445,19 @@ graphemedText charat(graphemedText &s, ldpl_number pos)
 // https://stackoverflow.com/questions/13686482/
 graphemedText to_ldpl_string(ldpl_number x)
 {
-    ostringstream out;
-    out.precision(10);
-    out << fixed << x;
-    string str = out.str();
-    str.erase(str.find_last_not_of('0') + 1, string::npos);
-    str.erase(str.find_last_not_of('.') + 1, string::npos);
-    return str;
+    if (x.IsInteger())
+    {
+        return x.internalIntegerValue().to_string();
+    }
+    else
+    {
+        ostringstream out;
+        out << fixed << setprecision(5) << x.to_double();
+        string str = out.str();
+        str.erase(str.find_last_not_of('0') + 1, string::npos);
+        str.erase(str.find_last_not_of('.') + 1, string::npos);
+        return str;
+    }
 }
 
 #include <array>
@@ -1676,4 +1762,18 @@ void utf8_split_list(ldpl_list<graphemedText> &result, graphemedText haystack, g
         for (int i = 0; i < lenHaystack; i++)
             result.inner_collection.push_back(charat(haystack, i));
     }
+}
+
+// Stream insertion operator
+std::ostream &operator<<(std::ostream &os, const LdplNumber &num)
+{
+    if (num.isInteger)
+    {
+        os << num.integerValue.to_string();
+    }
+    else
+    {
+        os << to_ldpl_string(num.floatingValue);
+    }
+    return os;
 }
