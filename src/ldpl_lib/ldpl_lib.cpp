@@ -295,7 +295,7 @@ string graphemedText::operator[](size_t i)
         cout << "Out-of-bounds index access." << endl;
         exit(1);
     }
-    return stringRep.substr(graphemeIndexMap[i], graphemeIndexMap[i+1] - graphemeIndexMap[i]);
+    return stringRep.substr(graphemeIndexMap[i], graphemeIndexMap[i + 1] - graphemeIndexMap[i]);
 }
 // [] for setting
 /*string graphemedText::operator[](int i)
@@ -568,6 +568,7 @@ ofstream file_writing_stream;
 string file_loading_line;
 ldpl_number VAR_ERRORCODE = 0;
 graphemedText VAR_ERRORTEXT = "";
+graphemedText joinvar = ""; // Generic temporary use text variable (used by join but can be used by any other statement as well)
 
 // Forward declarations
 graphemedText to_ldpl_string(ldpl_number x);
@@ -756,6 +757,20 @@ ldpl_number get_char_num(graphemedText chr)
     VAR_ERRORCODE = 0;
     ldpl_number ord = (unsigned char)chr.str_rep()[0];
     return ord;
+}
+
+graphemedText getAsciiChar(ldpl_number value)
+{
+    if (value < 0)
+        return "?";
+    if (value > 127)
+        return "?";
+    return (char)value;
+}
+
+void join(const graphemedText &a, const graphemedText &b, graphemedText &c)
+{
+    c = a + b;
 }
 
 graphemedText charat(graphemedText &s, ldpl_number pos)
