@@ -864,7 +864,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         for (unsigned int i = 3; i < tokens.size(); ++i)
         {
             state.add_code(
-                "join(joinvar, " + get_c_string(state, tokens[i]) + ", joinvar);",
+                "joinvar += " + get_c_string(state, tokens[i]) + ";",
                 state.where);
         }
         state.add_code(get_c_variable(state, tokens[1]) + " = joinvar;",

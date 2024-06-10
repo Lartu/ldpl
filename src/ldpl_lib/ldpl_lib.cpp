@@ -16,13 +16,594 @@
 #define NVM_FLOAT_EPSILON 0.00000001
 #define CRLF "\n"
 
-#define ldpl_number double
+#define ldpl_number LdplNumber
 #define ldpl_vector ldpl_map
 #define ldpl_text graphemedText
 
 using namespace std;
 
 // -------------------------------------------------------
+
+#ifndef LDPL_NUMBER
+#define LDPL_NUMBER
+#include <iostream>
+#include <cmath>
+#include "BigInt.hpp"
+
+class LdplNumber
+{
+private:
+    bool isInteger = false;
+    double floatingValue;
+    BigInt integerValue;
+
+public:
+    // Constructors
+    LdplNumber()
+    {
+        integerValue = 0;
+        isInteger = true;
+    }
+    LdplNumber(double v)
+    {
+        floatingValue = v;
+        isInteger = false;
+    }
+    LdplNumber(int v)
+    {
+        integerValue = v;
+        isInteger = true;
+    }
+    LdplNumber(long v)
+    {
+        integerValue = v;
+        isInteger = true;
+    }
+    LdplNumber(long long v)
+    {
+        integerValue = v;
+        isInteger = true;
+    }
+    LdplNumber(BigInt v)
+    {
+        integerValue = v;
+        isInteger = true;
+    }
+
+    // Copy constructor
+    LdplNumber(const LdplNumber &other)
+    {
+        isInteger = other.isInteger;
+        if (other.isInteger)
+        {
+            integerValue = other.integerValue;
+        }
+        else
+        {
+            floatingValue = other.floatingValue;
+        }
+    }
+
+    // Assignment operator
+    LdplNumber &operator=(const LdplNumber &other)
+    {
+
+        if (this != &other)
+        {
+            isInteger = other.isInteger;
+            if (isInteger)
+            {
+                integerValue = other.integerValue;
+            }
+            else
+            {
+                floatingValue = other.floatingValue;
+            }
+        }
+        return *this;
+    }
+
+    // Arithmetic operators
+    LdplNumber operator+(const LdplNumber &other) const
+    {
+        if (isInteger && other.isInteger)
+        {
+            return LdplNumber(integerValue + other.integerValue);
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            return LdplNumber(floatingValue + other.floatingValue);
+        }
+        else
+        {
+            if (isInteger)
+            {
+                return LdplNumber(integerValue.to_long_long() + other.floatingValue);
+            }
+            else
+            {
+                return LdplNumber(floatingValue + other.integerValue.to_long_long());
+            }
+        }
+    }
+
+    LdplNumber operator-(const LdplNumber &other) const
+    {
+        if (isInteger && other.isInteger)
+        {
+            return LdplNumber(integerValue - other.integerValue);
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            return LdplNumber(floatingValue - other.floatingValue);
+        }
+        else
+        {
+            if (isInteger)
+            {
+                return LdplNumber(integerValue.to_long_long() - other.floatingValue);
+            }
+            else
+            {
+                return LdplNumber(floatingValue - other.integerValue.to_long_long());
+            }
+        }
+    }
+
+    LdplNumber operator*(const LdplNumber &other) const
+    {
+        if (isInteger && other.isInteger)
+        {
+            return LdplNumber(integerValue * other.integerValue);
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            return LdplNumber(floatingValue * other.floatingValue);
+        }
+        else
+        {
+            if (isInteger)
+            {
+                return LdplNumber(integerValue.to_long_long() * other.floatingValue);
+            }
+            else
+            {
+                return LdplNumber(floatingValue * other.integerValue.to_long_long());
+            }
+        }
+    }
+
+    LdplNumber operator/(const LdplNumber &other) const
+    {
+        if ((other.isInteger && other.integerValue == 0) || (!other.isInteger && other.floatingValue == 0))
+        {
+            throw std::runtime_error("LDPL Error: Division by zero");
+        }
+
+        if (isInteger && other.isInteger)
+        {
+            return LdplNumber((double)integerValue.to_long_long() / (double)other.integerValue.to_long_long());
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            return LdplNumber(floatingValue / other.floatingValue);
+        }
+        else
+        {
+            if (isInteger)
+            {
+                return LdplNumber(integerValue.to_long_long() / other.floatingValue);
+            }
+            else
+            {
+                return LdplNumber(floatingValue / other.integerValue.to_long_long());
+            }
+        }
+    }
+
+    LdplNumber operator%(const LdplNumber &other) const
+    {
+        if ((other.isInteger && other.integerValue == 0) || (!other.isInteger && other.floatingValue == 0))
+        {
+            throw std::runtime_error("LDPL Error: Modulo by zero");
+        }
+
+        if (isInteger && other.isInteger)
+        {
+            return LdplNumber(integerValue % other.integerValue);
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            return LdplNumber((long long)floor(floatingValue) % (long long)floor(other.floatingValue));
+        }
+        else
+        {
+            if (isInteger)
+            {
+                return LdplNumber(integerValue % (long long)floor(other.floatingValue));
+            }
+            else
+            {
+                return LdplNumber(static_cast<long long>(floatingValue) % other.integerValue.to_long_long());
+            }
+        }
+    }
+
+    // Unary operators
+    LdplNumber operator+() const
+    {
+        return *this;
+    }
+
+    LdplNumber operator-() const
+    {
+        if (isInteger)
+        {
+            return LdplNumber(-integerValue);
+        }
+        else
+        {
+            return LdplNumber(-floatingValue);
+        }
+    }
+
+    // Compound assignment operators
+    LdplNumber &operator+=(const LdplNumber &other)
+    {
+        if (isInteger && other.isInteger)
+        {
+            integerValue += other.integerValue;
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            floatingValue += other.floatingValue;
+        }
+        else
+        {
+            if (isInteger)
+            {
+                isInteger = false;
+                floatingValue = integerValue.to_long_long() + other.floatingValue;
+            }
+            else
+            {
+                floatingValue = floatingValue + other.integerValue.to_long_long();
+            }
+        }
+        return *this;
+    }
+
+    LdplNumber &operator-=(const LdplNumber &other)
+    {
+        if (isInteger && other.isInteger)
+        {
+            integerValue -= other.integerValue;
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            floatingValue -= other.floatingValue;
+        }
+        else
+        {
+            if (isInteger)
+            {
+                isInteger = false;
+                floatingValue = integerValue.to_long_long() - other.floatingValue;
+            }
+            else
+            {
+                floatingValue = floatingValue - other.integerValue.to_long_long();
+            }
+        }
+        return *this;
+    }
+
+    LdplNumber &operator*=(const LdplNumber &other)
+    {
+        if (isInteger && other.isInteger)
+        {
+            integerValue *= other.integerValue;
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            floatingValue *= other.floatingValue;
+        }
+        else
+        {
+            if (isInteger)
+            {
+                isInteger = false;
+                floatingValue = integerValue.to_long_long() * other.floatingValue;
+            }
+            else
+            {
+                floatingValue = floatingValue * other.integerValue.to_long_long();
+            }
+        }
+        return *this;
+    }
+
+    LdplNumber &operator/=(const LdplNumber &other)
+    {
+        if ((other.isInteger && other.integerValue == 0) || (!other.isInteger && other.floatingValue == 0))
+        {
+            throw std::runtime_error("LDPL Error: Division by zero");
+        }
+        if (isInteger && other.isInteger)
+        {
+            isInteger = false;
+            floatingValue = (double)integerValue.to_long_long() / (double)other.integerValue.to_long_long();
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            floatingValue /= other.floatingValue;
+        }
+        else
+        {
+            if (isInteger)
+            {
+                isInteger = false;
+                floatingValue = integerValue.to_long_long() / other.floatingValue;
+            }
+            else
+            {
+                floatingValue = floatingValue / other.integerValue.to_long_long();
+            }
+        }
+        return *this;
+    }
+
+    // Increment and decrement operators
+    LdplNumber &operator++()
+    { // Prefix increment
+        if (isInteger)
+        {
+            ++integerValue;
+        }
+        else
+        {
+            ++floatingValue;
+        }
+        return *this;
+    }
+
+    LdplNumber operator++(int)
+    { // Postfix increment
+        LdplNumber temp = *this;
+        if (isInteger)
+        {
+            ++integerValue;
+        }
+        else
+        {
+            ++floatingValue;
+        }
+        return temp;
+    }
+
+    LdplNumber &operator--()
+    { // Prefix decrement
+        if (isInteger)
+        {
+            --integerValue;
+        }
+        else
+        {
+            --floatingValue;
+        }
+        return *this;
+    }
+
+    LdplNumber operator--(int)
+    { // Postfix decrement
+        LdplNumber temp = *this;
+        if (isInteger)
+        {
+            --integerValue;
+        }
+        else
+        {
+            --floatingValue;
+        }
+        return temp;
+    }
+
+    // Comparison operators
+    bool operator==(const LdplNumber &other) const
+    {
+        if (isInteger && other.isInteger)
+        {
+            return integerValue == other.integerValue;
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            return floatingValue == other.floatingValue;
+        }
+        else
+        {
+            if (isInteger)
+            {
+                // For these to be equal, the other floating value must be equal to its integer value
+                if (other.floatingValue - floor(other.floatingValue) < NVM_FLOAT_EPSILON)
+                {
+                    // and equal to the integer value of this number
+                    BigInt otherIntegerValue = (long long)floor(other.floatingValue);
+                    return integerValue == otherIntegerValue;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                // For these to be equal, this floating value must be equal to its integer value
+                if (floatingValue - floor(floatingValue) < NVM_FLOAT_EPSILON)
+                {
+                    // and equal to the integer value of the other number
+                    BigInt otherIntegerValue = (long long)floor(floatingValue);
+                    return other.integerValue == otherIntegerValue;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    bool operator!=(const LdplNumber &other) const
+    {
+        return !(*this == other);
+    }
+
+    bool operator<(const LdplNumber &other) const
+    {
+        if (isInteger && other.isInteger)
+        {
+            return integerValue < other.integerValue;
+        }
+        else if (!isInteger && !other.isInteger)
+        {
+            return floatingValue > other.floatingValue;
+        }
+        else
+        {
+            if (isInteger)
+            {
+                return integerValue.to_long_long() < other.floatingValue;
+            }
+            else
+            {
+                return floatingValue < other.integerValue.to_long_long();
+            }
+        }
+    }
+
+    bool operator>(const LdplNumber &other) const
+    {
+        return !(*this < other || *this == other);
+    }
+
+    bool operator<=(const LdplNumber &other) const
+    {
+        return (*this < other || *this == other);
+    }
+
+    bool operator>=(const LdplNumber &other) const
+    {
+        return (*this > other || *this == other);
+    }
+
+    // Stream insertion operator
+    friend std::ostream &operator<<(std::ostream &os, const LdplNumber &num)
+    {
+        if (num.isInteger)
+        {
+            os << num.integerValue;
+        }
+        else
+        {
+            os << num.floatingValue;
+        }
+        return os;
+    }
+
+    // Stream extraction operator
+    friend std::istream &operator>>(std::istream &is, LdplNumber &num)
+    {
+        string inputStream;
+        is >> inputStream;
+        if (inputStream.find('.') != std::string::npos)
+        {
+            num.isInteger = true;
+            num.integerValue = inputStream;
+        }
+        else
+        {
+            num.isInteger = false;
+            num.floatingValue = stod(inputStream);
+        }
+        return is;
+    }
+
+    int to_int() const
+    {
+        if (isInteger)
+        {
+            return integerValue.to_long_long();
+        }
+        else
+        {
+            return (int)floatingValue;
+        }
+    }
+
+    int to_long_long() const
+    {
+        if (isInteger)
+        {
+            return integerValue.to_long_long();
+        }
+        else
+        {
+            return (long long)floatingValue;
+        }
+    }
+
+    double to_double() const
+    {
+        if (isInteger)
+        {
+            return integerValue.to_long_long();
+        }
+        else
+        {
+            return floatingValue;
+        }
+    }
+
+    size_t to_size_t() const
+    {
+        if (isInteger)
+        {
+            return integerValue.to_long_long();
+        }
+        else
+        {
+            return (int)floatingValue;
+        }
+    }
+
+    bool IsInteger()
+    {
+        return isInteger;
+    }
+
+    BigInt internalIntegerValue()
+    {
+        return integerValue;
+    }
+
+    double internalFloatingValue()
+    {
+        return floatingValue;
+    }
+};
+
+LdplNumber floor(LdplNumber a)
+{
+    if (a.IsInteger())
+    {
+        return a;
+    }
+    else
+    {
+        return LdplNumber(floor(a.internalFloatingValue()));
+    }
+}
+
+#endif
 
 #ifndef GRAPHEMED_TEXT
 #define GRAPHEMED_TEXT
@@ -295,7 +876,7 @@ string graphemedText::operator[](size_t i)
         cout << "Out-of-bounds index access." << endl;
         exit(1);
     }
-    return stringRep.substr(graphemeIndexMap[i], graphemeIndexMap[i+1] - graphemeIndexMap[i]);
+    return stringRep.substr(graphemeIndexMap[i], graphemeIndexMap[i + 1] - graphemeIndexMap[i]);
 }
 // [] for setting
 /*string graphemedText::operator[](int i)
@@ -568,6 +1149,7 @@ ofstream file_writing_stream;
 string file_loading_line;
 ldpl_number VAR_ERRORCODE = 0;
 graphemedText VAR_ERRORTEXT = "";
+ldpl_text joinvar; // Generic temporary use text variable (used by join but can be
 
 // Forward declarations
 graphemedText to_ldpl_string(ldpl_number x);
@@ -705,7 +1287,7 @@ string input_until_eof()
 
 bool num_equal(ldpl_number a, ldpl_number b)
 {
-    return fabs(a - b) < NVM_FLOAT_EPSILON;
+    return a == b;
 }
 
 int str_cmp(graphemedText a, graphemedText b)
@@ -720,9 +1302,9 @@ int str_cmp(graphemedText a, graphemedText b)
 
 ldpl_number modulo(ldpl_number a, ldpl_number b)
 {
-    long f_a = floor(a);
-    long f_b = floor(b);
-    return (f_a % f_b + f_b) % f_b;
+    LdplNumber f_a = floor(a);
+    LdplNumber f_b = floor(b);
+    return ((f_a % f_b) + f_b) % f_b;
 }
 
 // https://stackoverflow.com/a/27658515
@@ -760,7 +1342,7 @@ ldpl_number get_char_num(graphemedText chr)
 
 graphemedText charat(graphemedText &s, ldpl_number pos)
 {
-    size_t _pos = floor(pos);
+    size_t _pos = pos.to_size_t();
     return s[_pos];
 }
 
