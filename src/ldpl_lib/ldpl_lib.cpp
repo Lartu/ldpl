@@ -1340,6 +1340,20 @@ ldpl_number get_char_num(graphemedText chr)
     return ord;
 }
 
+graphemedText getAsciiChar(ldpl_number value)
+{
+    if (value < 0)
+        return "?";
+    if (value > 127)
+        return "?";
+    return (char)value;
+}
+
+void join(const graphemedText &a, const graphemedText &b, graphemedText &c)
+{
+    c = a + b;
+}
+
 graphemedText charat(graphemedText &s, ldpl_number pos)
 {
     size_t _pos = pos.to_size_t();
