@@ -75,6 +75,7 @@ install: build/ldpl man/ldpl.1
 	install man/ldpl.1 $(DESTDIR)$(PREFIX)/share/man/man1/
 	install -d $(DESTDIR)$(PREFIX)/lib/ldpl
 	install src/ldpl_lib/ldpl_lib.cpp $(LDPLLIBLOCATION)
+	install src/ldpl_lib/BigInt.hpp $(LDPLLIBLOCATION)
 	
 uninstall:
 	rm $(DESTDIR)$(PREFIX)/bin/ldpl

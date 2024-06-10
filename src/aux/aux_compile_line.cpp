@@ -792,7 +792,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             // Optimization for appending
             state.add_code(get_c_variable(state, tokens[5]) + " += " + get_c_string(state, tokens[3]) + ";", state.where);
         }else{
-            state.add_code(get_c_variable(state, tokens[5]) + " = " + get_c_string(state, tokens[1]) + " + " + get_c_string(state, tokens[3]) + ";", state.where);
+            state.add_code("join(" + get_c_string(state, tokens[1]) + ", " + get_c_string(state, tokens[3]) + ", " + get_c_string(state, tokens[5]) + ");", state.where);
         }
         return;
     }
@@ -824,7 +824,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             badcode("GET ASCII CHARACTER statement outside PROCEDURE section",
                     state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = (char)(" +
+        state.add_code(get_c_variable(state, tokens[5]) + " = getAsciiChar(" +
                            get_c_expression(state, tokens[3]) + ");",
                        state.where);
         return;
@@ -864,7 +864,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         for (unsigned int i = 3; i < tokens.size(); ++i)
         {
             state.add_code(
-                "join(joinvar, " + get_c_string(state, tokens[i]) + ", joinvar);",
+                "joinvar += " + get_c_string(state, tokens[i]) + ";",
                 state.where);
         }
         state.add_code(get_c_variable(state, tokens[1]) + " = joinvar;",
