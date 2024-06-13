@@ -452,7 +452,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         string var = get_c_variable(state, tokens[1]);
         string from = get_c_expression(state, tokens[3]);
         string to = get_c_expression(state, tokens[5]);
-        string step = get_c_expression(state, tokens[7]);
+        string step = get_c_expression(state, tokens[8]);
         string init = var + " = " + from;
         string condition =
             step + " >= 0 ? " + var + " <= " + to + " : " + var + " >= " + to;
