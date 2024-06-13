@@ -1,3 +1,5 @@
+#ifndef LDPL_H
+#define LDPL_H
 /* --- STD Includes --- */
 #include <algorithm>
 #include <array>
@@ -98,3 +100,4 @@ void add_call_code(string &subprocedure, vector<string> &parameters, compiler_st
 string current_os();
 bool is_map(string &token, compiler_state &state);
 void badcode(const string &msg, const code_location where);
+#endif

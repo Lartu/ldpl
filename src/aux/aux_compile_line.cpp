@@ -5,6 +5,8 @@
 // | TODO: comment and format this file properly |
 // +---------------------------------------------+
 
+#include "../ldpl.h"
+
 // Compiles line per line
 void compile_line(vector<string> &tokens, compiler_state &state)
 {
@@ -436,6 +438,24 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         string init = var + " = " + from;
         string condition =
             step + " >= 0 ? " + var + " < " + to + " : " + var + " > " + to;
+        string increment = var + " += " + step;
+        // C++ Code
+        state.add_code("for (" + init + "; " + condition + "; " + increment + ") {",
+                       state.where);
+        return;
+    }
+    if (line_like("FOR $num-var FROM $num-expr TO $num-expr INCLUSIVE STEP $num-expr DO", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("FOR outside PROCEDURE section", state.where);
+        state.open_loop();
+        string var = get_c_variable(state, tokens[1]);
+        string from = get_c_expression(state, tokens[3]);
+        string to = get_c_expression(state, tokens[5]);
+        string step = get_c_expression(state, tokens[7]);
+        string init = var + " = " + from;
+        string condition =
+            step + " >= 0 ? " + var + " <= " + to + " : " + var + " >= " + to;
         string increment = var + " += " + step;
         // C++ Code
         state.add_code("for (" + init + "; " + condition + "; " + increment + ") {",
