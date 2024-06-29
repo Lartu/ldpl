@@ -5,6 +5,8 @@
 // | TODO: comment and format this file properly |
 // +---------------------------------------------+
 
+#include "../ldpl.h"
+
 // Given a full variable (with accesses and everything, like foo:0:'hi there' or
 // bar) returns the C++ representation of said variable in order to be accessed.
 string get_c_variable(compiler_state &state, string &variable)
@@ -103,9 +105,12 @@ string get_c_condition(compiler_state &state, vector<string> tokens,
         string second_value;
         string rel_op;
         ct++; // We validate the token after we get the second value
-        if (tokens[ct] == "IS")
+        if (tokens[ct] == "IS" || tokens[ct] == "=" || tokens[ct] == "<>" || tokens[ct] == "<" || tokens[ct] == ">" || tokens[ct] == "<=" || tokens[ct] == ">=")
         {
-            MATCH("IS");
+            if (tokens[ct] == "IS")
+            {
+                MATCH("IS");
+            }
             if (tokens[ct] == "EQUAL")
             {
                 MATCH("EQUAL");
@@ -154,6 +159,36 @@ string get_c_condition(compiler_state &state, vector<string> tokens,
                 {
                     rel_op = "LESS THAN";
                 }
+            }
+            else if (tokens[ct] == "<")
+            {
+                MATCH("<");
+                rel_op = "LESS THAN";
+            }
+            else if (tokens[ct] == "<=")
+            {
+                MATCH("<=");
+                rel_op = "LESS THAN OR EQUAL TO";
+            }
+            else if (tokens[ct] == ">")
+            {
+                MATCH(">");
+                rel_op = "GREATER THAN";
+            }
+            else if (tokens[ct] == ">=")
+            {
+                MATCH(">=");
+                rel_op = "GREATER THAN OR EQUAL TO";
+            }
+            else if (tokens[ct] == "=")
+            {
+                MATCH("=");
+                rel_op = "EQUAL TO";
+            }
+            else if (tokens[ct] == "<>")
+            {
+                MATCH("<>");
+                rel_op = "NOT EQUAL TO";
             }
             else
             {
