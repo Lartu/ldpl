@@ -16,9 +16,6 @@ It even supports UTF-8 out of the box.
 LDPL 5 is now considered **complete** and in [minimal evolution](https://tratt.net/laurie/blog/2023/how_big_should_a_programming_language_be.html) mode.
 This means that language is supported, but its specification will intentionally be kept as unchanged as possible.
 
-Feature requests for **LDPL 6** are welcome in the [LDPL Telegram Group](https://t.me/ldpllang).
-We are still compiling a roadmap document for the next version and your input can help to make LDPL even better than it already is.
-
 This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler.
 
 ### Example Code
