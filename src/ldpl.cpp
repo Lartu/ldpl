@@ -121,7 +121,7 @@ void compile(vector<string> &lines, compiler_state &state)
             }
 
             // No END QUOTE, emit the line as C++
-            state.add_code("\"\" \"" + escape_c_quotes(line) + "\\n\"", state.where);
+            state.add_code("\"\" \"" + escape_c_quotes(escape_c_backslashes(line)) + "\\n\"", state.where);
             continue;
         }
 

@@ -67,6 +67,18 @@ string &escape_c_quotes(string &str) {
   return str;
 }
 
+string &escape_c_backslashes(string &str) {
+  // -- Replaces all " in the passed string for \" --
+  for (unsigned int i = 0; i < str.size(); ++i) {
+    if (str[i] == '\\') {
+      str.erase(i, 1);
+      str.insert(i, "\\\\");
+      ++i;
+    }
+  }
+  return str;
+}
+
 string expandHomeDirectory(string &filename) {
   // -- Expands a home directory (normaly when the character ~ is used) --
 #if defined(_WIN32)

@@ -86,6 +86,7 @@ string get_c_number(compiler_state &state, string &expression);
 string get_c_condition(compiler_state &state, vector<string> tokens);
 string get_c_condition(compiler_state &state, vector<string> tokens, unsigned int &ct);
 string &escape_c_quotes(string &str);
+string &escape_c_backslashes(string &str);
 void load_and_compile(string &filename, compiler_state &state);
 void accept_and_compile(compiler_state &state);
 void replace_whitespace(string &code);
