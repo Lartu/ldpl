@@ -415,6 +415,15 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             return;
         }
     }
+    if (line_like("FOREVER DO", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("WHILE outside PROCEDURE section", state.where);
+        // C++ Code
+        state.open_loop();
+        state.add_code("while (true){", state.where);
+        return;
+    }
     if (line_like("REPEAT", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -807,11 +816,13 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("JOIN statement outside PROCEDURE section", state.where);
         // C++ Code
-        if(tokens[5] == tokens[1])
+        if (tokens[5] == tokens[1])
         {
             // Optimization for appending
             state.add_code(get_c_variable(state, tokens[5]) + " += " + get_c_string(state, tokens[3]) + ";", state.where);
-        }else{
+        }
+        else
+        {
             state.add_code("join(" + get_c_string(state, tokens[1]) + ", " + get_c_string(state, tokens[3]) + ", " + get_c_string(state, tokens[5]) + ");", state.where);
         }
         return;
