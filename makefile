@@ -15,6 +15,7 @@
 # +----------+
 # Usage:
 # make [x86=true] [version='"<version>"']
+# make install
 
 # --- Version Information ---
 VERSION = '"5.1.0"'  #LDPL Version
