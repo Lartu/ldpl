@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <vector>
 #include <thread>
+#include <iomanip>
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define CRLF "\n"
