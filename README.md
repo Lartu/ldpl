@@ -58,6 +58,7 @@ LDPL only requires **C++11** to compile and run.
 ### Alternative Installation Methods
 
 Bear in mind that these other installation methods may install an outdated version of LDPL, as they are maintained by external contributors.
+Make sure that the version you are about to install matches the last LDPL release.
 
 * **🍺 Homebrew**: If you prefer [Homebrew](https://brew.sh), you can install LDPL by running `brew install ldpl`.
 * **🐦 Snap**: If you prefer [Snap](https://snapcraft.io/), you can install LDPL by running `snap install ldpl-lang`.
