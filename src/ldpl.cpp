@@ -347,7 +347,7 @@ int main(int argc, const char *argv[])
 
     // Generate the C++ compilation command
     string compile_line =
-        "c++ ldpl-temp.cpp -std=gnu++11 -w -O3 -o " + final_filename;
+        "c++ ldpl-temp.cpp -std=c++11 -w -O3 -o " + final_filename;
 #ifdef STATIC_BUILDS
     if (!no_static)
         compile_line += " -static-libgcc -static-libstdc++ ";

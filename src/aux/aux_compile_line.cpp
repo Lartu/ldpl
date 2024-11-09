@@ -597,12 +597,12 @@ void compile_line(vector<string> &tokens, compiler_state &state)
 // C++ Code
 #if defined(_WIN32)
         state.add_code(
-            "_sleep((long int)" + get_c_expression(state, tokens[1]) + ");",
+            "_sleep(" + get_c_expression(state, tokens[1]) + ".to_long_long());",
             state.where);
 #else
         state.add_code(
-            "std::this_thread::sleep_for(std::chrono::milliseconds((long int)" +
-                get_c_expression(state, tokens[1]) + "));",
+            "std::this_thread::sleep_for(std::chrono::milliseconds(" +
+                get_c_expression(state, tokens[1]) + ".to_long_long()));",
             state.where);
 #endif
         return;
