@@ -75,6 +75,8 @@ If you prefer [Homebrew](https://brew.sh), you can install LDPL by running `brew
 
 If you prefer [Snap](https://snapcraft.io/), you can install LDPL by running `snap install ldpl-lang`.
 
+Bear in mind that these other installation methods may install an outdated version of LDPL, as they are maintained by external contributors.
+
 
 ## Learning LDPL and Read the Docs
 
