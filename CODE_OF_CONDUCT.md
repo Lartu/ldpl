@@ -4,7 +4,7 @@ Welcome, mighty one! You are about to learn the ways of the dinosaur tamers. Ple
 
 ## Nomenclature
 
-In this document we use the term **Dinosaur Tamer** to refer anyone who contributes
+In this document we use the term **dinosaur tamer** to refer anyone who contributes
 to LDPL, including (but not limited to) contributors to the repository code,
 mantainers, bug reporters, people who code in LDPL, people who submit issues
 and anyone interested and/or involved with the language in any way.
@@ -72,7 +72,7 @@ is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
 Further details of specific enforcement policies may be posted separately.
 
-Project maintainers who do not follow or enforce the dinosaur Tamers Code in good
+Project maintainers who do not follow or enforce the Dinosaur Tamers Code in good
 faith may face temporary or permanent repercussions as determined by other
 members of the project's leadership.
 
