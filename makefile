@@ -45,14 +45,11 @@ endif
 # --- Makefile Data ---
 SOURCE = ldpl.cpp
 OUT = ldpl
-LPMLOCATION = "~/ldpl/lpm/"
-LDPLLIBLOCATION = "$(PREFIX)/lib/ldpl"
+LPMLOCATION = ~/ldpl/lpm/
+LDPLLIBLOCATION = /lib/ldpl
 
 # --- Compilation Flags ---
-FLAGS = -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='$(LPMLOCATION)' -DLDPLLIBLOCATION='$(LDPLLIBLOCATION)'
-#Original Flags
-#FLAGS = -g -c -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='$(LPMLOCATION)'
-
+FLAGS = -Wall -std=gnu++11 -fpermissive -DVERSION=$(VERSION) -DVERSIONNAME=$(VERSIONNAME) -DCOMPILEDATE='"$(shell date +%Y-%m-%d)"' -DCOMPILEHOUR='"$(shell date +%H:%M:%S)"' -DLPMLOCATION='"$(DESTDIR)$(PREFIX)$(LPMLOCATION)"' -DLDPLLIBLOCATION='"$(DESTDIR)$(PREFIX)$(LDPLLIBLOCATION)"'
 
 # --- Build Rules ---
 # Build LDPL
@@ -61,24 +58,17 @@ all:
 	mkdir -p build
 	mv src/$(OUT) build
 
-# Rebuild the LDPL manual page
-man:
-	cd cd man && sh generateMan.sh
-
 # Delete built file
 clean:
 	rm -rf build
 
-install: build/ldpl man/ldpl.1
+install: build/ldpl
 	install -d $(DESTDIR)$(PREFIX)/bin/
 	install -m 775 build/ldpl $(DESTDIR)$(PREFIX)/bin/
-	install -d $(DESTDIR)$(PREFIX)/share/man/man1/
-	install man/ldpl.1 $(DESTDIR)$(PREFIX)/share/man/man1/
 	install -d $(DESTDIR)$(PREFIX)/lib/ldpl
-	install src/ldpl_lib/ldpl_lib.cpp $(LDPLLIBLOCATION)
-	install src/ldpl_lib/BigInt.hpp $(LDPLLIBLOCATION)
+	install src/ldpl_lib/ldpl_lib.cpp $(DESTDIR)$(PREFIX)$(LDPLLIBLOCATION)
+	install src/ldpl_lib/BigInt.hpp $(DESTDIR)$(PREFIX)$(LDPLLIBLOCATION)
 	
 uninstall:
 	rm $(DESTDIR)$(PREFIX)/bin/ldpl
-	rm $(DESTDIR)$(PREFIX)/share/man/man1/ldpl.1
-	rm -rf $(LDPLLIBLOCATION)
+	rm -rf $(DESTDIR)$(PREFIX)$(LDPLLIBLOCATION)
