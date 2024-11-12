@@ -2,7 +2,8 @@
 <p align="center">
   <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
   <br><br>
-  <img src="https://img.shields.io/badge/release-LDPL_5.1.0_'Groovy_Gualicho'-green.svg">
+  <img src="https://img.shields.io/badge/release-5.1.0_'Groovy_Gualicho'-green.svg">
+  <img src="https://img.shields.io/badge/development-5.2.0-yellow.svg">
   <img src="https://img.shields.io/badge/license-Apache_2.0-orange">
   <!--<img src="https://github.com/Lartu/ldpl/actions/workflows/clang-format-check.yml/badge.svg">-->
   <a href="t.me/ldpllang"><img src="https://img.shields.io/badge/-LDPL_on_Telegram-red?color=blue&logo=telegram&logoColor=white"></a>
