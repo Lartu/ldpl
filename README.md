@@ -33,8 +33,10 @@ REPEAT
 ```
 
 This code greets the user and asks them to enter their name, then it greets them in Chinese, ten times. Easy as pie and super legible.
-Check the [official website](https://www.ldpl-lang.org/) for more examples,
-including a BF interpreter and Bellman-Ford's Algorithm!
+
+LDPL supports multiple datatypes and programming patterns. It is a full-fledged programming language.
+Check the [documentation](https://docs.ldpl-lang.org) for more information, and the [official website](https://www.ldpl-lang.org/) 
+to see other examples, including a BF interpreter and Bellman-Ford's Algorithm!
 
 ## LDPL Philosophy
 
