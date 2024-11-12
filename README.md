@@ -20,16 +20,16 @@ This repository contains the source code and [releases](https://github.com/Lartu
 
 ```ruby
 # Hello There Example
-data: 
-  name is text
-  i is number
+DATA: 
+name IS TEXT
+i IS NUMBER
   
-procedure: 
-  display "Hello there, what's your name?"
-  accept name
-  for i from 0 to 10 step 1 do
-    display "你好, " name "!" crlf
-  repeat
+PROCEDURE: 
+DISPLAY "Hello there, what's your name?"
+ACCEPT name
+FOR i FROM 0 TO 10 STEP 1 DO
+    DISPLAY "你好, " name "!" CRLF
+REPEAT
 ```
 
 This code greets the user and asks them to enter their name, then it greets them in Chinese, ten times. Easy as pie and super legible.
