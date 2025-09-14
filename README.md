@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo.png">
+  <img src="https://github.com/Lartu/ldpl/blob/master/images/ldpl-4.0-logo-white-stroke.png">
   <br><br>
   <img src="https://img.shields.io/badge/last_release-5.1.0_'Groovy_Gualicho'-green.svg">
   <img src="https://img.shields.io/badge/license-Apache_2.0-orange">
