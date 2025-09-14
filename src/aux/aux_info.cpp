@@ -4,41 +4,36 @@
 /// @brief Displays the LDPL version information message.
 void displayVersionInfo()
 {
-    cout << endl;
-    cout << " This is \033[32;1mLDPL version " << VERSION << "\033[0m '\033[32;1m"
-         << VERSIONNAME << "\033[0m'." << endl;
-    cout << endl;
-    cout << " Copyright 2018-2025, \033[35;1mLartu\033[0m (www.lartu.net)."
-         << endl;
-    cout << " Built with amazing contributions from \033[35;1mChris West\033[0m, "
+    cout << endl
+         << " This is \033[32;1mLDPL version " << VERSION << "\033[0m '\033[32;1m"
+         << VERSIONNAME << "\033[0m'. Rawrrr!!"
+         << endl
+         << endl
+         << " Copyright 2018-2025, \033[35;1mLartu\033[0m (www.lartu.net)."
+         << endl
+         << " Built with amazing contributions from \033[35;1mChris West\033[0m, "
             "\033[35;1mDamián Garro\033[0m,"
-         << endl;
-    cout << " \033[35;1mIgnacio Losiggio\033[0m and other wonderful contributors."
-         << endl;
-    cout << endl;
-    cout << " The LDPL Home Page can be found at "
+         << endl
+         << " and other wonderful contributors!"
+         << endl
+         << endl
+         << " The LDPL Home Page can be found at "
             "\033[36;1mwww.ldpl-lang.org\033[0m."
+         << endl
+         << " The documentation for LDPL should have come with your LDPL download. "
+         << endl
+         << " If you have access to the internet, the documentation can also be "
+         << endl
+         << " found online at \033[36;1mdocs.ldpl-lang.org\033[0m."
+         << endl
+         << endl
+         << " LDPL may be copied only under the terms of the Apache License"
+         << endl
+         << " Version 2.0, which may be found in the LDPL repository." << endl
+         << endl
+         << " This binary was compiled on \033[31;1m" << COMPILEDATE
+         << "\033[0m at \033[31;1m" << COMPILEHOUR << "\033[0m." << endl
          << endl;
-    cout << " The LDPL source code is available at "
-            "\033[36;1mwww.github.com/lartu/ldpl\033[0m."
-         << endl;
-    cout << endl;
-    cout << " Complete documentation for LDPL should be found on this system"
-         << endl;
-    cout << " using '\033[33;1mman ldpl\033[0m'. If you have access to the "
-            "internet, the"
-         << endl;
-    cout << " documentation can also be found online at "
-            "\033[36;1mdocs.ldpl-lang.org\033[0m."
-         << endl;
-    cout << endl;
-    cout << " LDPL may be copied only under the terms of the Apache License"
-         << endl;
-    cout << " Version 2.0, which may be found in the LDPL repository." << endl;
-    cout << endl;
-    cout << " This binary was compiled on \033[31;1m" << COMPILEDATE
-         << "\033[0m at \033[31;1m" << COMPILEHOUR << "\033[0m." << endl;
-    cout << endl;
 }
 
 /// @brief Displays the LDPL help information message.

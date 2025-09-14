@@ -18,8 +18,8 @@
 # make install
 
 # --- Version Information ---
-VERSION = '"5.2.1"'  #LDPL Version
-VERSIONNAME = '"Groovy Gualicho"' #LDPL Version Name
+VERSION = '"5.2.0"'  #LDPL Version
+VERSIONNAME = '"Happy Harpymimus"' #LDPL Version Name
 
 # --- Options ---
 # Alternative version name (make version="<version>")
