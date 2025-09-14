@@ -1633,13 +1633,13 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                     state.where);
         // C++ Code
         state.add_code("if(" + get_c_variable(state, tokens[5]) +
-                           ".inner_collection.size() > " +
-                           get_c_expression(state, tokens[3]) + ")",
+                           ".inner_collection.size() > ((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_size_t())",
                        state.where);
         state.add_code(
             get_c_variable(state, tokens[5]) + ".inner_collection.erase(" +
-                get_c_variable(state, tokens[5]) + ".inner_collection.begin() + " +
-                get_c_expression(state, tokens[3]) + ");",
+                get_c_variable(state, tokens[5]) + ".inner_collection.begin() + ((LdplNumber)" +
+                get_c_expression(state, tokens[3]) + ").to_size_t());",
             state.where);
         return;
     }

@@ -1418,6 +1418,13 @@ graphemedText charat(graphemedText &s, ldpl_number pos)
     return s[_pos];
 }
 
+graphemedText charat(char* s, ldpl_number pos)
+{
+    graphemedText newString = (string) s;
+    size_t _pos = pos.to_size_t();
+    return newString[_pos];
+}
+
 // Convert ldpl_number to LDPL string, killing trailing 0's
 // https://stackoverflow.com/questions/16605967/ &
 // https://stackoverflow.com/questions/13686482/
