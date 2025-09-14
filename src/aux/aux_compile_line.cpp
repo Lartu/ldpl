@@ -1201,8 +1201,8 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             {
                 state.add_code("cout << " + tokens[i] + " << flush;", state.where);
             }
-            state.add_code("cout << endl;", state.where);
         }
+        state.add_code("cout << endl;", state.where);
         return;
     }
     if (line_like("ACCEPT $var", tokens, state))
@@ -1430,6 +1430,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code(get_c_variable(state, tokens[3]) + " = trimCopy(" +
                            get_c_expression(state, tokens[1]) + ");",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $str-var TRIM $str-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/TRIM statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = trimCopy(" +
+                           get_c_expression(state, tokens[3]) + ");",
                        state.where);
         return;
     }
