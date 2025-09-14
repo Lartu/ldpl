@@ -108,6 +108,7 @@ void compile(vector<string> &lines, compiler_state &state)
                 if (upper == "END QUOTE")
                 {
                     state.open_quote = false;
+                    state.trim_quote_lines = false;
                     // Kill final newline. Programs can add crlf if needed.
                     string &prev = state.current_subprocedure != ""
                                        ? state.subroutine_code.back()
@@ -121,7 +122,15 @@ void compile(vector<string> &lines, compiler_state &state)
             }
 
             // No END QUOTE, emit the line as C++
-            state.add_code("\"\" \"" + escape_c_quotes(escape_c_backslashes(line)) + "\\n\"", state.where);
+            if (!state.trim_quote_lines)
+            {
+                state.add_code("\"\" \"" + escape_c_quotes(escape_c_backslashes(line)) + "\\n\"", state.where);
+            }
+            else
+            {
+                trim(line);
+                state.add_code("\"\" \"" + escape_c_quotes(escape_c_backslashes(line)) + "\\n\"", state.where);
+            }
             continue;
         }
 

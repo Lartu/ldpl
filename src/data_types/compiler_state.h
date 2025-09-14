@@ -32,6 +32,7 @@ struct compiler_state {
     output.push_back(code);
   }
   bool open_quote = false;
+  bool trim_quote_lines = false;
   string current_subprocedure = "";
   int open_loops = 0;
   stack<int>

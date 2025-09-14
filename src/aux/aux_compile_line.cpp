@@ -1003,6 +1003,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $str-var GET CHARACTER AT $num-expr FROM $str-expr", tokens,
+                  state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET CHARACTER statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = charat(" +
+                           get_c_expression(state, tokens[7]) + ", " +
+                           get_c_expression(state, tokens[5]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("GET LENGTH OF $str-expr IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1013,6 +1025,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var GET LENGTH OF $str-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET LENGTH OF outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = ((graphemedText)" +
+                           get_c_expression(state, tokens[5]) + ").size();",
+                       state.where);
+        return;
+    }
     if (line_like("GET BYTE COUNT OF $str-expr IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1020,6 +1042,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code(get_c_variable(state, tokens[6]) + " = ((graphemedText)" +
                            get_c_expression(state, tokens[4]) + ").str_rep().length();",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET BYTE COUNT OF $str-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET BYTE COUNT OF outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = ((graphemedText)" +
+                           get_c_expression(state, tokens[6]) + ").str_rep().length();",
                        state.where);
         return;
     }
@@ -1034,6 +1066,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $str-var GET ASCII CHARACTER $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET ASCII CHARACTER statement outside PROCEDURE section",
+                    state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = getAsciiChar(" +
+                           get_c_expression(state, tokens[5]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("GET CHARACTER CODE OF $str-expr IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1045,6 +1088,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var GET CHARACTER CODE OF $str-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET CHARACTER CODE OF statement outside PROCEDURE section",
+                    state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = get_char_num(" +
+                           get_c_expression(state, tokens[6]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("STORE QUOTE IN $str-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1053,6 +1107,38 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.open_quote = true;
         // C++ Code. More strings will get emitted
         state.add_code(get_c_variable(state, tokens[3]) + " = \"\"", state.where);
+        return;
+    }
+    if (line_like("IN $str-var STORE QUOTE", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/STORE QUOTE statement outside PROCEDURE section",
+                    state.where);
+        state.open_quote = true;
+        // C++ Code. More strings will get emitted
+        state.add_code(get_c_variable(state, tokens[1]) + " = \"\"", state.where);
+        return;
+    }
+    if (line_like("STORE TRIMMED QUOTE IN $str-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("STORE TRIMMED QUOTE IN statement outside PROCEDURE section",
+                    state.where);
+        state.open_quote = true;
+        state.trim_quote_lines = true;
+        // C++ Code. More strings will get emitted
+        state.add_code(get_c_variable(state, tokens[4]) + " = \"\"", state.where);
+        return;
+    }
+    if (line_like("IN $str-var STORE TRIMMED QUOTE", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/STORE TRIMMED QUOTE statement outside PROCEDURE section",
+                    state.where);
+        state.open_quote = true;
+        state.trim_quote_lines = true;
+        // C++ Code. More strings will get emitted
+        state.add_code(get_c_variable(state, tokens[1]) + " = \"\"", state.where);
         return;
     }
     if (line_like("END QUOTE", tokens, state))
