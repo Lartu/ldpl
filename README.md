@@ -19,6 +19,12 @@ This repository contains the source code and [releases](https://github.com/Lartu
 > LDPL 5.2, the current development version, is stable and up to date. The rest of this repository, however, still needs a bit of tidying up.
 > I am actively working on it, and you can expect things to improve over the coming days!
 >
+> **What needs to be done**
+> - Improve and update the documentation; ship it with the project and drop the ReadTheDocs dependency.
+> - Remove MkDocs, Snapcraft, and any other unused build/publish tooling.
+> - Update all README files.
+> - Consolidate the documentation and the website into this repository so everything lives in one place.
+> 
 > _Lartu (September 14th, 2025)_
 
 ---
