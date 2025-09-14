@@ -626,6 +626,55 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             return;
         }
     }
+    if (line_like("CALL PARALLEL SUB-PROCEDURE $anything", tokens, state) ||
+        line_like("CALL PARALLEL $anything", tokens, state))
+    {
+        size_t i = 2;
+        if (tokens[i] == "SUB-PROCEDURE")
+            i++;
+        string subprocedure = tokens[i];
+        // Valid options: No WITH or WITH with at least one paramter
+        if (i == tokens.size() - 1 ||
+            (i < tokens.size() - 2 && tokens[i + 1] == "WITH"))
+        {
+            if (!in_procedure_section(state))
+                badcode("CALL outside PROCEDURE section", state.where);
+            vector<string> parameters(
+                i != tokens.size() - 1 ? tokens.begin() + i + 2 : tokens.end(),
+                tokens.end());
+            vector<vector<unsigned int>> types;
+            for (string &parameter : parameters)
+            {
+                if (is_number(parameter))
+                    types.push_back({1});
+                else if (is_string(parameter))
+                    types.push_back({2});
+                else if (variable_exists(parameter, state))
+                    types.push_back(variable_type(parameter, state));
+                else
+                    badcode("CALL PARALLEL with invalid parameter \"" + parameter + "\"",
+                            state.where);
+            }
+            bool correct_types =
+                state.correct_subprocedure_types(subprocedure, types);
+            if (!is_subprocedure(subprocedure, state))
+            {
+                if (!correct_types)
+                    badcode("CALL PARALLEL parameter types don't match previous CALL",
+                            state.where);
+                state.add_expected_subprocedure(
+                    subprocedure, fix_identifier(subprocedure, false), types);
+            }
+            else
+            {
+                if (!correct_types)
+                    badcode("CALL PARALLEL parameter types don't match SUB-PROCEDURE declaration",
+                            state.where);
+            }
+            add_thread_call_code(subprocedure, parameters, state);
+            return;
+        }
+    }
     if (line_like("RETURN", tokens, state))
     {
         if (!in_procedure_section(state))

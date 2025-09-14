@@ -48,3 +48,29 @@ void add_call_code(string &subprocedure, vector<string> &parameters,
   code += ");";
   state.add_code(code, state.where);
 }
+
+size_t thread_counter = 0;
+
+void add_thread_call_code(string &subprocedure, vector<string> &parameters,
+                   compiler_state &state) {
+  string thread_name = "thread_" + to_string(thread_counter);
+  string code = "std::thread " + thread_name + "(" + fix_identifier(subprocedure, false);
+  ++thread_counter;
+  for (size_t i = 0; i < parameters.size(); ++i) {
+    code += ", ";
+    if (is_number(parameters[i]) || is_string(parameters[i])) {
+      // C++ doen't allow passing literals in  reference parameters, we create
+      // vars for them
+      string literal_paramater_var = state.new_literal_parameter_var();
+      state.add_code((is_number(parameters[i]) ? "ldpl_number " : "graphemedText ") +
+                         literal_paramater_var + " = " + parameters[i] + ";",
+                     state.where);
+      code += literal_paramater_var;
+    } else {
+      code += get_c_variable(state, parameters[i]);
+    }
+  }
+  code += ");\n";
+  code += thread_name + ".detach();";
+  state.add_code(code, state.where);
+}

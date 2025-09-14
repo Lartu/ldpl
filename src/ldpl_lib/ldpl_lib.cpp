@@ -15,6 +15,12 @@
 #include <thread>
 #include <iomanip>
 
+#include <array>
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+#include <string>
+
 #define NVM_FLOAT_EPSILON 0.00000001
 #define CRLF "\n"
 
@@ -1548,12 +1554,6 @@ graphemedText to_ldpl_string(ldpl_number x)
         return str;
     }
 }
-
-#include <array>
-#include <cstdio>
-#include <memory>
-#include <stdexcept>
-#include <string>
 
 graphemedText exec(const char *cmd)
 {
