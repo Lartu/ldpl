@@ -349,6 +349,19 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[3]) + " = " + lhand + ";", state.where);
         return;
     }
+    if (line_like("IN $var STORE $expression", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/STORE statement outside PROCEDURE section", state.where);
+        // C++ Code
+        string lhand;
+        if (is_num_var(tokens[1], state))
+            lhand = get_c_number(state, tokens[3]);
+        else
+            lhand = get_c_string(state, tokens[3]);
+        state.add_code(get_c_variable(state, tokens[1]) + " = " + lhand + ";", state.where);
+        return;
+    }
     if (line_like("IF $condition THEN", tokens, state))
     {
         string condition = get_c_condition(
@@ -389,8 +402,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code("}else{", state.where);
         return;
     }
-    if (line_like("END IF", tokens, state) ||
-        line_like("END-IF", tokens, state))
+    if (line_like("END IF", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("END IF outside PROCEDURE section", state.where);
@@ -599,10 +611,10 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code("exit(0);", state.where);
         return;
     }
-    if (line_like("WAIT $num-expr MILLISECONDS", tokens, state))
+    if (line_like("WAIT $num-expr MILLISECONDS", tokens, state) || line_like("SLEEP $num-expr", tokens, state))
     {
         if (!in_procedure_section(state))
-            badcode("WAIT statement outside PROCEDURE section", state.where);
+            badcode("WAIT / SLEEP statement outside PROCEDURE section", state.where);
 // C++ Code
 #if defined(_WIN32)
         state.add_code(
@@ -645,14 +657,37 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var MODULO $num-expr BY $num-expr", tokens,
+                  state)) // TODO move this into the standard library
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/MODULO statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = modulo(" +
+                           get_c_expression(state, tokens[3]) + ", " +
+                           get_c_expression(state, tokens[5]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("RAISE $num-expr TO $num-expr IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("RAISE statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[5]) + " = pow(" +
-                           get_c_expression(state, tokens[1]) + ", " +
-                           get_c_expression(state, tokens[3]) + ");",
+        state.add_code(get_c_variable(state, tokens[5]) + " = pow(((LdplNumber)" +
+                           get_c_expression(state, tokens[1]) + ").to_double(), ((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_double());",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var RAISE $num-expr TO $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/RAISE statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = pow(((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_double(), ((LdplNumber)" +
+                           get_c_expression(state, tokens[5]) + ").to_double());",
                        state.where);
         return;
     }
@@ -661,8 +696,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("LOG statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = log(" +
-                           get_c_expression(state, tokens[1]) + ");",
+        state.add_code(get_c_variable(state, tokens[3]) + " = log(((LdplNumber)" +
+                           get_c_expression(state, tokens[1]) + ").to_double());",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var LOG $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/LOG statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = log(((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_double());",
                        state.where);
         return;
     }
@@ -671,8 +716,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("SIN statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = sin(" +
-                           get_c_expression(state, tokens[1]) + ");",
+        state.add_code(get_c_variable(state, tokens[3]) + " = sin(((LdplNumber)" +
+                           get_c_expression(state, tokens[1]) + ").to_double());",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var SIN $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/SIN statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = sin(((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_double());",
                        state.where);
         return;
     }
@@ -681,8 +736,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("COS statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = cos(" +
-                           get_c_expression(state, tokens[1]) + ");",
+        state.add_code(get_c_variable(state, tokens[3]) + " = cos(((LdplNumber)" +
+                           get_c_expression(state, tokens[1]) + ").to_double());",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var COS $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/COS statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = cos(((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_double());",
                        state.where);
         return;
     }
@@ -691,8 +756,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("TAN statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[3]) + " = tan(" +
-                           get_c_expression(state, tokens[1]) + ");",
+        state.add_code(get_c_variable(state, tokens[3]) + " = tan(((LdplNumber)" +
+                           get_c_expression(state, tokens[1]) + ").to_double());",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var TAN $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/TAN statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = tan(((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_double());",
                        state.where);
         return;
     }
@@ -704,6 +779,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[5]) + " = " +
                            get_c_expression(state, tokens[1]) + " + " +
                            get_c_expression(state, tokens[3]) + ";",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var ADD $num-expr AND $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/ADD statement outside PROCEDURE section", state.where);
+        // C Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = " +
+                           get_c_expression(state, tokens[3]) + " + " +
+                           get_c_expression(state, tokens[5]) + ";",
                        state.where);
         return;
     }
@@ -719,6 +805,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var SUBTRACT $num-expr FROM $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/SUBTRACT statement outside PROCEDURE section", state.where);
+        // C Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = " +
+                           get_c_expression(state, tokens[5]) + " - " +
+                           get_c_expression(state, tokens[3]) + ";",
+                       state.where);
+        return;
+    }
     if (line_like("MULTIPLY $num-expr BY $num-expr IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -727,6 +824,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[5]) + " = " +
                            get_c_expression(state, tokens[1]) + " * " +
                            get_c_expression(state, tokens[3]) + ";",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var MULTIPLY $num-expr BY $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/MULTIPLY statement outside PROCEDURE section", state.where);
+        // C Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = " +
+                           get_c_expression(state, tokens[3]) + " * " +
+                           get_c_expression(state, tokens[5]) + ";",
                        state.where);
         return;
     }
@@ -741,12 +849,32 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var DIVIDE $num-expr BY $num-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/DIVIDE statement outside PROCEDURE section", state.where);
+        // C Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = " +
+                           get_c_expression(state, tokens[3]) + " / " +
+                           get_c_expression(state, tokens[5]) + ";",
+                       state.where);
+        return;
+    }
     if (line_like("GET RANDOM IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("RANDOM outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[3]) + " = get_random();",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET RANDOM", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/RANDOM outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = get_random();",
                        state.where);
         return;
     }
@@ -780,6 +908,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var FLOOR $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/FLOOR statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = floor(" +
+                           get_c_variable(state, tokens[3]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("CEIL $num-var IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -787,6 +925,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code(get_c_variable(state, tokens[3]) + " = ceil(" +
                            get_c_variable(state, tokens[1]) + ");",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var CEIL $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/CEIL statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = ceil(" +
+                           get_c_variable(state, tokens[3]) + ");",
                        state.where);
         return;
     }
