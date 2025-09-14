@@ -96,7 +96,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     }
 
     // Sections
-    if (line_like("DATA:", tokens, state))
+    if (line_like("DATA:", tokens, state) || line_like("-- DATA --", tokens, state))
     {
         if (state.section_state == 1)
             badcode("Duplicate DATA section declaration", state.where);
@@ -105,7 +105,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.section_state = 1;
         return;
     }
-    if (line_like("PROCEDURE:", tokens, state))
+    if (line_like("PROCEDURE", tokens, state) || line_like("-- PROCEDURE --", tokens, state))
     {
         if (state.section_state == 2)
             badcode("Duplicate PROCEDURE section declaration", state.where);
@@ -114,7 +114,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.section_state = 2;
         return;
     }
-    if (line_like("PARAMETERS:", tokens, state))
+    if (line_like("PARAMETERS:", tokens, state) || line_like("-- PARAMETERS --", tokens, state))
     {
         if (state.current_subprocedure == "")
             badcode("PARAMETERS section outside subprocedure", state.where);
@@ -129,7 +129,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.section_state = 4;
         return;
     }
-    if (line_like("LOCAL DATA:", tokens, state))
+    if (line_like("LOCAL DATA:", tokens, state) || line_like("-- LOCAL DATA --", tokens, state))
     {
         if (state.current_subprocedure == "")
             badcode("LOCAL DATA section outside subprocedure", state.where);
