@@ -1238,6 +1238,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $str-var EXECUTE AND STORE OUTPUT OF $str-expr", tokens,
+                  state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/EXECUTE outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = exec(" +
+                           get_c_char_array(state, tokens[7]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("EXECUTE $str-expr AND STORE EXIT CODE IN $num-var", tokens,
                   state))
     {
@@ -1246,6 +1257,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code(get_c_variable(state, tokens[7]) + " = (system(" +
                            get_c_char_array(state, tokens[1]) + ") >> 8) & 0xff;",
+                       state.where); // shift wait() val and get lowest 2
+        return;
+    }
+    if (line_like("IN $num-var EXECUTE AND STORE EXIT CODE OF $str-expr", tokens,
+                  state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/EXECUTE outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = (system(" +
+                           get_c_char_array(state, tokens[8]) + ") >> 8) & 0xff;",
                        state.where); // shift wait() val and get lowest 2
         return;
     }
@@ -1265,6 +1287,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code("load_file(" + get_c_expression(state, tokens[2]) + ", " +
                            get_c_variable(state, tokens[4]) + ");",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $str-var LOAD FILE $str-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/LOAD FILE statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("load_file(" + get_c_expression(state, tokens[4]) + ", " +
+                           get_c_variable(state, tokens[1]) + ");",
                        state.where);
         return;
     }
@@ -1288,22 +1320,6 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-
-    if (line_like("REPLACE $str-expr WITH $str-expr FROM $str-expr IN $str-var",
-                  tokens, state))
-    {
-        if (!in_procedure_section(state))
-            badcode("REPLACE statement outside PROCEDURE section", state.where);
-        // C++ Code
-        state.add_code(
-            get_c_variable(state, tokens[7]) + " = str_replace(((graphemedText)" +
-                get_c_expression(state, tokens[5]) + ").str_rep(), ((graphemedText)" +
-                get_c_expression(state, tokens[1]) + ").str_rep(), ((graphemedText)" +
-                get_c_expression(state, tokens[3]) + ").str_rep());",
-            state.where);
-        return;
-    }
-    // deprecated
     if (line_like("REPLACE $str-expr FROM $str-expr WITH $str-expr IN $str-var",
                   tokens, state))
     {
@@ -1315,6 +1331,20 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                 get_c_expression(state, tokens[3]) + ").str_rep(), ((graphemedText)" +
                 get_c_expression(state, tokens[1]) + ").str_rep(), ((graphemedText)" +
                 get_c_expression(state, tokens[5]) + ").str_rep());",
+            state.where);
+        return;
+    }
+    if (line_like("IN $str-var REPLACE $str-expr FROM $str-expr WITH $str-expr",
+                  tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/REPLACE statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(
+            get_c_variable(state, tokens[1]) + " = str_replace(((graphemedText)" +
+                get_c_expression(state, tokens[5]) + ").str_rep(), ((graphemedText)" +
+                get_c_expression(state, tokens[3]) + ").str_rep(), ((graphemedText)" +
+                get_c_expression(state, tokens[7]) + ").str_rep());",
             state.where);
         return;
     }
@@ -1330,6 +1360,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var GET INDEX OF $str-expr FROM $str-expr", tokens,
+                  state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET INDEX OF statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = utf8GetIndexOf(" +
+                           get_c_expression(state, tokens[7]) + ", " +
+                           get_c_expression(state, tokens[5]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("COUNT $str-expr FROM $str-expr IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1338,6 +1380,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code(get_c_variable(state, tokens[5]) + " = utf8Count(" +
                            get_c_expression(state, tokens[3]) + ", " +
                            get_c_expression(state, tokens[1]) + ");",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var COUNT $str-expr FROM $str-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/COUNT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = utf8Count(" +
+                           get_c_expression(state, tokens[5]) + ", " +
+                           get_c_expression(state, tokens[3]) + ");",
                        state.where);
         return;
     }
@@ -1350,9 +1403,23 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code("joinvar = " + get_c_expression(state, tokens[1]) + ";",
                        state.where);
-        state.add_code(get_c_variable(state, tokens[7]) + " = joinvar.substr(" +
-                           get_c_expression(state, tokens[3]) + ", " +
-                           get_c_expression(state, tokens[5]) + ");",
+        state.add_code(get_c_variable(state, tokens[7]) + " = joinvar.substr(((LdplNumber)" +
+                           get_c_expression(state, tokens[3]) + ").to_size_t(), ((LdplNumber)" +
+                           get_c_expression(state, tokens[5]) + ").to_size_t());",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $str-var SUBSTRING $str-expr FROM $num-expr LENGTH $num-expr",
+            tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/SUBSTRING statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("joinvar = " + get_c_expression(state, tokens[1]) + ";",
+                       state.where);
+        state.add_code(get_c_variable(state, tokens[1]) + " = joinvar.substr(((LdplNumber)" +
+                           get_c_expression(state, tokens[5]) + ").to_size_t(), ((LdplNumber)" +
+                           get_c_expression(state, tokens[7]) + ").to_size_t());",
                        state.where);
         return;
     }
