@@ -52,6 +52,11 @@ The **data** section may be obviated if no variables are used.
 If your project consists of multiple LDPL source files, each file must have its
 own data and procedure sections.
 
+!!! tip
+    When writing `DATA:`, `PROCEDURE:`, `PARAMETERS:` and `LOCAL DATA:`, you can
+    also use the synonyms `-- DATA --`, `-- PROCEDURE --`, `-- PARAMETERS --` and
+    `-- LOCAL DATA --`.
+
 ## Including More Source Files
 
 You can import other LDPL source files to your LDPL source by using the
