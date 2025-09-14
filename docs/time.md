@@ -83,3 +83,13 @@ have elapsed since the Unix epoch, that is the time 00:00:00 UTC on 1 January
 ```coffeescript
 get epoch in <number-var>
 ```
+
+## `get elapsed milliseconds in _`
+
+The `get elapsed milliseconds in _` stores the number of elapsed milliseconds since the program start in the passed number variable.
+
+**Syntax:**
+
+```coffeescript
+get elapsed milliseconds in <number-var>
+```
