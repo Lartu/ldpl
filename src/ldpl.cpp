@@ -139,8 +139,153 @@ void compile(vector<string> &lines, compiler_state &state)
         vector<string> tokens;
         tokenize(line, tokens, state.where, true, ' ');
         for (string &token : tokens)
-            if (token == "CRLF" || token == "LF")
+        {
+            // ASCII Table
+            if (token == "CRLF")
+            {
+                token = "\"\\r\n\"";
+            }
+            else if (token == "LF")
+            {
                 token = "\"\\n\"";
+            }
+            else if (token == "CR")
+            {
+                token = "\"\\r\"";
+            }
+            else if (token == "ASCII_SOH") // Start of Heading
+            {
+                token = "\"" + std::string(1, (char)1) + "\"";
+            }
+            else if (token == "ASCII_STX") // Start of Text
+            {
+                token = "\"" + std::string(1, (char)2) + "\"";
+            }
+            else if (token == "ASCII_ETX") // End of Text
+            {
+                token = "\"" + std::string(1, (char)3) + "\"";
+            }
+            else if (token == "ASCII_EOT") // End of Transmission
+            {
+                token = "\"" + std::string(1, (char)4) + "\"";
+            }
+            else if (token == "ASCII_ENQ") // Enquiry
+            {
+                token = "\"" + std::string(1, (char)5) + "\"";
+            }
+            else if (token == "ASCII_ACK") // Acknowledge
+            {
+                token = "\"" + std::string(1, (char)6) + "\"";
+            }
+            else if (token == "ASCII_BEL") // Bell
+            {
+                token = "\"" + std::string(1, (char)7) + "\"";
+            }
+            else if (token == "ASCII_BS") // Backspace
+            {
+                token = "\"" + std::string(1, (char)8) + "\"";
+            }
+            else if (token == "ASCII_HT") // Horizontal Tab
+            {
+                token = "\"" + std::string(1, (char)9) + "\"";
+            }
+            else if (token == "ASCII_LF") // Line Feed
+            {
+                token = "\"" + std::string(1, (char)10) + "\"";
+            }
+            else if (token == "ASCII_VT") // Vertical Tabulation
+            {
+                token = "\"" + std::string(1, (char)11) + "\"";
+            }
+            else if (token == "ASCII_FF") // Form Feed
+            {
+                token = "\"" + std::string(1, (char)12) + "\"";
+            }
+            else if (token == "ASCII_CR") // Carriage Return
+            {
+                token = "\"" + std::string(1, (char)13) + "\"";
+            }
+            else if (token == "ASCII_SO") // Shift Out
+            {
+                token = "\"" + std::string(1, (char)14) + "\"";
+            }
+            else if (token == "ASCII_SI") // Shift In
+            {
+                token = "\"" + std::string(1, (char)15) + "\"";
+            }
+            else if (token == "ASCII_DLE") // Data Link Escape
+            {
+                token = "\"" + std::string(1, (char)16) + "\"";
+            }
+            else if (token == "ASCII_DC1") // Device Control One
+            {
+                token = "\"" + std::string(1, (char)17) + "\"";
+            }
+            else if (token == "ASCII_DC2") // Device Control Two
+            {
+                token = "\"" + std::string(1, (char)18) + "\"";
+            }
+            else if (token == "ASCII_DC3") // Device Control Three
+            {
+                token = "\"" + std::string(1, (char)19) + "\"";
+            }
+            else if (token == "ASCII_DC4") // Device Control Four
+            {
+                token = "\"" + std::string(1, (char)20) + "\"";
+            }
+            else if (token == "ASCII_NAK") // Negative Acknowledge
+            {
+                token = "\"" + std::string(1, (char)21) + "\"";
+            }
+            else if (token == "ASCII_SYN") // Synchronous Idle
+            {
+                token = "\"" + std::string(1, (char)22) + "\"";
+            }
+            else if (token == "ASCII_ETB") // End of Transmission Block
+            {
+                token = "\"" + std::string(1, (char)23) + "\"";
+            }
+            else if (token == "ASCII_CAN") // Cancel
+            {
+                token = "\"" + std::string(1, (char)24) + "\"";
+            }
+            else if (token == "ASCII_EM") // End of Medium
+            {
+                token = "\"" + std::string(1, (char)25) + "\"";
+            }
+            else if (token == "ASCII_SUB") // Substitute
+            {
+                token = "\"" + std::string(1, (char)26) + "\"";
+            }
+            else if (token == "ASCII_ESC") // Escape
+            {
+                token = "\"" + std::string(1, (char)27) + "\"";
+            }
+            else if (token == "ASCII_FS") // File Separator
+            {
+                token = "\"" + std::string(1, (char)28) + "\"";
+            }
+            else if (token == "ASCII_GS") // Group Separator
+            {
+                token = "\"" + std::string(1, (char)29) + "\"";
+            }
+            else if (token == "ASCII_RS") // Record Separator
+            {
+                token = "\"" + std::string(1, (char)30) + "\"";
+            }
+            else if (token == "ASCII_US") // Unit Separator
+            {
+                token = "\"" + std::string(1, (char)31) + "\"";
+            }
+            else if (token == "ASCII_SP") // Space
+            {
+                token = "\"" + std::string(1, (char)32) + "\"";
+            }
+            else if (token == "ASCII_DEL") // Delete
+            {
+                token = "\"" + std::string(1, (char)127) + "\"";
+            }
+        }
         if (tokens.size() == 0)
             continue;
         compile_line(tokens, state);

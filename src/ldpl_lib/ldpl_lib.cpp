@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <vector>
 #include <thread>
+#include <mutex>
 #include <iomanip>
 
 #include <array>
@@ -20,6 +21,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <sys/wait.h>
 
 #define NVM_FLOAT_EPSILON 0.00000001
 #define CRLF "\n"
@@ -30,9 +32,7 @@
 
 using namespace std;
 
-// Internal use variables (in lowercase so they don't interfere with user-declared ones)
-time_t ldpl_time;
-std::chrono::steady_clock::time_point program_start_time;
+// To find the global variables search for "Global, internal use variables"
 
 // -------------------------------------------------------
 
@@ -88,7 +88,7 @@ public:
         integerValue = v;
         isInteger = true;
     }
-    LdplNumber(const char* v);
+    LdplNumber(const char *v);
     LdplNumber(string v);
     LdplNumber(graphemedText v);
 
@@ -641,43 +641,53 @@ public:
         return floatingValue;
     }
 
-    friend LdplNumber operator*(int lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator*(int lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) * rhs;
     }
 
-    friend LdplNumber operator+(int lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator+(int lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) + rhs;
     }
 
-    friend LdplNumber operator-(int lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator-(int lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) - rhs;
     }
 
-    friend LdplNumber operator/(int lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator/(int lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) / rhs;
     }
 
-    friend LdplNumber operator%(int lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator%(int lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) % rhs;
     }
 
-    friend LdplNumber operator*(double lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator*(double lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) * rhs;
     }
 
-    friend LdplNumber operator+(double lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator+(double lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) + rhs;
     }
 
-    friend LdplNumber operator-(double lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator-(double lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) - rhs;
     }
 
-    friend LdplNumber operator/(double lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator/(double lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) / rhs;
     }
 
-    friend LdplNumber operator%(double lhs, const LdplNumber &rhs) {
+    friend LdplNumber operator%(double lhs, const LdplNumber &rhs)
+    {
         return LdplNumber(lhs) % rhs;
     }
 };
@@ -1248,15 +1258,22 @@ bool operator!=(const graphemedText &ch1, const graphemedText &ch2)
     return ch1.stringRep != ch2.stringRep;
 }
 
-// ---------------------------------------------------------------------------------------------------
 
-// Global variables
+// =====================================================================================================================
+
+// Global, internal use variables (in lowercase so they don't interfere with user-declared ones)
+time_t ldpl_time;
+std::chrono::steady_clock::time_point program_start_time;
+unordered_map<string, mutex> mutex_map;
+mutex mutex_map_mutex;
 ifstream file_loading_stream;
 ofstream file_writing_stream;
-string file_loading_line;
 ldpl_number VAR_ERRORCODE = 0;
 graphemedText VAR_ERRORTEXT = (string) "";
-ldpl_text joinvar; // Generic temporary use text variable (used by join but can be
+ldpl_text joinvar; // Generic temporary use text variable
+
+// =====================================================================================================================
+
 
 // Forward declarations
 graphemedText trimCopy(graphemedText _line);
@@ -1362,7 +1379,8 @@ ldpl_number to_number(graphemedText textNumber)
 {
     ldpl_number new_number = ldpl_number(textNumber);
 }
-LdplNumber::LdplNumber(string v){
+LdplNumber::LdplNumber(string v)
+{
     // Copied from to_number
     try
     {
@@ -1384,7 +1402,8 @@ LdplNumber::LdplNumber(string v){
         this->integerValue = 0;
     }
 }
-LdplNumber::LdplNumber(graphemedText v){
+LdplNumber::LdplNumber(graphemedText v)
+{
     string a = v.str_rep();
     // Copied from to_number
     try
@@ -1407,7 +1426,8 @@ LdplNumber::LdplNumber(graphemedText v){
         this->integerValue = 0;
     }
 }
-LdplNumber::LdplNumber(const char* v){
+LdplNumber::LdplNumber(const char *v)
+{
     string a = v;
     // Copied from to_number
     try
@@ -1528,9 +1548,9 @@ graphemedText charat(graphemedText &s, ldpl_number pos)
     return s[_pos];
 }
 
-graphemedText charat(char* s, ldpl_number pos)
+graphemedText charat(char *s, ldpl_number pos)
 {
-    graphemedText newString = (string) s;
+    graphemedText newString = (string)s;
     size_t _pos = pos.to_size_t();
     return newString[_pos];
 }
@@ -1570,6 +1590,62 @@ graphemedText exec(const char *cmd)
     }
     return result;
 }
+
+int exec_exit_code(const char *cmd)
+{
+    FILE *pipe = popen(cmd, "r");
+    if (!pipe) throw std::runtime_error("popen() failed!");
+
+    int status = pclose(pipe);          // must be an lvalue for the macros
+    if (status == -1) return -1;        // pclose() error
+
+    if (WIFEXITED(status)) {
+        return WEXITSTATUS(status);     // normal exit → exit code
+    }
+    if (WIFSIGNALED(status)) {
+        return 128 + WTERMSIG(status);  // exited by signal (conventional encoding)
+    }
+    return -1;                          // other unusual cases
+}
+
+/*
+FUTURE: this can be used to return BOTH the exit code and the output
+
+#include <array>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <sys/wait.h>  // for WEXITSTATUS
+
+struct ExecResult {
+    std::string output;
+    int exit_code;
+};
+
+ExecResult exec(const char *cmd)
+{
+    std::array<char, 128> buffer;
+    std::string result;
+
+    FILE *raw = popen(cmd, "r");
+    if (!raw) throw std::runtime_error("popen() failed!");
+    std::unique_ptr<FILE, int(*)(FILE*)> pipe(raw, pclose);
+
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+
+    int status = pclose(pipe.release());  // manually call pclose, get status
+    int code = -1;
+    if (status != -1) {
+#ifdef WIFEXITED
+        if (WIFEXITED(status)) code = WEXITSTATUS(status);
+#endif
+    }
+
+    return ExecResult{result, code};
+}
+*/
 
 #include <random>
 
@@ -1859,4 +1935,21 @@ std::ostream &operator<<(std::ostream &os, const LdplNumber &num)
         os << to_ldpl_string(num.floatingValue);
     }
     return os;
+}
+
+
+static mutex &get_named_mutex(const string &name) {
+    lock_guard<mutex> g(mutex_map_mutex);
+    // Ensure existence and construct in place if absent
+    return mutex_map[name];
+}
+
+void lock_mutex(const string &name) {
+    mutex &m = get_named_mutex(name); // map lock released here
+    m.lock(); // lock per-key mutex outside map lock
+}
+
+void unlock_mutex(const string &name) {
+    mutex &m = get_named_mutex(name); // map lock released here
+    m.unlock(); // lock per-key mutex outside map lock
 }

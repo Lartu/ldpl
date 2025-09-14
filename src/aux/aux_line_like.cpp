@@ -35,6 +35,9 @@ bool line_like(string model_line, vector<string> &tokens,
       for (char letter : tokens[j])
         if (letter == ')')
           return false;
+      for (char letter : tokens[j])
+        if (letter == '\\')
+          return false;
       if (is_number(tokens[j]))
         return false;
       if (tokens[j] == "+")

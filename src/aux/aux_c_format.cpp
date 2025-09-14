@@ -31,7 +31,7 @@ string get_c_variable(compiler_state &state, string &variable)
     // If our indexes vector is not empty, however, we recreate the correct C++
     // container access, with one dimension for each value in our indexes vector.
     for (size_t i = 0; i < indexes.size(); ++i)
-        var_name += "[" + get_c_expression(state, indexes[i]) + "]";
+        var_name += "[(graphemedText)" + get_c_expression(state, indexes[i]) + "]";
     // Once we are done, we return the variable name.
     return var_name;
 }

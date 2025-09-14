@@ -1292,7 +1292,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("EXECUTE outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code("system(" + get_c_char_array(state, tokens[1]) + ");",
+        state.add_code("exec(" + get_c_char_array(state, tokens[1]) + ");",
                        state.where);
         return;
     }
@@ -1324,9 +1324,9 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("EXECUTE outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[7]) + " = (system(" +
-                           get_c_char_array(state, tokens[1]) + ") >> 8) & 0xff;",
-                       state.where); // shift wait() val and get lowest 2
+        state.add_code(get_c_variable(state, tokens[7]) + " = exec_exit_code(" +
+                           get_c_char_array(state, tokens[1]) + ");",
+                       state.where);
         return;
     }
     if (line_like("IN $num-var EXECUTE AND STORE EXIT CODE OF $str-expr", tokens,
@@ -1335,9 +1335,9 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("IN/EXECUTE outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[1]) + " = (system(" +
-                           get_c_char_array(state, tokens[8]) + ") >> 8) & 0xff;",
-                       state.where); // shift wait() val and get lowest 2
+        state.add_code(get_c_variable(state, tokens[1]) + " = exec_exit_code(" +
+                           get_c_char_array(state, tokens[8]) + ");",
+                       state.where);
         return;
     }
     if (line_like("ACCEPT $str-var UNTIL EOF", tokens, state))
@@ -1922,6 +1922,27 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    // Mutexes
+    if (line_like("AWAIT LOCK $name", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("AWAIT LOCK statement outside PROCEDURE section", state.where);
+        // C++ Code
+        string lock_name = tokens[2];
+        state.add_code("lock_mutex(\"" + lock_name + "\");",state.where);
+        return;
+    }
+    if (line_like("UNLOCK $name", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("UNLOCK statement outside PROCEDURE section", state.where);
+        // C++ Code
+        string lock_name = tokens[1];
+        state.add_code("unlock_mutex(\"" + lock_name + "\");",state.where);
+        return;
+    }
+
+
     // Custom Statements
     if (line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens,
                   state))
