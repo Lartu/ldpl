@@ -1817,6 +1817,24 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("INCREMENT $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("INREMENT statement outside PROCEDURE section", state.where);
+        // C Code
+        state.add_code(get_c_variable(state, tokens[1]) + " += 1;",
+                       state.where);
+        return;
+    }
+    if (line_like("DECREMENT $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("DEREMENT statement outside PROCEDURE section", state.where);
+        // C Code
+        state.add_code(get_c_variable(state, tokens[1]) + " -= 1;",
+                       state.where);
+        return;
+    }
     // Custom Statements
     if (line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens,
                   state))

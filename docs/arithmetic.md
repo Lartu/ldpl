@@ -200,3 +200,24 @@ The `TAN _ IN _` statement calculates the tangent of a NUMBER and stores the res
 ```coffeescript
 TAN <NUMBER-VAR or NUMBER> IN <NUMBER-VAR>
 ```
+```
+
+## `INCREMENT _`
+
+The `INCREMENT _` statement adds 1 to the value of a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+INCREMENT <NUMBER-VAR>
+```
+
+## `DECREMENT _`
+
+The `DECREMENT _` statement subtracts 1 from the value of a NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+DECREMENT <NUMBER-VAR>
+```
