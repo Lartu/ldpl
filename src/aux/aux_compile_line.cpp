@@ -1453,6 +1453,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $str-var CONVERT $str-expr TO UPPERCASE", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("CONVERT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = toUpperCopy(" +
+                           get_c_expression(state, tokens[3]) + ");",
+                       state.where);
+        return;
+    }
     if (line_like("CONVERT $str-expr TO LOWERCASE IN $str-var", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1460,6 +1470,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code(get_c_variable(state, tokens[5]) + " = toLowerCopy(" +
                            get_c_expression(state, tokens[1]) + ");",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $str-var CONVERT $str-expr TO LOWERCASE", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("CONVERT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = toLowerCopy(" +
+                           get_c_expression(state, tokens[3]) + ");",
                        state.where);
         return;
     }
@@ -1494,6 +1514,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code(get_c_variable(state, tokens[6]) + " = " +
                            get_c_variable(state, tokens[4]) +
+                           ".inner_collection.size();",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET KEY COUNT OF $map", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("GET KEY COUNT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = " +
+                           get_c_variable(state, tokens[6]) +
                            ".inner_collection.size();",
                        state.where);
         return;
