@@ -36,6 +36,8 @@ std::chrono::steady_clock::time_point program_start_time;
 #include <cmath>
 #include "BigInt.hpp"
 
+class graphemedText;
+
 class LdplNumber
 {
 private:
@@ -80,6 +82,9 @@ public:
         integerValue = v;
         isInteger = true;
     }
+    LdplNumber(const char* v);
+    LdplNumber(string v);
+    LdplNumber(graphemedText v);
 
     // Copy constructor
     LdplNumber(const LdplNumber &other)
@@ -728,12 +733,15 @@ public:
     string str_rep() const;
     graphemedText();
     graphemedText(const string &x);
-    explicit graphemedText(const double &f);
+    graphemedText(const double &f);
     graphemedText &operator=(const string &x);
     graphemedText(const char *x);
     graphemedText &operator=(const char *x);
     graphemedText(const char *x, size_t len);
-    explicit graphemedText(char x);
+    graphemedText(char x);
+    graphemedText(const int &x);
+    graphemedText(int &x);
+    graphemedText(double &f);
     graphemedText &operator=(char x);
     string operator[](size_t i);
     // string operator[](int i);
@@ -766,6 +774,7 @@ public:
     graphemedText substr(size_t from);
     int compare(size_t from, size_t count, const graphemedText &other);
     int compare(const graphemedText &other);
+    graphemedText(const LdplNumber &num);
 };
 
 ostream &operator<<(ostream &out, const graphemedText &c);
@@ -919,6 +928,15 @@ graphemedText::graphemedText(const string &x)
 
 // conversion from double (constructor):
 graphemedText::graphemedText(const double &f)
+{
+    std::string str = to_string(f);
+    str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+    str.erase(str.find_last_not_of('.') + 1, std::string::npos);
+    createFromString(str);
+}
+
+// conversion from double (constructor):
+graphemedText::graphemedText(double &f)
 {
     std::string str = to_string(f);
     str.erase(str.find_last_not_of('0') + 1, std::string::npos);
@@ -1114,6 +1132,35 @@ graphemedText graphemedText::substr(size_t from)
     return new_text;
 }
 
+graphemedText::graphemedText(const LdplNumber &num)
+{
+    LdplNumber x = num;
+    // Copied from to_ldpl_string(num);
+    if (x.IsInteger())
+    {
+        createFromString(x.internalIntegerValue().to_string());
+    }
+    else
+    {
+        ostringstream out;
+        out << fixed << setprecision(5) << x.to_double();
+        string str = out.str();
+        str.erase(str.find_last_not_of('0') + 1, string::npos);
+        str.erase(str.find_last_not_of('.') + 1, string::npos);
+        createFromString(str);
+    }
+}
+
+graphemedText::graphemedText(const int &x)
+{
+    createFromString(to_string(x));
+}
+
+graphemedText::graphemedText(int &x)
+{
+    createFromString(to_string(x));
+}
+
 ostream &operator<<(ostream &out, const graphemedText &c)
 {
     out << c.stringRep;
@@ -1307,19 +1354,74 @@ ldpl_number input_number()
 
 ldpl_number to_number(graphemedText textNumber)
 {
-    string a = textNumber.str_rep();
+    ldpl_number new_number = ldpl_number(textNumber);
+}
+LdplNumber::LdplNumber(string v){
+    // Copied from to_number
+    try
+    {
+        // This is used to disallow the use of hexadecimal and binary literals.
+        for (char i : v)
+            if ((i < '0' || i > '9') && i != '-' && i != '.')
+            {
+                this->isInteger = true;
+                this->integerValue = 0;
+                return;
+            }
+        this->isInteger = false;
+        this->floatingValue = stod(v);
+        return;
+    }
+    catch (const invalid_argument &ia)
+    {
+        this->isInteger = true;
+        this->integerValue = 0;
+    }
+}
+LdplNumber::LdplNumber(graphemedText v){
+    string a = v.str_rep();
+    // Copied from to_number
     try
     {
         // This is used to disallow the use of hexadecimal and binary literals.
         for (char i : a)
             if ((i < '0' || i > '9') && i != '-' && i != '.')
-                return 0;
-        ldpl_number num = stod(a);
-        return num;
+            {
+                this->isInteger = true;
+                this->integerValue = 0;
+                return;
+            }
+        this->isInteger = false;
+        this->floatingValue = stod(a);
+        return;
     }
     catch (const invalid_argument &ia)
     {
-        return 0;
+        this->isInteger = true;
+        this->integerValue = 0;
+    }
+}
+LdplNumber::LdplNumber(const char* v){
+    string a = v;
+    // Copied from to_number
+    try
+    {
+        // This is used to disallow the use of hexadecimal and binary literals.
+        for (char i : a)
+            if ((i < '0' || i > '9') && i != '-' && i != '.')
+            {
+                this->isInteger = true;
+                this->integerValue = 0;
+                return;
+            }
+        this->isInteger = false;
+        this->floatingValue = stod(a);
+        return;
+    }
+    catch (const invalid_argument &ia)
+    {
+        this->isInteger = true;
+        this->integerValue = 0;
     }
 }
 

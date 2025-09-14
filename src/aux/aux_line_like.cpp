@@ -64,7 +64,7 @@ bool line_like(string model_line, vector<string> &tokens,
       if (!is_scalar_variable(tokens[j], state))
         return false;
     }
-    else if (model_tokens[i] == "$anyVar") // $anyVar is any variable
+    else if (model_tokens[i] == "$anyVar") // $anyVar is any variable (scalar or container)
     {
       if (!variable_exists(tokens[j], state))
         return false;

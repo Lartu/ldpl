@@ -31,12 +31,12 @@ in `myTextVariable`.
 ## `REPLACE _ WITH _ FROM _ IN _`
 
 
-The `REPLACE` statement finds and replaces every occurrence of some TEXT in a TEXT variable or value some other TEXT. The result is then stored in a TEXT variable.
+The `REPLACE` statement finds and replaces every occurrence of a value with another within a third value. The result is then stored in a TEXT variable.
 
 **Syntax:**
 
 ```coffeescript
-REPLACE <TEXT-VAR or TEXT> WITH <TEXT-VAR or TEXT> FROM <TEXT-VAR or TEXT> IN <TEXT-VAR>
+REPLACE <NUMBER, NUMBER-VAR, TEXT-VAR or TEXT> FROM <NUMBER, NUMBER-VAR, TEXT-VAR or TEXT> WITH <NUMBER, NUMBER-VAR, TEXT-VAR or TEXT> IN <TEXT-VAR>
 ```
 
 **Example:**

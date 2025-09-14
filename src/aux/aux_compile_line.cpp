@@ -1015,7 +1015,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("GET LENGTH OF $str-expr IN $num-var", tokens, state))
+    if (line_like("GET LENGTH OF $str-expr IN $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("GET LENGTH OF outside PROCEDURE section", state.where);
@@ -1025,7 +1025,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $num-var GET LENGTH OF $str-expr", tokens, state))
+    if (line_like("IN $num-var GET LENGTH OF $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/GET LENGTH OF outside PROCEDURE section", state.where);
@@ -1035,7 +1035,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("GET BYTE COUNT OF $str-expr IN $num-var", tokens, state))
+    if (line_like("GET BYTE COUNT OF $expression IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("GET BYTE COUNT OF outside PROCEDURE section", state.where);
@@ -1045,7 +1045,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $num-var GET BYTE COUNT OF $str-expr", tokens, state))
+    if (line_like("IN $num-var GET BYTE COUNT OF $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/GET BYTE COUNT OF outside PROCEDURE section", state.where);
@@ -1077,7 +1077,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("GET CHARACTER CODE OF $str-expr IN $num-var", tokens, state))
+    if (line_like("GET CHARACTER CODE OF $expression IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("GET CHARACTER CODE OF statement outside PROCEDURE section",
@@ -1088,7 +1088,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $num-var GET CHARACTER CODE OF $str-expr", tokens, state))
+    if (line_like("IN $num-var GET CHARACTER CODE OF $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/GET CHARACTER CODE OF statement outside PROCEDURE section",
@@ -1280,7 +1280,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("LOAD FILE $str-expr IN $str-var", tokens, state))
+    if (line_like("LOAD FILE $expression IN $str-var", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("LOAD FILE statement outside PROCEDURE section", state.where);
@@ -1290,7 +1290,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $str-var LOAD FILE $str-expr", tokens, state))
+    if (line_like("IN $str-var LOAD FILE $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/LOAD FILE statement outside PROCEDURE section", state.where);
@@ -1300,7 +1300,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("WRITE $expression TO FILE $str-expr", tokens, state))
+    if (line_like("WRITE $expression TO FILE $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("WRITE statement outside PROCEDURE section", state.where);
@@ -1310,7 +1310,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("APPEND $expression TO FILE $str-expr", tokens, state))
+    if (line_like("APPEND $expression TO FILE $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("APPEND statement outside PROCEDURE section", state.where);
@@ -1320,7 +1320,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("REPLACE $str-expr FROM $str-expr WITH $str-expr IN $str-var",
+    if (line_like("REPLACE $expression FROM $expression WITH $expression IN $str-var",
                   tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1334,7 +1334,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             state.where);
         return;
     }
-    if (line_like("IN $str-var REPLACE $str-expr FROM $str-expr WITH $str-expr",
+    if (line_like("IN $str-var REPLACE $expression FROM $expression WITH $expression",
                   tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1348,7 +1348,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             state.where);
         return;
     }
-    if (line_like("GET INDEX OF $str-expr FROM $str-expr IN $num-var", tokens,
+    if (line_like("GET INDEX OF $expression FROM $expression IN $num-var", tokens,
                   state))
     {
         if (!in_procedure_section(state))
@@ -1360,7 +1360,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $num-var GET INDEX OF $str-expr FROM $str-expr", tokens,
+    if (line_like("IN $num-var GET INDEX OF $expression FROM $expression", tokens,
                   state))
     {
         if (!in_procedure_section(state))
@@ -1372,7 +1372,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("COUNT $str-expr FROM $str-expr IN $num-var", tokens, state))
+    if (line_like("COUNT $expression FROM $expression IN $num-var", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("COUNT statement outside PROCEDURE section", state.where);
@@ -1383,7 +1383,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $num-var COUNT $str-expr FROM $str-expr", tokens, state))
+    if (line_like("IN $num-var COUNT $expression FROM $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/COUNT statement outside PROCEDURE section", state.where);
@@ -1395,7 +1395,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         return;
     }
     if (line_like(
-            "SUBSTRING $str-expr FROM $num-expr LENGTH $num-expr IN $str-var",
+            "SUBSTRING $expression FROM $expression LENGTH $expression IN $str-var",
             tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1409,13 +1409,13 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $str-var SUBSTRING $str-expr FROM $num-expr LENGTH $num-expr",
+    if (line_like("IN $str-var SUBSTRING $expression FROM $expression LENGTH $expression",
             tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/SUBSTRING statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code("joinvar = " + get_c_expression(state, tokens[1]) + ";",
+        state.add_code("joinvar = (graphemedText) " + get_c_expression(state, tokens[3]) + ";",
                        state.where);
         state.add_code(get_c_variable(state, tokens[1]) + " = joinvar.substr(((LdplNumber)" +
                            get_c_expression(state, tokens[5]) + ").to_size_t(), ((LdplNumber)" +
@@ -1643,7 +1643,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             state.where);
         return;
     }
-    if (line_like("SPLIT $str-expr BY $str-expr IN $str-list", tokens, state))
+    if (line_like("SPLIT $expression BY $expression IN $str-list", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("SPLIT statement outside PROCEDURE section", state.where);
@@ -1654,7 +1654,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
-    if (line_like("IN $str-list SPLIT $str-expr BY $str-expr", tokens, state))
+    if (line_like("IN $str-list SPLIT $expression BY $expression", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/SPLIT statement outside PROCEDURE section", state.where);
