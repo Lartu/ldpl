@@ -611,7 +611,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code("exit(0);", state.where);
         return;
     }
-    if (line_like("WAIT $num-expr MILLISECONDS", tokens, state) || line_like("SLEEP $num-expr", tokens, state)  || line_like("WAIT $num-expr", tokens, state))
+    if (line_like("WAIT $num-expr MILLISECONDS", tokens, state) || line_like("SLEEP $num-expr", tokens, state) || line_like("WAIT $num-expr", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("WAIT / SLEEP statement outside PROCEDURE section", state.where);
@@ -975,6 +975,22 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         }
         return;
     }
+    if (line_like("IN $str-var JOIN $expression AND $expression", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/JOIN statement outside PROCEDURE section", state.where);
+        // C++ Code
+        if (tokens[5] == tokens[1])
+        {
+            // Optimization for appending
+            state.add_code(get_c_variable(state, tokens[1]) + " += " + get_c_string(state, tokens[5]) + ";", state.where);
+        }
+        else
+        {
+            state.add_code("join(" + get_c_string(state, tokens[3]) + ", " + get_c_string(state, tokens[5]) + ", " + get_c_string(state, tokens[1]) + ");", state.where);
+        }
+        return;
+    }
     if (line_like("GET CHARACTER AT $num-expr FROM $str-expr IN $str-var", tokens,
                   state))
     {
@@ -1003,7 +1019,8 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             badcode("GET BYTE COUNT OF outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[6]) + " = ((graphemedText)" +
-                           get_c_expression(state, tokens[4]) + ").str_rep().length();", state.where);
+                           get_c_expression(state, tokens[4]) + ").str_rep().length();",
+                       state.where);
         return;
     }
     if (line_like("GET ASCII CHARACTER $num-expr IN $str-var", tokens, state))
@@ -1068,7 +1085,6 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         for (unsigned int i = 1; i < tokens.size(); ++i)
         {
-            // TODO ADD COLORS HERE
             if (is_scalar_variable(tokens[i], state))
             {
                 state.add_code(
@@ -1079,6 +1095,27 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             {
                 state.add_code("cout << " + tokens[i] + " << flush;", state.where);
             }
+        }
+        return;
+    }
+    if (line_like("PRINT $display", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("PRINT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        for (unsigned int i = 1; i < tokens.size(); ++i)
+        {
+            if (is_scalar_variable(tokens[i], state))
+            {
+                state.add_code(
+                    "cout << " + get_c_variable(state, tokens[i]) + " << flush;",
+                    state.where);
+            }
+            else
+            {
+                state.add_code("cout << " + tokens[i] + " << flush;", state.where);
+            }
+            state.add_code("cout << endl;", state.where);
         }
         return;
     }

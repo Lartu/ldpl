@@ -1,8 +1,3 @@
-!!!Note
-    While this section is up-to-date and complete, it has to be reformated
-    to be easier on the eyes. All UPPERCASE statement names and code should
-    be changed to lowercase.
-    
 ## `DISPLAY`
 
 The `DISPLAY` statement outputs the values passed to the output stream. `CRLF` means line break and is a sugar syntax for the `"\n"` escape sequence.
@@ -17,6 +12,23 @@ DISPLAY <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
 
 ```coffeescript
 DISPLAY "Hello, " nameVariable "! This is a number -> " 89.1 " :)" CRLF
+```
+
+## `PRINT`
+
+The `PRINT` statement outputs the values passed to the output stream and then prints a line break. It's
+equivalent to using `DISPLAY` with a `CRLF` at the end.
+
+**Syntax:**
+
+```coffeescript
+PRINT <multiple NUMBER, TEXT, TEXT-VAR, NUMBER-VAR or CRLF>
+```
+
+**Example:**
+
+```coffeescript
+PRINT "Hello, " nameVariable "! This is a number -> " 89.1 " :)"
 ```
 
 ## `ACCEPT _`
