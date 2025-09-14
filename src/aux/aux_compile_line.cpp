@@ -1670,8 +1670,20 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("GET HOUT statement outside PROCEDURE section", state.where);
         // C++ Code
+        state.add_code("time(&ldpl_time);");
         state.add_code(
             get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_hour;",
+            state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET HOUR", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET HOUT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("time(&ldpl_time);");
+        state.add_code(
+            get_c_variable(state, tokens[1]) + " = localtime(&ldpl_time)->tm_hour;",
             state.where);
         return;
     }
@@ -1680,8 +1692,20 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("GET MINUTES statement outside PROCEDURE section", state.where);
         // C++ Code
+        state.add_code("time(&ldpl_time);");
         state.add_code(
             get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_min;",
+            state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET MINUTES", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET MINUTES statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("time(&ldpl_time);");
+        state.add_code(
+            get_c_variable(state, tokens[1]) + " = localtime(&ldpl_time)->tm_min;",
             state.where);
         return;
     }
@@ -1690,8 +1714,20 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("GET SECONDS statement outside PROCEDURE section", state.where);
         // C++ Code
+        state.add_code("time(&ldpl_time);");
         state.add_code(
             get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_sec;",
+            state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET SECONDS", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET SECONDS statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("time(&ldpl_time);");
+        state.add_code(
+            get_c_variable(state, tokens[1]) + " = localtime(&ldpl_time)->tm_sec;",
             state.where);
         return;
     }
@@ -1700,7 +1736,19 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("GET YEAR statement outside PROCEDURE section", state.where);
         // C++ Code
+        state.add_code("time(&ldpl_time);");
         state.add_code(get_c_variable(state, tokens[3]) +
+                           " = localtime(&ldpl_time)->tm_year + 1900;",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET YEAR", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET YEAR statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("time(&ldpl_time);");
+        state.add_code(get_c_variable(state, tokens[1]) +
                            " = localtime(&ldpl_time)->tm_year + 1900;",
                        state.where);
         return;
@@ -1710,8 +1758,20 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("GET DAY statement outside PROCEDURE section", state.where);
         // C++ Code
+        state.add_code("time(&ldpl_time);");
         state.add_code(
             get_c_variable(state, tokens[3]) + " = localtime(&ldpl_time)->tm_mday;",
+            state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET DAY", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET DAY statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("time(&ldpl_time);");
+        state.add_code(
+            get_c_variable(state, tokens[1]) + " = localtime(&ldpl_time)->tm_mday;",
             state.where);
         return;
     }
@@ -1720,17 +1780,19 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("GET MONTH statement outside PROCEDURE section", state.where);
         // C++ Code
+        state.add_code("time(&ldpl_time);");
         state.add_code(get_c_variable(state, tokens[3]) +
                            " = localtime(&ldpl_time)->tm_mon + 1;",
                        state.where);
         return;
     }
-    if (line_like("GET MONTH IN $num-var", tokens, state))
+    if (line_like("IN $num-var GET MONTH", tokens, state))
     {
         if (!in_procedure_section(state))
-            badcode("GET MONTH statement outside PROCEDURE section", state.where);
+            badcode("IN/GET MONTH statement outside PROCEDURE section", state.where);
         // C++ Code
-        state.add_code(get_c_variable(state, tokens[3]) +
+        state.add_code("time(&ldpl_time);");
+        state.add_code(get_c_variable(state, tokens[1]) +
                            " = localtime(&ldpl_time)->tm_mon + 1;",
                        state.where);
         return;
@@ -1740,7 +1802,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         if (!in_procedure_section(state))
             badcode("GET EPOCH statement outside PROCEDURE section", state.where);
         // C++ Code
+        state.add_code("time(&ldpl_time);");
         state.add_code(get_c_variable(state, tokens[3]) + " = ldpl_time;",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET EPOCH", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET EPOCH statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("time(&ldpl_time);");
+        state.add_code(get_c_variable(state, tokens[1]) + " = ldpl_time;",
                        state.where);
         return;
     }

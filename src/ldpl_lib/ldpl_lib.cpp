@@ -24,6 +24,8 @@
 
 using namespace std;
 
+time_t ldpl_time;
+
 // -------------------------------------------------------
 
 #ifndef LDPL_NUMBER
