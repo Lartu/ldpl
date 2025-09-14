@@ -118,6 +118,16 @@ The `GET LENGTH OF` statement counts the number of characters in the passed TEXT
 GET LENGTH OF <TEXT-VAR or TEXT> IN <NUMBER-VAR>
 ```
 
+## `GET BYTE COUNT OF _ IN _`
+
+The `GET BYTE COUNT OF` statement counts the bytes in the passed TEXT and stores that number in the NUMBER variable.
+
+**Syntax:**
+
+```coffeescript
+GET BYTE COUNT OF <TEXT-VAR or TEXT> IN <NUMBER-VAR>
+```
+
 ## `GET ASCII CHARACTER _ IN _`
 
 The `GET ASCII CHARACTER` statement stores the character with the ASCII code passed in NUMBER or NUMBER-VAR in TEXT-VAR.
