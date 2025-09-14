@@ -679,6 +679,18 @@ LdplNumber floor(LdplNumber a)
     }
 }
 
+LdplNumber ceil(LdplNumber a)
+{
+    if (a.IsInteger())
+    {
+        return a;
+    }
+    else
+    {
+        return LdplNumber(ceil(a.internalFloatingValue()));
+    }
+}
+
 #endif
 
 #ifndef GRAPHEMED_TEXT
@@ -954,17 +966,7 @@ string graphemedText::operator[](size_t i)
     }
     return stringRep.substr(graphemeIndexMap[i], graphemeIndexMap[i + 1] - graphemeIndexMap[i]);
 }
-// [] for setting
-/*string graphemedText::operator[](int i)
-{
-    regenerateGraphemeIndex();
-    if (i >= graphemeIndexMap.size())
-    {
-        cout << "Out-of-bounds index access." << endl;
-        exit(1);
-    }
-    return graphemeIndexMap[i];
-}*/
+
 bool graphemedText::loadFile(const string &fileName)
 {
     int fd = open(fileName.c_str(), O_RDONLY);
@@ -1107,34 +1109,6 @@ graphemedText graphemedText::substr(size_t from)
     }
     return new_text;
 }
-
-// NOTE: returns 0 on equality, -1 if the string is shorter, and 1 in any other
-// case.
-/*int graphemedText::compare(size_t from, size_t count, const graphemedText &other)
-{
-    regenerateGraphemeIndex();
-    // Fix count to respect the actual end of the buffer.
-    count = from + count > buffer.size() ? buffer.size() - from : count;
-    // Compare sizes before anything else for efficiency.
-    if (count < other.buffer.size())
-        return -1;
-    if (count > other.buffer.size())
-        return 1;
-    for (size_t i = from, j = 0; j < count; ++i, ++j)
-        if (buffer[i] != other.buffer[j])
-            return 1; // We already know it's not shorter, see above.
-    return 0;
-}
-
-int graphemedText::compare(const graphemedText &other)
-{
-    if (*this == other)
-        return 0;
-    if (this->size() < other.size())
-        return -1;
-    else
-        return 1;
-}*/
 
 ostream &operator<<(ostream &out, const graphemedText &c)
 {

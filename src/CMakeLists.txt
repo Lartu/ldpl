@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)            # Enable c++11 standard
 # Add main.cpp file of project root directory as source file
 set(SOURCE_FILES ldpl.cpp)
 
-set(VERSION "5.0")
+set(VERSION "5.2.1")
 set(VERSIONNAME "Groovy Gualicho")
 
 # Alternative version name (cmake -Dversion="<version>")

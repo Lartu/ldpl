@@ -8,7 +8,7 @@ void displayVersionInfo()
     cout << " This is \033[32;1mLDPL version " << VERSION << "\033[0m '\033[32;1m"
          << VERSIONNAME << "\033[0m'." << endl;
     cout << endl;
-    cout << " Copyright 2018-2024, \033[35;1mLartu\033[0m (www.lartu.net)."
+    cout << " Copyright 2018-2025, \033[35;1mLartu\033[0m (www.lartu.net)."
          << endl;
     cout << " Built with amazing contributions from \033[35;1mChris West\033[0m, "
             "\033[35;1mDamián Garro\033[0m,"
