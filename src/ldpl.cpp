@@ -258,6 +258,7 @@ int main(int argc, const char *argv[])
     // Add default initialization code to the generated source
     state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
+    state.add_code("program_start_time = std::chrono::steady_clock::now();");
 
     // Add default variable declaration code to the generated code
     state.variables[""]["ARGV"] = {2, 3}; // List of text

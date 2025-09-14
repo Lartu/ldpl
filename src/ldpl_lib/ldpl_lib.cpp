@@ -24,7 +24,9 @@
 
 using namespace std;
 
+// Internal use variables (in lowercase so they don't interfere with user-declared ones)
 time_t ldpl_time;
+std::chrono::steady_clock::time_point program_start_time;
 
 // -------------------------------------------------------
 

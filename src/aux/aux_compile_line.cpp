@@ -1835,6 +1835,24 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("GET ELAPSED MILLISECONDS IN $num-var", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("GET ELAPSED MILLISECONDS statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[4]) + " = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - program_start_time).count();",
+            state.where);
+        return;
+    }
+    if (line_like("IN $num-var GET ELAPSED MILLISECONDS", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET ELAPSED MILLISECONDS statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - program_start_time).count();",
+            state.where);
+        return;
+    }
     // Custom Statements
     if (line_like("CREATE STATEMENT $string EXECUTING $subprocedure", tokens,
                   state))
