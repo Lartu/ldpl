@@ -611,19 +611,19 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code("exit(0);", state.where);
         return;
     }
-    if (line_like("WAIT $num-expr MILLISECONDS", tokens, state) || line_like("SLEEP $num-expr", tokens, state))
+    if (line_like("WAIT $num-expr MILLISECONDS", tokens, state) || line_like("SLEEP $num-expr", tokens, state)  || line_like("WAIT $num-expr", tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("WAIT / SLEEP statement outside PROCEDURE section", state.where);
 // C++ Code
 #if defined(_WIN32)
         state.add_code(
-            "_sleep(" + get_c_expression(state, tokens[1]) + ".to_long_long());",
+            "_sleep(((LdplNumber)" + get_c_expression(state, tokens[1]) + ").to_long_long());",
             state.where);
 #else
         state.add_code(
-            "std::this_thread::sleep_for(std::chrono::milliseconds(" +
-                get_c_expression(state, tokens[1]) + ".to_long_long()));",
+            "std::this_thread::sleep_for(std::chrono::milliseconds(((LdplNumber)" +
+                get_c_expression(state, tokens[1]) + ").to_long_long()));",
             state.where);
 #endif
         return;

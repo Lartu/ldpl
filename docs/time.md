@@ -1,3 +1,17 @@
+## `WAIT _ MILLISECONDS` / `WAIT _` /  `SLEEP _`
+
+The `WAIT` (or `SLEEP`) statement pauses the execution of a program for the given number of milliseconds.
+
+**Syntax:**
+
+```coffeescript
+WAIT <NUMBER or NUMBER-VAR> MILLISECONDS
+# or
+WAIT <NUMBER or NUMBER-VAR>
+# or
+SLEEP <NUMBER or NUMBER-VAR>
+```
+
 ## `get year in _`
 
 The `get year in _` stores the current year number in the passed number variable.

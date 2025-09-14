@@ -279,16 +279,6 @@ The `EXIT` statement ends execution of the program.
 EXIT
 ```
 
-## `WAIT _ MILLISECONDS`
-
-The `WAIT` statement pauses the execution of a program for the given number of milliseconds.
-
-**Syntax:**
-
-```coffeescript
-WAIT <NUMBER or NUMBER-VAR> MILLISECONDS
-```
-
 ## `GOTO and LABEL`
 
 > "If you want to go somewhere, goto is the best way to get there."	
