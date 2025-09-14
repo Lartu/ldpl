@@ -56,5 +56,4 @@ endif ()
 
 install(TARGETS ldpl)
 install(FILES ldpl_lib/ldpl_lib.cpp TYPE LIB)
-install(FILES ../man/ldpl.1 TYPE MAN)
 
