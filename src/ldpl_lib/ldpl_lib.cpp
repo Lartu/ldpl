@@ -1262,15 +1262,21 @@ bool operator!=(const graphemedText &ch1, const graphemedText &ch2)
 // =====================================================================================================================
 
 // Global, internal use variables (in lowercase so they don't interfere with user-declared ones)
-time_t ldpl_time;
 std::chrono::steady_clock::time_point program_start_time;
 unordered_map<string, mutex> mutex_map;
 mutex mutex_map_mutex;
-ifstream file_loading_stream;
+// Time
+mutex ldpl_time_mutex;
+time_t ldpl_time;
+// File Streams
+mutex file_writing_stream_mutex;
 ofstream file_writing_stream;
+// Text join in global var
+mutex joinvar_mutex;
+ldpl_text joinvar; // Generic temporary use text variable
 ldpl_number VAR_ERRORCODE = 0;
 graphemedText VAR_ERRORTEXT = (string) "";
-ldpl_text joinvar; // Generic temporary use text variable
+
 
 // =====================================================================================================================
 
@@ -1753,6 +1759,7 @@ bail:
 // Used by append_ and write_.
 void save_to_file(graphemedText filename, graphemedText content, ios_base::openmode mode)
 {
+    file_writing_stream_mutex.lock();
     file_writing_stream.open(expandHomeDirectory(filename.str_rep()), mode);
     if (!file_writing_stream.is_open())
     {
@@ -1770,6 +1777,7 @@ void save_to_file(graphemedText filename, graphemedText content, ios_base::openm
     VAR_ERRORTEXT = "";
     VAR_ERRORCODE = 0;
     file_writing_stream.close();
+    file_writing_stream_mutex.unlock();
 }
 
 void append_to_file(graphemedText filename, graphemedText content)
