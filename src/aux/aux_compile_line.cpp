@@ -1456,7 +1456,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     if (line_like("IN $str-var CONVERT $str-expr TO UPPERCASE", tokens, state))
     {
         if (!in_procedure_section(state))
-            badcode("CONVERT statement outside PROCEDURE section", state.where);
+            badcode("IN/CONVERT statement outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[1]) + " = toUpperCopy(" +
                            get_c_expression(state, tokens[3]) + ");",
@@ -1476,7 +1476,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     if (line_like("IN $str-var CONVERT $str-expr TO LOWERCASE", tokens, state))
     {
         if (!in_procedure_section(state))
-            badcode("CONVERT statement outside PROCEDURE section", state.where);
+            badcode("IN/CONVERT statement outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[1]) + " = toLowerCopy(" +
                            get_c_expression(state, tokens[3]) + ");",
@@ -1521,7 +1521,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
     if (line_like("IN $num-var GET KEY COUNT OF $map", tokens, state))
     {
         if (!in_procedure_section(state))
-            badcode("GET KEY COUNT statement outside PROCEDURE section", state.where);
+            badcode("IN/GET KEY COUNT statement outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[1]) + " = " +
                            get_c_variable(state, tokens[6]) +
@@ -1536,6 +1536,16 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         // C++ Code
         state.add_code("get_indices(" + get_c_variable(state, tokens[5]) + ", " +
                            get_c_variable(state, tokens[3]) + ");",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $str-list GET KEYS OF $map", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET KEYS statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("get_indices(" + get_c_variable(state, tokens[1]) + ", " +
+                           get_c_variable(state, tokens[5]) + ");",
                        state.where);
         return;
     }
@@ -1590,6 +1600,18 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                        state.where);
         return;
     }
+    if (line_like("IN $num-var GET LENGTH OF $list", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/GET LENGTH OF (list) statement outside PROCEDURE section",
+                    state.where);
+        // C++ Code
+        state.add_code(get_c_variable(state, tokens[1]) + " = " +
+                           get_c_variable(state, tokens[5]) +
+                           ".inner_collection.size();",
+                       state.where);
+        return;
+    }
     if (line_like("DELETE LAST ELEMENT OF $list", tokens, state))
     {
         if (!in_procedure_section(state))
@@ -1629,6 +1651,17 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         state.add_code("utf8_split_list(" + get_c_variable(state, tokens[5]) + ", " +
                            get_c_expression(state, tokens[1]) + ", " +
                            get_c_expression(state, tokens[3]) + ");",
+                       state.where);
+        return;
+    }
+    if (line_like("IN $str-list SPLIT $str-expr BY $str-expr", tokens, state))
+    {
+        if (!in_procedure_section(state))
+            badcode("IN/SPLIT statement outside PROCEDURE section", state.where);
+        // C++ Code
+        state.add_code("utf8_split_list(" + get_c_variable(state, tokens[1]) + ", " +
+                           get_c_expression(state, tokens[3]) + ", " +
+                           get_c_expression(state, tokens[5]) + ");",
                        state.where);
         return;
     }

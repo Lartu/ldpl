@@ -1713,10 +1713,7 @@ void utf8_split_list(ldpl_list<graphemedText> &result, graphemedText haystack, g
             {
 
                 graphemedText token = haystack.substr(last_start, i - last_start);
-                if (token.length() > 0)
-                {
-                    result.inner_collection.push_back(token);
-                }
+                result.inner_collection.push_back(token);
                 i += lenNeedle;
                 last_start = i;
             }
@@ -1727,10 +1724,7 @@ void utf8_split_list(ldpl_list<graphemedText> &result, graphemedText haystack, g
         }
         // Grab everything after the last needle
         graphemedText token = haystack.substr(last_start, lenHaystack - last_start);
-        if (token.length() > 0)
-        {
-            result.inner_collection.push_back(token);
-        }
+        result.inner_collection.push_back(token);
     }
     else
     {
