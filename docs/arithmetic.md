@@ -1,7 +1,7 @@
 !!!Note
-    While this section is up-to-date and complete, it has to be reformated
-    to be easier on the eyes. All UPPERCASE statement names and code should
-    be changed to lowercase.
+    Starting on LDPL 5.2.1, all arithmetic statements also accept an IN-first synonym. This
+    means that in addition to writing `ADD 1 AND 2 IN myVar`, you can now also write
+    `IN myVar ADD 1 AND 2`.
 
 ## `IN _ SOLVE _`
 
