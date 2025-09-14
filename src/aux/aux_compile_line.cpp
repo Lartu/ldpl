@@ -634,29 +634,12 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             i++;
         string subprocedure = tokens[i];
         // Valid options: No WITH or WITH with at least one paramter
-        if (i == tokens.size() - 1 ||
-            (i < tokens.size() - 2 && tokens[i + 1] == "WITH"))
+        if (i == tokens.size() - 1)
         {
             if (!in_procedure_section(state))
-                badcode("CALL outside PROCEDURE section", state.where);
-            vector<string> parameters(
-                i != tokens.size() - 1 ? tokens.begin() + i + 2 : tokens.end(),
-                tokens.end());
+                badcode("CALL PARALLEL outside PROCEDURE section", state.where);
             vector<vector<unsigned int>> types;
-            for (string &parameter : parameters)
-            {
-                if (is_number(parameter))
-                    types.push_back({1});
-                else if (is_string(parameter))
-                    types.push_back({2});
-                else if (variable_exists(parameter, state))
-                    types.push_back(variable_type(parameter, state));
-                else
-                    badcode("CALL PARALLEL with invalid parameter \"" + parameter + "\"",
-                            state.where);
-            }
-            bool correct_types =
-                state.correct_subprocedure_types(subprocedure, types);
+            bool correct_types = state.correct_subprocedure_types(subprocedure, types);
             if (!is_subprocedure(subprocedure, state))
             {
                 if (!correct_types)
@@ -671,8 +654,12 @@ void compile_line(vector<string> &tokens, compiler_state &state)
                     badcode("CALL PARALLEL parameter types don't match SUB-PROCEDURE declaration",
                             state.where);
             }
-            add_thread_call_code(subprocedure, parameters, state);
+            add_thread_call_code(subprocedure, state);
             return;
+        }
+        else if (i < tokens.size() - 2 && tokens[i + 1] == "WITH")
+        {
+            badcode("Parallel calls don't support argument passing.", state.where);
         }
     }
     if (line_like("RETURN", tokens, state))
@@ -1492,7 +1479,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
         return;
     }
     if (line_like("IN $str-var SUBSTRING $expression FROM $expression LENGTH $expression",
-            tokens, state))
+                  tokens, state))
     {
         if (!in_procedure_section(state))
             badcode("IN/SUBSTRING statement outside PROCEDURE section", state.where);
@@ -1923,7 +1910,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             badcode("GET ELAPSED MILLISECONDS statement outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[4]) + " = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - program_start_time).count();",
-            state.where);
+                       state.where);
         return;
     }
     if (line_like("IN $num-var GET ELAPSED MILLISECONDS", tokens, state))
@@ -1932,7 +1919,7 @@ void compile_line(vector<string> &tokens, compiler_state &state)
             badcode("IN/GET ELAPSED MILLISECONDS statement outside PROCEDURE section", state.where);
         // C++ Code
         state.add_code(get_c_variable(state, tokens[1]) + " = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - program_start_time).count();",
-            state.where);
+                       state.where);
         return;
     }
     // Custom Statements
