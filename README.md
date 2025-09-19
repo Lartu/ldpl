@@ -52,15 +52,18 @@ LDPL is a full-fledged language that has been battle-tested in production system
 
 ## LDPL Philosophy
 
-LDPL is a language designed to be easy to understand, learn, write, and use. We believe coding should be like that. Compiling code should be effortless and straightforward: a single, flagless command should be enough to compile any source. Every statement in the language should perform one, and only one, function, independent of the context. The compiler should handle complex, low-level tasks like encoding, sockets, floating-point number comparison, etc., transparently to the user. Difficult things shouldn’t feel difficult.
+LDPL is designed to be easy to understand, learn, write, and use, because we believe coding should feel that way.
+Compiling LDPL code is effortless and straightforward: a single, flagless command is enough to build any source.
+Every statement in the language performs one, and only one, function, regardless of context.
+The compiler takes care of the complex, low-level details such as encoding, sockets, floating-point comparisons, and more, transparently for the user.
+LDPL makes difficult things feel easy.
 
-We understand that this philosophy may result in longer source code, more verbose statements, and additional steps to reach a solution, but it aims to make coding in LDPL easier and more enjoyable than in other languages.
-
-As one user once said:
+We know this philosophy can lead to slightly longer source code, more verbose statements, and extra steps to reach a solution — but the goal is to make coding in LDPL simpler, clearer, and more enjoyable than in other languages.
 
 >*"Usually when I'm programming, I feel like I'm in a big fancy jet and there's a lot of turbulence and it's not going well but then all of a sudden it's smooth air again and the drink cart comes along and I get a ginger ale and it's great. But with LDPL, I feel like I'm a cub scout out in the woods with a box of matches and a hatchet and my Scout's Handbook (the LDPL Docs) just exploring and figuring it out as I go. Whenever I run into a problem I just check my handbook and, sure enough, there's a solution right there waiting for me!"*
 
-We want LDPL to be a language you’ll love — not because it lets you do many things in one line or because it’s modern, but because it’s designed to stay by your side and reassure you that everything will be okay, even when things look rough.
+We want LDPL to be a language you enjoy using, not because it focuses on brevity or follows trends, but because it is reliable, approachable, and helps you get things done with confidence.
+LDPL is a language that reassures you that everything will be okay!
 
 ## Installing LDPL
 
