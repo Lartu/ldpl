@@ -123,3 +123,5 @@ Remember, there are no dumb questions — just ask!
 
 The LDPL Compiler is distributed under the Apache 2.0 License.
 All LDPL Dinosaur artwork and logos were created by [Lartu](https://github.com/Lartu) and are released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+
+![Ludiplis](https://github.com/Lartu/ldpl/blob/master/images/ldplsaur.png)
