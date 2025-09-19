@@ -87,18 +87,14 @@ It is also included in the [docs](docs) folder of this repository, where you can
 
 ## How to use this compiler
 
-To use the compiler, you must have a C++ compiler installed on your system and ensure it is accessible as `c++` in your PATH.
-The LDPL compiler translates LDPL code into C++ code, making this a necessary requirement for it to function.
+To use the compiler, you must have a C++ compiler installed on your system and ensure it is accessible as `c++` in your PATH.  
+The LDPL compiler translates LDPL code into C++ code, which makes this a necessary requirement for it to function.
 
-Once the compiler is set up, write some LDPL source code — for example, `source.ldpl`.
-Then, compile the source code using `ldpl source.ldpl`. The compiled executable binary will be saved as `source-bin`.
+Once the compiler is set up, write some LDPL source code, for example `source.ldpl`.
+Then compile the source code using `ldpl source.ldpl`.
+The compiled executable binary will be saved as `source-bin`.
+
 For more information about the compiler, run `ldpl -h` or refer to the [docs](https://docs.ldpl-lang.org/#the-ldpl-compiler).
-
-### C++ extensions
-
-LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` files that can be imported into your program.
-
-For a guide on writing and building C++ extensions, refer to the [LDPL Docs](https://docs.ldpl-lang.org/cppext/).
 
 ## Contributing to LDPL
 
@@ -123,7 +119,7 @@ You are always welcome to create new LDPL channels on any other platform.
 If you have any questions about the LDPL project, feel free to submit an issue in this repository, visit the [LDPL website](https://www.ldpl-lang.org), or join the community channels mentioned above.
 Remember, there are no dumb questions — just ask!
 
-## 📜 License
+## License
 
 The LDPL Compiler is distributed under the Apache 2.0 License.
 All LDPL Dinosaur artwork and logos were created by [Lartu](https://github.com/Lartu) and are released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
