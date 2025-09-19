@@ -67,32 +67,23 @@ LDPL is a language that reassures you that everything will be okay!
 
 ## Installing LDPL
 
-To install LDPL, clone this repository, navigate to the cloned directory, open a terminal, and run `make` followed by `make install`. That's it!
+To install LDPL, simply clone this repository, navigate to the cloned directory, open a terminal, and run `make` followed by `make install`. That's it! 
 
-You can also optionally run `make man` to re-build the man documentation (PHP is required for this).
-This process will install LDPL and its documentation (`man ldpl`) on your system.
-LDPL only requires **C++11** to compile and run.
+LDPL requires only **C++11** to compile and run, and it works out of the box on Unix systems such as Linux and macOS.
 
-### Alternative Installation Methods
+![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
 
-Bear in mind that these other installation methods may install an outdated version of LDPL, as they are maintained by external contributors.
-Make sure that the version you are about to install matches the last LDPL release.
+## Learning LDPL
 
-* **🍺 Homebrew**: If you prefer [Homebrew](https://brew.sh), you can install LDPL by running `brew install ldpl`.
-* **🐦 Snap**: If you prefer [Snap](https://snapcraft.io/), you can install LDPL by running `snap install ldpl-lang`.
+If you want to learn how to code in LDPL, the best way is to read the documentation and explore a few examples.
 
-
-## Learning LDPL and Read the Docs
+[The LDPL Documentation is available here](https://docs.ldpl-lang.org/).
+It is also included in the [docs](docs) folder of this repository, where you can read and modify it directly.
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
 
-If you want to learn how to code in LDPL, there is a brief tutorial available at [https://learnxinyminutes.com/docs/ldpl](https://learnxinyminutes.com/docs/ldpl). Additionally, be sure to check out the examples on the official LDPL website.
-
-[The **LDPL Documentation** is available here](https://docs.ldpl-lang.org/).
-The documentation is also uploaded to the [docs](docs) folder of this repository and can be read and modified from there.
-
-The LDPL documentation can also be found on your system using `man ldpl` when you install LDPL using `make install`.
-The man page is also available in the [man](/man) folder of this repository.
+> [!IMPORTANT]
+> The examples will be linked here soon — we are working on it!
 
 ## How to use this compiler
 
@@ -109,33 +100,30 @@ LDPL supports extensions written in C++. Extensions are `.cpp`, `.o`, or `.a` fi
 
 For a guide on writing and building C++ extensions, refer to the [LDPL Docs](https://docs.ldpl-lang.org/cppext/).
 
-## How can I contribute to LDPL?
-
-![Contributing Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/tutorial-logo.png)
+## Contributing to LDPL
 
 There are many ways to contribute to the LDPL project.
-You can fix bugs, open issues, write examples, develop software in LDPL, and more.
+You can fix bugs, open issues, write examples, develop software in LDPL, and much more.
 Check the [contribution guide](https://www.ldpl-lang.org/contribute.html) for details.
-Almost any contribution is welcome — even simply telling your friends about LDPL is an easy and valuable way to help.
 
-Contributors are expected to adhere to the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html). In short: be nice to everyone.
+Most contributions are welcome, even simply telling your friends about LDPL is a valuable way to help.
 
-### Community
+Contributors are expected to follow the [LDPL Code of Conduct](https://www.ldpl-lang.org/conduct.html).
+In short: be nice to everyone.
 
-If you’d like to chat with us, join the LDPL community in the [LDPL Programming Language **Telegram** Group](https://t.me/ldpllang)!
-There's also [r/LDPL](https://reddit.com/r/LDPL) on **Reddit**.
+## Community
 
-You are also welcome to create new LDPL channels on any other platform.
+If you would like to chat with us, join the LDPL community in the [LDPL Programming Language Telegram Group](https://t.me/ldpllang)!  
+There is also [r/LDPL](https://reddit.com/r/LDPL) on Reddit.  
 
-## Merchandise
-
-Due to popular demand, [LDPL merchandise is available](https://www.teepublic.com/user/lartu). We’ve partnered with TeePublic to offer a variety of items, from shirts and mousepads to coffee mugs.
+You are always welcome to create new LDPL channels on any other platform.
 
 ## Getting Help
 
-f you have any questions about the LDPL project, feel free to submit an issue in this repository, visit the [LDPL website](https://www.ldpl-lang.org) or join the community channels mentioned in the previous section. Remember, there are no dumb questions — just ask!
+If you have any questions about the LDPL project, feel free to submit an issue in this repository, visit the [LDPL website](https://www.ldpl-lang.org), or join the community channels mentioned above.
+Remember, there are no dumb questions — just ask!
 
 ## 📜 License
 
 The LDPL Compiler is distributed under the Apache 2.0 License.
-All LDPL Dinosaur logos were created by [Lartu](https://github.com/Lartu) and are released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
+All LDPL Dinosaur artwork and logos were created by [Lartu](https://github.com/Lartu) and are released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
