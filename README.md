@@ -8,12 +8,33 @@
   <a href="t.me/ldpllang"><img src="https://img.shields.io/badge/-LDPL_on_Telegram-red?color=blue&logo=telegram&logoColor=white"></a>
 </p>
 
-[**LDPL**](https://www.ldpl-lang.org/) is a powerful, general-purpose compiled programming language designed
-from the ground up to be excessively **expressive**, **readable**, **fast** and **easy** to learn.
-It mimics plain English, inspired by the best aspects of older programming languages like COBOL and FoxPRO.
-It even supports UTF-8 out of the box.
+[**LDPL**](https://www.ldpl-lang.org/) is a powerful, general-purpose compiled programming language built
+to be **expressive**, **readable**, **fast**, and **easy to learn**. Inspired by the best parts of older languages such as COBOL,
+it uses plain-English syntax and supports Unicode natively!
 
-This repository contains the source code and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler.
+This repository contains the [source code](https://github.com/Lartu/ldpl/tree/master/src)
+and [releases](https://github.com/Lartu/ldpl/releases) of the LDPL compiler, along with
+the full documentation and the complete LDPL website.
+
+```ruby
+# Hello There Example
+-- DATA --
+name IS TEXT
+i IS NUMBER
+  
+-- PROCEDURE --
+DISPLAY "Hello there, what's your name?"
+ACCEPT name
+# Greet the user in Chinese ten times.
+FOR i FROM 0 TO 10 DO
+    PRINT "你好, " name "!"
+REPEAT
+```
+
+Easy as pie and highly readable, LDPL supports multiple data types and programming patterns.
+It can easily interface with C and C++ code and libraries, supports arbitrarily large integer arithmetic,
+and makes both procedural and parallel programming straightforward.
+LDPL is a full-fledged language that has been battle-tested in production systems.
 
 > [!IMPORTANT]
 > LDPL 5.2, the current development version, is stable and up to date. The rest of this repository, however, still needs a bit of tidying up.
@@ -26,30 +47,6 @@ This repository contains the source code and [releases](https://github.com/Lartu
 > - Consolidate the documentation and the website into this repository so everything lives in one place.
 > 
 > _Lartu (September 14th, 2025)_
-
----
-
-### Example Code
-
-```ruby
-# Hello There Example
-DATA: 
-name IS TEXT
-i IS NUMBER
-  
-PROCEDURE: 
-DISPLAY "Hello there, what's your name?"
-ACCEPT name
-FOR i FROM 0 TO 10 STEP 1 DO
-    DISPLAY "你好, " name "!" CRLF
-REPEAT
-```
-
-This code greets the user and asks them to enter their name, then it greets them in Chinese, ten times. Easy as pie and super legible.
-
-LDPL supports multiple datatypes and programming patterns. It is a full-fledged programming language.
-Check the [documentation](https://docs.ldpl-lang.org) for more information, and the [official website](https://www.ldpl-lang.org/) 
-to see other examples, including a BF interpreter and Bellman-Ford's Algorithm!
 
 ## LDPL Philosophy
 
