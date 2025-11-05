@@ -95,7 +95,7 @@ void badcode(const string &msg, const code_location where)
 /// @brief Shows a fatal error message and exits.
 void error(const string &msg)
 {
-    cerr << "\033[1;31mLDPL Error: ";
+    cerr << "\033[1;31mLDPL Error: " << endl;
     cerr << msg;
     cerr << "\033[0m" << endl;
     exit(1);

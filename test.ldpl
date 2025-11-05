@@ -1,0 +1,91 @@
+-- DATA --
+VAR a NUM
+VAR b NUM
+VAR c STR
+VAR d STR
+VAR e NUMMAP
+VAR f STRMAP
+
+-- PROCEDURE --
+
+DEF doSomething
+
+END DEF
+
+IN a PUT 0
+IN a PUT 1.12
+IN a PUT -0
+IN b PUT -10.2
+IN b PUT +1.2
+IN b PUT +23
+IN c PUT "Probando las variables estas!"
+IN e:0 PUT 21
+IN e:"0" PUT 22
+IN e:"roberto" PUT 23
+IN e:"roberto" PUT e:"0"
+
+IF 1 = 1 AND 2 = 3 AND 2 in e THEN
+
+ELSE IF "roberto" NOT IN e THEN
+
+ELSE
+
+END IF
+
+WHILE "roberto" IN e DO
+    BREAK
+REPEAT
+
+FOREVER DO
+    BREAK
+    CONTINUE
+REPEAT
+
+CALL doSomething
+
+CALL otherFunction WITH a, b
+
+DEF otherFunction
+    -- ARGS --
+    VAR arg1 NUM
+    VAR arg2 NUM
+
+    -- LOCAL --
+    VAR swap NUM
+
+    -- PROCEDURE --
+    IN swap DO arg1 + arg2
+    IN swap DO arg1 * arg2
+    IN swap DO arg1 - arg2
+    IN swap DO arg1 / arg2
+    IN swap DO arg1 % arg2
+    RANDOMIZE swap
+    IN swap FLOOR swap
+    IN swap CEIL swap
+    RETURN
+END DEF
+
+IN d JOIN a b e:0 CRLF
+
+IN a LEN c
+IN c CHAR AT a OF d
+
+PRINT a b c d CRLF
+
+ACCEPT a
+ACCEPT d
+ACCEPT d UNTIL EOF
+EXECUTE "do this and that"
+
+WRITE d TO "myfile.txt"
+APPEND d TO "myfile.txt"
+IN c LOAD "myfile.txt"
+
+CLEAR e
+IN a COUNT e
+IN f KEYS e
+
+INC a
+DEC a
+
+EXIT

@@ -55,7 +55,7 @@ string get_c_char_array(compiler_state &state, string &text)
 string get_c_string(compiler_state &state, string &expression)
 {
     string c_expression = get_c_expression(state, expression);
-    if (is_num_expr(expression, state))
+    if (is_num(expression, state))
         return "to_ldpl_string(" + c_expression + ")";
     return c_expression;
 }
@@ -63,7 +63,7 @@ string get_c_string(compiler_state &state, string &expression)
 string get_c_number(compiler_state &state, string &expression)
 {
     string c_expression = get_c_expression(state, expression);
-    if (is_txt_expr(expression, state))
+    if (is_txt(expression, state))
         return "to_number(" + c_expression + ")";
     return c_expression;
 }
@@ -84,8 +84,7 @@ string get_c_condition(compiler_state &state, vector<string> tokens)
     else                                       \
         return "[ERROR]";
 
-string get_c_condition(compiler_state &state, vector<string> tokens,
-                       unsigned int &ct)
+string get_c_condition(compiler_state &state, vector<string> tokens, unsigned int &ct)
 {
     if (ct >= tokens.size())
         return "[ERROR]";
@@ -105,62 +104,9 @@ string get_c_condition(compiler_state &state, vector<string> tokens,
         string second_value;
         string rel_op;
         ct++; // We validate the token after we get the second value
-        if (tokens[ct] == "IS" || tokens[ct] == "=" || tokens[ct] == "<>" || tokens[ct] == "<" || tokens[ct] == ">" || tokens[ct] == "<=" || tokens[ct] == ">=")
+        if (tokens[ct] == "=" || tokens[ct] == "<>" || tokens[ct] == "<" || tokens[ct] == ">" || tokens[ct] == "<=" || tokens[ct] == ">=")
         {
-            if (tokens[ct] == "IS")
-            {
-                MATCH("IS");
-            }
-            if (tokens[ct] == "EQUAL")
-            {
-                MATCH("EQUAL");
-                MATCH("TO");
-                rel_op = "EQUAL TO";
-            }
-            else if (tokens[ct] == "NOT")
-            {
-                MATCH("NOT");
-                MATCH("EQUAL");
-                MATCH("TO");
-                rel_op = "NOT EQUAL TO";
-            }
-            else if (tokens[ct] == "GREATER")
-            {
-                MATCH("GREATER");
-                MATCH("THAN");
-                if (ct + 1 < tokens.size() && tokens[ct + 1] == "EQUAL")
-                {
-                    // We check the next token instead of the curent one
-                    // because "OR" could be a variable after "GREATER THAN"
-                    MATCH("OR");
-                    MATCH("EQUAL");
-                    MATCH("TO");
-                    rel_op = "GREATER THAN OR EQUAL TO";
-                }
-                else
-                {
-                    rel_op = "GREATER THAN";
-                }
-            }
-            else if (tokens[ct] == "LESS")
-            {
-                MATCH("LESS");
-                MATCH("THAN");
-                if (ct + 1 < tokens.size() && tokens[ct + 1] == "EQUAL")
-                {
-                    // We check the next token instead of the curent one
-                    // because "OR" could be a variable after "LESS THAN"
-                    MATCH("OR");
-                    MATCH("EQUAL");
-                    MATCH("TO");
-                    rel_op = "LESS THAN OR EQUAL TO";
-                }
-                else
-                {
-                    rel_op = "LESS THAN";
-                }
-            }
-            else if (tokens[ct] == "<")
+            if (tokens[ct] == "<")
             {
                 MATCH("<");
                 rel_op = "LESS THAN";
@@ -199,10 +145,10 @@ string get_c_condition(compiler_state &state, vector<string> tokens,
             ++ct;
 
             string type;
-            if (is_num_expr(first_value, state) && is_num_expr(second_value, state))
+            if (is_num(first_value, state) && is_num(second_value, state))
                 type = "NUMBER";
-            else if (is_txt_expr(first_value, state) &&
-                     is_txt_expr(second_value, state))
+            else if (is_txt(first_value, state) &&
+                     is_txt(second_value, state))
                 type = "TEXT";
             else if (is_num_map(first_value, state) &&
                      is_num_map(second_value, state))
@@ -210,22 +156,6 @@ string get_c_condition(compiler_state &state, vector<string> tokens,
             else if (is_txt_map(first_value, state) &&
                      is_txt_map(second_value, state))
                 type = "TEXT MAP";
-            else if (is_num_list(first_value, state) &&
-                     is_num_list(second_value, state))
-                type = "NUMBER LIST";
-            else if (is_txt_list(first_value, state) &&
-                     is_txt_list(second_value, state))
-                type = "TEXT LIST";
-            else if (is_list_list(first_value, state) &&
-                     is_list_list(second_value, state) &&
-                     variable_type(first_value, state) ==
-                         variable_type(second_value, state))
-                type = "LIST LIST";
-            else if (is_map_map(first_value, state) &&
-                     is_map_map(second_value, state) &&
-                     variable_type(first_value, state) ==
-                         variable_type(second_value, state))
-                type = "MAP MAP";
             else
                 return "[ERROR]";
 
@@ -296,18 +226,7 @@ string get_c_condition(compiler_state &state, vector<string> tokens,
             second_value = tokens[ct];
             ++ct;
             string type;
-            if (is_num_expr(first_value, state) && is_num_list(second_value, state))
-                type = "NUM-IN-NUM-LIST";
-            else if (is_num_expr(first_value, state) &&
-                     is_txt_list(second_value, state))
-                type = "NUM-IN-TEXT-LIST";
-            else if (is_txt_expr(first_value, state) &&
-                     is_num_list(second_value, state))
-                type = "TEXT-IN-NUM-LIST";
-            else if (is_txt_expr(first_value, state) &&
-                     is_txt_list(second_value, state))
-                type = "TEXT-IN-TEXT-LIST";
-            else if (is_num_expr(first_value, state) && is_map(second_value, state))
+            if (is_num(first_value, state) && is_map(second_value, state))
                 type = "NUM-IN-MAP";
             else if (is_string(first_value) && is_map(second_value, state))
                 type = "STR-IN-MAP";
@@ -318,57 +237,7 @@ string get_c_condition(compiler_state &state, vector<string> tokens,
 
             first_value = get_c_expression(state, first_value);
             second_value = get_c_expression(state, second_value);
-            if (type == "NUM-IN-NUM-LIST")
-            {
-                if (rel_op == "IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value + ".inner_collection.end(), (ldpl_number) " +
-                                first_value + ") != " + second_value +
-                                ".inner_collection.end()";
-                else if (rel_op == "NOT IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value + ".inner_collection.end(), (ldpl_number) " +
-                                first_value + ") == " + second_value +
-                                ".inner_collection.end()";
-            }
-            else if (type == "TEXT-IN-NUM-LIST")
-            {
-                if (rel_op == "IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value + ".inner_collection.end(), to_number(" +
-                                first_value + ")) != " + second_value +
-                                ".inner_collection.end()";
-                else if (rel_op == "NOT IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value + ".inner_collection.end(), to_number(" +
-                                first_value + ")) == " + second_value +
-                                ".inner_collection.end()";
-            }
-            else if (type == "NUM-IN-TEXT-LIST")
-            {
-                if (rel_op == "IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value +
-                                ".inner_collection.end(), to_ldpl_string(" + first_value +
-                                ")) != " + second_value + ".inner_collection.end()";
-                else if (rel_op == "NOT IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value +
-                                ".inner_collection.end(), to_ldpl_string(" + first_value +
-                                ")) == " + second_value + ".inner_collection.end()";
-            }
-            else if (type == "TEXT-IN-TEXT-LIST")
-            {
-                if (rel_op == "IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value + ".inner_collection.end(), " + first_value +
-                                ") != " + second_value + ".inner_collection.end()";
-                else if (rel_op == "NOT IN")
-                    condition = "find(" + second_value + ".inner_collection.begin(), " +
-                                second_value + ".inner_collection.end(), " + first_value +
-                                ") == " + second_value + ".inner_collection.end()";
-            }
-            else if (type == "NUM-IN-MAP")
+            if (type == "NUM-IN-MAP")
             {
                 if (rel_op == "IN")
                     condition = second_value + ".inner_collection.find(to_ldpl_string(" +

@@ -96,44 +96,6 @@ void compile(vector<string> &lines, compiler_state &state)
         string &line = lines[line_num - 1];
         state.where.current_line = line_num;
 
-        if (state.open_quote)
-        {
-            // Check for END QUOTE first
-            if (line.size() >= 9 /*&& (line[0] == 'E' || line[0] == 'e')*/)
-            {
-                string upper = "";
-                for (char c : line)
-                    upper += toupper(c);
-                trim(upper);
-                if (upper == "END QUOTE")
-                {
-                    state.open_quote = false;
-                    state.trim_quote_lines = false;
-                    // Kill final newline. Programs can add crlf if needed.
-                    string &prev = state.current_subprocedure != ""
-                                       ? state.subroutine_code.back()
-                                       : state.output_code.back();
-                    size_t pos = prev.rfind("\\n");
-                    if (pos != string::npos)
-                        prev.erase(pos, 2);
-                    prev += ";";
-                    continue;
-                }
-            }
-
-            // No END QUOTE, emit the line as C++
-            if (!state.trim_quote_lines)
-            {
-                state.add_code("\"\" \"" + escape_c_quotes(escape_c_backslashes(line)) + "\\n\"", state.where);
-            }
-            else
-            {
-                trim(line);
-                state.add_code("\"\" \"" + escape_c_quotes(escape_c_backslashes(line)) + "\\n\"", state.where);
-            }
-            continue;
-        }
-
         trim(line);
         // Split line in various tokens
         vector<string> tokens;
@@ -290,8 +252,6 @@ void compile(vector<string> &lines, compiler_state &state)
             continue;
         compile_line(tokens, state);
     }
-    if (state.open_quote)
-        error("a QUOTE block was not terminated.");
     if (state.closing_subprocedure())
         error("a SUB-PROCEDURE block was not terminated.");
     if (state.closing_if())
@@ -325,9 +285,6 @@ int main(int argc, const char *argv[])
     compiler_state
         state; // Compiler state (holds variables, sections, functions, etc)
     vector<string> files_to_compile;
-#ifdef STATIC_BUILDS
-    bool no_static = false;
-#endif
     string output_filename = "";
     string final_filename = "";
 
@@ -340,6 +297,7 @@ int main(int argc, const char *argv[])
             {
                 if (output_filename == "")
                     output_filename = arg;
+                /* TODO REMOVE THIS
                 if (files_to_compile.size() > 0)
                 {
                     warning(
@@ -347,18 +305,13 @@ int main(int argc, const char *argv[])
                         "deprecated and may be removed in the future.\nPlease use the "
                         "IMPORT statement instead.");
                 }
+                */
                 files_to_compile.push_back(arg);
             }
             else if (arg == "-r")
             {
                 show_ir = true;
             }
-#ifdef STATIC_BUILDS
-            else if (arg == "-n" || arg == "--non-static")
-            {
-                no_static = true;
-            }
-#endif
             else if (arg.substr(0, 3) == "-o=")
             {
                 final_filename = arg.substr(3);
@@ -403,7 +356,6 @@ int main(int argc, const char *argv[])
     // Add default initialization code to the generated source
     state.add_code("int main(int argc, char *argv[]){");
     state.add_code("cout.precision(numeric_limits<ldpl_number>::digits10);");
-    state.add_code("program_start_time = std::chrono::steady_clock::now();");
 
     // Add default variable declaration code to the generated code
     state.variables[""]["ARGV"] = {2, 3}; // List of text
@@ -461,28 +413,38 @@ int main(int argc, const char *argv[])
     // If only to print the generated code (IR) was required
     if (show_ir)
     {
-        cout << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\""
-             << endl; // Add LDPL library
+        // cout << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\"" << endl; // Add LDPL library
         for (string line : state.variable_code)
+        {
             cout << line << endl;
+        }
         for (string line : state.subroutine_code)
+        {
             cout << line << endl;
+        }
         for (string line : state.output_code)
+        {
             cout << line << endl;
+        }
         exit(0);
     }
 
     // Otherwise, save the generated code
     ofstream myfile;
     myfile.open("ldpl-temp.cpp");
-    myfile << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\""
-           << endl; // Add LDPL library
+    // myfile << "#include \"" << LDPLLIBLOCATION << "/ldpl_lib.cpp\"" << endl; // Add LDPL library
     for (string line : state.variable_code)
+    {
         myfile << line << endl;
+    }
     for (string line : state.subroutine_code)
+    {
         myfile << line << endl;
+    }
     for (string line : state.output_code)
+    {
         myfile << line << endl;
+    }
     myfile.close();
 
     // Generate output filename if not set by -o=
@@ -503,10 +465,7 @@ int main(int argc, const char *argv[])
     // Generate the C++ compilation command
     string compile_line =
         "c++ ldpl-temp.cpp -std=c++11 -w -O3 -o " + final_filename;
-#ifdef STATIC_BUILDS
-    if (!no_static)
-        compile_line += " -static-libgcc -static-libstdc++ ";
-#endif
+
     if (!extension_flags.empty())
     {
         for (string &flag : extension_flags)
@@ -518,12 +477,10 @@ int main(int argc, const char *argv[])
 
     // Compile the C++ code
     bullet_msg("Building " + final_filename);
-    int compiled = system(compile_line.c_str());
-#if defined(_WIN32)
-    system("del ldpl-temp.cpp");
-#else
-    system("rm ldpl-temp.cpp");
-#endif
+    // int compiled = system(compile_line.c_str());
+    int compiled = 0;
+    cout << compile_line.c_str() << endl;
+    // system("rm ldpl-temp.cpp");
 
     // Output if the code was compiled or not
     if (compiled == 0)

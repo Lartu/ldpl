@@ -9,8 +9,7 @@
 // to store a variable name and a vector of strings to store all indexes, we get
 // the variable name and all its subindexes (if any) into the corresponding
 // variables.
-void split_vector(string &token, string &var_name, vector<string> &indexes,
-                  compiler_state &state) {
+void split_vector(const string &token, string &var_name, vector<string> &indexes, compiler_state &state) {
   // First of all we want to know if we are dealing with a container variable,
   // that is a LIST of something of a MAP of something. Thus, we look for any
   // ':' in the full variable and store the possition of the (possible) first

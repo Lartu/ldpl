@@ -6,8 +6,7 @@
 
 // Tokenizes a line splitting by 'splitChar' with optional convertion of tokens
 // to uppercase (except in strings)
-void tokenize(string &line, vector<string> &tokens, code_location &where,
-              bool uppercase, char splitChar)
+void tokenize(const string &line, vector<string> &tokens, code_location &where, bool uppercase, char splitChar)
 {
   bool in_string = false;
   string current_token = "";
