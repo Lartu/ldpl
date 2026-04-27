@@ -29,6 +29,7 @@
 #define ldpl_number LdplNumber
 #define ldpl_vector ldpl_map
 #define ldpl_text graphemedText
+#define ldpl_list ldpl_list
 
 using namespace std;
 
