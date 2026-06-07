@@ -64,7 +64,7 @@ clean:
 
 install: build/ldpl
 	install -d $(DESTDIR)$(PREFIX)/bin/
-	install -m 775 build/ldpl $(DESTDIR)$(PREFIX)/bin/
+	install -m 755 build/ldpl $(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/lib/ldpl
 	install src/ldpl_lib/ldpl_lib.cpp $(DESTDIR)$(PREFIX)$(LDPLLIBLOCATION)
 	install src/ldpl_lib/BigInt.hpp $(DESTDIR)$(PREFIX)$(LDPLLIBLOCATION)
