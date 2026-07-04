@@ -42,13 +42,14 @@ LDPL is a full-fledged language that has been battle-tested in production system
 >
 > **What needs to be done**
 > - ~Improve and update the documentation; ship it with the project and drop the ReadTheDocs dependency.~
-> - Remove MkDocs, Snapcraft, and any other unused build/publish tooling.
+> - ~Remove MkDocs, Snapcraft, and any other unused build/publish tooling.~
 > - Update all README files.
+> - Update the LDPL website to reflect this.
 > - Consolidate the documentation and the website into this repository so everything lives in one place.
 >
 > Version 5.1, the previous release, has a number of known issues. Please build and use 5.2 whenever possible.
 > 
-> _Lartu (September 14th, 2025)_
+> _Lartu (Last updated: July 4th, 2026)_
 
 ## LDPL Philosophy
 
