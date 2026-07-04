@@ -41,7 +41,7 @@ LDPL is a full-fledged language that has been battle-tested in production system
 > I am actively working on it, and you can expect things to improve over the coming days!
 >
 > **What needs to be done**
-> - Improve and update the documentation; ship it with the project and drop the ReadTheDocs dependency.
+> - ~Improve and update the documentation; ship it with the project and drop the ReadTheDocs dependency.~
 > - Remove MkDocs, Snapcraft, and any other unused build/publish tooling.
 > - Update all README files.
 > - Consolidate the documentation and the website into this repository so everything lives in one place.
@@ -77,8 +77,7 @@ LDPL requires only **C++11** to compile and run, and it works out of the box on 
 
 If you want to learn how to code in LDPL, the best way is to read the documentation and explore a few examples.
 
-[The LDPL Documentation is available here](https://docs.ldpl-lang.org/).
-It is also included in the [docs](docs) folder of this repository, where you can read and modify it directly.
+The [LDPL Reference](REFERENCE.md) is included in this repository, where you can read and modify it directly.
 
 ![Learning Dinosaur](https://github.com/Lartu/ldpl/blob/master/images/reference-logo.png)
 
